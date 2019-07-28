@@ -1,0 +1,6 @@
+import
+    .*
+
+export
+    let abs = (value: Number) ->
+        return value >= 0 ? value : -value

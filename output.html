@@ -1,0 +1,522 @@
+
+<html>
+    <head>
+        <style>
+        .jsondiffpatch-delta {
+  font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+  font-size: 12px;
+  margin: 0;
+  padding: 0 0 0 12px;
+  display: inline-block;
+}
+.jsondiffpatch-delta pre {
+  font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+}
+ul.jsondiffpatch-delta {
+  list-style-type: none;
+  padding: 0 0 0 20px;
+  margin: 0;
+}
+.jsondiffpatch-delta ul {
+  list-style-type: none;
+  padding: 0 0 0 20px;
+  margin: 0;
+}
+.jsondiffpatch-added .jsondiffpatch-property-name,
+.jsondiffpatch-added .jsondiffpatch-value pre,
+.jsondiffpatch-modified .jsondiffpatch-right-value pre,
+.jsondiffpatch-textdiff-added {
+  background: #bbffbb;
+}
+.jsondiffpatch-deleted .jsondiffpatch-property-name,
+.jsondiffpatch-deleted pre,
+.jsondiffpatch-modified .jsondiffpatch-left-value pre,
+.jsondiffpatch-textdiff-deleted {
+  background: #ffbbbb;
+  text-decoration: line-through;
+}
+.jsondiffpatch-unchanged,
+.jsondiffpatch-movedestination {
+  color: gray;
+}
+.jsondiffpatch-unchanged,
+.jsondiffpatch-movedestination > .jsondiffpatch-value {
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  overflow-y: hidden;
+}
+.jsondiffpatch-unchanged-showing .jsondiffpatch-unchanged,
+.jsondiffpatch-unchanged-showing .jsondiffpatch-movedestination > .jsondiffpatch-value {
+  max-height: 100px;
+}
+.jsondiffpatch-unchanged-hidden .jsondiffpatch-unchanged,
+.jsondiffpatch-unchanged-hidden .jsondiffpatch-movedestination > .jsondiffpatch-value {
+  max-height: 0;
+}
+.jsondiffpatch-unchanged-hiding .jsondiffpatch-movedestination > .jsondiffpatch-value,
+.jsondiffpatch-unchanged-hidden .jsondiffpatch-movedestination > .jsondiffpatch-value {
+  display: block;
+}
+.jsondiffpatch-unchanged-visible .jsondiffpatch-unchanged,
+.jsondiffpatch-unchanged-visible .jsondiffpatch-movedestination > .jsondiffpatch-value {
+  max-height: 100px;
+}
+.jsondiffpatch-unchanged-hiding .jsondiffpatch-unchanged,
+.jsondiffpatch-unchanged-hiding .jsondiffpatch-movedestination > .jsondiffpatch-value {
+  max-height: 0;
+}
+.jsondiffpatch-unchanged-showing .jsondiffpatch-arrow,
+.jsondiffpatch-unchanged-hiding .jsondiffpatch-arrow {
+  display: none;
+}
+.jsondiffpatch-value {
+  display: inline-block;
+}
+.jsondiffpatch-property-name {
+  display: inline-block;
+  padding-right: 5px;
+  vertical-align: top;
+}
+.jsondiffpatch-property-name:after {
+  content: ': ';
+}
+.jsondiffpatch-child-node-type-array > .jsondiffpatch-property-name:after {
+  content: ': [';
+}
+.jsondiffpatch-child-node-type-array:after {
+  content: '],';
+}
+div.jsondiffpatch-child-node-type-array:before {
+  content: '[';
+}
+div.jsondiffpatch-child-node-type-array:after {
+  content: ']';
+}
+.jsondiffpatch-child-node-type-object > .jsondiffpatch-property-name:after {
+  content: ': {';
+}
+.jsondiffpatch-child-node-type-object:after {
+  content: '},';
+}
+div.jsondiffpatch-child-node-type-object:before {
+  content: '{';
+}
+div.jsondiffpatch-child-node-type-object:after {
+  content: '}';
+}
+.jsondiffpatch-value pre:after {
+  content: ',';
+}
+li:last-child > .jsondiffpatch-value pre:after,
+.jsondiffpatch-modified > .jsondiffpatch-left-value pre:after {
+  content: '';
+}
+.jsondiffpatch-modified .jsondiffpatch-value {
+  display: inline-block;
+}
+.jsondiffpatch-modified .jsondiffpatch-right-value {
+  margin-left: 5px;
+}
+.jsondiffpatch-moved .jsondiffpatch-value {
+  display: none;
+}
+.jsondiffpatch-moved .jsondiffpatch-moved-destination {
+  display: inline-block;
+  background: #ffffbb;
+  color: #888;
+}
+.jsondiffpatch-moved .jsondiffpatch-moved-destination:before {
+  content: ' => ';
+}
+ul.jsondiffpatch-textdiff {
+  padding: 0;
+}
+.jsondiffpatch-textdiff-location {
+  color: #bbb;
+  display: inline-block;
+  min-width: 60px;
+}
+.jsondiffpatch-textdiff-line {
+  display: inline-block;
+}
+.jsondiffpatch-textdiff-line-number:after {
+  content: ',';
+}
+.jsondiffpatch-error {
+  background: red;
+  color: white;
+  font-weight: bold;
+}
+
+        </style>
+        <style>
+        :root {
+            --border: solid 1px gray;
+        }
+        body {
+            display: flex;
+            flex-direction: row;
+            font-size: 12px;
+            font-family: Monaco;
+        }
+        article {
+            border: var(--border);
+        }
+        article {
+            border: var(--border);
+            padding: 0px;
+        }
+        article:not(:last-child) {
+            border-right: none;
+        }
+        article header {
+            color: rgb(150,150,150);
+            background-color: rgb(45,45,45);
+            font-weight: bold;
+            padding: 8px;
+            margin: 0px;
+            border-bottom: var(--border);
+        }
+        article header:hover {
+            display: flex;
+            flex-direction: column;
+        }
+        article p {
+            padding: 0px 8px;
+            white-space: pre;
+        }
+        ins {
+            color: lightgreen;
+            text-decoration: none;
+        }
+        del {
+            color: red;
+            text-decoration: none;
+        }
+        </style>
+    </head>
+    <body onclick="location.reload(true)">
+
+        <article>
+            <header><span>Input</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="root"><div class="jsondiffpatch-property-name">root</div><div class="jsondiffpatch-value"><pre>&quot;/Users/krisnye/Projects/2019/glassorg/glass-ion/ionsrc&quot;</pre></div></li></ul></div></p>
+        </article>
+    
+        <article>
+            <header><span>parsing</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-added" data-key="files"><div class="jsondiffpatch-property-name">files</div><div class="jsondiffpatch-value"><pre>{
+  &quot;ion.Integer&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;TypeDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;Integer&quot;
+        },
+        &quot;value&quot;: {
+          &quot;type&quot;: &quot;ConstrainedType&quot;,
+          &quot;baseType&quot;: {
+            &quot;type&quot;: &quot;Reference&quot;,
+            &quot;name&quot;: &quot;Number&quot;
+          },
+          &quot;constraint&quot;: {
+            &quot;type&quot;: &quot;BinaryExpression&quot;,
+            &quot;left&quot;: {
+              &quot;type&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;type&quot;: &quot;DotExpression&quot;
+              },
+              &quot;property&quot;: {
+                &quot;type&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;fraction&quot;
+              },
+              &quot;computed&quot;: false
+            },
+            &quot;operator&quot;: &quot;==&quot;,
+            &quot;right&quot;: {
+              &quot;type&quot;: &quot;Literal&quot;,
+              &quot;value&quot;: 0
+            }
+          }
+        }
+      }
+    ]
+  },
+  &quot;ion.Number&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;ClassDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;Number&quot;
+        },
+        &quot;templateParameters&quot;: [],
+        &quot;meta&quot;: [],
+        &quot;baseClasses&quot;: []
+      },
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;integer&quot;
+        },
+        &quot;value&quot;: null,
+        &quot;meta&quot;: []
+      },
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;fraction&quot;
+        },
+        &quot;value&quot;: null,
+        &quot;meta&quot;: []
+      }
+    ]
+  },
+  &quot;ion.Sample&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [
+      {
+        &quot;type&quot;: &quot;ImportStep&quot;,
+        &quot;relative&quot;: true,
+        &quot;children&quot;: true
+      }
+    ],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;abs&quot;
+        },
+        &quot;value&quot;: {
+          &quot;type&quot;: &quot;FunctionExpression&quot;,
+          &quot;id&quot;: null,
+          &quot;parameters&quot;: [
+            {
+              &quot;type&quot;: &quot;Parameter&quot;,
+              &quot;id&quot;: {
+                &quot;type&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;value&quot;
+              },
+              &quot;value&quot;: null
+            }
+          ],
+          &quot;body&quot;: {
+            &quot;type&quot;: &quot;BlockStatement&quot;,
+            &quot;statements&quot;: [
+              {
+                &quot;type&quot;: &quot;ReturnStatement&quot;,
+                &quot;value&quot;: {
+                  &quot;type&quot;: &quot;ConditionalExpression&quot;,
+                  &quot;test&quot;: {
+                    &quot;type&quot;: &quot;BinaryExpression&quot;,
+                    &quot;left&quot;: {
+                      &quot;type&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;value&quot;
+                    },
+                    &quot;operator&quot;: &quot;&gt;=&quot;,
+                    &quot;right&quot;: {
+                      &quot;type&quot;: &quot;Literal&quot;,
+                      &quot;value&quot;: 0
+                    }
+                  },
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;value&quot;
+                    },
+                    {
+                      &quot;type&quot;: &quot;UnaryExpression&quot;,
+                      &quot;operator&quot;: &quot;-&quot;,
+                      &quot;left&quot;: {
+                        &quot;type&quot;: &quot;Reference&quot;,
+                        &quot;name&quot;: &quot;value&quot;
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        &quot;meta&quot;: []
+      }
+    ]
+  }
+}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="root"><div class="jsondiffpatch-property-name">root</div><div class="jsondiffpatch-value"><pre>&quot;/Users/krisnye/Projects/2019/glassorg/glass-ion/ionsrc&quot;</pre></div></li></ul></div></p>
+        </article>
+    
+        <article>
+            <header><span>importResolution</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="files"><div class="jsondiffpatch-property-name">files</div><div class="jsondiffpatch-value"><pre>{
+  &quot;ion.Integer&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;TypeDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;Integer&quot;
+        },
+        &quot;value&quot;: {
+          &quot;type&quot;: &quot;ConstrainedType&quot;,
+          &quot;baseType&quot;: {
+            &quot;type&quot;: &quot;Reference&quot;,
+            &quot;name&quot;: &quot;Number&quot;
+          },
+          &quot;constraint&quot;: {
+            &quot;type&quot;: &quot;BinaryExpression&quot;,
+            &quot;left&quot;: {
+              &quot;type&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;type&quot;: &quot;DotExpression&quot;
+              },
+              &quot;property&quot;: {
+                &quot;type&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;fraction&quot;
+              },
+              &quot;computed&quot;: false
+            },
+            &quot;operator&quot;: &quot;==&quot;,
+            &quot;right&quot;: {
+              &quot;type&quot;: &quot;Literal&quot;,
+              &quot;value&quot;: 0
+            }
+          }
+        }
+      }
+    ]
+  },
+  &quot;ion.Number&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;ClassDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;Number&quot;
+        },
+        &quot;templateParameters&quot;: [],
+        &quot;meta&quot;: [],
+        &quot;baseClasses&quot;: []
+      },
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;integer&quot;
+        },
+        &quot;value&quot;: null,
+        &quot;meta&quot;: []
+      },
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;fraction&quot;
+        },
+        &quot;value&quot;: null,
+        &quot;meta&quot;: []
+      }
+    ]
+  },
+  &quot;ion.Sample&quot;: {
+    &quot;type&quot;: &quot;Module&quot;,
+    &quot;imports&quot;: [
+      {
+        &quot;type&quot;: &quot;ImportStep&quot;,
+        &quot;relative&quot;: true,
+        &quot;children&quot;: true
+      }
+    ],
+    &quot;declarations&quot;: [],
+    &quot;exports&quot;: [
+      {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;declarationType&quot;: &quot;Let&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;abs&quot;
+        },
+        &quot;value&quot;: {
+          &quot;type&quot;: &quot;FunctionExpression&quot;,
+          &quot;id&quot;: null,
+          &quot;parameters&quot;: [
+            {
+              &quot;type&quot;: &quot;Parameter&quot;,
+              &quot;id&quot;: {
+                &quot;type&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;value&quot;
+              },
+              &quot;value&quot;: null
+            }
+          ],
+          &quot;body&quot;: {
+            &quot;type&quot;: &quot;BlockStatement&quot;,
+            &quot;statements&quot;: [
+              {
+                &quot;type&quot;: &quot;ReturnStatement&quot;,
+                &quot;value&quot;: {
+                  &quot;type&quot;: &quot;ConditionalExpression&quot;,
+                  &quot;test&quot;: {
+                    &quot;type&quot;: &quot;BinaryExpression&quot;,
+                    &quot;left&quot;: {
+                      &quot;type&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;value&quot;
+                    },
+                    &quot;operator&quot;: &quot;&gt;=&quot;,
+                    &quot;right&quot;: {
+                      &quot;type&quot;: &quot;Literal&quot;,
+                      &quot;value&quot;: 0
+                    }
+                  },
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;value&quot;
+                    },
+                    {
+                      &quot;type&quot;: &quot;UnaryExpression&quot;,
+                      &quot;operator&quot;: &quot;-&quot;,
+                      &quot;left&quot;: {
+                        &quot;type&quot;: &quot;Reference&quot;,
+                        &quot;name&quot;: &quot;value&quot;
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        &quot;meta&quot;: []
+      }
+    ]
+  }
+}</pre></div></li><li class="jsondiffpatch-added" data-key="foo"><div class="jsondiffpatch-property-name">foo</div><div class="jsondiffpatch-value"><pre>&quot;bar&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="root"><div class="jsondiffpatch-property-name">root</div><div class="jsondiffpatch-value"><pre>&quot;/Users/krisnye/Projects/2019/glassorg/glass-ion/ionsrc&quot;</pre></div></li></ul></div></p>
+        </article>
+    
+    </body>
+</html>

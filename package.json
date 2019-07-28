@@ -1,0 +1,18 @@
+{
+    "name": "glass-ion",
+    "version": "0.0.0",
+    "repository": "https://github.com/glassorg/glass-ion.git",
+    "author": "Kris Nye <krisnye@gmail.com>",
+    "license": "MIT",
+    "main": "index.js",
+    "scripts": {
+        "build": "yarn run buildGrammar && guild build",
+        "watch": "yarn run watchGrammar & guild watch & nodemon -w lib --delay 150ms -x gtest lib",
+        "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
+        "buildGrammar": "pegs src/parser.pegs lib/parser.js"
+    },
+    "dependencies": {
+        "jsondiffpatch": "^0.3.11",
+        "pegs": "^0.1.0"
+    }
+}
