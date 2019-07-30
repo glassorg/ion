@@ -3,9 +3,9 @@ import Id from "./Id";
 
 export default class ImportStep extends Node {
 
-    relative: boolean = false
-    id: Id | null = null
-    as: Id | null = null
-    children!: Array<ImportStep>
+    relative?: boolean
+    id?: Id
+    as?: Id
+    children!: Array<ImportStep> | boolean
 
 }

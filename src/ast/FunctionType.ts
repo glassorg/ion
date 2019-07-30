@@ -3,12 +3,11 @@ import Scope from "./Scope";
 import Id from "./Id";
 import Parameter from "./Parameter";
 import BlockStatement from "./BlockStatement";
+import TypeExpression from "./TypeExpression";
 
-export default class FunctionExpression extends Expression implements Scope {
+export default class FunctionType extends TypeExpression {
 
-    id?: Id
     parameters!: Array<Parameter>
     returnType?: Expression
-    body!: BlockStatement
 
 }

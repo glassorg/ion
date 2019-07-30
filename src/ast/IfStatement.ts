@@ -6,6 +6,6 @@ export default class IfStatement extends Statement {
 
     test!: Expression
     consequent!: BlockStatement
-    alternate: BlockStatement | IfStatement | null = null
+    alternate?: BlockStatement | IfStatement
 
 }

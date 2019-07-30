@@ -1,14 +1,18 @@
 {
 
+    const ast = require("./ast")
+
     function getLocation() {
         return location()
     }
 
     function node(type, ...values) {
-        let result = Object.assign({ type }, ...values)
         // we assign again in case it was overridden by copy values
-        result.type = type
-        return result
+        let TypeConstructor = ast[type]
+        if (TypeConstructor == null) {
+            throw new Error(`Missing Type: ${type}`)
+        }
+        return new TypeConstructor(...values)
     }
 
     function operation(left, operator, right) {
@@ -105,7 +109,9 @@ VariableDeclaration
     { return node("TypeDeclaration", { id, value }) }
     / meta:MetaProperties declarationType: VariableDeclarationType
         _ id:Pattern _ type:(":" _ @Type)? _ value:('=' _ @OutlineExpression / EOL {return null})?
-    { return node("VariableDeclaration", { declarationType, id, type, value, meta }) }
+    {
+        return node("VariableDeclaration", { declarationType, id, type, value, meta })
+    }
 
 MetaProperties
  = (@DynamicOutlineProperty Dent)*

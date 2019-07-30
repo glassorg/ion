@@ -1,6 +1,6 @@
 import Statement from "./Statement";
 import Scope from "./Scope";
-import { mixin } from ".";
+import { mixin } from "./runtime";
 
 export default class BlockStatement extends Statement implements Scope {
 

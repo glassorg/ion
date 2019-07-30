@@ -1,6 +1,6 @@
 import Id from "./Id";
 import Expression from "./Expression";
-import { mixin } from ".";
+import { mixin } from "./runtime";
 
 export default class Reference extends Id implements Expression {
 }

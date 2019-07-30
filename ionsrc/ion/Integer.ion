@@ -1,3 +1,7 @@
 
+import
+    ion
+        .Number
+
 export
     type Integer = Number where .fraction == 0

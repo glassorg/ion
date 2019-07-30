@@ -1,20 +1,18 @@
-import { isDerivedClass } from ".";
+import { isDerivedClass } from "./runtime";
 
 export default class Node {
 
-    location: Location | null = null
+    location!: Location
 
-    constructor(values) {
-        if (values != null) {
-            Object.assign(this, values)
-        }
+    constructor(...values) {
+        Object.assign(this, ...values)
     }
 
     static is(instance) {
         if (instance == null) {
             return false
         }
-        if (instance instanceof this) {
+        if (instance instanceof (this as any)) {
             return true
         }
         return isDerivedClass(this, instance.constructor)

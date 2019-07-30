@@ -5,7 +5,7 @@ import KeyValuePair from "./KeyValuePair";
 
 export default class ClassDeclaration extends Declaration {
 
-    isAbstract: boolean = false
+    isAbstract!: boolean
     templateParameters!: Array<Parameter>
     baseClasses!: Array<Reference>
     declarations!: Array<Declaration>
