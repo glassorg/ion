@@ -2,7 +2,6 @@ import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference } from "../ast";
-import { formatWithOptions } from "util";
 
 export default function importResolution(root: Assembly) {
     // find all unresolved names in each module
