@@ -1,7 +1,7 @@
 import { Node } from "./ast";
 
 export function flatten(array: any[]) {
-    return array.reduce(
+    let flat = array.reduce(
         (a:any,b:any) => {
             if (Array.isArray(b)) {
                 a.splice(a.length, 0, ...b)
@@ -13,6 +13,8 @@ export function flatten(array: any[]) {
         },
         []
     )
+    // now insert values in place into array
+    array.splice(0, array.length, ...flat)
 }
 
 export const remove = Object.freeze([])
@@ -61,8 +63,9 @@ function traverseChildren(container: any, visitor: Visitor, isArray: boolean, an
     }
     ancestors.pop()
     //  now flatten current array if needed
-    if (hasArrays)
+    if (hasArrays) {
         container = flatten(container)
+    }
 }
 
 export function traverse(

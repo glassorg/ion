@@ -1,5 +1,5 @@
 
 export
     class Number
-    let integer: (value: Number) -> Number
-    let fraction: (value: Number) -> Number where . < 1 and . > -1
+        let integer: Number where .fraction == 0
+        let fraction: Number where . < 1 and . > -1

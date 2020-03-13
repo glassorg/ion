@@ -1,0 +1,7 @@
+import
+    .*
+
+export
+    class String extends Array
+        let trim: () -> String where .length <= this.length
+        let match: (pattern: String) -> Boolean

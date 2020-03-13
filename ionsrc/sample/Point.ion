@@ -1,0 +1,7 @@
+import
+    ion.*
+
+export
+    struct Point
+        let x: Number
+        let y: Number

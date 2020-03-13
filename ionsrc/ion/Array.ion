@@ -1,0 +1,6 @@
+import
+    .*
+
+export
+    class Array
+        let length: Integer where . >= 0
