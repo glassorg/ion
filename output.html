@@ -2005,10 +2005,10 @@ ul.jsondiffpatch-textdiff {
 ]</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="exports"><div class="jsondiffpatch-property-name">exports</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ClassDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseClasses"><div class="jsondiffpatch-property-name">baseClasses</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;Integer_greater_than_or_equal_0&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ConstrainedType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;ConstrainedType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;Integer&quot;
-}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;BinaryExpression&quot;,
   &quot;left&quot;: {
     &quot;&quot;: &quot;DotExpression&quot;
@@ -2018,7 +2018,58 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;Literal&quot;,
     &quot;value&quot;: 0
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;ConstrainedType&quot;,
+              &quot;baseType&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Integer&quot;
+              },
+              &quot;constraint&quot;: {
+                &quot;&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;&quot;: &quot;DotExpression&quot;
+                },
+                &quot;operator&quot;: &quot;&gt;=&quot;,
+                &quot;right&quot;: {
+                  &quot;&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;declarationType&quot;: &quot;Let&quot;,
   &quot;id&quot;: {
@@ -2066,13 +2117,58 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="2"><div class="jsondiffpatch-property-name">2</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;true_or_false&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;UnionType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;UnionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;UnionType&quot;,
+              &quot;left&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;true&quot;
+              },
+              &quot;right&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;false&quot;
+              },
+              &quot;operator&quot;: &quot;|&quot;
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-deleted" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;true&quot;
-}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;false&quot;
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
@@ -2100,10 +2196,10 @@ ul.jsondiffpatch-textdiff {
 ]</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="exports"><div class="jsondiffpatch-property-name">exports</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;Number_dot_fraction_equals_0&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ConstrainedType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;ConstrainedType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;Number&quot;
-}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;BinaryExpression&quot;,
   &quot;left&quot;: {
     &quot;&quot;: &quot;MemberExpression&quot;,
@@ -2122,7 +2218,67 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;Literal&quot;,
     &quot;value&quot;: 0
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;ConstrainedType&quot;,
+              &quot;baseType&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Number&quot;
+              },
+              &quot;constraint&quot;: {
+                &quot;&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;&quot;: &quot;MemberExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;DotExpression&quot;
+                  },
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Id&quot;,
+                    &quot;name&quot;: &quot;fraction&quot;
+                  },
+                  &quot;computed&quot;: false,
+                  &quot;operator&quot;: &quot;.&quot;
+                },
+                &quot;operator&quot;: &quot;==&quot;,
+                &quot;right&quot;: {
+                  &quot;&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
@@ -2138,10 +2294,10 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-unchanged" data-key="imports"><div class="jsondiffpatch-property-name">imports</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li></ul></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="ion.Number"><div class="jsondiffpatch-property-name">ion.Number</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Module&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="exports"><div class="jsondiffpatch-property-name">exports</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ClassDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseClasses"><div class="jsondiffpatch-property-name">baseClasses</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;Number_dot_fraction_equals_0&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ConstrainedType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;ConstrainedType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;Number&quot;
-}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;BinaryExpression&quot;,
   &quot;left&quot;: {
     &quot;&quot;: &quot;MemberExpression&quot;,
@@ -2160,7 +2316,67 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;Literal&quot;,
     &quot;value&quot;: 0
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;ConstrainedType&quot;,
+              &quot;baseType&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Number&quot;
+              },
+              &quot;constraint&quot;: {
+                &quot;&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;&quot;: &quot;MemberExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;DotExpression&quot;
+                  },
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Id&quot;,
+                    &quot;name&quot;: &quot;fraction&quot;
+                  },
+                  &quot;computed&quot;: false,
+                  &quot;operator&quot;: &quot;.&quot;
+                },
+                &quot;operator&quot;: &quot;==&quot;,
+                &quot;right&quot;: {
+                  &quot;&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;declarationType&quot;: &quot;Let&quot;,
   &quot;id&quot;: {
@@ -2176,10 +2392,10 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="2"><div class="jsondiffpatch-property-name">2</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;Number_less_than_1_and_greater_than_$45$1&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;ConstrainedType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;ConstrainedType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="baseType"><div class="jsondiffpatch-property-name">baseType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;Number&quot;
-}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="constraint"><div class="jsondiffpatch-property-name">constraint</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;BinaryExpression&quot;,
   &quot;left&quot;: {
     &quot;&quot;: &quot;BinaryExpression&quot;,
@@ -2204,7 +2420,73 @@ ul.jsondiffpatch-textdiff {
       &quot;value&quot;: -1
     }
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;ConstrainedType&quot;,
+              &quot;baseType&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Number&quot;
+              },
+              &quot;constraint&quot;: {
+                &quot;&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;DotExpression&quot;
+                  },
+                  &quot;operator&quot;: &quot;&lt;&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Literal&quot;,
+                    &quot;value&quot;: 1
+                  }
+                },
+                &quot;operator&quot;: &quot;and&quot;,
+                &quot;right&quot;: {
+                  &quot;&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;DotExpression&quot;
+                  },
+                  &quot;operator&quot;: &quot;&gt;&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Literal&quot;,
+                    &quot;value&quot;: -1
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;declarationType&quot;: &quot;Let&quot;,
   &quot;id&quot;: {
@@ -2344,7 +2626,79 @@ ul.jsondiffpatch-textdiff {
 ]</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;String_dot_length_less_than_or_equal_this_dot_length&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;FunctionType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-unchanged" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;FunctionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;FunctionType&quot;,
+              &quot;parameters&quot;: [],
+              &quot;returnType&quot;: {
+                &quot;&quot;: &quot;ConstrainedType&quot;,
+                &quot;baseType&quot;: {
+                  &quot;&quot;: &quot;Reference&quot;,
+                  &quot;name&quot;: &quot;String&quot;
+                },
+                &quot;constraint&quot;: {
+                  &quot;&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;MemberExpression&quot;,
+                    &quot;left&quot;: {
+                      &quot;&quot;: &quot;DotExpression&quot;
+                    },
+                    &quot;right&quot;: {
+                      &quot;&quot;: &quot;Id&quot;,
+                      &quot;name&quot;: &quot;length&quot;
+                    },
+                    &quot;computed&quot;: false,
+                    &quot;operator&quot;: &quot;.&quot;
+                  },
+                  &quot;operator&quot;: &quot;&lt;=&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;MemberExpression&quot;,
+                    &quot;left&quot;: {
+                      &quot;&quot;: &quot;ThisExpression&quot;
+                    },
+                    &quot;right&quot;: {
+                      &quot;&quot;: &quot;Id&quot;,
+                      &quot;name&quot;: &quot;length&quot;
+                    },
+                    &quot;computed&quot;: false,
+                    &quot;operator&quot;: &quot;.&quot;
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-deleted" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-deleted" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;ConstrainedType&quot;,
   &quot;baseType&quot;: {
     &quot;&quot;: &quot;Reference&quot;,
@@ -2378,7 +2732,7 @@ ul.jsondiffpatch-textdiff {
       &quot;operator&quot;: &quot;.&quot;
     }
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;declarationType&quot;: &quot;Let&quot;,
   &quot;id&quot;: {
@@ -2394,7 +2748,62 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="2"><div class="jsondiffpatch-property-name">2</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;pattern_String_Boolean&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;FunctionType&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><div class="jsondiffpatch-value"><pre>[
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;FunctionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ObjectLiteral&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="elements"><div class="jsondiffpatch-property-name">elements</div><div class="jsondiffpatch-value"><pre>[
+  {
+    &quot;&quot;: &quot;KeyValuePair&quot;,
+    &quot;key&quot;: {
+      &quot;&quot;: &quot;Id&quot;,
+      &quot;name&quot;: &quot;is&quot;
+    },
+    &quot;value&quot;: {
+      &quot;&quot;: &quot;FunctionExpression&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;is&quot;
+      },
+      &quot;parameters&quot;: [
+        {
+          &quot;&quot;: &quot;Parameter&quot;,
+          &quot;id&quot;: {
+            &quot;&quot;: &quot;Id&quot;,
+            &quot;name&quot;: &quot;value&quot;
+          },
+          &quot;assignable&quot;: false
+        }
+      ],
+      &quot;body&quot;: {
+        &quot;&quot;: &quot;BlockStatement&quot;,
+        &quot;statements&quot;: [
+          {
+            &quot;&quot;: &quot;ReturnStatement&quot;,
+            &quot;value&quot;: {
+              &quot;&quot;: &quot;FunctionType&quot;,
+              &quot;parameters&quot;: [
+                {
+                  &quot;&quot;: &quot;Parameter&quot;,
+                  &quot;id&quot;: {
+                    &quot;&quot;: &quot;Id&quot;,
+                    &quot;name&quot;: &quot;pattern&quot;
+                  },
+                  &quot;type&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;String&quot;
+                  },
+                  &quot;value&quot;: null,
+                  &quot;assignable&quot;: false
+                }
+              ],
+              &quot;returnType&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Boolean&quot;
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]</pre></div></li><li class="jsondiffpatch-deleted" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><div class="jsondiffpatch-value"><pre>[
   {
     &quot;&quot;: &quot;Parameter&quot;,
     &quot;id&quot;: {
@@ -2408,10 +2817,10 @@ ul.jsondiffpatch-textdiff {
     &quot;value&quot;: null,
     &quot;assignable&quot;: false
   }
-]</pre></div></li><li class="jsondiffpatch-unchanged" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>{
+]</pre></div></li><li class="jsondiffpatch-deleted" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;Boolean&quot;
-}</pre></div></li><li class="jsondiffpatch-added" data-key="rootTypeExpression"><div class="jsondiffpatch-property-name">rootTypeExpression</div><div class="jsondiffpatch-value"><pre>true</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Object&quot;</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;declarationType&quot;: &quot;Let&quot;,
   &quot;id&quot;: {
