@@ -1,6 +1,6 @@
 import { traverse, remove, skip, enter, leave, Visitor } from "./Traversal"
 import { SemanticError } from "./common"
-import { Declaration, Id, Scope, Reference, FunctionExpression } from "./ast";
+import { Declaration, Id, Scope, Reference, FunctionExpression, TypeDeclaration } from "./ast";
 
 export type ScopeMap = {
     get(node: any) : any
@@ -17,7 +17,7 @@ export default function createScopeMap(root, { checkDeclareBeforeUse=false } = {
     function declare(node: Declaration, id: Id = node.id) {
         let scope: any = scopes[scopes.length - 1]
         scope[id.name as any] = node
-        // console.log('+ ' + id.name)
+        console.log('+ ' + id.name)
     }
 
     traverse(root, {

@@ -8,14 +8,14 @@ export default class Node {
         Object.assign(this, ...values)
     }
 
-    static is(instance) {
+    static is(instance, debug?) {
         if (instance == null) {
             return false
         }
         if (instance instanceof (this as any)) {
             return true
         }
-        return isDerivedClass(this, instance.constructor)
+        return isDerivedClass(this, instance.constructor, debug)
     }
 
 }

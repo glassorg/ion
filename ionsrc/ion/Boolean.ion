@@ -2,4 +2,4 @@
 export
     let true = 1
     let false = 0
-    type Boolean = true | false
+    type Boolean = 1 | 0

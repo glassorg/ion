@@ -3,19 +3,22 @@ const ignoreProperties = {
     constructor: true
 }
 
-const derivedClasses = new Map<any,Set<any>>()
-
 function addDerivedClass(baseClass, derivedClass) {
-    let set = derivedClasses.get(baseClass)
-    if (set == null) {
-        derivedClasses.set(baseClass, set = new Set())
+    let baseClasses = derivedClass.baseClasses
+    if (baseClasses == null) {
+        baseClasses = derivedClass.baseClasses = new Set()
     }
-    set.add(derivedClass)
+    baseClasses.add(baseClass)
+    if (baseClass.baseClasses) {
+        for (let cls of baseClass.baseClasses.values()) {
+            baseClasses.add(cls)
+        }
+    }
 }
 
-export function isDerivedClass(baseClass, derivedClass) {
-    let set = derivedClasses.get(baseClass)
-    return set ? set.has(derivedClass) : false
+export function isDerivedClass(baseClass, derivedClass, debug?) {
+    let baseClasses = derivedClass.baseClasses
+    return baseClasses && baseClasses.has(baseClass)
 }
 
 export function mixin(derivedCtor: any, ...baseCtors: any[]) {
