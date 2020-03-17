@@ -1,3 +1,7 @@
+import
+    .Array.*
+
+# let quadruple = double
 
 export
     let true = 1

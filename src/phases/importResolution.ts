@@ -30,7 +30,8 @@ export default function importResolution(root: Assembly) {
                                     })
                                 })
                             )
-                        } else {
+                        }
+                        else {
                             importPaths.push(path)
                         }
                     }

@@ -12,16 +12,21 @@ const typeMap = {
     ExternalReference: "Identifier",
 }
 
+const operatorMap = {
+    "==": "===",
+    "!=": "!=="
+}
+
 const toAst = {
     default(node) {
         let esnode = { ...node } as any
         let name = node.constructor.name
         esnode.type = typeMap[name] || name
+        if (BinaryExpression.is(node)) {
+            esnode.operator = operatorMap[node.operator] || node.operator
+        }
         return esnode
     },
-    // ConstrainedType(node: ConstrainedType) {
-    //     return node.constraint
-    // },
     ExternalReference(node: ExternalReference) {
         return { poo: node.name }
     }

@@ -1,8 +1,7 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression } from "../ast";
-import TypeExpression from "../ast/TypeExpression";
+import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType } from "../ast";
 
 export default function typeCreation(root: Assembly) {
     traverse(root, {
@@ -13,7 +12,6 @@ export default function typeCreation(root: Assembly) {
         },
         leave(node) {
             if (TypeDeclaration.is(node)) {
-                let typeDeclaration = node as TypeDeclaration
                 return new VariableDeclaration({
                     id: node.id,
                     assignable: false,
@@ -28,7 +26,21 @@ export default function typeCreation(root: Assembly) {
                             statements: [
                                 new ReturnStatement({
                                     value: traverse(node, {
-                                        leave(node, path, ancestors) {
+                                        leave(node) {
+                                            if (LiteralType.is(node)) {
+                                                return new BinaryExpression({
+                                                    left: new Reference({ name: "value" }),
+                                                    operator: "==",
+                                                    right: node.literal
+                                                })
+                                            }
+                                            if (UnionType.is(node)) {
+                                                return new BinaryExpression({
+                                                    left: node.left,
+                                                    operator: "||",
+                                                    right: node.right
+                                                })
+                                            }
                                             if (ConstrainedType.is(node)) {
                                                 return new BinaryExpression({
                                                     left: new CallExpression({
