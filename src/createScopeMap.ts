@@ -17,7 +17,6 @@ export default function createScopeMap(root, { checkDeclareBeforeUse=false } = {
     function declare(node: Declaration, id: Id = node.id) {
         let scope: any = scopes[scopes.length - 1]
         scope[id.name as any] = node
-        console.log('+ ' + id.name)
     }
 
     traverse(root, {

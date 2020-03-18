@@ -2,6 +2,7 @@ import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference } from "../ast";
+import { SemanticError } from "../common";
 
 export default function importResolution(root: Assembly) {
     // find all unresolved names in each module
@@ -45,7 +46,7 @@ export default function importResolution(root: Assembly) {
     
         let scopes = createScopeMap(module)
         // now let's traverse and find unreferenced modules
-        let unresolvedNames = new Set()
+        let unresolvedNames = new Map<string,Node>()
         traverse(module, {
             enter(node: Node, ancestors, path) {
                 let module = ancestors.find(node => Module.is(node)) as Module
@@ -55,14 +56,14 @@ export default function importResolution(root: Assembly) {
                     let scope = scopes.get(ref)
                     let declaration = scope[ref.name]
                     if (declaration == null) {
-                        unresolvedNames.add(ref.name)
+                        unresolvedNames.set(ref.name, ref)
                     }
                 }
             }
         })
 
         // now try to resolve these unresolved names
-        for (let name of unresolvedNames.values()) {
+        for (let name of unresolvedNames.keys()) {
             let found = false
             for (let path of importPaths) {
                 let checkPath = path + name
@@ -81,7 +82,7 @@ export default function importResolution(root: Assembly) {
                 }
             }
             if (!found) {
-                throw new Error("Should be semantic, can't find: " + name)
+                throw SemanticError(`Cannot resolve ${name}`, unresolvedNames.get(name))
             }
         }
 

@@ -12,7 +12,7 @@
         if (TypeConstructor == null) {
             throw new Error(`Missing Type: ${type}`)
         }
-        return new TypeConstructor(...values)
+        return new TypeConstructor(...values, getLocation())
     }
 
     function operation(left, operator, right) {

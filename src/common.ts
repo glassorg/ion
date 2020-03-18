@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as np from "path";
+import { Module } from "./ast";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Miscelaneous Functions
