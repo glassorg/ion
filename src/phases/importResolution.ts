@@ -27,7 +27,8 @@ export default function importResolution(root: Assembly) {
                                     id: last.as,
                                     value: new ExternalReference({
                                         location: last.as.location,
-                                        name: path
+                                        file: path,
+                                        name: path.slice(path.lastIndexOf('.') + 1)
                                     })
                                 })
                             )
@@ -75,7 +76,8 @@ export default function importResolution(root: Assembly) {
                         new VariableDeclaration({
                             id: new Id({ name }),
                             value: new ExternalReference({
-                                name: checkPath
+                                file: checkPath,
+                                name: checkPath.slice(checkPath.lastIndexOf('.') + 1)
                             })
                         })
                     )

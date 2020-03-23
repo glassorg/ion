@@ -6,13 +6,15 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-        "build": "guild build && yarn run buildGrammar && guild build",
-        "watch": "guild build && yarn run watchGrammar & guild watch & nodemon -w lib -w ionsrc -e js,ion --delay 150ms -x gtest lib",
+        "setup": "yarn install",
+        "build": "guild build && yarn run buildGrammar",
+        "watch": "./watch.sh",
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js"
     },
     "dependencies": {
         "@glas/build": "^0.2.6",
+        "escodegen": "^1.14.1",
         "jsondiffpatch": "^0.3.11",
         "pegs": "^0.1.1"
     }

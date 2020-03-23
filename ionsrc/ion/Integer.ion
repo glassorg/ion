@@ -4,4 +4,4 @@ import
         .Number
 
 export
-    type Integer = Number where .fraction == 0
+    type Integer = Number where . % 1 == 0

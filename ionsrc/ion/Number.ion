@@ -1,5 +1,3 @@
 
 export
-    class Number
-        let integer: Number where .fraction == 0
-        let fraction: Number where . < 1 and . > -1
+    struct Number

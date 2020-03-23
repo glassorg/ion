@@ -6,11 +6,14 @@ import parsing from "./phases/parsing";
 import typeNormalization from "./phases/typeNormalization";
 import typeCreation from "./phases/typeCreation";
 import toJavascriptAst from "./phases/toJavascriptAst";
+import toJavascriptFiles from "./phases/toJavascriptFiles";
+import fileWriter from "./phases/fileWriter";
 
 type Logger = (names?: string | string[], ast?: any) => void
 
-export type Input = {
-    root: string
+export type Options = {
+    input: string
+    output: string
 }
 
 export default class Compiler {
@@ -21,14 +24,14 @@ export default class Compiler {
         this.logger = logger
     }
 
-    compile(input: Input) {
-        let state: any = input
-        this.logger("Input", state)
+    compile(options: Options) {
+        let state: any = options
+        this.logger("Options", state)
         let parser = Parser()
-        let files = common.getFilesRecursive(input.root)
+        let files = common.getFilesRecursive(options.input)
         try {
-            state = parsing(input, files, parser)
-            this.logger("Parsing", state)
+            state = parsing(options, files, parser)
+            this.logger("Input", state)
             state = importResolution(state)
             this.logger("ImportResolution", state)
             state = typeNormalization(state)
@@ -37,6 +40,10 @@ export default class Compiler {
             this.logger("Type Creation", state)
             state = toJavascriptAst(state)
             this.logger("ToJavascriptAst", state)
+            state = toJavascriptFiles(state)
+            this.logger("ToJavascriptFiles", state)
+            this.logger("Output", state)
+            state = fileWriter(state, options)
         }
         catch (e) {
             let location = e.location

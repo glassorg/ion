@@ -1,10 +1,10 @@
-import { Input } from "../Compiler";
+import { Options } from "../Compiler";
 import { getFilesRecursive, mapValues } from "../common";
 import Assembly from "../ast/Assembly";
 import Module from "../ast/Module";
 import Id from "../ast/Id";
 
-export default function parsing(input: Input, files, parser) {
+export default function parsing(input: Options, files, parser) {
     let modules = mapValues(
         files,
         (source: string, name: string) => {

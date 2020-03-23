@@ -20,6 +20,7 @@ const operatorToName = {
     "|": "or",
     "&": "and",
     ".": "dot",
+    "%": "mod",
 }
 
 export function generateName(type: TypeExpression): string
@@ -27,6 +28,7 @@ export function generateName(type: TypeExpression, buffer: string[]): void
 export function generateName(type: TypeExpression, buffer?: string[]) {
     let root = buffer == null
     const b = buffer != null ? buffer : buffer = []
+    const invalid = /[^a-z0-9_]/i
     traverse(type, {
         enter(node) {
             if (BinaryExpression.is(node)) {
@@ -37,7 +39,7 @@ export function generateName(type: TypeExpression, buffer?: string[]) {
                 return skip
             }
             if (Literal.is(node)) {
-                b.push(node.value.toString().replace(/[^a-z0-9_]/i, (match: string) => `$${match.charCodeAt(0)}$`))
+                b.push(node.value.toString().replace(invalid, (match: string) => `$${match.charCodeAt(0)}$`))
                 return skip
             }
             if (ThisExpression.is(node)) {
@@ -50,7 +52,7 @@ export function generateName(type: TypeExpression, buffer?: string[]) {
         }
     })
     if (root) {
-        return b.join("_")
+        return "_" + b.join("_")
     }
 }
 

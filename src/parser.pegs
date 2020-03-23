@@ -12,7 +12,10 @@
         if (TypeConstructor == null) {
             throw new Error(`Missing Type: ${type}`)
         }
-        return new TypeConstructor(...values, getLocation())
+        return new TypeConstructor(
+            ...values,
+            { location: getLocation() },
+        )
     }
 
     function operation(left, operator, right) {
@@ -39,13 +42,13 @@
 
 Module
     = EOL? imports:Imports declarations:Declaration* exports:Exports EOL EOF
-    { return node("Module", { imports, declarations, exports } ) }
+    { return node("Module", { imports, declarations: [...declarations, ...exports] } ) }
 
 Exports
     //  Allow Declaration meta properties to be specified before the export declaration
     // = meta:MetaProperties ExportToken _ value:Declaration { return node(value.constructor.name, {meta}, value) }
     = ExportToken EOL Indent declarations:(Dent @Declaration)+ Outdent
-    { return declarations }
+    { return declarations.map(d => node(d.constructor.name, d, { export: true })) }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  ImportDeclaration
