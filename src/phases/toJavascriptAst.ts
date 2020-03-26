@@ -1,6 +1,6 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip, remove } from "../Traversal";
-import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node } from "../ast";
+import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType } from "../ast";
 
 const typeMap = {
     Id: "Identifier",
@@ -52,6 +52,7 @@ const toAstLeave = {
         let type = typeMap[name] || name
         let esnode = { type, ...node } as any
         if (BinaryExpression.is(node)) {
+            esnode.type = "BinaryExpression"
             esnode.operator = operatorMap[node.operator] || node.operator
         }
         return esnode
@@ -102,21 +103,6 @@ const toAstLeave = {
                 body: node.declarations.map(d => {
                     return { ...d, kind: "property" }
                 })
-                // .map((d: any) => {
-                //     return {
-                //         type: "Property",
-                //         //  hmmm, the declarations HAVE been already converted as variable declarations.
-                //         //  that is sub-optimal.
-                //         key: { type: "Identifier", name: d.declarations[0].id.name },
-                //         // value: {
-                //         //     type: "BinaryExpression",
-                //         //     left: { type: "Identifier", name: "number" },
-                //         //     operator: "|",
-                //         //     right: { type: "Identifier", name: "string" },
-                //         // }
-                //         value: { type: "Literal", value: "Bar", verbatim: "Type goes here." },
-                //     }
-                // })
             }
         }
     },
@@ -147,18 +133,34 @@ const toAstLeave = {
         if (ExternalReference.is(node.value)) {
             let thisModuleName =  path[1]
             let ref = node.value as ExternalReference
+            let specifiers = [
+                {
+                    type: "ImportSpecifier",
+                    imported: {
+                        type: "Identifier",
+                        name: ref.name,
+                    },
+                    local: node.id as any,
+                }
+            ]
+            let isType = ref.name[0] === ref.name[0].toUpperCase()
+            if (isType) {
+                // then we must also import the is
+                specifiers.push({
+                    type: "ImportSpecifier",
+                    imported: {
+                        type: "Identifier",
+                        name: `is${ref.name}`,
+                    },
+                    local: {
+                        type: "Identifier",
+                        name: `is${ref.name}`,
+                    },
+                })
+            }
             return {
                 type: "ImportDeclaration",
-                specifiers: [
-                    {
-                        type: "ImportSpecifier",
-                        imported: {
-                            type: "Identifier",
-                            name: ref.name,
-                        },
-                        local: node.id,
-                    }
-                ],
+                specifiers,
                 source: {
                     type: "Literal",
                     value: toRelativeModulePath(thisModuleName, ref.file),

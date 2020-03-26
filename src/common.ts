@@ -6,6 +6,17 @@ import { Module } from "./ast";
 //  Miscelaneous Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+export function clone(value) {
+    if (value == null || typeof value !== "object") {
+        return value
+    }
+    let copy = new value.constructor()
+    for (let name in value) {
+        copy[name] = clone(value[name])
+    }
+    return copy
+}
+
 export function freeze(object: any, deep: boolean = true) {
     if (object != null && typeof object === 'object') {
         Object.freeze(object)

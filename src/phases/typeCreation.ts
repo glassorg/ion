@@ -2,6 +2,69 @@ import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType, TypeReference } from "../ast";
+import { clone } from "../common";
+
+function createRuntimeTypeCheckingFunctionDeclaration(node: TypeDeclaration) {
+    // shit... need a deep clone function for this shit.
+    //  as we need to traverse and modify the one but not the other.
+    // !! TODO:
+    const name = `is${node.id.name}`
+    return new VariableDeclaration({
+        id: new Id({ name }),
+        assignable: false,
+        export: node.export,
+        value: new FunctionExpression({
+            id: new Id({ name }),
+            parameters: [
+                new Parameter({
+                    id: new Id({ name: "value" }),
+                })
+            ],
+            body: new BlockStatement({
+                statements: [
+                    new ReturnStatement({
+                        value: traverse(clone(node.value), {
+                            leave(node) {
+                                if (LiteralType.is(node)) {
+                                    return new BinaryExpression({
+                                        left: new Reference({ name: "value" }),
+                                        operator: "==",
+                                        right: node.literal
+                                    })
+                                }
+                                if (UnionType.is(node)) {
+                                    return new BinaryExpression({
+                                        left: node.left,
+                                        operator: "||",
+                                        right: node.right
+                                    })
+                                }
+                                if (TypeReference.is(node)) {
+                                    return new CallExpression({
+                                        callee: new Reference({ name: `is${node.name}` }),
+                                        arguments: [
+                                            new Reference({ name: "value" })
+                                        ]
+                                    })
+                                }
+                                if (ConstrainedType.is(node)) {
+                                    return new BinaryExpression({
+                                        left: node.baseType,
+                                        operator: "&&",
+                                        right: node.constraint
+                                    })
+                                }
+                                if (DotExpression.is(node)) {
+                                    return new Reference({ name: "value" })
+                                }
+                            }
+                        })
+                    })
+                ]
+            })
+        })
+    })
+}
 
 export default function typeCreation(root: Assembly) {
     traverse(root, {
@@ -12,78 +75,11 @@ export default function typeCreation(root: Assembly) {
         },
         leave(node) {
             if (TypeDeclaration.is(node) ) {
-                return new VariableDeclaration({
-                    id: node.id,
-                    assignable: false,
-                    export: node.export,
-                    value: Reference.is(node.value) ? node.value : {
-                        type: "ObjectExpression",
-                        properties: [
-                            {
-                                type: "Property",
-                                key: new Id({ name: "name" }),
-                                value: new Literal({ value: node.id.name }),
-                            },
-                            {
-                                type: "Property",
-                                method: true,
-                                key: new Id({ name: "is" }),
-                                value: new FunctionExpression({
-                                    parameters: [
-                                        new Parameter({
-                                            id: new Id({ name: "value" }),
-                                        })
-                                    ],
-                                    body: new BlockStatement({
-                                        statements: [
-                                            new ReturnStatement({
-                                                value: traverse(node.value, {
-                                                    leave(node) {
-                                                        if (LiteralType.is(node)) {
-                                                            return new BinaryExpression({
-                                                                left: new Reference({ name: "value" }),
-                                                                operator: "==",
-                                                                right: node.literal
-                                                            })
-                                                        }
-                                                        if (UnionType.is(node)) {
-                                                            return new BinaryExpression({
-                                                                left: node.left,
-                                                                operator: "||",
-                                                                right: node.right
-                                                            })
-                                                        }
-                                                        if (TypeReference.is(node)) {
-                                                            return new CallExpression({
-                                                                callee: new MemberExpression({
-                                                                    object: new Reference({ name: node.name }),
-                                                                    property: new Id({ name: "is" })
-                                                                }),
-                                                                arguments: [
-                                                                    new Reference({ name: "value" })
-                                                                ]
-                                                            })
-                                                        }
-                                                        if (ConstrainedType.is(node)) {
-                                                            return new BinaryExpression({
-                                                                left: node.baseType,
-                                                                operator: "&&",
-                                                                right: node.constraint
-                                                            })
-                                                        }
-                                                        if (DotExpression.is(node)) {
-                                                            return new Reference({ name: "value" })
-                                                        }
-                                                    }
-                                                })
-                                            })
-                                        ]
-                                    })
-                                })
-                            }
-                        ]
-                    }
-                })
+                return [
+                    node,
+                    // add an adjacent is[Type] function.
+                    createRuntimeTypeCheckingFunctionDeclaration(node)
+                ]
             }
         }
     })

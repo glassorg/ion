@@ -1,8 +1,6 @@
 
-class ion_Number {
-    static is(value): value is number {
-        return typeof value === "number";
-    }
-}
+export type Number = number
 
-export const Number = ion_Number
+export function isNumber(value): value is Number {
+    return typeof value === "number";
+}

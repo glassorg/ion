@@ -1,7 +1,6 @@
 
-export const String = {
-    name: "ion_String",
-    is(value): value is string {
-        return typeof value === "string";
-    }
-};
+export type String = string
+
+export function isString(value): value is string {
+    return typeof value === "string";
+}

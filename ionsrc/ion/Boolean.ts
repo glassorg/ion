@@ -1,7 +1,7 @@
 
 export const Boolean = {
     name: "ion_Boolean",
-    is(value): value is boolean {
-        return typeof value === "boolean";
-    }
+}
+export function isBoolean(value): value is boolean {
+    return typeof value === "boolean";
 }
