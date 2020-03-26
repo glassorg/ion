@@ -935,6 +935,10 @@
 
         result = this.generateFunctionParams(node);
 
+        if (node.tstype) {
+            result.push(": ", this.generateStatement(node.tstype))
+        }
+
         if (node.type === Syntax.ArrowFunctionExpression) {
             result.push(space);
             result.push('=>');

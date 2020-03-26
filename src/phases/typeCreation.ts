@@ -20,6 +20,11 @@ function createRuntimeTypeCheckingFunctionDeclaration(node: TypeDeclaration) {
                     id: new Id({ name: "value" }),
                 })
             ],
+            returnType: new BinaryExpression({
+                left: new Id({ name: "value" }),
+                operator: "is",
+                right: new Id({ name: node.id.name })
+            }),
             body: new BlockStatement({
                 statements: [
                     new ReturnStatement({

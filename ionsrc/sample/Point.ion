@@ -1,9 +1,9 @@
 import
     ion.*
 
-# type Foo = Number | String
+type Whole = Number where . >= 0
 
 export
     struct Point
-        let x: Number where . >= 0
-        let y: Number where . >= 0
+        let x: Whole
+        let y: Whole

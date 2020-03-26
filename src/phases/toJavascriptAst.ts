@@ -11,7 +11,9 @@ const typeMap = {
 
 const operatorMap = {
     "==": "===",
-    "!=": "!=="
+    "!=": "!==",
+    "and": "&&",
+    "or": "||",
 }
 
 function toRelativeModulePath(from: string, to: string) {
@@ -111,6 +113,7 @@ const toAstLeave = {
             type: "FunctionExpression",
             id: node.id,
             params: node.parameters,
+            tstype: node.returnType,
             body: node.body,
         }
     },
@@ -167,6 +170,16 @@ const toAstLeave = {
                 }
             }
         };
+
+        let value = node.value as any
+        if (value && value.type === "FunctionExpression" && node.id.name === value.id.name) {
+            // simplify
+            //  const foo = function foo() {}
+            // into
+            //  function foo() {}
+            return { ...value, type: "FunctionDeclaration" }
+        }
+
         return {
             type: "VariableDeclaration",
             kind: node.assignable ? "let" : "const",
