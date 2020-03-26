@@ -13,7 +13,7 @@
         "buildGrammar": "pegs src/parser.pegs lib/parser.js"
     },
     "dependencies": {
-        "@glas/build": "^0.2.6",
+        "@glas/build": "^0.2.8",
         "escodegen": "^1.14.1",
         "jsondiffpatch": "^0.3.11",
         "pegs": "^0.1.1"

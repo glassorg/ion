@@ -1,7 +1,9 @@
 import
     ion.*
 
+type Foo = Number | String
+
 export
     struct Point
-        let x: Number
-        let y: Number
+        let x: Number where . >= 0
+        let y: Number where . >= 0

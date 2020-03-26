@@ -3,11 +3,12 @@ import * as common from "./common";
 import Parser from "./parser";
 import importResolution from "./phases/importResolution";
 import parsing from "./phases/parsing";
-import typeNormalization from "./phases/typeNormalization";
+// import typeNormalization from "./phases/typeNormalization";
 import typeCreation from "./phases/typeCreation";
 import toJavascriptAst from "./phases/toJavascriptAst";
 import toJavascriptFiles from "./phases/toJavascriptFiles";
 import fileWriter from "./phases/fileWriter";
+import semanticValidation from "./phases/semanticValidation";
 
 type Logger = (names?: string | string[], ast?: any) => void
 
@@ -28,19 +29,21 @@ export default class Compiler {
         let state: any = options
         this.logger("Options", state)
         let parser = Parser()
-        let files = common.getFilesRecursive(options.input)
+        let files = common.getInputFilesRecursive(options.input)
         try {
             state = parsing(options, files, parser)
             this.logger("Input", state)
+            state = semanticValidation(state)
+            this.logger("SemanticValidation", state)
             state = importResolution(state)
             this.logger("ImportResolution", state)
-            state = typeNormalization(state)
-            this.logger("Type Normalization", state)
+            // state = typeNormalization(state)
+            // this.logger("Type Normalization", state)
             state = typeCreation(state)
             this.logger("Type Creation", state)
             state = toJavascriptAst(state)
             this.logger("ToJavascriptAst", state)
-            state = toJavascriptFiles(state)
+            state = toJavascriptFiles(state, options)
             this.logger("ToJavascriptFiles", state)
             this.logger("Output", state)
             state = fileWriter(state, options)

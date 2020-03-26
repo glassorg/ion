@@ -74,10 +74,10 @@ export function getPathFromFilename(filename: string) {
     return filename.substring(0, filename.length - '.ion'.length).replace(/[\/\\]/g, '.')
 }
 
-export function getFilesRecursive(directory: string | string[], rootDirectory : string | null = null, allFiles: {[path: string]: string} = {}): {[path: string]: string} {
+export function getInputFilesRecursive(directory: string | string[], rootDirectory : string | null = null, allFiles: {[path: string]: string} = {}): {[path: string]: string} {
     if (Array.isArray(directory)) {
         for (let dir of directory) {
-            getFilesRecursive(dir, dir, allFiles)
+            getInputFilesRecursive(dir, dir, allFiles)
         }
     }
     else {
@@ -87,11 +87,13 @@ export function getFilesRecursive(directory: string | string[], rootDirectory : 
             let filename = np.join(directory, name)
             let fileInfo = fs.statSync(filename)
             if (fileInfo.isFile()) {
-                let path = getPathFromFilename(filename.substring(rootDirectory.length + 1))
-                allFiles[path] = read(filename)
+                if (name.endsWith(".ion")) {
+                    let path = getPathFromFilename(filename.substring(rootDirectory.length + 1))
+                    allFiles[path] = read(filename)
+                }
             }
             else {
-                getFilesRecursive(filename, rootDirectory, allFiles)
+                getInputFilesRecursive(filename, rootDirectory, allFiles)
             }
         }
     }

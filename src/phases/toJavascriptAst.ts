@@ -1,6 +1,6 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip, remove } from "../Traversal";
-import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration } from "../ast";
+import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node } from "../ast";
 
 const typeMap = {
     Id: "Identifier",
@@ -22,7 +22,7 @@ function toRelativeModulePath(from: string, to: string) {
         b.shift()
     }
     let prefix = "./"
-    let suffix = ".js"
+    let suffix = ""
     if (a.length == 2) {
         prefix = "../"
     }
@@ -36,7 +36,17 @@ function toRelativeModulePath(from: string, to: string) {
     return prefix + b.join("/") + suffix
 }
 
-const toAst = {
+//  Is my conversion to Typescript technique sound?
+//  Pre-converting nodes is a bit problematic...
+//  Perhaps I should convert top down instead of bottom up?
+//  Types are gone otherwise, so I believe we HAVE to go from top down.
+//  TODO: convert to top-down conversion to Javascript.
+
+const toAstEnter = {
+
+}
+
+const toAstLeave = {
     default(node) {
         let name = node.constructor.name
         let type = typeMap[name] || name
@@ -55,6 +65,9 @@ const toAst = {
             body: node.statements,
         }
     },
+    ConstrainedType(node: ConstrainedType) {
+        return node.baseType
+    },
     Parameter(node: Parameter) {
         if (node.value) {
             return {
@@ -67,13 +80,43 @@ const toAst = {
             return node.id
         }
     },
+    ReturnStatement(node: ReturnStatement) {
+        return {
+            type: "ReturnStatement",
+            argument: node.value
+        }
+    },
+    MemberExpression(node: MemberExpression) {
+        return {
+            type: "MemberExpression",
+            object: node.left,
+            property: node.right,
+        }
+    },
     ClassDeclaration(node: ClassDeclaration) {
         return {
             type: "ClassDeclaration",
             id: node.id,
             body: {
                 type: "ClassBody",
-                body: node.declarations
+                body: node.declarations.map(d => {
+                    return { ...d, kind: "property" }
+                })
+                // .map((d: any) => {
+                //     return {
+                //         type: "Property",
+                //         //  hmmm, the declarations HAVE been already converted as variable declarations.
+                //         //  that is sub-optimal.
+                //         key: { type: "Identifier", name: d.declarations[0].id.name },
+                //         // value: {
+                //         //     type: "BinaryExpression",
+                //         //     left: { type: "Identifier", name: "number" },
+                //         //     operator: "|",
+                //         //     right: { type: "Identifier", name: "string" },
+                //         // }
+                //         value: { type: "Literal", value: "Bar", verbatim: "Type goes here." },
+                //     }
+                // })
             }
         }
     },
@@ -85,10 +128,19 @@ const toAst = {
             body: node.body,
         }
     },
+    FunctionType(node: FunctionType) {
+        return {
+            type: "Literal",
+            value: 1971
+        }
+    },
     ExternalReference(node: ExternalReference) {
-        // don't modify ExternalReferences on leave,
+        //  don't modify ExternalReferences on leave,
         //  they will be handled by VariableDeclaration
         return node
+    },
+    TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
+        return { ...toAstLeave.VariableDeclaration(node, ancestors, path), kind: "type" }
     },
     VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
         // check if value is ExternalReference
@@ -119,16 +171,22 @@ const toAst = {
             declarations: [{
                 type: "VariableDeclarator",
                 id: node.id,
+                tstype: node.type,
                 init: node.value
             }]
         };
     },
 }
 
-export default function toJavascriptAst(root: Assembly) {
-    traverse(root, {
+function toJavascriptAst(node: Node) {
+    return traverse(node, {
+        enter(node, ancestors, path) {
+            // if (ClassDeclaration.is(node)) {
+            //     console.log("Class enter, change declarations to properties");
+            // }
+        },
         leave(node, ancestors, path) {
-            let newNode = (toAst[node.constructor.name] || toAst.default)(node, ancestors, path)
+            let newNode = (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path)
             if (Declaration.is(node) && node.export) {
                 newNode = {
                     type: "ExportNamedDeclaration",
@@ -138,5 +196,8 @@ export default function toJavascriptAst(root: Assembly) {
             return newNode
         }
     })
-    return root
+}
+
+export default function(root: Assembly) {
+    return toJavascriptAst(root)
 }

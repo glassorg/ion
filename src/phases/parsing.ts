@@ -1,5 +1,5 @@
 import { Options } from "../Compiler";
-import { getFilesRecursive, mapValues } from "../common";
+import { getInputFilesRecursive, mapValues } from "../common";
 import Assembly from "../ast/Assembly";
 import Module from "../ast/Module";
 import Id from "../ast/Id";

@@ -34,6 +34,7 @@ export { default as Scope } from "./Scope";
 export { default as Statement } from "./Statement";
 export { default as TemplateReference } from "./TemplateReference";
 export { default as TypeDeclaration } from "./TypeDeclaration";
+export { default as TypeReference } from "./TypeReference";
 export { default as ThisExpression } from "./ThisExpression";
 export { default as UnaryExpression } from "./UnaryExpression";
 export { default as UnionType } from "./UnionType";

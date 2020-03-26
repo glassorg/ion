@@ -108,7 +108,7 @@ VariableDeclarationType
     / PropertyToken { return "Property" }
 
 VariableDeclaration
-    = TypeToken _ id:UpperCaseId _ "=" _ value:Type EOL
+    = TypeToken _ id:Id _ "=" _ value:Type EOL
     { return node("TypeDeclaration", { id, value }) }
     / meta:MetaProperties declarationType: VariableDeclarationType
         _ id:Pattern _ type:(":" _ @Type)? _ value:('=' _ @OutlineExpression / EOL {return null})?
@@ -201,7 +201,7 @@ AssignmentProperty
 
 ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
-        _ id:UpperCaseId templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
+        _ id:Id templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
         { return node("ClassDeclaration", { id, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations }) }
 
@@ -249,8 +249,11 @@ TemplateArguments
     = "<" _ head:TemplateArgument tail:(_ "," _ @TemplateArgument)*  _ ">"
     { return [head, ...tail] }
 
+TypeReference
+    = ref:Reference { return node("TypeReference", { ...ref }) }
+
 TemplateReference
-    = baseType:Reference args:(_ @TemplateArguments)?
+    = baseType:TypeReference args:(_ @TemplateArguments)?
     { return args ? node("TemplateReference", {baseType,arguments:args}) : baseType }
     // / "[" _ type:Type '*' _ "]"
     // { return node("TemplateReference", {id:node('Id',{name:"Array"}), arguments:[type]}) }
@@ -553,13 +556,12 @@ Id
     = name:IdName { return node('Id', { name }) }
 
 Reference
-    = name:IdName { return node('Reference', { name }) }
-
-LowerCaseId
-    = &[_a-z] @Id
-
-UpperCaseId
-    = &[A-Z] @Id
+    = name:IdName
+    {
+        let first = name[0]
+        let type = first.toUpperCase() === first ? "TypeReference" : "Reference"
+        return node(type, { name })
+    }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Tokens and Keywords
