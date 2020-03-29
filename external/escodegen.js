@@ -2497,6 +2497,10 @@
         var result,
             fragment,
             verbatim = stmt[extra.verbatim];
+
+        if (!this[stmt.type]) {
+            console.error("Unrecognized node", stmt);
+        }
         
         result = verbatim ? verbatim : this[stmt.type](stmt, flags);
 

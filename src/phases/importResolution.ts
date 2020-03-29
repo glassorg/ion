@@ -8,7 +8,7 @@ export default function importResolution(root: Assembly) {
     // find all unresolved names in each module
     for (let module of Object.values(root.modules)) {
         let { imports } = module
-        let importDeclarations: VariableDeclaration[] = []
+        let importDeclarations = new Map<string,VariableDeclaration>();
         let importPaths: string[] = []
         traverse(imports, {
             enter(node, ancestors) {
@@ -21,17 +21,15 @@ export default function importResolution(root: Assembly) {
                             path = module.id.name.split('.').slice(0, -1).concat([path]).join('.')
                         }
                         if (last.as) {
-                            importDeclarations.push(
-                                new VariableDeclaration({
+                            importDeclarations.set(last.as.name, new VariableDeclaration({
+                                location: last.as.location,
+                                id: last.as,
+                                value: new ExternalReference({
                                     location: last.as.location,
-                                    id: last.as,
-                                    value: new ExternalReference({
-                                        location: last.as.location,
-                                        file: path,
-                                        name: path.slice(path.lastIndexOf('.') + 1)
-                                    })
+                                    file: path,
+                                    name: path.slice(path.lastIndexOf('.') + 1)
                                 })
-                            )
+                            }))
                         }
                         else {
                             importPaths.push(path)
@@ -42,15 +40,17 @@ export default function importResolution(root: Assembly) {
         })
     
         // now push the declarations into the module.declarations
-        module.declarations.unshift(...importDeclarations)
-        importDeclarations.length = 0
+        //  we want to put it first so we reassign to new object
+        module.declarations = new Map([ ...importDeclarations.entries(), ...module.declarations.entries() ])
+        importDeclarations.clear()
+        //  { ...importDeclarations, ...module.declarations }
+        // importDeclarations = {}
     
         let scopes = createScopeMap(module)
         // now let's traverse and find unreferenced modules
         let unresolvedNames = new Map<string,Node>()
         traverse(module, {
             enter(node: Node, ancestors, path) {
-                let module = ancestors.find(node => Module.is(node)) as Module
                 // console.log("enter", node.constructor.name)
                 if (Reference.is(node) && !ExternalReference.is(node)) {
                     let ref = node as Reference
@@ -72,15 +72,13 @@ export default function importResolution(root: Assembly) {
                 let externalModule = root.modules[checkPath]
                 if (externalModule != null) {
                     found = true
-                    importDeclarations.push(
-                        new VariableDeclaration({
-                            id: new Id({ name }),
-                            value: new ExternalReference({
-                                file: checkPath,
-                                name: checkPath.slice(checkPath.lastIndexOf('.') + 1)
-                            })
+                    importDeclarations.set(name, new VariableDeclaration({
+                        id: new Id({ name }),
+                        value: new ExternalReference({
+                            file: checkPath,
+                            name: checkPath.slice(checkPath.lastIndexOf('.') + 1)
                         })
-                    )
+                    }))
                 }
             }
             if (!found) {
@@ -88,7 +86,7 @@ export default function importResolution(root: Assembly) {
             }
         }
 
-        module.declarations.unshift(...importDeclarations)
+        module.declarations = new Map([ ...importDeclarations.entries(), ...module.declarations.entries() ])
         module.imports = []
     }
     return root

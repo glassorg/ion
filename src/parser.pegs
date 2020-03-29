@@ -34,6 +34,12 @@
         )
     }
 
+    function toDeclarationMap(array) {
+        return new Map(array.map(d => [d.id.name, d]))
+    }
+
+    //  TODO: Broken -> Map
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +48,7 @@
 
 Module
     = EOL? imports:Imports declarations:Declaration* exports:Exports EOL EOF
-    { return node("Module", { imports, declarations: [...declarations, ...exports] } ) }
+    { return node("Module", { imports, declarations: toDeclarationMap([...declarations, ...exports]) } ) }
 
 Exports
     //  Allow Declaration meta properties to be specified before the export declaration

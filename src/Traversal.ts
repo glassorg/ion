@@ -25,14 +25,25 @@ export type leave = (node: any, ancestors: object[], path: string[]) => object |
 
 export type Visitor = { enter?: enter, leave?: leave }
 
-function traverseChildren(container: any, visitor: Visitor, isArray: boolean, ancestors: object[], path: string[]) {
+function traverseChildren(container: any, visitor: Visitor, ancestors: object[], path: string[]) {
     ancestors.push(container)
 
+    const isArray = Array.isArray(container)
+    const isContainerMap = container instanceof Map
     let hasArrays = false
     function traverseChild(name: string, child: any) {
         path.push(name)
         let childResult = traverse(child, visitor, ancestors, path)
-        if (childResult !== child && childResult !== undefined && childResult !== remove) {
+        // it doesn't look like remove works right now on Maps or maybe anything?
+        if (childResult === remove) {
+            if (isContainerMap) {
+                container.delete(name)
+            }
+            else {
+                delete container[name]
+            }
+        }
+        else if (childResult !== child && childResult !== undefined) {
             let isChildArray = Array.isArray(childResult)
             if (isChildArray) {
                 if (!isArray) {
@@ -45,11 +56,16 @@ function traverseChildren(container: any, visitor: Visitor, isArray: boolean, an
                     hasArrays = true
                 }
             }
-            container[name] = childResult
+            if (isContainerMap) {
+                container.set(name, childResult)
+            }
+            else {
+                container[name] = childResult
+            }
         }
         path.pop()
     }
-    if (container.constructor === Map) {
+    if (isContainerMap) {
         for (let key of container.keys()) {
             let child = container.get(key)
             traverseChild(key, child)
@@ -77,16 +93,18 @@ export function traverse(
     if (node == null)
         return node
 
-    let {enter, leave} = visitor
-    let isObject = typeof node === 'object' // && node != null // implied
-    let isNode = Node.is(node)
-    let isArray = Array.isArray(node)
-    let isMap = node.constructor === Map
+    const {enter, leave} = visitor
+    const isObject = typeof node === 'object' // && node != null // implied
+    const isNode = Node.is(node)
+    const isArray = Array.isArray(node)
+    const isMap = node.constructor === Map
     let enterResult: any = null
-    if (isNode && enter != null)
+    if (isNode && enter != null) {
         enterResult = enter(node, ancestors, path)
-    if (enterResult !== skip && (isNode || isArray || isObject || isMap))
-        traverseChildren(node, visitor, isArray, ancestors, path)
+    }
+    if (enterResult !== skip && (isNode || isArray || isObject || isMap)) {
+        traverseChildren(node, visitor, ancestors, path)
+    }
     //  then call leave on node unless it's an array.
     let result = undefined
     if (isNode && leave != null)

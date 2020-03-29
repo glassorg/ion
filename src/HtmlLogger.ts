@@ -23,14 +23,27 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     if (object.toJSON)
         object = object.toJSON()
     let clone: any = Array.isArray(object) ? [] : className === "Object" ? {} : {"": className}
-    for (let property in object) {
-        if (ignoreProperties[property]) {
-            continue
+    if (object instanceof Map) {
+        for (let key of object.keys()) {
+            object[key] = cloneWithJsonReferences(object.get(key), path)
         }
-
-        path.push(property)
-        clone[property] = cloneWithJsonReferences(object[property], path)
-        path.pop()
+    }
+    if (object instanceof Set) {
+        let index = 0
+        for (let value of object.values()) {
+            object[index++] = cloneWithJsonReferences(value, path)
+        }
+    }
+    else {
+        for (let property in object) {
+            if (ignoreProperties[property]) {
+                continue
+            }
+    
+            path.push(property)
+            clone[property] = cloneWithJsonReferences(object[property], path)
+            path.pop()
+        }
     }
     return clone
 }

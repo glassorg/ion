@@ -3,7 +3,7 @@ import * as common from "./common";
 import Parser from "./parser";
 import importResolution from "./phases/importResolution";
 import parsing from "./phases/parsing";
-// import typeNormalization from "./phases/typeNormalization";
+import typeNormalization from "./phases/typeNormalization";
 import typeCreation from "./phases/typeCreation";
 import toJavascriptAst from "./phases/toJavascriptAst";
 import toJavascriptFiles from "./phases/toJavascriptFiles";
@@ -39,14 +39,14 @@ export default class Compiler {
             this.logger("ImportResolution", state)
             // state = typeNormalization(state)
             // this.logger("Type Normalization", state)
-            state = typeCreation(state)
-            this.logger("Type Creation", state)
-            state = toJavascriptAst(state)
-            this.logger("ToJavascriptAst", state)
-            state = toJavascriptFiles(state, options)
-            this.logger("ToJavascriptFiles", state)
-            this.logger("Output", state)
-            state = fileWriter(state, options)
+            // state = typeCreation(state)
+            // this.logger("Type Creation", state)
+            // state = toJavascriptAst(state)
+            // this.logger("ToJavascriptAst", state)
+            // state = toJavascriptFiles(state, options)
+            // this.logger("ToJavascriptFiles", state)
+            // this.logger("Output", state)
+            // state = fileWriter(state, options)
         }
         catch (e) {
             let location = e.location

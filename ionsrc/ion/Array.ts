@@ -1,8 +1,6 @@
 
-export const Array = {
-    name: "ion_Array",
-}
+export type Array = any[]
 
 export function isArray(value): value is any[] {
-    return global.Array.isArray(value);
+    return Array.isArray(value);
 }

@@ -8,7 +8,8 @@ export default class Module extends Scope {
 
     id!: Id
     imports!: Array<ImportStep>
-    declarations!: Array<Declaration>
+    declarations!: Map<string,Declaration>
+    // declarations!: { [name: string]: Declaration }
     // exports!: Array<Declaration>
 
 }

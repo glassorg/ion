@@ -102,9 +102,80 @@ const toAstLeave = {
             id: node.id,
             body: {
                 type: "ClassBody",
-                body: node.declarations.map(d => {
-                    return { ...d, kind: "property" }
-                })
+                body: [
+                    ...node.declarations.map(d => ({ ...d, kind: "readonly" })),
+                    {
+                        type: "MethodDefinition",
+                        kind: "constructor",
+                        key: { type: "Identifier", name: "constructor" },
+                        value: {
+                            type: "FunctionExpression",
+                            params: node.declarations.map((d: any) => {
+                                return {
+                                    type: "Identifier",
+                                    name: d.declarations[0].id.name
+                                }
+                            }),
+                            body: {
+                                type: "BlockStatement",
+                                body: [
+                                    ...node.declarations.filter((d: any) => d.declarations[0].tstype).map((d: any) => {
+                                        let declarator = d.declarations[0]
+                                        return {
+                                            type: "IfStatement",
+                                            test: {
+                                                type: "UnaryExpression",
+                                                operator: "!",
+                                                prefix: true,
+                                                argument: {
+                                                    type: "CallExpression",
+                                                    callee: { type: "Identifier", name: `is${declarator.tstype.name}` },
+                                                    arguments: [
+                                                        { type: "Identifier", name: declarator.id.name }
+                                                    ]
+                                                }
+                                            },
+                                            consequent: {
+                                                type: "ThrowStatement",
+                                                argument: {
+                                                    type: "NewExpression",
+                                                    callee: { type: "Identifier", name: "Error" },
+                                                    arguments: [{
+                                                        type: "BinaryExpression",
+                                                        left: {
+                                                            type: "Literal",
+                                                            value: `${declarator.id.name} is not a valid ${declarator.tstype.name}: `
+                                                        },
+                                                        operator: "+",
+                                                        right: {
+                                                            type: "Identifier",
+                                                            name: declarator.id.name
+                                                        }
+                                                    }]
+                                                }
+                                            }
+                                        }
+                                    }),
+                                    ...node.declarations.map((d: any) => {
+                                        return {
+                                            type: "ExpressionStatement",
+                                            expression: {
+                                                type: "AssignmentExpression",
+                                                left: {
+                                                    type: "MemberExpression",
+                                                    object: { type: "ThisExpression" },
+                                                    property: { type: "Identifier", name: d.declarations[0].id.name }
+                                                },
+                                                operator: "=",
+                                                right: { type: "Identifier", name: d.declarations[0].id.name }
+                                            }
+                                        }
+                                    })
+                                ]
+                            }
+                        }
+                    }
+                ]
             }
         }
     },
@@ -119,8 +190,8 @@ const toAstLeave = {
     },
     FunctionType(node: FunctionType) {
         return {
-            type: "Literal",
-            value: 1971
+            type: "Identifier",
+            value: "TodoFunctionType"
         }
     },
     ExternalReference(node: ExternalReference) {
