@@ -1,7 +1,5 @@
-import { Assembly } from "../ast";
-import File from "../ast/File";
-import { Options } from "../Compiler";
 import np from "path";
+import { Assembly } from "../ast";
 import { read, exists } from "../common";
 const escodegen = require("../../external/escodegen");
 
@@ -11,19 +9,16 @@ export function codegen(ast) {
     return escodegen.generate(ast, { verbatim })
 }
 
-export default function toJavascriptFiles(ast: Assembly, options: Options) {
-    return new Assembly({
-        files: Object.keys(ast.modules).map(name => {
-            let checkNativeFile = np.join(options.input, name.replace(".", np.sep) + ".ts");
-            let module = ast.modules[name]
-            let content = exists(checkNativeFile)
-                ? read(checkNativeFile)
-                : codegen({ type: "Program", body: module.declarations });
-            return new File({
-                path: name.replace('.', '/') + '.ts',
-                content
-            })
-        })
-    })
-
+export default function toJavascriptFiles(root: Assembly) {
+    for (let name of root.modules.keys()) {
+        let module = root.modules.get(name)!
+        let checkNativeFile = np.join(root.options.input, name.replace(".", np.sep) + ".ts")
+        let content = exists(checkNativeFile)
+            ? read(checkNativeFile)
+            : codegen(module)
+        let path = name.replace('.', '/') + '.ts'
+        root.outputFiles.set(path, content)
+        // now delete the module
+        root.modules.delete(name)
+    }
 }

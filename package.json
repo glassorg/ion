@@ -9,8 +9,10 @@
         "setup": "yarn install",
         "build": "guild build && yarn run buildGrammar",
         "watch": "./watch.sh",
+        "test": "gtest lib # echo should be just guild test, todo: fix this",
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
-        "buildGrammar": "pegs src/parser.pegs lib/parser.js"
+        "buildGrammar": "pegs src/parser.pegs lib/parser.js",
+        "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib"
     },
     "dependencies": {
         "@glas/build": "^0.2.8",

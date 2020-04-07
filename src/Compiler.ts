@@ -1,21 +1,11 @@
 import * as HtmlLogger from "./HtmlLogger";
 import * as common from "./common";
-import Parser from "./parser";
-import importResolution from "./phases/importResolution";
-import parsing from "./phases/parsing";
-import typeNormalization from "./phases/typeNormalization";
-import typeCreation from "./phases/typeCreation";
-import toJavascriptAst from "./phases/toJavascriptAst";
-import toJavascriptFiles from "./phases/toJavascriptFiles";
-import fileWriter from "./phases/fileWriter";
-import semanticValidation from "./phases/semanticValidation";
+import { Assembly } from "./ast";
+import { Options } from "./ast/Assembly";
+import phases from "./phases";
+import Parser = require("./parser");
 
 type Logger = (names?: string | string[], ast?: any) => void
-
-export type Options = {
-    input: string
-    output: string
-}
 
 export default class Compiler {
 
@@ -26,34 +16,30 @@ export default class Compiler {
     }
 
     compile(options: Options) {
-        let state: any = options
-        this.logger("Options", state)
         let parser = Parser()
-        let files = common.getInputFilesRecursive(options.input)
+        let assembly = new Assembly({ parser, options, modules: new Map() })
+        this.logger("Input", assembly)
         try {
-            state = parsing(options, files, parser)
-            this.logger("Input", state)
-            state = semanticValidation(state)
-            this.logger("SemanticValidation", state)
-            state = importResolution(state)
-            this.logger("ImportResolution", state)
-            // state = typeNormalization(state)
-            // this.logger("Type Normalization", state)
-            // state = typeCreation(state)
-            // this.logger("Type Creation", state)
-            // state = toJavascriptAst(state)
-            // this.logger("ToJavascriptAst", state)
-            // state = toJavascriptFiles(state, options)
-            // this.logger("ToJavascriptFiles", state)
-            // this.logger("Output", state)
-            // state = fileWriter(state, options)
+
+            for (let phase of phases) {
+                phase(assembly)
+                this.logger(phase.name, assembly)
+            }
+            this.logger("Output", assembly)
+
+            // // state = toJavascriptAst(state)
+            // // this.logger("ToJavascriptAst", state)
+            // // state = toJavascriptFiles(state, options)
+            // // this.logger("ToJavascriptFiles", state)
+            // // this.logger("Output", state)
+            // // state = fileWriter(state, options)
         }
         catch (e) {
             let location = e.location
             if (location == null)
                 throw e
             let { filename } = location
-            let source = files[filename]
+            let source = assembly.inputFiles!.get(filename)!
             let error = parser.getError(e.message, location, source, filename)
             console.log(error.message)
         }

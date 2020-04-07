@@ -10,6 +10,15 @@ export function clone(value) {
     if (value == null || typeof value !== "object") {
         return value
     }
+    if (value instanceof Set) {
+        return new Set(Array.from(value.values()).map(clone))
+    }
+    if (value instanceof Map) {
+        return new Map(Array.from(value.entries()).map(clone))
+    }
+    if (Array.isArray(value)) {
+        return value.map(clone)
+    }
     let copy = new value.constructor()
     for (let name in value) {
         copy[name] = clone(value[name])
@@ -34,10 +43,19 @@ export function SemanticError(message: string, location: any) {
     return error
 }
 
-export function mapValues<I,O>(object: { [name: string]: I }, fn: (I, string) => O) {
-    let result: { [name: string]: O } = {}
+export function toMap<V>(object: { [name: string]: V }): Map<string,V> {
+    let result = new Map<string,V>()
     for (let name in object) {
-        result[name] = fn(object[name], name)
+        result.set(name, object[name])
+    }
+    return result
+}
+
+export function mapValues<K,I,O>(object: Map<K,I>, fn: (I, K) => O): Map<K,O> {
+    let result = new Map<K,O>()
+    for (let key of object.keys()) {
+        let value = object.get(key)
+        result.set(key, fn(value, key))
     }
     return result
 }

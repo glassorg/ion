@@ -1,3 +1,4 @@
+import Location from "./Location";
 import { isDerivedClass } from "./runtime";
 
 export default class Node {

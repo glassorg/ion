@@ -1,87 +1,207 @@
-import { Node } from "./ast";
+import { Location } from "./ast"
 
-export function flatten(array: any[]) {
-    let flat = array.reduce(
-        (a:any,b:any) => {
-            if (Array.isArray(b)) {
-                a.splice(a.length, 0, ...b)
-            }
-            else {
-                a.push(b)
-            }
-            return a
-        },
-        []
-    )
-    // now insert values in place into array
-    array.splice(0, array.length, ...flat)
+class Replace {
+    readonly items: readonly any[]
+    constructor(items: readonly any[]) {
+        this.items = items
+    }
 }
 
-export const remove = Object.freeze([])
-export const skip = Symbol('skip')
+class Pair {
+    key
+    value
+    constructor(key, value) {
+        this.key = key
+        this.value = value
+    }
+}
 
+export const skip = Symbol('skip')
+export function replace(...items: readonly any[]) {
+    return new Replace(items)
+}
+export function pair(key, value) {
+    return new Pair(key, value)
+}
+export const remove = Object.freeze(new Replace(Object.freeze([])))
 export type enter = (node: any, ancestors: object[], path: string[]) => Symbol | void
 export type leave = (node: any, ancestors: object[], path: string[]) => object | object[] | void
+export type predicate = (node: any) => boolean
+export type Visitor = { enter?: enter, leave?: leave, skip?: predicate, filter?: predicate }
 
-export type Visitor = { enter?: enter, leave?: leave }
+interface ContainerHelper<C = any, K = any, V = any> {
+    type: string,
+    create(original: C): C
+    keys(container: C): IterableIterator<K>
+    getValue(container: C, key: K): V
+    setValue(container: C, key: K, value: V | Replace)
+    normalize(container: C): C
+}
 
-function traverseChildren(container: any, visitor: Visitor, ancestors: object[], path: string[]) {
-    ancestors.push(container)
+// key value pairs in the Replace ??? or something else?
+//  Array => value
+//  Object => Pair(key, value)
+//  Map => Pair(key, value)
+//  Set => value
 
-    const isArray = Array.isArray(container)
-    const isContainerMap = container instanceof Map
-    let hasArrays = false
-    function traverseChild(name: string, child: any) {
-        path.push(name)
-        let childResult = traverse(child, visitor, ancestors, path)
-        // it doesn't look like remove works right now on Maps or maybe anything?
-        if (childResult === remove) {
-            if (isContainerMap) {
-                container.delete(name)
+const objectContainerHelper: ContainerHelper<any, string, any> = {
+    type: "Object",
+    create(original) {
+        // create a new empty object of the same type
+        if (original.constructor === Object) {
+            return {}
+        }
+        else {
+            // for typed objects, recycle self
+            return original
+        }
+    },
+    *keys(container) {
+        for (let key in container) {
+            yield key
+        }
+    },
+    getValue(container, key: string) {
+        return container[key]
+    },
+    setValue(container, key: string, value) {
+        if (value instanceof Pair) {
+            // a Pair overrides the initial value
+            container[value.key] = value.value
+        }
+        else {
+            container[key] = value
+        }
+    },
+    normalize(container) {
+        let newContainer = this.create(container)
+        for (let key of this.keys(container)) {
+            let value = this.getValue(container, key)
+            if (value instanceof Replace) {
+                for (let item of value.items) {
+                    this.setValue(newContainer, key, item)
+                }
             }
             else {
-                delete container[name]
+                this.setValue(newContainer, key, value)
             }
         }
-        else if (childResult !== child && childResult !== undefined) {
-            let isChildArray = Array.isArray(childResult)
-            if (isChildArray) {
-                if (!isArray) {
-                    if (childResult.length > 0)
-                        throw new Error("Cannot return array with length > 0 unless container is array")
-                    else
-                        childResult = undefined
+        return newContainer
+    }
+}
+
+const arrayContainerHelper: ContainerHelper<any[], number, any> = {
+    ...objectContainerHelper,
+    type: "Array",
+    create(original: any[]) {
+        return []
+    },
+    keys(container: any[]) {
+        return container.keys()
+    },
+    getValue(container: any[], key: number) {
+        return container[key]
+    },
+    setValue(container: any[], key: number, value) {
+        if (value instanceof Pair) {
+            throw new Error("Cannot use a Pair on an Array container")
+        }
+        container[key] = value
+    },
+    normalize(container) {
+        let newContainer = this.create(container)
+        for (let value of container) {
+            if (value instanceof Replace) {
+                for (let item of value.items) {
+                    newContainer.push(item)
                 }
-                else {
-                    hasArrays = true
-                }
-            }
-            if (isContainerMap) {
-                container.set(name, childResult)
             }
             else {
-                container[name] = childResult
+                newContainer.push(value)
             }
         }
-        path.pop()
+        return newContainer
     }
-    if (isContainerMap) {
-        for (let key of container.keys()) {
-            let child = container.get(key)
-            traverseChild(key, child)
+}
+
+const mapContainerHelper: ContainerHelper<Map<any,any>, any, any> = {
+    ...objectContainerHelper,
+    type: "Map",
+    create() {
+        return new Map<any,any>()
+    },
+    keys(container: Map<any,any>) {
+        return container.keys()
+    },
+    getValue(container: Map<any,any>, key) {
+        return container.get(key)
+    },
+    setValue(container: Map<any,any>, key, value) {
+        if (value instanceof Pair) {
+            // a Pair overrides the initial value
+            container.set(value.key, value.value)
+        }
+        else {
+            container.set(key, value)
         }
     }
-    else {
-        for (let name in container) {
-            let child = container[name]
-            traverseChild(name, child);
+}
+
+function getContainerHelper(node): ContainerHelper | null {
+    if (node != null) {
+        if (Array.isArray(node)) {
+            return arrayContainerHelper
+        }
+        if (node instanceof Map) {
+            return mapContainerHelper
+        }
+        if (typeof node === "object") {
+            return objectContainerHelper
         }
     }
-    ancestors.pop()
-    //  now flatten current array if needed
-    if (hasArrays) {
-        container = flatten(container)
+    return null
+}
+
+export function defaultSkip(node) {
+    return node.constructor === Object || node instanceof Set || node instanceof Location
+}
+
+export function defaultFilter(node) {
+    return node != null && typeof node === "object" && !Array.isArray(node) && !(node instanceof Map) && node.constructor !== Object
+}
+
+// How do we know to skip some objects like raw objects? without knowing about Node.is?
+export function traverseChildren(
+    container: any,
+    visitor: Visitor,
+    ancestors: object[] = [],
+    path: any[] = []
+) {
+    const helper = getContainerHelper(container)
+    if (helper != null) {
+        let hasReplaces = false
+
+        ancestors.push(container)
+        for (let key of helper.keys(container)) {
+            path.push(key)
+            let child = helper.getValue(container, key)
+            let result = traverse(child, visitor, ancestors, path)
+            if (result !== undefined) {
+                if (result instanceof Replace) {
+                    hasReplaces = true
+                }
+                helper.setValue(container, key, result)
+            }
+            path.pop()
+        }
+        ancestors.pop()
+
+        if (hasReplaces) {
+            container = helper.normalize(container)
+        }
     }
+
+    return container
 }
 
 export function traverse(
@@ -90,24 +210,23 @@ export function traverse(
     ancestors: object[] = [],
     path: string[] = []
 ): any {
-    if (node == null)
+    const {enter, leave, skip: _skip = defaultSkip, filter = defaultFilter} = visitor
+    if (node == null || _skip(node)) {
         return node
+    }
 
-    const {enter, leave} = visitor
-    const isObject = typeof node === 'object' // && node != null // implied
-    const isNode = Node.is(node)
-    const isArray = Array.isArray(node)
-    const isMap = node.constructor === Map
+    const callback = filter(node)
+
     let enterResult: any = null
-    if (isNode && enter != null) {
+    if (callback && enter != null) {
         enterResult = enter(node, ancestors, path)
     }
-    if (enterResult !== skip && (isNode || isArray || isObject || isMap)) {
-        traverseChildren(node, visitor, ancestors, path)
+    if (enterResult !== skip) {
+        node = traverseChildren(node, visitor, ancestors, path)
     }
-    //  then call leave on node unless it's an array.
-    let result = undefined
-    if (isNode && leave != null)
-        result = <any>leave(node, ancestors, path)
-    return result != null ? result : node
+    let leaveResult: any = null
+    if (callback && leave != null) {
+        leaveResult = <any>leave(node, ancestors, path)
+    }
+    return leaveResult || node
 }

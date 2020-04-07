@@ -1,6 +1,7 @@
 import Assembly from "../ast/Assembly";
-import { traverse, skip, remove } from "../Traversal";
+import { traverse, skip, remove, traverseChildren } from "../Traversal";
 import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType } from "../ast";
+import { mapValues } from "../common";
 
 const typeMap = {
     Id: "Identifier",
@@ -45,7 +46,14 @@ function toRelativeModulePath(from: string, to: string) {
 //  TODO: convert to top-down conversion to Javascript.
 
 const toAstEnter = {
-
+    default(node) {
+    },
+    Assembly(node) {
+        return skip
+    },
+    // Module(node) {
+    //     return skip
+    // }
 }
 
 const toAstLeave = {
@@ -59,8 +67,14 @@ const toAstLeave = {
         }
         return esnode
     },
+    Assembly(node: Assembly, ancestors, path) {
+        traverseChildren(node, visitor, ancestors, path)
+    },
     Module(node: Module) {
-        return node
+        return {
+            type: "Program",
+            body: Array.from(node.declarations.values())
+        }
     },
     BlockStatement(node: BlockStatement) {
         return {
@@ -103,23 +117,24 @@ const toAstLeave = {
             body: {
                 type: "ClassBody",
                 body: [
-                    ...node.declarations.map(d => ({ ...d, kind: "readonly" })),
+                    ...mapValues(node.declarations, d => ({ ...d, kind: "readonly" })).values(),
                     {
                         type: "MethodDefinition",
                         kind: "constructor",
                         key: { type: "Identifier", name: "constructor" },
                         value: {
                             type: "FunctionExpression",
-                            params: node.declarations.map((d: any) => {
+                            params: Array.from(node.declarations.values()).map((d: any) => {
                                 return {
                                     type: "Identifier",
-                                    name: d.declarations[0].id.name
+                                    name: d.declarations[0].id.name,
+                                    tstype: d.declarations[0].tstype
                                 }
                             }),
                             body: {
                                 type: "BlockStatement",
                                 body: [
-                                    ...node.declarations.filter((d: any) => d.declarations[0].tstype).map((d: any) => {
+                                    ...Array.from(node.declarations.values()).filter((d: any) => d.declarations[0].tstype).map((d: any) => {
                                         let declarator = d.declarations[0]
                                         return {
                                             type: "IfStatement",
@@ -156,7 +171,7 @@ const toAstLeave = {
                                             }
                                         }
                                     }),
-                                    ...node.declarations.map((d: any) => {
+                                    ...mapValues(node.declarations, (d: any) => {
                                         return {
                                             type: "ExpressionStatement",
                                             expression: {
@@ -170,7 +185,7 @@ const toAstLeave = {
                                                 right: { type: "Identifier", name: d.declarations[0].id.name }
                                             }
                                         }
-                                    })
+                                    }).values()
                                 ]
                             }
                         }
@@ -264,26 +279,22 @@ const toAstLeave = {
     },
 }
 
-function toJavascriptAst(node: Node) {
-    return traverse(node, {
-        enter(node, ancestors, path) {
-            // if (ClassDeclaration.is(node)) {
-            //     console.log("Class enter, change declarations to properties");
-            // }
-        },
-        leave(node, ancestors, path) {
-            let newNode = (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path)
-            if (Declaration.is(node) && node.export) {
-                newNode = {
-                    type: "ExportNamedDeclaration",
-                    declaration: newNode,
-                }
+const visitor = {
+    enter(node, ancestors, path) {
+        return (toAstEnter[node.constructor.name] || toAstEnter.default)(node, ancestors, path)
+    },
+    leave(node, ancestors, path) {
+        let newNode = (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path) || node
+        if (Declaration.is(node) && node.export) {
+            newNode = {
+                type: "ExportNamedDeclaration",
+                declaration: newNode,
             }
-            return newNode
         }
-    })
-}
+        return newNode
+    }
+};
 
-export default function(root: Assembly) {
-    return toJavascriptAst(root)
+export default function toJavascript(node: Node, ancestors?, path?) {
+    return traverse(node, visitor, ancestors, path)
 }

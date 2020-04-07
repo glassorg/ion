@@ -7,7 +7,9 @@ const remove__prefixedProperties = (key: string, value:any) => key.startsWith("_
 const uniqueId = Symbol('uniqueId')
 let nextId = 0
 const ignoreProperties: {[name:string]:boolean} = {
-    location: true
+    location: true,
+    inputFiles: true,
+    parser: true,
 }
 
 export function stringify(object, indent = 2) {
@@ -25,13 +27,13 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     let clone: any = Array.isArray(object) ? [] : className === "Object" ? {} : {"": className}
     if (object instanceof Map) {
         for (let key of object.keys()) {
-            object[key] = cloneWithJsonReferences(object.get(key), path)
+            clone[key] = cloneWithJsonReferences(object.get(key), path)
         }
     }
     if (object instanceof Set) {
         let index = 0
         for (let value of object.values()) {
-            object[index++] = cloneWithJsonReferences(value, path)
+            clone[index++] = cloneWithJsonReferences(value, path)
         }
     }
     else {

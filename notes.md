@@ -23,11 +23,14 @@ two types of modules
         myStatic 1 = foo
         myStaticDouble(value) => value * 2
 
-TODO:
-    Convert to allow multiple export sections and inline export modifier
 
 Do we need let and var declarations at all?
     They aren't needed for static or instance variables.
     Only potentially needed in functions.
     If every instance is immutable... then we can only potentially reassign variables
     
+TODO:
+    Create unified, strongly typed Root compilation Node.
+    //  The entire pipeline should only need to refer to it, consistently.
+    //  No other parameters.
+    //  Simplify the compilation phases once again.

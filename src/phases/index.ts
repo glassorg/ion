@@ -1,16 +1,21 @@
-// import parsing from "./parsing";
-// import importResolution from "./importResolution";
-// import typeNormalization from "./typeNormalization";
-// import typeCreation from "./typeCreation";
-// import toJavascriptAst from "./toJavascriptAst";
+import parsing from "./parsing";
+import importResolution from "./importResolution";
+import typeNormalization from "./typeNormalization";
+import typeCreation from "./typeCreation";
+import toJavascriptAst from "./toJavascriptAst";
+import readFiles from "./readFiles";
+import semanticValidation from "./semanticValidation";
+import toJavascriptFiles from "./toJavascriptFiles";
+import writeFiles from "./writeFiles";
 
-// function identity(node) { return node }
-
-// export default [
-//     parsing,
-//     importResolution,
-//     typeNormalization,
-//     typeCreation,
-//     toJavascriptAst,
-//     identity,
-// ]
+export default [
+    readFiles,
+    parsing,
+    semanticValidation,
+    importResolution,
+    // typeNormalization,
+    typeCreation,
+    toJavascriptAst,
+    toJavascriptFiles,
+    writeFiles,
+]

@@ -1,6 +1,6 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
-import { traverse, skip } from "../Traversal";
+import { traverse, skip, replace, pair } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration } from "../ast";
 import TypeExpression from "../ast/TypeExpression";
 import { normalize } from "path";
@@ -58,7 +58,7 @@ export function generateName(type: TypeExpression, buffer?: string[]) {
 
 // normalize type expressions so
 export default function typeNormalization(root: Assembly) {
-    for (let module of Object.values(root.modules)) {
+    for (let module of root.modules.values()) {
         let declarations = new Set<string>()
         traverse(module, {
             enter(node) {
@@ -92,7 +92,7 @@ export default function typeNormalization(root: Assembly) {
                             }
                         }
                     })
-                    return [...newDeclarations, node]
+                    return replace(...newDeclarations.map(d => pair(d.id.name, d)), pair(node.id.name, node))
                 }
             }
         })

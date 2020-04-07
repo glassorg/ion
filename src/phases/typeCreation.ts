@@ -1,6 +1,6 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
-import { traverse, skip } from "../Traversal";
+import { traverse, skip, replace, pair } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType, TypeReference } from "../ast";
 import { clone } from "../common";
 
@@ -78,13 +78,13 @@ export default function typeCreation(root: Assembly) {
                 return skip
             }
         },
-        leave(node) {
+        leave(node, ancestors, path) {
+            let name = path[path.length - 1]
             if (TypeDeclaration.is(node) ) {
-                return [
-                    node,
-                    // add an adjacent is[Type] function.
-                    createRuntimeTypeCheckingFunctionDeclaration(node)
-                ]
+                return replace(
+                    pair(name, node),
+                    pair(`is${name}`, createRuntimeTypeCheckingFunctionDeclaration(node))
+                )
             }
         }
     })

@@ -6,7 +6,7 @@ import { SemanticError } from "../common";
 
 export default function importResolution(root: Assembly) {
     // find all unresolved names in each module
-    for (let module of Object.values(root.modules)) {
+    for (let module of root.modules.values()) {
         let { imports } = module
         let importDeclarations = new Map<string,VariableDeclaration>();
         let importPaths: string[] = []
@@ -51,7 +51,6 @@ export default function importResolution(root: Assembly) {
         let unresolvedNames = new Map<string,Node>()
         traverse(module, {
             enter(node: Node, ancestors, path) {
-                // console.log("enter", node.constructor.name)
                 if (Reference.is(node) && !ExternalReference.is(node)) {
                     let ref = node as Reference
                     let scope = scopes.get(ref)
@@ -69,7 +68,7 @@ export default function importResolution(root: Assembly) {
             for (let path of importPaths) {
                 let checkPath = path + name
                 // try to resolve it directly to a module for now
-                let externalModule = root.modules[checkPath]
+                let externalModule = root.modules.get(checkPath)
                 if (externalModule != null) {
                     found = true
                     importDeclarations.set(name, new VariableDeclaration({

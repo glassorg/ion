@@ -904,12 +904,17 @@
             if (node.defaults) {
                 hasDefault = true;
             }
+
             for (i = 0, iz = node.params.length; i < iz; ++i) {
                 if (hasDefault && node.defaults[i]) {
                     // Handle default values.
                     result.push(this.generateAssignment(node.params[i], node.defaults[i], '=', Precedence.Assignment, E_TTT));
                 } else {
-                    result.push(this.generatePattern(node.params[i], Precedence.Assignment, E_TTT));
+                    let param = node.params[i];
+                    result.push(param.name);
+                    if (param.tstype && param.tstype.type === "Identifier") {
+                        result.push(": ", this.generateStatement(param.tstype));
+                    }
                 }
                 if (i + 1 < iz) {
                     result.push(',' + space);

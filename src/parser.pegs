@@ -3,7 +3,8 @@
     const ast = require("./ast")
 
     function getLocation() {
-        return location()
+        let { start, end, filename } = location()
+        return new ast.Location(start, end, filename)
     }
 
     function node(type, ...values) {
@@ -209,7 +210,7 @@ ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
         _ id:Id templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations }) }
+        { return node("ClassDeclaration", { id, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations: toDeclarationMap(declarations) }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }
