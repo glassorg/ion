@@ -162,6 +162,14 @@ function getContainerHelper(node): ContainerHelper | null {
     return null
 }
 
+export function getValue(container, key) {
+    return getContainerHelper(container)!.getValue(container, key)
+}
+
+export function setValue(container, key, value) {
+    getContainerHelper(container)!.setValue(container, key, value)
+}
+
 export function defaultSkip(node) {
     return node.constructor === Object || node instanceof Set || node instanceof Location
 }

@@ -7,15 +7,21 @@ import readFiles from "./readFiles";
 import semanticValidation from "./semanticValidation";
 import toJavascriptFiles from "./toJavascriptFiles";
 import writeFiles from "./writeFiles";
+import declarationMigration from "./declarationMigration";
+import declarationIsolation from "./declarationIsolation";
+import checkReferences from "./checkReferences";
 
 export default [
     readFiles,
     parsing,
     semanticValidation,
     importResolution,
-    // typeNormalization,
-    typeCreation,
-    toJavascriptAst,
-    toJavascriptFiles,
-    writeFiles,
+    declarationIsolation,
+    declarationMigration,
+    checkReferences,
+    // // typeNormalization,
+    // typeCreation,
+    // toJavascriptAst,
+    // toJavascriptFiles,
+    // writeFiles,
 ]

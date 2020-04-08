@@ -1,14 +1,21 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
-import { traverse } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference } from "../ast";
+import { traverse, setValue } from "../Traversal";
+import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, Declaration, Location } from "../ast";
 import { SemanticError } from "../common";
 
 export default function importResolution(root: Assembly) {
+    type AsReference = {
+        file: string,
+        export: string
+    }
+
+    let asReferences = new Map<string, AsReference>()
+
     // find all unresolved names in each module
     for (let module of root.modules.values()) {
         let { imports } = module
-        let importDeclarations = new Map<string,VariableDeclaration>();
+        let importDeclarations = new Map<string,Declaration>();
         let importPaths: string[] = []
         traverse(imports, {
             enter(node, ancestors) {
@@ -21,15 +28,18 @@ export default function importResolution(root: Assembly) {
                             path = module.id.name.split('.').slice(0, -1).concat([path]).join('.')
                         }
                         if (last.as) {
-                            importDeclarations.set(last.as.name, new VariableDeclaration({
-                                location: last.as.location,
-                                id: last.as,
-                                value: new ExternalReference({
-                                    location: last.as.location,
-                                    file: path,
-                                    name: path.slice(path.lastIndexOf('.') + 1)
-                                })
-                            }))
+                            // This will NOT stand, man.
+                            // We MUST find these AS references and convert them to direct external references.
+                            asReferences.set(last.as.name, { file: path, export: path.slice(path.lastIndexOf('.') + 1)})
+                            // importDeclarations.set(last.as.name, new VariableDeclaration({
+                            //     location: last.as.location,
+                            //     id: last.as,
+                            //     value: new ExternalReference({
+                            //         location: last.as.location,
+                            //         file: path,
+                            //         name: path.slice(path.lastIndexOf('.') + 1)
+                            //     })
+                            // }))
                         }
                         else {
                             importPaths.push(path)
@@ -40,15 +50,16 @@ export default function importResolution(root: Assembly) {
         })
     
         // now push the declarations into the module.declarations
-        //  we want to put it first so we reassign to new object
-        module.declarations = new Map([ ...importDeclarations.entries(), ...module.declarations.entries() ])
         importDeclarations.clear()
-        //  { ...importDeclarations, ...module.declarations }
-        // importDeclarations = {}
     
         let scopes = createScopeMap(module)
         // now let's traverse and find unreferenced modules
-        let unresolvedNames = new Map<string,Node>()
+        type UnresolvedReference = {
+            ref: Reference,
+            key: any
+            parent: any,
+        }
+        let unresolvedReferences = new Map<string,UnresolvedReference[]>()
         traverse(module, {
             enter(node: Node, ancestors, path) {
                 if (Reference.is(node) && !ExternalReference.is(node)) {
@@ -56,36 +67,51 @@ export default function importResolution(root: Assembly) {
                     let scope = scopes.get(ref)
                     let declaration = scope[ref.name]
                     if (declaration == null) {
-                        unresolvedNames.set(ref.name, ref)
+                        let refs = unresolvedReferences.get(ref.name)
+                        if (refs == null) {
+                            unresolvedReferences.set(ref.name, refs = [])
+                        }
+                        refs.push({ ref, key: path[path.length - 1], parent: ancestors[ancestors.length - 1] })
                     }
                 }
             }
         })
 
-        // now try to resolve these unresolved names
-        for (let name of unresolvedNames.keys()) {
-            let found = false
-            for (let path of importPaths) {
-                let checkPath = path + name
-                // try to resolve it directly to a module for now
-                let externalModule = root.modules.get(checkPath)
-                if (externalModule != null) {
-                    found = true
-                    importDeclarations.set(name, new VariableDeclaration({
-                        id: new Id({ name }),
-                        value: new ExternalReference({
-                            file: checkPath,
-                            name: checkPath.slice(checkPath.lastIndexOf('.') + 1)
-                        })
-                    }))
-                }
-            }
-            if (!found) {
-                throw SemanticError(`Cannot resolve ${name}`, unresolvedNames.get(name))
+        function resolveReferences(name, file, exportName) {
+            for (let uref of unresolvedReferences.get(name)!) {
+                // let's replace references with external references.
+                setValue(uref.parent, uref.key, new ExternalReference({
+                    file, export: exportName, location: uref.ref.location
+                }))
             }
         }
 
-        module.declarations = new Map([ ...importDeclarations.entries(), ...module.declarations.entries() ])
+        // now try to resolve these unresolved names
+        for (let name of unresolvedReferences.keys()) {
+            let found = false
+            for (let path of importPaths) {
+                let file = path + name
+                // try to resolve it directly to a module for now
+                let externalModule = root.modules.get(file)
+                if (externalModule != null) {
+                    found = true
+                    // instead of this let's change ALL references into external references.
+                    let _export = file.slice(file.lastIndexOf('.') + 1) // for now, only importing main export TODO: others.
+                    resolveReferences(name, file, _export)
+                }
+            }
+            if (!found) {
+                // see if we can find within asReferences
+                let asref = asReferences.get(name)
+                if (asref) {
+                    resolveReferences(name, asref.file, asref.export)
+                }
+                else {
+                    throw SemanticError(`Cannot resolve ${name}`, unresolvedReferences.get(name)![0].ref)
+                }
+            }
+        }
+
         module.imports = []
     }
     return root
