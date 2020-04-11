@@ -16,18 +16,18 @@ export type Parser = {
 
 export default class Assembly extends Scope {
 
-    parser!: Parser
+    _parser!: Parser
     options!: Options
     modules!: Map<string, Module>
     declarations!: Map<string, Declaration>
-    inputFiles: Map<string, string>
-    outputFiles: Map<string, string>
+    _inputFiles: Map<string, string>
+    _outputFiles: Map<string, string>
 
     constructor(...args) {
         super(...args)
         this.declarations = new Map()
-        this.inputFiles = new Map()
-        this.outputFiles = new Map()
+        this._inputFiles = new Map()
+        this._outputFiles = new Map()
     }
 
 }

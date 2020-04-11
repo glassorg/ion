@@ -1,7 +1,7 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, setValue } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, Declaration, Location } from "../ast";
+import { Reference } from "../ast";
 import { SemanticError } from "../common";
 
 export default function checkReferences(root: Assembly) {

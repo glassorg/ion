@@ -1,7 +1,7 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, skip, replace, pair } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration } from "../ast";
+import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration } from "../ast";
 import TypeExpression from "../ast/TypeExpression";
 import { normalize } from "path";
 

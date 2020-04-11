@@ -1,9 +1,5 @@
 import Assembly from "../ast/Assembly";
-import createScopeMap from "../createScopeMap";
-import { traverse } from "../Traversal";
-import { TypeDeclaration, VariableDeclaration, ClassDeclaration, Module, Reference, ExternalReference } from "../ast";
-import { SemanticError } from "../common";
-import { getExternalReferenceName } from "../ast/ExternalReference";
+import { getExternalReferenceName } from "../ast/Reference";
 
 export default function declarationMigration(root: Assembly) {
     for (let moduleName of root.modules.keys()) {

@@ -1,8 +1,9 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, setValue } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, Declaration, Location } from "../ast";
+import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
 import { SemanticError } from "../common";
+import { getExternalReferenceName } from "../ast/Reference";
 
 export default function importResolution(root: Assembly) {
     type AsReference = {
@@ -34,7 +35,7 @@ export default function importResolution(root: Assembly) {
                             // importDeclarations.set(last.as.name, new VariableDeclaration({
                             //     location: last.as.location,
                             //     id: last.as,
-                            //     value: new ExternalReference({
+                            //     value: new Reference({
                             //         location: last.as.location,
                             //         file: path,
                             //         name: path.slice(path.lastIndexOf('.') + 1)
@@ -62,7 +63,7 @@ export default function importResolution(root: Assembly) {
         let unresolvedReferences = new Map<string,UnresolvedReference[]>()
         traverse(module, {
             enter(node: Node, ancestors, path) {
-                if (Reference.is(node) && !ExternalReference.is(node)) {
+                if (Reference.is(node) && !node.isExternal()) {
                     let ref = node as Reference
                     let scope = scopes.get(ref)
                     let declaration = scope[ref.name]
@@ -80,8 +81,9 @@ export default function importResolution(root: Assembly) {
         function resolveReferences(name, file, exportName) {
             for (let uref of unresolvedReferences.get(name)!) {
                 // let's replace references with external references.
-                setValue(uref.parent, uref.key, new ExternalReference({
-                    file, export: exportName, location: uref.ref.location
+                setValue(uref.parent, uref.key, new Reference({
+                    name: getExternalReferenceName(file, exportName),
+                    location: uref.ref.location
                 }))
             }
         }

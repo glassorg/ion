@@ -257,7 +257,7 @@ TemplateArguments
     { return [head, ...tail] }
 
 TypeReference
-    = ref:Reference { return node("TypeReference", { ...ref }) }
+    = Reference
 
 TemplateReference
     = baseType:TypeReference args:(_ @TemplateArguments)?
@@ -563,12 +563,7 @@ Id
     = name:IdName { return node('Id', { name }) }
 
 Reference
-    = name:IdName
-    {
-        let first = name[0]
-        let type = first.toUpperCase() === first ? "TypeReference" : "Reference"
-        return node(type, { name })
-    }
+    = name:IdName { return node("Reference", { name }) }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Tokens and Keywords

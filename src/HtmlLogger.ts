@@ -38,7 +38,7 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     }
     else {
         for (let property in object) {
-            if (ignoreProperties[property]) {
+            if (ignoreProperties[property] || property.startsWith("_")) {
                 continue
             }
     

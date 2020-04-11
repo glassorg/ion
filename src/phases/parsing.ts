@@ -5,9 +5,9 @@ import Id from "../ast/Id";
 
 export default function parsing(root: Assembly) {
     root.modules = mapValues(
-        root.inputFiles!,
+        root._inputFiles!,
         (source: string, name: string) => {
-            let module: Module = root.parser.parse(source, name)
+            let module: Module = root._parser.parse(source, name)
             module.id = new Id({ location: module.location, name })
             return module
         }

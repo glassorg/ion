@@ -1,13 +1,11 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip, remove, traverseChildren } from "../Traversal";
-import { BinaryExpression, ExternalReference, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType } from "../ast";
+import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference } from "../ast";
 import { mapValues } from "../common";
 
 const typeMap = {
     Id: "Identifier",
-    Reference: "Identifier",
-    TypeReference: "Identifier",
-    ExternalReference: "Identifier",
+    Reference: "Identifier"
 }
 
 const operatorMap = {
@@ -209,19 +207,14 @@ const toAstLeave = {
             value: "TodoFunctionType"
         }
     },
-    ExternalReference(node: ExternalReference) {
-        //  don't modify ExternalReferences on leave,
-        //  they will be handled by VariableDeclaration
-        return node
-    },
     TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
         return { ...toAstLeave.VariableDeclaration(node, ancestors, path), kind: "type" }
     },
     VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
-        // check if value is ExternalReference
-        if (ExternalReference.is(node.value)) {
-            let thisModuleName =  path[1]
-            let ref = node.value as ExternalReference
+        // check if value is External Reference
+        if (Reference.is(node.value) && node.value.isExternal()) {
+            let ref = node.value
+            let thisModuleName = path[1]
             let specifiers = [
                 {
                     type: "ImportSpecifier",
@@ -252,7 +245,7 @@ const toAstLeave = {
                 specifiers,
                 source: {
                     type: "Literal",
-                    value: toRelativeModulePath(thisModuleName, ref.file),
+                    value: toRelativeModulePath(thisModuleName, ref._file),
                 }
             }
         };

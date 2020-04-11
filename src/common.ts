@@ -19,7 +19,7 @@ export function clone(value) {
     if (Array.isArray(value)) {
         return value.map(clone)
     }
-    let copy = new value.constructor()
+    let copy = new value.constructor(value)
     for (let name in value) {
         copy[name] = clone(value[name])
     }

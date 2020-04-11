@@ -17,7 +17,7 @@ export default function toJavascriptFiles(root: Assembly) {
             ? read(checkNativeFile)
             : codegen(module)
         let path = name.replace('.', '/') + '.ts'
-        root.outputFiles.set(path, content)
+        root._outputFiles.set(path, content)
         // now delete the module
         root.modules.delete(name)
     }

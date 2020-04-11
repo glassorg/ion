@@ -10,13 +10,17 @@ export default class Node {
     }
 
     static is(instance, debug?) {
-        if (instance == null) {
-            return false
-        }
-        if (instance instanceof (this as any)) {
-            return true
-        }
-        return isDerivedClass(this, instance.constructor, debug)
+        return is(instance, this)
     }
 
+}
+
+export function is(instance, cls) {
+    if (instance == null) {
+        return false
+    }
+    if (instance instanceof cls) {
+        return true
+    }
+    return isDerivedClass(cls, instance.constructor)
 }

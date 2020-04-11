@@ -58,7 +58,9 @@ const objectContainerHelper: ContainerHelper<any, string, any> = {
     },
     *keys(container) {
         for (let key in container) {
-            yield key
+            if (!key.startsWith("_")) {
+                yield key
+            }
         }
     },
     getValue(container, key: string) {

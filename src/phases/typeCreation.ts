@@ -1,14 +1,24 @@
 import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, skip, replace, pair } from "../Traversal";
-import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ExternalReference, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType, TypeReference } from "../ast";
+import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType } from "../ast";
 import { clone } from "../common";
 
-function createRuntimeTypeCheckingFunctionDeclaration(node: TypeDeclaration) {
+function getTypeCheckFunctionName(name: string) {
+    // this could be an external file.path:Name
+    let colon = name.lastIndexOf(':')
+    if (colon > 0) {
+        return name.slice(0, colon + 1) + getTypeCheckFunctionName(name.slice(colon + 1))
+    }
+    else {
+        return `is${name}`
+    }
+}
+
+function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration) {
     // shit... need a deep clone function for this shit.
     //  as we need to traverse and modify the one but not the other.
     // !! TODO:
-    const name = `is${node.id.name}`
     return new VariableDeclaration({
         id: new Id({ name }),
         assignable: false,
@@ -44,9 +54,9 @@ function createRuntimeTypeCheckingFunctionDeclaration(node: TypeDeclaration) {
                                         right: node.right
                                     })
                                 }
-                                if (TypeReference.is(node)) {
+                                if (Reference.is(node) && node._isType) {
                                     return new CallExpression({
-                                        callee: new Reference({ name: `is${node.name}` }),
+                                        callee: new Reference({ name: getTypeCheckFunctionName(node.name) }),
                                         arguments: [
                                             new Reference({ name: "value" })
                                         ]
@@ -81,9 +91,10 @@ export default function typeCreation(root: Assembly) {
         leave(node, ancestors, path) {
             let name = path[path.length - 1]
             if (TypeDeclaration.is(node) ) {
+                const isName = getTypeCheckFunctionName(name)
                 return replace(
                     pair(name, node),
-                    pair(`is${name}`, createRuntimeTypeCheckingFunctionDeclaration(node))
+                    pair(isName, createRuntimeTypeCheckingFunctionDeclaration(isName, node))
                 )
             }
         }

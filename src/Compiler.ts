@@ -17,7 +17,7 @@ export default class Compiler {
 
     compile(options: Options) {
         let parser = Parser()
-        let assembly = new Assembly({ parser, options, modules: new Map() })
+        let assembly = new Assembly({ _parser: parser, options: options, modules: new Map() })
         this.logger("Input", assembly)
         try {
 
@@ -39,7 +39,7 @@ export default class Compiler {
             if (location == null)
                 throw e
             let { filename } = location
-            let source = assembly.inputFiles!.get(filename)!
+            let source = assembly._inputFiles!.get(filename)!
             let error = parser.getError(e.message, location, source, filename)
             console.log(error.message)
         }
