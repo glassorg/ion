@@ -3,7 +3,7 @@ import { isDerivedClass } from "./runtime";
 
 export default class Node {
 
-    location!: Location
+    location?: Location
 
     constructor(...values) {
         Object.assign(this, ...values)

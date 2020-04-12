@@ -35,9 +35,6 @@
         )
     }
 
-    function toDeclarationMap(array) {
-        return new Map(array.map(d => [d.id.name, d]))
-    }
 
     //  TODO: Broken -> Map
 
@@ -49,7 +46,7 @@
 
 Module
     = EOL? imports:Imports declarations:Declaration* exports:Exports EOL EOF
-    { return node("Module", { imports, declarations: toDeclarationMap([...declarations, ...exports]) } ) }
+    { return node("Module", { imports, declarations: [...declarations, ...exports] } ) }
 
 Exports
     //  Allow Declaration meta properties to be specified before the export declaration
@@ -80,7 +77,7 @@ ImportStep
     }
     / relative:'.'? id:Id as:(_ AsToken _ @Id)? children:ImportStepChildren
     {
-        if (as == null && children.length == 0) {
+        if (as == null) {
             as = id
         }
         return node("ImportStep", { relative: relative != null, id, as, children })
@@ -210,7 +207,7 @@ ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
         _ id:Id templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations: toDeclarationMap(declarations) }) }
+        { return node("ClassDeclaration", { id, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }

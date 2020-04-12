@@ -1,9 +1,9 @@
 import
     ion.*
 
-type Whole = Number where . >= 0
 
 export
-    struct Point
+    type Whole = Number where . >= 0
+    struct Point2
         let x: Whole
         let y: Whole

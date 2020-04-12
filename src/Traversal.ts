@@ -173,7 +173,7 @@ export function setValue(container, key, value) {
 }
 
 export function defaultSkip(node) {
-    return node.constructor === Object || node instanceof Set || node instanceof Location
+    return node instanceof Set || node instanceof Location
 }
 
 export function defaultFilter(node) {

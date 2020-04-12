@@ -1,11 +1,23 @@
 import * as HtmlLogger from "./HtmlLogger";
 import * as common from "./common";
 import { Assembly } from "./ast";
-import { Options } from "./ast/Assembly";
 import phases from "./phases";
 import Parser = require("./parser");
 
 type Logger = (names?: string | string[], ast?: any) => void
+
+export class Options {
+
+    input: string
+    output: string
+    parser!: ReturnType<typeof Parser>
+
+    constructor(input: string, output: string) {
+        this.input = input
+        this.output = output
+    }
+
+}
 
 export default class Compiler {
 
@@ -16,31 +28,25 @@ export default class Compiler {
     }
 
     compile(options: Options) {
-        let parser = Parser()
-        let assembly = new Assembly({ _parser: parser, options: options, modules: new Map() })
-        this.logger("Input", assembly)
+        options.parser = Parser()
+        let files = common.getInputFilesRecursive(options.input)
+        let root: any = files
+        this.logger("Input", root)
         try {
 
             for (let phase of phases) {
-                phase(assembly)
-                this.logger(phase.name, assembly)
+                root = phase(root, options)
+                this.logger(phase.name, root)
             }
-            this.logger("Output", assembly)
-
-            // // state = toJavascriptAst(state)
-            // // this.logger("ToJavascriptAst", state)
-            // // state = toJavascriptFiles(state, options)
-            // // this.logger("ToJavascriptFiles", state)
-            // // this.logger("Output", state)
-            // // state = fileWriter(state, options)
+            this.logger("Output", root)
         }
         catch (e) {
             let location = e.location
-            if (location == null)
+            if (location == null || location.start == null)
                 throw e
             let { filename } = location
-            let source = assembly._inputFiles!.get(filename)!
-            let error = parser.getError(e.message, location, source, filename)
+            let source = files[filename]!
+            let error = options.parser.getError(e.message, location, source, filename)
             console.log(error.message)
         }
         this.logger()

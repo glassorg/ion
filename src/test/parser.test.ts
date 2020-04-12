@@ -1,10 +1,12 @@
 import { strict as assert } from "assert"
-import Compiler from "../Compiler";
+import Compiler, { Options } from "../Compiler";
 import path from "path";
 
 let compiler = new Compiler()
-let result = compiler.compile({
-    input: path.join(__dirname, "../../ionsrc"),
-    output: path.join(__dirname, "../../dist"),
-})
+let result = compiler.compile(
+    new Options(
+        path.join(__dirname, "../../ionsrc"),
+        path.join(__dirname, "../../dist"),
+    )
+)
 assert(true)

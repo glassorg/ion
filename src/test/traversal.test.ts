@@ -10,12 +10,10 @@ class MyNode {
     }
 }
 
-{
-    // check enter/leave order and filtering out of array
+(function testEnterLeaveOrderAndFilteringOutOfArray() {
     let root = [
         new MyNode(1),
         new MyNode(2),
-        { value: 100, shouldBeFiltered: "probably" },
         new MyNode(3)
     ]
     let order: number[] = []
@@ -28,10 +26,9 @@ class MyNode {
         }
     })
     assert.deepEqual(order, [1, -1, 2, -2, 3, -3])
-}
+})();
 
-{
-    // test children pre-order
+(function testChildrenPreOrder() {
     let root = [
         new MyNode(1, new MyNode(11), new MyNode(12)),
         new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -52,10 +49,9 @@ class MyNode {
         2, 21, -21, 22, -22, -2,
         3, 31, -31, 32, -32, -3
     ])
-}
+})();
 
-{
-    //  test skipping children.
+(function testSkippingChildren() {
     let root = [
         new MyNode(1, new MyNode(11), new MyNode(12)),
         new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -79,10 +75,10 @@ class MyNode {
         2, -2,
         3, 31, -31, 32, -32, -3
     ])
-}
+})();
 
-{
-    //  test array removal.
+
+(function testArrayRemoval() {
     let root = [
         new MyNode(1, new MyNode(11), new MyNode(12)),
         new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -103,10 +99,9 @@ class MyNode {
             new MyNode(3, new MyNode(32))
         ]
     )
-}
+})();
 
-{
-    //  test array insertion.
+(function testArrayInsertion() {
     let root = [
         new MyNode(1, new MyNode(11), new MyNode(12)),
         new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -134,10 +129,9 @@ class MyNode {
             new MyNode(3, new MyNode(31), new MyNode(32))
         ]
     )
-}
+})();
 
-{
-    //  test object removal.
+(function testObjectRemoval() {
     let root = {
         a: new MyNode(1, new MyNode(11), new MyNode(12)),
         b: new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -162,10 +156,9 @@ class MyNode {
             c: new MyNode(3, new MyNode(31), new MyNode(32))
         }
     )
-}
+})();
 
-{
-    //  test object insertion.
+(function testObjectInsertion() {
     let root = {
         a: new MyNode(1, new MyNode(11), new MyNode(12)),
         b: new MyNode(2, new MyNode(21), new MyNode(22)),
@@ -196,10 +189,9 @@ class MyNode {
             c: new MyNode(3, new MyNode(31), new MyNode(32))
         })
     )
-}
+})();
 
-{
-    //  test Map removal.
+(function testMapRemoval() {
     let root = new Map([
         ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
         ["b", new MyNode(2, new MyNode(21), new MyNode(22))],
@@ -220,10 +212,9 @@ class MyNode {
             ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
         ])
     )
-}
+})();
 
-{
-    //  test Map insertion.
+(function testMapInsertion() {
     let root = new Map([
         ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
         ["b", new MyNode(2, new MyNode(21), new MyNode(22))],
@@ -250,4 +241,4 @@ class MyNode {
             ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
         ])
     )
-}
+})();

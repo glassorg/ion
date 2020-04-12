@@ -8,9 +8,7 @@ export default class Module extends Scope {
 
     id!: Id
     imports!: Array<ImportStep>
-    declarations!: Map<string,Declaration>
-    // declarations!: { [name: string]: Declaration }
-    // exports!: Array<Declaration>
+    declarations!: Declaration[]
 
 }
 // mixin(Module, Scope)

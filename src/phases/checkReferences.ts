@@ -9,11 +9,11 @@ export default function checkReferences(root: Assembly) {
     traverse(root, {
         enter(node) {
             if (Reference.is(node)) {
-                let ref = node as Reference
-                let scope = scopes.get(ref)
-                let declaration = scope[ref.name]
+                let scope = scopes.get(node)
+                let declaration = scope[node.name]
                 if (declaration == null) {
-                    throw SemanticError(`Reference not found: ${ref.name}`, ref)
+                    console.log(`Reference not found: ${node.name}`)
+                    // throw SemanticError(`Reference not found: ${node.name}`, node)
                 }
             }
         }
