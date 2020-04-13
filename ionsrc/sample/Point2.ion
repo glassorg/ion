@@ -1,7 +1,6 @@
 import
     ion.*
 
-
 export
     type Whole = Number where . >= 0
     struct Point2

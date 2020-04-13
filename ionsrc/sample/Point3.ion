@@ -1,8 +1,6 @@
 import
     ion.*
-    sample
-        .Point2
-            .Whole
+    .Point2.*
 
 export
     struct Point3 extends Point2

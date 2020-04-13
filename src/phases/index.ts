@@ -10,21 +10,22 @@ import semanticValidation from "./semanticValidation";
 // import declarationIsolation from "./declarationIsolation";
 import checkReferences from "./checkReferences";
 import inputToAnalysis from "./inputToAnalysis";
+import inheritBaseClasses from "./inheritBaseClasses";
 
 export default [
-    // input phases
+    // input stage
     parsing,
     semanticValidation,
     importResolution,
     
-    // analysis phases
+    // analysis stage
     inputToAnalysis,
+    checkReferences,
+    inheritBaseClasses,
+    
+    // output phase depends on target
     
     // typeCreation,
-    // declarationIsolation,
-    // declarationMigration,
-    // checkReferences,
-
     // // // typeNormalization,
     // // toJavascriptAst,
     // // toJavascriptFiles,

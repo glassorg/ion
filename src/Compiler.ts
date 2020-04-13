@@ -35,7 +35,7 @@ export default class Compiler {
         try {
 
             for (let phase of phases) {
-                root = phase(root, options)
+                root = phase(root, options) || root
                 this.logger(phase.name, root)
             }
             this.logger("Output", root)

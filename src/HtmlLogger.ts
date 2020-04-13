@@ -7,9 +7,7 @@ const remove__prefixedProperties = (key: string, value:any) => key.startsWith("_
 const uniqueId = Symbol('uniqueId')
 let nextId = 0
 const ignoreProperties: {[name:string]:boolean} = {
-    location: true,
-    inputFiles: true,
-    parser: true,
+    location: true
 }
 
 export function stringify(object, indent = 2) {

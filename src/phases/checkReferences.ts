@@ -12,8 +12,8 @@ export default function checkReferences(root: Input) {
                 let scope = scopes.get(node)
                 let declaration = scope[node.name]
                 if (declaration == null) {
-                    console.log(`Reference not found: ${node.name}`)
-                    // throw SemanticError(`Reference not found: ${node.name}`, node)
+                    // console.log(`Reference not found: ${node.name}`)
+                    throw SemanticError(`Reference not found: ${node.name}`, node)
                 }
             }
         }
