@@ -9,12 +9,17 @@ import semanticValidation from "./semanticValidation";
 // import declarationMigration from "./declarationMigration";
 // import declarationIsolation from "./declarationIsolation";
 import checkReferences from "./checkReferences";
+import inputToAnalysis from "./inputToAnalysis";
 
 export default [
+    // input phases
     parsing,
     semanticValidation,
     importResolution,
-
+    
+    // analysis phases
+    inputToAnalysis,
+    
     // typeCreation,
     // declarationIsolation,
     // declarationMigration,

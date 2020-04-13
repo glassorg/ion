@@ -1,26 +1,31 @@
 import createScopeMap from "../createScopeMap";
-import Assembly from "../ast/Assembly";
+import Input from "../ast/Input";
 import { traverse, setValue } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
 import { SemanticError } from "../common";
 
-function getAllExports(root: Assembly) {
+export function getExportName(moduleName: string, declarationName: string) {
+    let lastName = moduleName.slice(moduleName.lastIndexOf('.') + 1)
+    if (lastName === declarationName) {
+        return moduleName
+    }
+    return moduleName + "." + declarationName
+}
+
+function getAllExports(root: Input) {
     let names: { [name: string]: true } = {}
     for (let moduleName in root.modules) {
-        let lastName = moduleName.split('.').pop()
         names[moduleName] = true
         let module = root.modules[moduleName]
         for (let declaration of module.declarations) {
             let declarationName = declaration.id.name
-            if (declaration.export && declarationName !== lastName) {
-                names[moduleName + "." + declarationName] = true
-            }
+            names[getExportName(moduleName, declarationName)] = true
         }
     }
     return names
 }
 
-export default function importResolution(root: Assembly) {
+export default function importResolution(root: Input) {
     let asReferences = new Map<string, string>()
 
     // let's first find ALL valid external names

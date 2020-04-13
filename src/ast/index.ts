@@ -1,5 +1,5 @@
 
-export { default as Assembly } from "./Assembly";
+export { default as Assembly } from "./Input";
 export { default as AssignmentStatement } from "./AssignmentStatement";
 export { default as BinaryExpression } from "./BinaryExpression";
 export { default as BlockStatement } from "./BlockStatement";

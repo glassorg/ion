@@ -1,4 +1,4 @@
-import Assembly from "../ast/Assembly";
+import Input from "../ast/Input";
 import { traverse } from "../Traversal";
 import { TypeDeclaration, VariableDeclaration, ClassDeclaration, Module } from "../ast";
 import { SemanticError } from "../common";
@@ -11,7 +11,7 @@ function isLowerCase(char: string) {
     return char === char.toLowerCase()
 }
 
-export default function semanticValidation(root: Assembly) {
+export default function semanticValidation(root: Input) {
     return traverse(root, {
         enter(node) {
             if (TypeDeclaration.is(node) || ClassDeclaration.is(node)) {

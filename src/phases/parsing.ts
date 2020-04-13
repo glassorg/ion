@@ -1,4 +1,4 @@
-import Assembly from "../ast/Assembly";
+import Input from "../ast/Input";
 import Module from "../ast/Module";
 import Id from "../ast/Id";
 import { Options } from "../Compiler";
@@ -11,5 +11,5 @@ export default function parsing(root: { [name: string]: string }, options: Optio
         module.id = new Id({ location: module.location, name })
         modules[name] = module 
     }
-    return new Assembly({ modules })
+    return new Input({ modules })
 }

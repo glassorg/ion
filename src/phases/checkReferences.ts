@@ -1,10 +1,10 @@
 import createScopeMap from "../createScopeMap";
-import Assembly from "../ast/Assembly";
+import Input from "../ast/Input";
 import { traverse, setValue } from "../Traversal";
 import { Reference } from "../ast";
 import { SemanticError } from "../common";
 
-export default function checkReferences(root: Assembly) {
+export default function checkReferences(root: Input) {
     let scopes = createScopeMap(root)
     traverse(root, {
         enter(node) {
