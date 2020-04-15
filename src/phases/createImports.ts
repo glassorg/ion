@@ -1,12 +1,11 @@
 import Assembly from "../ast/Assembly";
 import { traverse, setValue, skip } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, Declaration, Location, MemberExpression } from "../ast";
-import { getExternalModuleNameAndExportName, getLastName } from "./importResolution";
+import { getExternalModuleNameAndExportName, getLastName } from "../common";
 import IdGenerator from "../IdGenerator";
 import ImportDeclaration from "../ast/ImportDeclaration";
 
 export default function createImports(root: Assembly) {
-    console.log("create imports")
 
     // find all external references
     for (let moduleName in root.modules) {
@@ -25,7 +24,7 @@ export default function createImports(root: Assembly) {
             },
             leave(node) {
                 if (Reference.is(node)) {
-                    let externalModuleAndName = getExternalModuleNameAndExportName(root, node.name)
+                    let externalModuleAndName = getExternalModuleNameAndExportName(node.name)
                     if (externalModuleAndName) {
                         let [moduleName, exportName] = externalModuleAndName
                         let refs = externalReferences.get(moduleName)

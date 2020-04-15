@@ -1,6 +1,66 @@
 import * as fs from "fs";
 import * as np from "path";
-import { Module } from "./ast";
+import { Module, Reference, Assembly } from "./ast";
+
+////////////////////////////////////////////////////////////////////////////////
+//  Import/Export Functions
+////////////////////////////////////////////////////////////////////////////////
+
+export const PATH_SEPARATOR = "."
+export const EXPORT_DELIMITER = ":"
+
+export function isTypeReference(node): node is Reference {
+    if (!Reference.is(node)) {
+        return false
+    }
+    let first = getLastName(node.name)[0]
+    return first === first.toUpperCase()
+}
+
+export function getLastName(absoluteName: string) {
+    return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)
+}
+
+export function getAbsoluteName(moduleName: string, declarationName: string) {
+    let lastName = getLastName(moduleName)
+    // if (lastName === declarationName) {
+    //     declarationName = DEFAULT_EXPORT_NAME
+    // }
+    return moduleName + EXPORT_DELIMITER + declarationName
+}
+
+export function getExternalModuleNameAndExportName(absoluteName: string): [string, string] | null {
+    let colon = absoluteName.lastIndexOf(EXPORT_DELIMITER)
+    if (colon < 0) {
+        // this is not an external reference, so return null
+        return null
+    }
+    return [ absoluteName.slice(0, colon), absoluteName.slice(colon + 1)]
+}
+
+export function getLocalName(absoluteName: string, localModuleName: string) {
+    let names = getExternalModuleNameAndExportName(absoluteName)
+    if (names) {
+        let [ moduleName, exportName ] = names
+        if (moduleName === localModuleName) {
+            return exportName
+        }
+    }
+    return null
+}
+
+export function getAllExports(root: Assembly) {
+    let names: { [name: string]: true } = {}
+    for (let moduleName in root.modules) {
+        // names[moduleName] = true
+        let module = root.modules[moduleName]
+        for (let declaration of module.declarations) {
+            let declarationName = declaration.id.name
+            names[getAbsoluteName(moduleName, declarationName)] = true
+        }
+    }
+    return names
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Miscelaneous Functions

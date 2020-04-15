@@ -17,6 +17,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             let baseDeclarations: Declaration[] = []
             for (let baseClass of classDeclaration.baseClasses) {
                 let baseDeclaration = root.declarations[baseClass.name]
+                
                 if (!ClassDeclaration.is(baseDeclaration)) {
                     throw SemanticError(`BaseClass is not a class declaration`, baseClass)
                 }

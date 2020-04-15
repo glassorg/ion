@@ -1,7 +1,7 @@
 import Assembly from "../../ast/Assembly";
 import { traverse, skip, remove, traverseChildren } from "../../Traversal";
 import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference } from "../../ast";
-import { mapValues } from "../../common";
+import { mapValues, clone } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
 
 const typeMap = {
@@ -36,6 +36,28 @@ function toRelativeModulePath(from: string, to: string) {
     }
 
     return prefix + b.join("/") + suffix
+}
+
+function toIsFunctionReference(node) {
+    if (node.type === "Identifier") {
+        return {
+            type: "Identifier",
+            name: "is" + node.name
+        }
+    }
+    else if (node.type === "MemberExpression") {
+        return {
+            type: "MemberExpression",
+            object: node.object,
+            property: {
+                type: "Identifier",
+                name: "is" + node.property.name
+            }
+        }
+    }
+    else {
+        throw new Error("Unrecognized node type for is : " + node.type)
+    }
 }
 
 //  Is my conversion to Typescript technique sound?
@@ -146,7 +168,7 @@ const toAstLeave = {
                                                 prefix: true,
                                                 argument: {
                                                     type: "CallExpression",
-                                                    callee: { type: "Identifier", name: `is${declarator.tstype.name}` },
+                                                    callee: toIsFunctionReference(declarator.tstype),
                                                     arguments: [
                                                         { type: "Identifier", name: declarator.id.name }
                                                     ]

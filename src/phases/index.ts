@@ -27,15 +27,5 @@ export default [
     convertRefsToAbsolute,
     assemblyToAnalysis,
     checkReferences,
-    inheritBaseClasses,
-    
-    // output phase depends on target
-    // analysisToAssembly,
-    // convertRefsToLocal,
-    
-    // typeCreation,
-    // // // typeNormalization,
-    // // toJavascriptAst,
-    // // toJavascriptFiles,
-    // // writeFiles,
+    inheritBaseClasses,    
 ]
