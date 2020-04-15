@@ -4,6 +4,14 @@ import { traverse, setValue } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
 import { SemanticError } from "../common";
 
+export function isTypeReference(node): node is Reference {
+    if (!Reference.is(node)) {
+        return false
+    }
+    let first = getLastName(node.name)[0]
+    return first === first.toUpperCase()
+}
+
 export function getLastName(absoluteName: string) {
     return absoluteName.slice(absoluteName.lastIndexOf('.') + 1)
 }

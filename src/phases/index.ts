@@ -14,13 +14,15 @@ import inheritBaseClasses from "./inheritBaseClasses";
 import analysisToAssembly from "./analysisToAssembly";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import convertRefsToLocal from "./convertRefsToLocal";
+import typeCreation from "./typeCreation";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
     importResolution,
-    
+    typeCreation,
+
     // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,

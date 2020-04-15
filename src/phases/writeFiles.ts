@@ -1,12 +1,12 @@
-// import { Assembly } from "../ast";
-// import { join } from "path";
-// import { write } from "../common";
+import { Assembly } from "../ast";
+import { join } from "path";
+import { write } from "../common";
+import { Options } from "../Compiler";
 
-// export default function writeFiles(ast: Assembly) {
-//     if (ast._outputFiles) {
-//         for (let path of ast._outputFiles.keys()) {
-//             let content = ast._outputFiles.get(path)!
-//             write(join(ast.options.output, path), content)
-//         }
-//     }
-// }
+export default function writeFiles(ast: { [name: string]: string }, options: Options) {
+    for (let path in ast) {
+        let content = ast[path]
+        write(join(options.output, path), content)
+    }
+    return null
+}
