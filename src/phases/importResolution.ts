@@ -1,31 +1,55 @@
 import createScopeMap from "../createScopeMap";
-import Input from "../ast/Input";
+import Assembly from "../ast/Assembly";
 import { traverse, setValue } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
 import { SemanticError } from "../common";
 
-export function getExportName(moduleName: string, declarationName: string) {
-    let lastName = moduleName.slice(moduleName.lastIndexOf('.') + 1)
+export function getLastName(absoluteName: string) {
+    return absoluteName.slice(absoluteName.lastIndexOf('.') + 1)
+}
+
+export function getAbsoluteName(moduleName: string, declarationName: string) {
+    let lastName = getLastName(moduleName)
     if (lastName === declarationName) {
         return moduleName
     }
     return moduleName + "." + declarationName
 }
 
-function getAllExports(root: Input) {
+export function getExternalModuleNameAndExportName(root: Assembly, absoluteName: string): [string, string] | null {
+    let lastName = getLastName(absoluteName)
+    if (lastName === absoluteName) {
+        // this is not an external reference, so return null
+        return null
+    }
+    if (root.modules[absoluteName] != null) {
+        // this is a default export
+        return [ absoluteName, "default" ]
+    }
+    let moduleName = absoluteName.slice(0, absoluteName.length - lastName.length - 1)
+    return [ moduleName, lastName ]
+}
+
+export function getLocalName(absoluteName: string, localModuleName: string) {
+    let local = absoluteName === localModuleName ||
+        (absoluteName.startsWith(localModuleName) && absoluteName[localModuleName.length] === '.')
+    return local ? getLastName(absoluteName) : null
+}
+
+function getAllExports(root: Assembly) {
     let names: { [name: string]: true } = {}
     for (let moduleName in root.modules) {
         names[moduleName] = true
         let module = root.modules[moduleName]
         for (let declaration of module.declarations) {
             let declarationName = declaration.id.name
-            names[getExportName(moduleName, declarationName)] = true
+            names[getAbsoluteName(moduleName, declarationName)] = true
         }
     }
     return names
 }
 
-export default function importResolution(root: Input) {
+export default function importResolution(root: Assembly) {
     let asReferences = new Map<string, string>()
 
     // let's first find ALL valid external names

@@ -1,7 +1,8 @@
 import * as HtmlLogger from "./HtmlLogger";
 import * as common from "./common";
 import { Assembly } from "./ast";
-import phases from "./phases";
+import frontPhases from "./phases";
+import * as targets from "./targets";
 import Parser = require("./parser");
 
 type Logger = (names?: string | string[], ast?: any) => void
@@ -10,6 +11,7 @@ export class Options {
 
     input: string
     output: string
+    target: "typescript" = "typescript"
     parser!: ReturnType<typeof Parser>
 
     constructor(input: string, output: string) {
@@ -31,9 +33,10 @@ export default class Compiler {
         options.parser = Parser()
         let files = common.getInputFilesRecursive(options.input)
         let root: any = files
+        let backPhases = targets[options.target]
+        let phases = [...frontPhases, ...backPhases]
         this.logger("Input", root)
         try {
-
             for (let phase of phases) {
                 root = phase(root, options) || root
                 this.logger(phase.name, root)

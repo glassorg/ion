@@ -1,4 +1,4 @@
-import Input from "../ast/Input";
+import Assembly from "../ast/Assembly";
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
 import { Node, ClassDeclaration, Declaration } from "../ast";
