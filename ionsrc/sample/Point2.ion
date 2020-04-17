@@ -2,7 +2,7 @@ import
     ion.*
 
 export
-    type Whole = Number where . >= 0
+    type Whole = Integer where . >= 0
     struct Point2
-        let x: Whole
-        let y: Whole
+        let x: Whole = 0
+        let y: Whole = 0

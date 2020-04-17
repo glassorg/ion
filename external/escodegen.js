@@ -911,9 +911,21 @@
                     result.push(this.generateAssignment(node.params[i], node.defaults[i], '=', Precedence.Assignment, E_TTT));
                 } else {
                     let param = node.params[i];
-                    result.push(param.name);
-                    if (param.tstype && param.tstype.type === "Identifier") {
-                        result.push(": ", this.generateStatement(param.tstype));
+                    if (param.type === "ObjectPattern") {
+                        result.push(this.generatePattern(node.params[i], Precedence.Assignment, E_TTT));                        
+                    }
+                    else {
+                        // handle Identifier and AssignmentPatttern { left, right }
+                        let name = param.name || param.left && param.left.name
+                        result.push(name);
+                        let tstype = param.tstype || (param.left && param.left.tstype)
+                        if (tstype) {
+                            result.push(": ", this.generateStatement(tstype));
+                        }
+                        let init = param.init || param.right
+                        if (init) {
+                            result.push(" = ", this.generateExpression(init))
+                        }
                     }
                 }
                 if (i + 1 < iz) {
@@ -2235,9 +2247,6 @@
 
         ObjectPattern: function (expr, precedence, flags) {
             var result, i, iz, multiline, property, that = this;
-            if (!expr.properties.length) {
-                return '{}';
-            }
 
             multiline = false;
             if (expr.properties.length === 1) {
@@ -2272,6 +2281,11 @@
             }
             result.push(multiline ? base : '');
             result.push('}');
+
+            if (expr.tstype) {
+                result.push(": ", this.generateExpression(expr.tstype));
+            }
+
             return result;
         },
 

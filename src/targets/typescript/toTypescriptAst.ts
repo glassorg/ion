@@ -4,6 +4,10 @@ import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDec
 import { mapValues, clone } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
 
+const DO_NOT_EDIT_WARNING = `
+This file was generated from ion source. Do not edit.
+`
+
 const typeMap = {
     Id: "Identifier",
     Reference: "Identifier"
@@ -38,6 +42,27 @@ function toRelativeModulePath(from: string, to: string) {
     return prefix + b.join("/") + suffix
 }
 
+function getIdentifier(parameter) {
+    if (parameter.type === "Identifier") {
+        return parameter
+    }
+    else {
+        throw new Error("Not supported yet, maybe implement it: " + parameter.type)
+    }
+}
+
+function getTypeReferenceName(node) {
+    if (node.type === "Identifier") {
+        return node.name
+    }
+    else if (node.type === "MemberExpression") {
+        return node.property.name
+    }
+    else {
+        throw new Error("Expected Identifier or MemberExpression: " + node.type)
+    }
+}
+
 function toIsFunctionReference(node) {
     if (node.type === "Identifier") {
         return {
@@ -64,7 +89,7 @@ function toIsFunctionReference(node) {
 //  Pre-converting nodes is a bit problematic...
 //  Perhaps I should convert top down instead of bottom up?
 //  Types are gone otherwise, so I believe we HAVE to go from top down.
-//  TODO: convert to top-down conversion to Javascript.
+//  TODO: convert to top-down conversion to Typescript.
 
 const toAstEnter = {
     default(node) {
@@ -97,6 +122,9 @@ const toAstLeave = {
     Module(node: Module) {
         return {
             type: "Program",
+            leadingComments: [{
+                value: DO_NOT_EDIT_WARNING
+            }],
             body: Array.from(node.declarations.values())
         }
     },
@@ -135,25 +163,78 @@ const toAstLeave = {
         }
     },
     ClassDeclaration(node: ClassDeclaration) {
+        console.log(node.id.name + " => " + node.isStructure)
         return {
             type: "ClassDeclaration",
             id: node.id,
             body: {
                 type: "ClassBody",
                 body: [
-                    ...node.declarations.map(d => ({ ...d, kind: "readonly" })),
+                    ...node.declarations.map((d: any) => {
+                        let copy = clone(d)
+                        copy.kind = "readonly"
+                        for (let declaration of copy.declarations) {
+                            // we remove inits from initial declaration since they will be definitely assigned in the constructor
+                            delete declaration.init
+                        }
+                        return copy
+                    }),
                     {
                         type: "MethodDefinition",
                         kind: "constructor",
                         key: { type: "Identifier", name: "constructor" },
                         value: {
                             type: "FunctionExpression",
-                            params: Array.from(node.declarations.values()).map((d: any) => {
-                                return {
+                            params: !node.isStructure ? (() => {
+                                // we need to use the ObjectPattern
+                                return  [{
+                                    type: "ObjectPattern",
+                                    properties: node.declarations.map((d: any) => {
+                                        let declaration = d.declarations[0]
+                                        let name = declaration.id.name
+                                        return {
+                                            type: "Property",
+                                            kind: "init",
+                                            shorthand: true,
+                                            key: { type: "Identifier", name },
+                                            value: declaration.init ? {
+                                                type: "AssignmentPattern",
+                                                left: { type: "Identifier", name },
+                                                right: declaration.init
+                                            }
+                                            : { type: "Identifier", name },
+                                        }
+                                    }),
+                                    tstype: {
+                                        type: "ObjectExpression",
+                                        properties: node.declarations.map((d: any) => {
+                                            let declaration = d.declarations[0]
+                                            let required = declaration.init == null
+                                            let name = declaration.id.name
+                                            return {
+                                                type: "Property",
+                                                kind: "init",
+                                                key: { type: "Identifier", name: required ? name : `${name}?` },
+                                                value: declaration.tstype,
+                                            }
+                                        })
+                                    }
+                                }]
+                            })() : node.declarations.map((d: any) => {
+                                let declaration = d.declarations[0]
+                                let parameter: any = {
                                     type: "Identifier",
-                                    name: d.declarations[0].id.name,
-                                    tstype: d.declarations[0].tstype
+                                    name: declaration.id.name,
+                                    tstype: declaration.tstype
                                 }
+                                if (declaration.init) {
+                                    parameter = {
+                                        type: "AssignmentPattern",
+                                        left: parameter,
+                                        right: declaration.init
+                                    }
+                                }
+                                return parameter
                             }),
                             body: {
                                 type: "BlockStatement",
@@ -183,7 +264,7 @@ const toAstLeave = {
                                                         type: "BinaryExpression",
                                                         left: {
                                                             type: "Literal",
-                                                            value: `${declarator.id.name} is not a valid ${declarator.tstype.name}: `
+                                                            value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
                                                         },
                                                         operator: "+",
                                                         right: {
@@ -223,7 +304,7 @@ const toAstLeave = {
             type: "FunctionExpression",
             id: node.id,
             params: node.parameters,
-            tstype: node.returnType,
+            tstype: node.typeGuard ? ({ type: "BinaryExpression", left: getIdentifier(node.parameters[0]), operator: "is", right: node.typeGuard }) : node.returnType,
             body: node.body,
         }
     },
@@ -256,47 +337,6 @@ const toAstLeave = {
         }
     },
     VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
-        //  TODO: ImportDeclaration
-
-        // check if value is External Reference
-        // if (Reference.is(node.value) && node.value.isExternal()) {
-        //     let ref = node.value
-        //     let thisModuleName = path[1]
-        //     let specifiers = [
-        //         {
-        //             type: "ImportSpecifier",
-        //             imported: {
-        //                 type: "Identifier",
-        //                 name: ref.name,
-        //             },
-        //             local: node.id as any,
-        //         }
-        //     ]
-        //     let isType = ref.name[0] === ref.name[0].toUpperCase()
-        //     if (isType) {
-        //         // then we must also import the is
-        //         specifiers.push({
-        //             type: "ImportSpecifier",
-        //             imported: {
-        //                 type: "Identifier",
-        //                 name: `is${ref.name}`,
-        //             },
-        //             local: {
-        //                 type: "Identifier",
-        //                 name: `is${ref.name}`,
-        //             },
-        //         })
-        //     }
-        //     return {
-        //         type: "ImportDeclaration",
-        //         specifiers,
-        //         source: {
-        //             type: "Literal",
-        //             value: toRelativeModulePath(thisModuleName, ref._file),
-        //         }
-        //     }
-        // };
-
         let value = node.value as any
         if (value && value.type === "FunctionExpression" && node.id.name === value.id.name) {
             // simplify
@@ -335,6 +375,6 @@ const visitor = {
     }
 };
 
-export default function toJavascriptAst(node: Node) {
+export default function toTypescriptAst(node: Node) {
     return traverse(node, visitor)
 }

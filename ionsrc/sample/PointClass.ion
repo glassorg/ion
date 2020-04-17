@@ -1,0 +1,7 @@
+import
+    ion.*
+    .Point2.*
+
+export
+    class PointClass extends Point2
+        let name: String
