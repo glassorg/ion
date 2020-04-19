@@ -49,7 +49,7 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
 }
 
 export function create(outputPath: string) {
-    let style = readFileSync("node_modules/jsondiffpatch/dist/formatters-styles/html.css")
+    let style = readFileSync("node_modules/jsondiffpatch/public/formatters-styles/html.css")
     // console.log(style)
     // let outputToStyle = np.relative(np.dirname(outputPath), "node_modules/jsondiffpatch/dist/formatters-styles/html.css")
     let passes: [string[],object][] = []
@@ -123,10 +123,12 @@ export function create(outputPath: string) {
     // convert to show refs
     let delta = previous != null ? jsondiffpatch.diff(previous, ast) : null
     let html;
-    if (typeof ast === "string")
+    if (typeof ast === "string") {
         html = ast
-    else
+    }
+    else {
         html = require('jsondiffpatch/src/formatters/html').format(delta || {}, previous || ast)
+    }
     previous = ast
     return `
         <article>

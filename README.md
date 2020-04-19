@@ -1,6 +1,14 @@
 # ion
 Multiplatform Data Modeling Language featuring dependent types, immutability, validation
 
+## Design
+
+    Possible convenience format for authoring multiple Point related functions.
+    Drawback is that in a long list this imlicit argument may be off screen.
+    (point: Point)
+        let translate = (x: Number, y: Number) -> new Point(point.x + x, point.y + y)
+        let rotate =->
+
 ## TODO
     X add type guard on is<Type> functions
     X fix undefined in Point3

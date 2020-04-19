@@ -1,36 +1,11 @@
 
-export format
-
-two types of modules
-1. Type
-    exports a single type
-    any other constant values must be statically defined on the type
-
-    export
-        class Point
-            //  values are always considered constant
-            x = 10
-            y = 20
-
-        myStatic 1 = foo
-        myStaticDouble(value) => value * 2
-
-    in javascript is converted to a single "export default class Point.."
-2. Library
-    exports multiple constant values
-
-    export
-        myStatic 1 = foo
-        myStaticDouble(value) => value * 2
-
-
 Do we need let and var declarations at all?
     They aren't needed for static or instance variables.
     Only potentially needed in functions.
     If every instance is immutable... then we can only potentially reassign variables
     
 TODO:
-    Create unified, strongly typed Root compilation Node.
-    //  The entire pipeline should only need to refer to it, consistently.
-    //  No other parameters.
-    //  Simplify the compilation phases once again.
+    X Create unified, strongly typed Root compilation Node.
+    X  The entire pipeline should only need to refer to it, consistently.
+    X  No other parameters.
+    X  Simplify the compilation phases once again.
