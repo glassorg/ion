@@ -1,0 +1,6 @@
+import
+    .*
+
+export
+    let isInstance: (_class: Class, instance) -> Boolean
+    class Class extends Type

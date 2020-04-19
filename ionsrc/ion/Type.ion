@@ -3,5 +3,4 @@ import
 
 export
     class Type
-        let name: String
-        # let is: (value) => Boolean
+        let id: String

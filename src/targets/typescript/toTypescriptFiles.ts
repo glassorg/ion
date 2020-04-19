@@ -18,7 +18,9 @@ export function removePrewritten(root: Assembly, options: Options) {
     for (let moduleName in root.modules) {
         let checkNativeFile = getNativeFile(moduleName, options)
         if (exists(checkNativeFile)) {
-            delete root.modules[moduleName]
+            let module = root.modules[moduleName]
+            // just remove all declarations
+            module.declarations = []
         }
     }
 }

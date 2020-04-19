@@ -7,7 +7,10 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X add types to constructor parameters
     X default values on struct parameters
     X struct parameters vs class parameters => constructor({x = 0, y = 0}: { x?: Whole, y?: Whole })
-    - add is<Type> functions to classes for runtime type checking
+    X add is<Type> functions to classes for runtime type checking
     - figure out how to publish and consume ion
+        decision use npmjs with ion prefix:
+            ion.ion
+            ion.sample
+            ion.glass.graphics
     - publish compiler
-    - tstype ability to write templates Partial<PointClass>

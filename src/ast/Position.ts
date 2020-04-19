@@ -7,4 +7,9 @@ export default class Position {
         this.line = line
         this.column = column
     }
+
+    clone() {
+        return this
+    }
+
 }

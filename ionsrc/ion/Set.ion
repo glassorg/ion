@@ -1,0 +1,6 @@
+import
+    .*
+
+export
+    class Set
+        let has: value -> Boolean

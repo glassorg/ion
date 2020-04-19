@@ -1,5 +1,5 @@
 import Assembly from "../../ast/Assembly";
-import { traverse, skip, remove, traverseChildren } from "../../Traversal";
+import { traverse, skip, remove, traverseChildren, replace } from "../../Traversal";
 import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference } from "../../ast";
 import { mapValues, clone } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
@@ -100,9 +100,6 @@ const toAstEnter = {
     ImportDeclaration(node: ImportDeclaration) {
         return skip
     },
-    // Module(node) {
-    //     return skip
-    // }
 }
 
 const toAstLeave = {
@@ -163,141 +160,197 @@ const toAstLeave = {
         }
     },
     ClassDeclaration(node: ClassDeclaration) {
-        console.log(node.id.name + " => " + node.isStructure)
-        return {
-            type: "ClassDeclaration",
-            id: node.id,
-            body: {
-                type: "ClassBody",
-                body: [
-                    ...node.declarations.map((d: any) => {
-                        let copy = clone(d)
-                        copy.kind = "readonly"
-                        for (let declaration of copy.declarations) {
-                            // we remove inits from initial declaration since they will be definitely assigned in the constructor
-                            delete declaration.init
-                        }
-                        return copy
-                    }),
-                    {
-                        type: "MethodDefinition",
-                        kind: "constructor",
-                        key: { type: "Identifier", name: "constructor" },
-                        value: {
-                            type: "FunctionExpression",
-                            params: !node.isStructure ? (() => {
-                                // we need to use the ObjectPattern
-                                return  [{
-                                    type: "ObjectPattern",
-                                    properties: node.declarations.map((d: any) => {
+        return replace(
+            maybeExport(
+                node,
+                {
+                    type: "ClassDeclaration",
+                    id: node.id,
+                    body: {
+                        type: "ClassBody",
+                        body: [
+                            ...node.declarations.map((d: any) => {
+                                let copy = clone(d)
+                                copy.kind = "readonly"
+                                for (let declaration of copy.declarations) {
+                                    // we remove inits from initial declaration since they will be definitely assigned in the constructor
+                                    delete declaration.init
+                                }
+                                return copy
+                            }),
+                            {
+                                type: "MethodDefinition",
+                                kind: "constructor",
+                                key: { type: "Identifier", name: "constructor" },
+                                value: {
+                                    type: "FunctionExpression",
+                                    params: !node.isStructure ? (() => {
+                                        // we need to use the ObjectPattern
+                                        return  [{
+                                            type: "ObjectPattern",
+                                            properties: node.declarations.map((d: any) => {
+                                                let declaration = d.declarations[0]
+                                                let name = declaration.id.name
+                                                return {
+                                                    type: "Property",
+                                                    kind: "init",
+                                                    shorthand: true,
+                                                    key: { type: "Identifier", name },
+                                                    value: declaration.init ? {
+                                                        type: "AssignmentPattern",
+                                                        left: { type: "Identifier", name },
+                                                        right: declaration.init
+                                                    }
+                                                    : { type: "Identifier", name },
+                                                }
+                                            }),
+                                            tstype: {
+                                                type: "ObjectExpression",
+                                                properties: node.declarations.map((d: any) => {
+                                                    let declaration = d.declarations[0]
+                                                    let required = declaration.init == null
+                                                    let name = declaration.id.name
+                                                    return {
+                                                        type: "Property",
+                                                        kind: "init",
+                                                        key: { type: "Identifier", name: required ? name : `${name}?` },
+                                                        value: declaration.tstype,
+                                                    }
+                                                })
+                                            }
+                                        }]
+                                    })() : node.declarations.map((d: any) => {
                                         let declaration = d.declarations[0]
-                                        let name = declaration.id.name
-                                        return {
-                                            type: "Property",
-                                            kind: "init",
-                                            shorthand: true,
-                                            key: { type: "Identifier", name },
-                                            value: declaration.init ? {
+                                        let parameter: any = {
+                                            type: "Identifier",
+                                            name: declaration.id.name,
+                                            tstype: declaration.tstype
+                                        }
+                                        if (declaration.init) {
+                                            parameter = {
                                                 type: "AssignmentPattern",
-                                                left: { type: "Identifier", name },
+                                                left: parameter,
                                                 right: declaration.init
                                             }
-                                            : { type: "Identifier", name },
                                         }
+                                        return parameter
                                     }),
-                                    tstype: {
-                                        type: "ObjectExpression",
-                                        properties: node.declarations.map((d: any) => {
-                                            let declaration = d.declarations[0]
-                                            let required = declaration.init == null
-                                            let name = declaration.id.name
-                                            return {
-                                                type: "Property",
-                                                kind: "init",
-                                                key: { type: "Identifier", name: required ? name : `${name}?` },
-                                                value: declaration.tstype,
-                                            }
-                                        })
-                                    }
-                                }]
-                            })() : node.declarations.map((d: any) => {
-                                let declaration = d.declarations[0]
-                                let parameter: any = {
-                                    type: "Identifier",
-                                    name: declaration.id.name,
-                                    tstype: declaration.tstype
-                                }
-                                if (declaration.init) {
-                                    parameter = {
-                                        type: "AssignmentPattern",
-                                        left: parameter,
-                                        right: declaration.init
-                                    }
-                                }
-                                return parameter
-                            }),
-                            body: {
-                                type: "BlockStatement",
-                                body: [
-                                    ...node.declarations.filter((d: any) => d.declarations[0].tstype).map((d: any) => {
-                                        let declarator = d.declarations[0]
-                                        return {
-                                            type: "IfStatement",
-                                            test: {
-                                                type: "UnaryExpression",
-                                                operator: "!",
-                                                prefix: true,
-                                                argument: {
-                                                    type: "CallExpression",
-                                                    callee: toIsFunctionReference(declarator.tstype),
-                                                    arguments: [
-                                                        { type: "Identifier", name: declarator.id.name }
-                                                    ]
-                                                }
-                                            },
-                                            consequent: {
-                                                type: "ThrowStatement",
-                                                argument: {
-                                                    type: "NewExpression",
-                                                    callee: { type: "Identifier", name: "Error" },
-                                                    arguments: [{
-                                                        type: "BinaryExpression",
-                                                        left: {
-                                                            type: "Literal",
-                                                            value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
-                                                        },
-                                                        operator: "+",
-                                                        right: {
-                                                            type: "Identifier",
-                                                            name: declarator.id.name
+                                    body: {
+                                        type: "BlockStatement",
+                                        body: [
+                                            ...node.declarations.filter((d: any) => d.declarations[0].tstype).map((d: any) => {
+                                                let declarator = d.declarations[0]
+                                                return {
+                                                    type: "IfStatement",
+                                                    test: {
+                                                        type: "UnaryExpression",
+                                                        operator: "!",
+                                                        prefix: true,
+                                                        argument: {
+                                                            type: "CallExpression",
+                                                            callee: toIsFunctionReference(declarator.tstype),
+                                                            arguments: [
+                                                                { type: "Identifier", name: declarator.id.name }
+                                                            ]
                                                         }
-                                                    }]
+                                                    },
+                                                    consequent: {
+                                                        type: "ThrowStatement",
+                                                        argument: {
+                                                            type: "NewExpression",
+                                                            callee: { type: "Identifier", name: "Error" },
+                                                            arguments: [{
+                                                                type: "BinaryExpression",
+                                                                left: {
+                                                                    type: "Literal",
+                                                                    value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
+                                                                },
+                                                                operator: "+",
+                                                                right: {
+                                                                    type: "Identifier",
+                                                                    name: declarator.id.name
+                                                                }
+                                                            }]
+                                                        }
+                                                    }
                                                 }
-                                            }
-                                        }
-                                    }),
-                                    ...node.declarations.map((d: any) => {
-                                        return {
-                                            type: "ExpressionStatement",
-                                            expression: {
-                                                type: "AssignmentExpression",
-                                                left: {
-                                                    type: "MemberExpression",
-                                                    object: { type: "ThisExpression" },
-                                                    property: { type: "Identifier", name: d.declarations[0].id.name }
-                                                },
-                                                operator: "=",
-                                                right: { type: "Identifier", name: d.declarations[0].id.name }
-                                            }
-                                        }
-                                    })
-                                ]
+                                            }),
+                                            ...node.declarations.map((d: any) => {
+                                                return {
+                                                    type: "ExpressionStatement",
+                                                    expression: {
+                                                        type: "AssignmentExpression",
+                                                        left: {
+                                                            type: "MemberExpression",
+                                                            object: { type: "ThisExpression" },
+                                                            property: { type: "Identifier", name: d.declarations[0].id.name }
+                                                        },
+                                                        operator: "=",
+                                                        right: { type: "Identifier", name: d.declarations[0].id.name }
+                                                    }
+                                                }
+                                            })
+                                        ]
+                                    }
+                                }
                             }
-                        }
+                        ]
                     }
-                ]
+                }
+            ),
+            // set the Type.id property
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "AssignmentExpression",
+                    left: {
+                        type: "MemberExpression",
+                        object: {
+                            type: "Identifier",
+                            name: node.id.name,
+                        },
+                        property: {
+                            type: "Literal",
+                            value: "id"
+                        },
+                        computed: true
+                    },
+                    operator: "=",
+                    right: {
+                        type: "Literal",
+                        value: node.implements![0]
+                    }
+                }
+            },
+            // set the Type.implements property for runtime type checking.
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "AssignmentExpression",
+                    left: {
+                        type: "MemberExpression",
+                        object: {
+                            type: "Identifier",
+                            name: node.id.name,
+                        },
+                        property: {
+                            type: "Literal",
+                            value: "implements"
+                        },
+                        computed: true
+                    },
+                    operator: "=",
+                    right: {
+                        type: "NewExpression",
+                        callee: { type: "Identifier", name: "Set" },
+                        arguments: [{                            
+                            type: "ArrayExpression",
+                            elements: node.implements?.map(value => ({ type: "Literal", value }))
+                        }]
+                    }
+                }
             }
-        }
+        )
     },
     FunctionExpression(node: FunctionExpression) {
         return {
@@ -313,9 +366,6 @@ const toAstLeave = {
             type: "Identifier",
             value: "TodoFunctionType"
         }
-    },
-    TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
-        return { ...toAstLeave.VariableDeclaration(node, ancestors, path), kind: "type" }
     },
     ImportDeclaration(node: ImportDeclaration, ancestors: Node[], path: string[]) {
         let thisModuleName = path[1]
@@ -336,27 +386,40 @@ const toAstLeave = {
             }
         }
     },
-    VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
+    TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
+        return toAstLeave.VariableDeclaration(node, ancestors, path, "type")
+    },
+    VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[], kind?: string) {
         let value = node.value as any
-        if (value && value.type === "FunctionExpression" && node.id.name === value.id.name) {
+        if (value && value.type === "FunctionExpression" && value.id && node.id.name === value.id.name) {
             // simplify
             //  const foo = function foo() {}
             // into
             //  function foo() {}
-            return { ...value, type: "FunctionDeclaration" }
+            return maybeExport(node, { ...value, type: "FunctionDeclaration" })
         }
 
-        return {
+        return maybeExport(node, {
             type: "VariableDeclaration",
-            kind: node.assignable ? "let" : "const",
+            kind: kind ?? (node.assignable ? "let" : "const"),
             declarations: [{
                 type: "VariableDeclarator",
                 id: node.id,
                 tstype: node.type,
                 init: node.value
             }]
-        };
+        })
     },
+}
+
+function maybeExport(node: Declaration, typescriptAst) {
+    if (Declaration.is(node) && node.export) {
+        return {
+            type: "ExportNamedDeclaration",
+            declaration: typescriptAst,
+        }
+    }
+    return typescriptAst
 }
 
 const visitor = {
@@ -364,14 +427,7 @@ const visitor = {
         return (toAstEnter[node.constructor.name] || toAstEnter.default)(node, ancestors, path)
     },
     leave(node, ancestors, path) {
-        let newNode = (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path) || node
-        if (Declaration.is(node) && node.export) {
-            newNode = {
-                type: "ExportNamedDeclaration",
-                declaration: newNode,
-            }
-        }
-        return newNode
+        return (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path) || node
     }
 };
 

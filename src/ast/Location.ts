@@ -10,4 +10,9 @@ export default class Location {
         this.end = end
         this.filename = filename
     }
+
+    clone() {
+        return this
+    }
+
 }

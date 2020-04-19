@@ -2,19 +2,7 @@ import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
 import { traverse, skip, replace, pair } from "../Traversal";
 import { Module, Node, Reference, Id, ImportStep, VariableDeclaration, ConstrainedType, IntersectionType, UnionType, Literal, BinaryExpression, ThisExpression, TypeDeclaration, Declaration, ObjectLiteral, KeyValuePair, FunctionExpression, Parameter, BlockStatement, ReturnStatement, DotExpression, CallExpression, MemberExpression, LiteralType } from "../ast";
-import { clone, isTypeReference, getLastName, getExternalModuleNameAndExportName, getAbsoluteName } from "../common";
-
-function getTypeCheckFunctionName(name: string, root: Assembly) {
-    // this could be an external file.path:Name
-    let names = getExternalModuleNameAndExportName(name)!
-    if (names) {
-        let [ moduleName, exportName ] = names
-        return getAbsoluteName(moduleName, "is" + exportName)
-    }
-    else {
-        return "is" + name
-    }
-}
+import { clone, isTypeReference, getLastName, getExternalModuleNameAndExportName, getAbsoluteName, getTypeCheckFunctionName } from "../common";
 
 function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration, root: Assembly) {
     // shit... need a deep clone function for this shit.
@@ -60,7 +48,7 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                                 }
                                 if (isTypeReference(node)) {
                                     return new CallExpression({
-                                        callee: new Reference({ name: getTypeCheckFunctionName(node.name, root), location: node.location }),
+                                        callee: new Reference({ name: getTypeCheckFunctionName(node.name), location: node.location }),
                                         arguments: [
                                             new Reference({ name: "value", location: node.location })
                                         ]
@@ -95,7 +83,7 @@ export default function typeCreation(root: Assembly) {
         leave(node, ancestors, path) {
             if (TypeDeclaration.is(node)) {
                 const name = node.id.name
-                const isName = getTypeCheckFunctionName(name, root)
+                const isName = getTypeCheckFunctionName(name)
                 return replace(
                     node,
                     createRuntimeTypeCheckingFunctionDeclaration(isName, node, root)

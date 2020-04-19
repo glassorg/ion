@@ -21,11 +21,26 @@ export function getLastName(absoluteName: string) {
     return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)
 }
 
+export function getTypeCheckFunctionName(name: string) {
+    // this could be an external file.path:Name
+    let names = getExternalModuleNameAndExportName(name)!
+    if (names) {
+        let [ moduleName, exportName ] = names
+        return getAbsoluteName(moduleName, "is" + exportName)
+    }
+    else {
+        return "is" + name
+    }
+}
+
+export function getUniqueClientName(absoluteName: string) {
+    let [ moduleName, declarationName ] = getExternalModuleNameAndExportName(absoluteName)!
+    let lastName = getLastName(moduleName)
+    return moduleName.replace(".", "_") + (lastName === declarationName ? "" : "_" + declarationName)
+}
+
 export function getAbsoluteName(moduleName: string, declarationName: string) {
     let lastName = getLastName(moduleName)
-    // if (lastName === declarationName) {
-    //     declarationName = DEFAULT_EXPORT_NAME
-    // }
     return moduleName + EXPORT_DELIMITER + declarationName
 }
 
@@ -69,6 +84,9 @@ export function getAllExports(root: Assembly) {
 export function clone(value) {
     if (value == null || typeof value !== "object") {
         return value
+    }
+    if (value.clone) {
+        return value.clone()
     }
     if (value instanceof Set) {
         return new Set(Array.from(value.values()).map(clone))

@@ -1,8 +1,8 @@
 import Assembly from "../ast/Assembly";
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
-import { Node, ClassDeclaration, Declaration } from "../ast";
-import { SemanticError, clone } from "../common";
+import { Node, ClassDeclaration, Declaration, Reference } from "../ast";
+import { SemanticError, clone, getUniqueClientName, getTypeCheckFunctionName } from "../common";
 
 export default function inheritBaseClasses(root: Analysis, options: Options) {
 
@@ -15,6 +15,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             }
             inprogress.add(classDeclaration)
             let baseDeclarations: Declaration[] = []
+            let baseClasses = new Set<Reference>()
             for (let baseClass of classDeclaration.baseClasses) {
                 let baseDeclaration = root.declarations[baseClass.name]
                 
@@ -25,10 +26,15 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                     throw SemanticError(`Structs cannot inherit from classes`, baseClass)
                 }
                 ensureDeclarationsInherited(baseDeclaration, baseClass)
+                for (let ref of baseDeclaration.baseClasses) {
+                    baseClasses.add(ref)
+                }
                 baseDeclarations.push(...clone(baseDeclaration.declarations))
             }
             // now insert the base declarations
             classDeclaration.declarations = [...baseDeclarations, ...classDeclaration.declarations]
+            // also add all of the subclasses recursively we implicitly implement all their interfaces
+            classDeclaration.baseClasses.push(...baseClasses.values())
             finished.add(classDeclaration)
         }
     }
@@ -37,6 +43,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
         let declaration = root.declarations[name]
         if (ClassDeclaration.is(declaration)) {
             ensureDeclarationsInherited(declaration, declaration)
+            declaration.implements = [getUniqueClientName(declaration.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
         }
     }
 
