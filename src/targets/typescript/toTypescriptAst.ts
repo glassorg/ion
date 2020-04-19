@@ -1,7 +1,7 @@
 import Assembly from "../../ast/Assembly";
 import { traverse, skip, remove, traverseChildren, replace } from "../../Traversal";
 import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference } from "../../ast";
-import { mapValues, clone } from "../../common";
+import { mapValues, clone, getTypeCheckFunctionName } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
 
 const DO_NOT_EDIT_WARNING = `
@@ -292,6 +292,30 @@ const toAstLeave = {
                                             })
                                         ]
                                     }
+                                },
+                            },
+                            {
+                                type: "MethodDefinition",
+                                kind: "method",
+                                static: true,
+                                key: { type: "Identifier", name: "is" },
+                                value: {
+                                    type: "FunctionExpression",
+                                    params: [ { type: "Identifier", name: "value" } ],
+                                    body: {
+                                        type: "BlockStatement",
+                                        body: [
+                                            {
+                                                type: "ReturnStatement",
+                                                argument: {
+                                                    type: "CallExpression",
+                                                    callee: { type: "Identifier", name: getTypeCheckFunctionName(node.id.name) },
+                                                    arguments: [{ type: "Identifier", name: "value" }]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    tstype: ({ type: "BinaryExpression", left: { type: "Identifier", name: "value" }, operator: "is", right: node.id })
                                 }
                             }
                         ]

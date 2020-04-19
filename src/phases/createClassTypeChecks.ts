@@ -16,6 +16,7 @@ export default function createClassTypeChecks(root: Analysis, options: Options) 
                 id: new Id({ name: isTypeName }),
                 export: declaration.export,
                 value: new FunctionExpression({
+                    typeGuard: new Reference({ name: name }),
                     parameters: [new Parameter({
                         id: new Id({ name: "value" })
                     })],
