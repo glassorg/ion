@@ -1,6 +1,6 @@
 {
     "name": "@glas/ion",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "repository": "https://github.com/glassorg/ion.git",
     "author": "Kris Nye <krisnye@gmail.com>",
     "bin": {
@@ -16,7 +16,7 @@
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js",
         "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib",
-        "deploy": " guild deploy"
+        "deploy": "guild deploy"
     },
     "dependencies": {
         "@glas/build": "^0.2.8",
