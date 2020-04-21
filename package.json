@@ -1,8 +1,11 @@
 {
-    "name": "glass-ion",
-    "version": "0.0.0",
-    "repository": "https://github.com/glassorg/glass-ion.git",
+    "name": "@glas/ion",
+    "version": "0.1.1",
+    "repository": "https://github.com/glassorg/ion.git",
     "author": "Kris Nye <krisnye@gmail.com>",
+    "bin": {
+        "ionc": "bin/ionc.js"
+    },
     "license": "MIT",
     "main": "index.js",
     "scripts": {
@@ -12,7 +15,8 @@
         "test": "gtest lib # echo should be just guild test, todo: fix this",
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js",
-        "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib"
+        "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib",
+        "deploy": " guild deploy"
     },
     "dependencies": {
         "@glas/build": "^0.2.8",
