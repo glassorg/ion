@@ -16,10 +16,11 @@
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js",
         "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib",
-        "deploy": "guild deploy"
+        "deploy": "yarn build && yarn publish --patch"
     },
     "dependencies": {
         "@glas/build": "^0.2.8",
+        "@glas/ion": "0.1.2",
         "escodegen": "^1.14.1",
         "jsondiffpatch": "0.2.5",
         "pegs": "^0.1.1"

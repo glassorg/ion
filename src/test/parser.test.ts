@@ -5,7 +5,7 @@ import path from "path";
 let compiler = new Compiler()
 let result = compiler.compile(
     new Options(
-        path.join(__dirname, "../../ionsrc"),
+        [path.join(__dirname, "../../ionsrc"), path.join(__dirname, "../../src/test/ionsrc")],
         path.join(__dirname, "../../dist"),
     )
 )

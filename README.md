@@ -8,6 +8,15 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     (point: Point)
         let translate = (x: Number, y: Number) -> new Point(point.x + x, point.y + y)
         let rotate =->
+    let (a: Number, b: Number)
+        multiply = () => a * b
+        add = () => a + b
+    // if only numbers can have operators then we can infer types more effectively
+    // in which case a shorter way to specify parameters is not as useful
+    let multiply = (a, b) => a * b
+    let divide = (a, b) => a / b
+    let add = (a, b) => a + b
+    let subtract = (a, b) => a - b
 
 ## TODO
     X add type guard on is<Type> functions
