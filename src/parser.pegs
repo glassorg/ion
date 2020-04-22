@@ -46,7 +46,9 @@
 
 Module
     = EOL? imports:Imports declarations:Declaration* exports:Exports EOL EOF
-    { return node("Module", { imports, declarations: [...declarations, ...exports] } ) }
+    { return node("Module", { imports, declarations: [...declarations, ...exports] }) }
+    / EOL? EOF
+    { return node("Module", { imports:[], declarations: [] }) }
 
 Exports
     //  Allow Declaration meta properties to be specified before the export declaration
@@ -501,7 +503,7 @@ NumericLiteral
     / DecimalIntegerLiteral
 
 NullLiteral
-    = NullToken { return node('Literal', null) }
+    = NullToken { return node('Literal', { value: null }) }
 
 // BooleanLiteral
 //     = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? 1 : 0 } ) }

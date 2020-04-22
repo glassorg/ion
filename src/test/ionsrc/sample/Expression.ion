@@ -1,0 +1,7 @@
+import
+    ion.*
+    .*
+
+export
+    class Expression extends Node
+        let type: Expression | Null = null

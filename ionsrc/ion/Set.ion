@@ -2,5 +2,5 @@ import
     .*
 
 export
-    class Set
+    class Set<V>
         let has: value -> Boolean

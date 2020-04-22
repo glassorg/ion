@@ -1,0 +1,7 @@
+import
+    ion.*
+    .*
+
+export
+    class Declaration extends Expression, Statement
+        let id: String

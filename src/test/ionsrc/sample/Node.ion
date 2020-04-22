@@ -1,0 +1,9 @@
+import
+    ion.*
+    .*
+
+type ShortName = String where .length > 0 and .length < 100
+
+export
+    class Node
+        let name: ShortName

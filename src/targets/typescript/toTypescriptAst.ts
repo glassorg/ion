@@ -58,26 +58,41 @@ function getTypeReferenceName(node) {
     else if (node.type === "MemberExpression") {
         return node.property.name
     }
+    else if (node.type === "BinaryExpression") {
+        return getTypeReferenceName(node.left) + " " + node.operator + " " + getTypeReferenceName(node.right)
+    }
     else {
         throw new Error("Expected Identifier or MemberExpression: " + node.type)
     }
 }
 
-function toIsFunctionReference(node) {
+function toRuntimeTypeCheck(node, value) {
+    function call(callee) {
+        return { type: "CallExpression", callee, arguments: [ value ] }
+    }
+    
     if (node.type === "Identifier") {
-        return {
+        return call({
             type: "Identifier",
             name: "is" + node.name
-        }
+        })
     }
     else if (node.type === "MemberExpression") {
-        return {
+        return call({
             type: "MemberExpression",
             object: node.object,
             property: {
                 type: "Identifier",
                 name: "is" + node.property.name
             }
+        })
+    }
+    else if (node.type === "BinaryExpression") {
+        return {
+            type: "BinaryExpression",
+            left: toRuntimeTypeCheck(node.left, value),
+            operator: node.operator == "|" ? "||" : "&&",
+            right: toRuntimeTypeCheck(node.right, value)
         }
     }
     else {
@@ -246,13 +261,10 @@ const toAstLeave = {
                                                         type: "UnaryExpression",
                                                         operator: "!",
                                                         prefix: true,
-                                                        argument: {
-                                                            type: "CallExpression",
-                                                            callee: toIsFunctionReference(declarator.tstype),
-                                                            arguments: [
-                                                                { type: "Identifier", name: declarator.id.name }
-                                                            ]
-                                                        }
+                                                        argument: toRuntimeTypeCheck(
+                                                            declarator.tstype,
+                                                            { type: "Identifier", name: declarator.id.name }
+                                                        )
                                                     },
                                                     consequent: {
                                                         type: "ThrowStatement",

@@ -1,0 +1,7 @@
+import
+    ion.*
+    .Vector2.*
+
+export
+    struct Vector3 extends Vector2
+        let z: Number
