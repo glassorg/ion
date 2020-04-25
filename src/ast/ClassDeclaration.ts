@@ -7,7 +7,7 @@ import { is } from "./Node";
 export default class ClassDeclaration extends Declaration {
 
     isStructure!: boolean
-    templateParameters!: Array<Parameter>
+    parameters!: Array<Parameter>
     baseClasses!: Array<Reference>
     declarations!: Array<Declaration>
     meta!: Array<KeyValuePair>

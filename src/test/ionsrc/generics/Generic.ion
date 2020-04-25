@@ -1,0 +1,6 @@
+import
+    ion.*
+
+export
+    class Generic<T>
+        let value: T

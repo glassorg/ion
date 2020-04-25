@@ -1,8 +1,9 @@
 import Assembly from "../../ast/Assembly";
 import { traverse, skip, remove, traverseChildren, replace } from "../../Traversal";
-import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference } from "../../ast";
+import { BinaryExpression, ConstrainedType, VariableDeclaration, Module, TypeDeclaration, ClassDeclaration, FunctionExpression, Parameter, BlockStatement, Declaration, ReturnStatement, FunctionType, MemberExpression, Node, UnionType, Reference, Scope, TemplateReference } from "../../ast";
 import { mapValues, clone, getTypeCheckFunctionName } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
+import createScopeMap, { ScopeMap } from "../../createScopeMap";
 
 const DO_NOT_EDIT_WARNING = `
 This file was generated from ion source. Do not edit.
@@ -128,9 +129,6 @@ const toAstLeave = {
         }
         return esnode
     },
-    Assembly(node: Assembly, ancestors, path) {
-        traverseChildren(node, visitor, ancestors, path)
-    },
     Module(node: Module) {
         return {
             type: "Program",
@@ -174,7 +172,14 @@ const toAstLeave = {
             property: node.right,
         }
     },
-    ClassDeclaration(node: ClassDeclaration) {
+    TemplateReference(node: TemplateReference) {
+        let result = {
+            ...node.baseType,
+            genericArguments: node.arguments
+        }
+        return result
+    },
+    ClassDeclaration(node: ClassDeclaration, ancestors: Node[], path: string[], scopes: ScopeMap) {
         return replace(
             maybeExport(
                 node,
@@ -253,7 +258,18 @@ const toAstLeave = {
                                     body: {
                                         type: "BlockStatement",
                                         body: [
-                                            ...node.declarations.filter((d: any) => d.declarations[0].tstype).map((d: any) => {
+                                            ...node.declarations.filter((d: any) => {
+                                                let type = d.declarations[0].tstype
+                                                if (type?.name) {
+                                                    let scope = scopes.get(node)
+                                                    let referencedDeclation = scope[type.name]
+                                                    if (Parameter.is(referencedDeclation)) {
+                                                        // we cannot runtime type check generic parameters
+                                                        return false
+                                                    }
+                                                }
+                                                return type != null
+                                            }).map((d: any) => {
                                                 let declarator = d.declarations[0]
                                                 return {
                                                     type: "IfStatement",
@@ -422,10 +438,10 @@ const toAstLeave = {
             }
         }
     },
-    TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[]) {
-        return toAstLeave.VariableDeclaration(node, ancestors, path, "type")
+    TypeDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[], scopes: ScopeMap) {
+        return toAstLeave.VariableDeclaration(node, ancestors, path, scopes, "type")
     },
-    VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[], kind?: string) {
+    VariableDeclaration(node: VariableDeclaration, ancestors: Node[], path: string[], scope: ScopeMap, kind?: string) {
         let value = node.value as any
         if (value && value.type === "FunctionExpression" && value.id && node.id.name === value.id.name) {
             // simplify
@@ -458,15 +474,14 @@ function maybeExport(node: Declaration, typescriptAst) {
     return typescriptAst
 }
 
-const visitor = {
-    enter(node, ancestors, path) {
-        return (toAstEnter[node.constructor.name] || toAstEnter.default)(node, ancestors, path)
-    },
-    leave(node, ancestors, path) {
-        return (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path) || node
-    }
-};
-
 export default function toTypescriptAst(node: Node) {
-    return traverse(node, visitor)
+    let scopes = createScopeMap(node)
+    traverseChildren(node, {
+        enter(node, ancestors, path) {
+            return (toAstEnter[node.constructor.name] || toAstEnter.default)(node, ancestors, path, scopes)
+        },
+        leave(node, ancestors, path) {
+            return (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path, scopes) || node
+        }
+    }, )
 }

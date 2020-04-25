@@ -920,7 +920,7 @@
                         result.push(name);
                         let tstype = param.tstype || (param.left && param.left.tstype)
                         if (tstype) {
-                            result.push(": ", this.generateStatement(tstype));
+                            result.push(": ", this.generateExpression(tstype));
                         }
                         let init = param.init || param.right
                         if (init) {
@@ -953,7 +953,7 @@
         result = this.generateFunctionParams(node);
 
         if (node.tstype) {
-            result.push(": ", this.generateStatement(node.tstype))
+            result.push(": ", this.generateExpression(node.tstype))
         }
 
         if (node.type === Syntax.ArrowFunctionExpression) {
@@ -1454,7 +1454,7 @@
 
         VariableDeclarator: function (stmt, flags) {
             var itemFlags = (flags & F_ALLOW_IN) ? E_TTT : E_FTT;
-            let type = stmt.tstype ? [":", space, this.generateStatement(stmt.tstype, flags)] : []
+            let type = stmt.tstype ? [":", space, this.generateExpression(stmt.tstype, flags)] : []
             if (stmt.init) {
                 return [
                     this.generateExpression(stmt.id, Precedence.Assignment, itemFlags),
@@ -2505,6 +2505,9 @@
 
         result = this[type](expr, precedence, flags);
 
+        if (expr.genericArguments) {
+            result.push("<", expr.genericArguments.map(a => this.generateExpression(a, precedence, flags)).join(", ") ,">")
+        }
 
         if (extra.comment) {
             result = addComments(expr, result);

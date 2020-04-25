@@ -1,6 +1,6 @@
 import { traverse, remove, skip, enter, leave, Visitor } from "./Traversal"
 import { SemanticError } from "./common"
-import { Declaration, Id, Scope, Reference, FunctionExpression, TypeDeclaration } from "./ast";
+import { Declaration, Id, Scope, Reference, FunctionExpression, TypeDeclaration, ClassDeclaration } from "./ast";
 
 export type ScopeMap = {
     get(node: any) : any
@@ -45,7 +45,7 @@ export default function createScopeMap(root, { checkDeclareBeforeUse=false } = {
             }
 
             //  functions set their parameters in scope
-            if (FunctionExpression.is(node)) {
+            if (FunctionExpression.is(node) || ClassDeclaration.is(node)) {
                 for (let parameter of node.parameters) {
                     declare(parameter)
                 }

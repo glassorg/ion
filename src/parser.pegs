@@ -207,9 +207,9 @@ AssignmentProperty
 
 ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
-        _ id:Id templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
+        _ id:Id parameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, isStructure, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations }) }
+        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }
