@@ -35,7 +35,6 @@
         )
     }
 
-
     //  TODO: Broken -> Map
 
 }
@@ -180,7 +179,7 @@ Pattern
 
 ArrayPattern
     = "[" _ element:RestElement _ "]"
-    { return node("ArrayPattern", element) }
+    { return node("ArrayPattern", { elements: [element] }) }
     / "[" _ head:Pattern? tail:(_ "," _ !"." @Pattern?)* _ rest:("," _ @RestElement)? _ "]"
     {
         let elements = [head || null, ...tail.map((x) => x || null)]
@@ -492,7 +491,7 @@ InlineArrayExpression
 
 Literal
     = NumericLiteral
-    // / BooleanLiteral
+    / BooleanLiteral
     / StringLiteral
     // / CharLiteral
     / NullLiteral
@@ -505,8 +504,8 @@ NumericLiteral
 NullLiteral
     = NullToken { return node('Literal', { value: null }) }
 
-// BooleanLiteral
-//     = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? 1 : 0 } ) }
+BooleanLiteral
+    = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? true : false } ) }
 
 ExponentPart
     = 'e' [+-]? [0-9]+ !IdPart
@@ -570,8 +569,8 @@ Reference
 
 ThisToken       = @"this"       !IdPart
 NullToken       = @"null"       !IdPart
-// TrueToken       = @"false"      !IdPart
-// FalseToken      = @"true"       !IdPart
+TrueToken       = @"false"      !IdPart
+FalseToken      = @"true"       !IdPart
 TypeToken       = @"type"       !IdPart
 IsToken         = @"is"         !IdPart
 AsToken         = @"as"         !IdPart
@@ -579,6 +578,7 @@ AndToken        = @"and"        !IdPart
 OrToken         = @"or"         !IdPart
 XorToken        = @"xor"        !IdPart
 NotToken        = @"not"        !IdPart
+// NewToken        = @"new"        !IdPart
 WhereToken      = @"where"      !IdPart
 ImportToken     = @"import"     !IdPart
 ExportToken     = @"export"     !IdPart
@@ -602,14 +602,15 @@ AsmToken        = @"asm"        !IdPart
 Keyword
     = ThisToken
     / NullToken
-    // / TrueToken
-    // / FalseToken
+    / TrueToken
+    / FalseToken
     / AndToken
     / IsToken
-    / AsToken
+    // / AsToken
     / OrToken
     / XorToken
     / NotToken
+    // / NewToken
     / WhereToken
     / ClassToken
     / StructToken
@@ -622,8 +623,8 @@ Keyword
     / ReturnToken
     / BreakToken
     / ContinueToken
-    / ExportToken
-    / ImportToken
+    // / ExportToken
+    // / ImportToken
     / AsmToken
 
 ReservedWord

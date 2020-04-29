@@ -101,6 +101,12 @@ function toRuntimeTypeCheck(node, value) {
     }
 }
 
+const reserved = new Set(["arguments", "new", "import", "export", "class"])
+
+function renameIfReserved(name: string) {
+    return reserved.has(name) ? "_" + name : name
+}
+
 //  Is my conversion to Typescript technique sound?
 //  Pre-converting nodes is a bit problematic...
 //  Perhaps I should convert top down instead of bottom up?
@@ -211,17 +217,18 @@ const toAstLeave = {
                                             properties: node.declarations.map((d: any) => {
                                                 let declaration = d.declarations[0]
                                                 let name = declaration.id.name
+                                                let localName = renameIfReserved(name)
                                                 return {
                                                     type: "Property",
                                                     kind: "init",
-                                                    shorthand: true,
+                                                    shorthand: name === localName,
                                                     key: { type: "Identifier", name },
                                                     value: declaration.init ? {
                                                         type: "AssignmentPattern",
-                                                        left: { type: "Identifier", name },
+                                                        left: { type: "Identifier", name: localName },
                                                         right: declaration.init
                                                     }
-                                                    : { type: "Identifier", name },
+                                                    : { type: "Identifier", name: localName },
                                                 }
                                             }),
                                             tstype: {
@@ -271,6 +278,8 @@ const toAstLeave = {
                                                 return type != null
                                             }).map((d: any) => {
                                                 let declarator = d.declarations[0]
+                                                let name = declarator.id.name
+                                                let localName = renameIfReserved(name)
                                                 return {
                                                     type: "IfStatement",
                                                     test: {
@@ -279,7 +288,7 @@ const toAstLeave = {
                                                         prefix: true,
                                                         argument: toRuntimeTypeCheck(
                                                             declarator.tstype,
-                                                            { type: "Identifier", name: declarator.id.name }
+                                                            { type: "Identifier", name: localName }
                                                         )
                                                     },
                                                     consequent: {
@@ -291,12 +300,19 @@ const toAstLeave = {
                                                                 type: "BinaryExpression",
                                                                 left: {
                                                                     type: "Literal",
-                                                                    value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
+                                                                    value: `${name} is not a ${getTypeReferenceName(declarator.tstype)}: `
                                                                 },
                                                                 operator: "+",
                                                                 right: {
-                                                                    type: "Identifier",
-                                                                    name: declarator.id.name
+                                                                    type: "CallExpression",
+                                                                    callee: {
+                                                                        type: "MemberExpression",
+                                                                        object: { type: "Identifier", name: "Class" },
+                                                                        property: { type: "Identifier", name: "toString" }
+                                                                    },
+                                                                    arguments: [
+                                                                        { type: "Identifier", name: localName }
+                                                                    ]
                                                                 }
                                                             }]
                                                         }
@@ -304,6 +320,8 @@ const toAstLeave = {
                                                 }
                                             }),
                                             ...node.declarations.map((d: any) => {
+                                                let name = d.declarations[0].id.name
+                                                let localName = renameIfReserved(name)
                                                 return {
                                                     type: "ExpressionStatement",
                                                     expression: {
@@ -311,10 +329,10 @@ const toAstLeave = {
                                                         left: {
                                                             type: "MemberExpression",
                                                             object: { type: "ThisExpression" },
-                                                            property: { type: "Identifier", name: d.declarations[0].id.name }
+                                                            property: { type: "Identifier", name: name }
                                                         },
                                                         operator: "=",
-                                                        right: { type: "Identifier", name: d.declarations[0].id.name }
+                                                        right: { type: "Identifier", name: localName }
                                                     }
                                                 }
                                             })
@@ -345,7 +363,30 @@ const toAstLeave = {
                                     },
                                     tstype: ({ type: "BinaryExpression", left: { type: "Identifier", name: "value" }, operator: "is", right: node.id })
                                 }
-                            }
+                            },
+                            // {
+                            //     type: "MethodDefinition",
+                            //     kind: "method",
+                            //     key: { type: "Identifier", name: "toString" },
+                            //     value: {
+                            //         type: "FunctionExpression",
+                            //         params: [ { type: "Identifier", name: "value" } ],
+                            //         body: {
+                            //             type: "BlockStatement",
+                            //             body: [
+                            //                 {
+                            //                     type: "ReturnStatement",
+                            //                     argument: {
+                            //                         type: "CallExpression",
+                            //                         callee: { type: "Identifier", name: getTypeCheckFunctionName(node.id.name) },
+                            //                         arguments: [{ type: "Identifier", name: "value" }]
+                            //                     }
+                            //                 }
+                            //             ]
+                            //         },
+                            //         tstype: ({ type: "BinaryExpression", left: { type: "Identifier", name: "value" }, operator: "is", right: node.id })
+                            //     }
+                            // }
                         ]
                     }
                 }

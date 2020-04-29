@@ -3453,8 +3453,24 @@ ul.jsondiffpatch-textdiff {
                             },
                             &quot;operator&quot;: &quot;+&quot;,
                             &quot;right&quot;: {
-                              &quot;type&quot;: &quot;Identifier&quot;,
-                              &quot;name&quot;: &quot;children&quot;
+                              &quot;type&quot;: &quot;CallExpression&quot;,
+                              &quot;callee&quot;: {
+                                &quot;type&quot;: &quot;MemberExpression&quot;,
+                                &quot;object&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;Class&quot;
+                                },
+                                &quot;property&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;toString&quot;
+                                }
+                              },
+                              &quot;arguments&quot;: [
+                                {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;children&quot;
+                                }
+                              ]
                             }
                           }
                         ]
@@ -3838,8 +3854,889 @@ ul.jsondiffpatch-textdiff {
         </article>
     
         <article>
+            <header><span>addIndexFiles</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics.Generic"><div class="jsondiffpatch-property-name">generics.Generic</div><div class="jsondiffpatch-value"><pre>{
+  &quot;type&quot;: &quot;Program&quot;,
+  &quot;leadingComments&quot;: [
+    {
+      &quot;value&quot;: &quot;<br>This file was generated from ion source. Do not edit.<br>&quot;
+    }
+  ],
+  &quot;body&quot;: [
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Class&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;../ion/Class&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;ClassDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Identifier&quot;,
+          &quot;name&quot;: &quot;Generic&quot;
+        },
+        &quot;body&quot;: {
+          &quot;type&quot;: &quot;ClassBody&quot;,
+          &quot;body&quot;: [
+            {
+              &quot;type&quot;: &quot;VariableDeclaration&quot;,
+              &quot;kind&quot;: &quot;readonly&quot;,
+              &quot;declarations&quot;: [
+                {
+                  &quot;type&quot;: &quot;VariableDeclarator&quot;,
+                  &quot;id&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;value&quot;
+                  },
+                  &quot;tstype&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;T&quot;
+                  }
+                }
+              ]
+            },
+            {
+              &quot;type&quot;: &quot;MethodDefinition&quot;,
+              &quot;kind&quot;: &quot;constructor&quot;,
+              &quot;key&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;constructor&quot;
+              },
+              &quot;value&quot;: {
+                &quot;type&quot;: &quot;FunctionExpression&quot;,
+                &quot;params&quot;: [
+                  {
+                    &quot;type&quot;: &quot;ObjectPattern&quot;,
+                    &quot;properties&quot;: [
+                      {
+                        &quot;type&quot;: &quot;Property&quot;,
+                        &quot;kind&quot;: &quot;init&quot;,
+                        &quot;shorthand&quot;: true,
+                        &quot;key&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;value&quot;
+                        },
+                        &quot;value&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;value&quot;
+                        }
+                      }
+                    ],
+                    &quot;tstype&quot;: {
+                      &quot;type&quot;: &quot;ObjectExpression&quot;,
+                      &quot;properties&quot;: [
+                        {
+                          &quot;type&quot;: &quot;Property&quot;,
+                          &quot;kind&quot;: &quot;init&quot;,
+                          &quot;key&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;value&quot;
+                          },
+                          &quot;value&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;T&quot;
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                &quot;body&quot;: {
+                  &quot;type&quot;: &quot;BlockStatement&quot;,
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+                      &quot;expression&quot;: {
+                        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+                        &quot;left&quot;: {
+                          &quot;type&quot;: &quot;MemberExpression&quot;,
+                          &quot;object&quot;: {
+                            &quot;type&quot;: &quot;ThisExpression&quot;
+                          },
+                          &quot;property&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;value&quot;
+                          }
+                        },
+                        &quot;operator&quot;: &quot;=&quot;,
+                        &quot;right&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;value&quot;
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              &quot;type&quot;: &quot;MethodDefinition&quot;,
+              &quot;kind&quot;: &quot;method&quot;,
+              &quot;static&quot;: true,
+              &quot;key&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;is&quot;
+              },
+              &quot;value&quot;: {
+                &quot;type&quot;: &quot;FunctionExpression&quot;,
+                &quot;params&quot;: [
+                  {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;value&quot;
+                  }
+                ],
+                &quot;body&quot;: {
+                  &quot;type&quot;: &quot;BlockStatement&quot;,
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;ReturnStatement&quot;,
+                      &quot;argument&quot;: {
+                        &quot;type&quot;: &quot;CallExpression&quot;,
+                        &quot;callee&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;isGeneric&quot;
+                        },
+                        &quot;arguments&quot;: [
+                          {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;value&quot;
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                &quot;tstype&quot;: {
+                  &quot;type&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;value&quot;
+                  },
+                  &quot;operator&quot;: &quot;is&quot;,
+                  &quot;right&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;Generic&quot;
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+      &quot;expression&quot;: {
+        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+        &quot;left&quot;: {
+          &quot;type&quot;: &quot;MemberExpression&quot;,
+          &quot;object&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Generic&quot;
+          },
+          &quot;property&quot;: {
+            &quot;type&quot;: &quot;Literal&quot;,
+            &quot;value&quot;: &quot;id&quot;
+          },
+          &quot;computed&quot;: true
+        },
+        &quot;operator&quot;: &quot;=&quot;,
+        &quot;right&quot;: {
+          &quot;type&quot;: &quot;Literal&quot;,
+          &quot;value&quot;: &quot;generics_Generic&quot;
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+      &quot;expression&quot;: {
+        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+        &quot;left&quot;: {
+          &quot;type&quot;: &quot;MemberExpression&quot;,
+          &quot;object&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Generic&quot;
+          },
+          &quot;property&quot;: {
+            &quot;type&quot;: &quot;Literal&quot;,
+            &quot;value&quot;: &quot;implements&quot;
+          },
+          &quot;computed&quot;: true
+        },
+        &quot;operator&quot;: &quot;=&quot;,
+        &quot;right&quot;: {
+          &quot;type&quot;: &quot;NewExpression&quot;,
+          &quot;callee&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Set&quot;
+          },
+          &quot;arguments&quot;: [
+            {
+              &quot;type&quot;: &quot;ArrayExpression&quot;,
+              &quot;elements&quot;: [
+                {
+                  &quot;type&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: &quot;generics_Generic&quot;
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;kind&quot;: &quot;const&quot;,
+        &quot;declarations&quot;: [
+          {
+            &quot;type&quot;: &quot;VariableDeclarator&quot;,
+            &quot;id&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;isGeneric&quot;
+            },
+            &quot;init&quot;: {
+              &quot;type&quot;: &quot;FunctionExpression&quot;,
+              &quot;params&quot;: [
+                {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;value&quot;
+                }
+              ],
+              &quot;tstype&quot;: {
+                &quot;type&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;value&quot;
+                },
+                &quot;operator&quot;: &quot;is&quot;,
+                &quot;right&quot;: {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;Generic&quot;
+                }
+              },
+              &quot;body&quot;: {
+                &quot;type&quot;: &quot;BlockStatement&quot;,
+                &quot;body&quot;: [
+                  {
+                    &quot;type&quot;: &quot;ReturnStatement&quot;,
+                    &quot;argument&quot;: {
+                      &quot;type&quot;: &quot;CallExpression&quot;,
+                      &quot;callee&quot;: {
+                        &quot;type&quot;: &quot;MemberExpression&quot;,
+                        &quot;object&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;Class&quot;
+                        },
+                        &quot;property&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;isInstance&quot;
+                        }
+                      },
+                      &quot;arguments&quot;: [
+                        {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;Generic&quot;
+                        },
+                        {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;value&quot;
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics.UsesGeneric"><div class="jsondiffpatch-property-name">generics.UsesGeneric</div><div class="jsondiffpatch-value"><pre>{
+  &quot;type&quot;: &quot;Program&quot;,
+  &quot;leadingComments&quot;: [
+    {
+      &quot;value&quot;: &quot;<br>This file was generated from ion source. Do not edit.<br>&quot;
+    }
+  ],
+  &quot;body&quot;: [
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Map&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;../ion/Map&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;String&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;../ion/String&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Number&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;../ion/Number&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Class&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;../ion/Class&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;ClassDeclaration&quot;,
+        &quot;id&quot;: {
+          &quot;type&quot;: &quot;Identifier&quot;,
+          &quot;name&quot;: &quot;UsesGeneric&quot;
+        },
+        &quot;body&quot;: {
+          &quot;type&quot;: &quot;ClassBody&quot;,
+          &quot;body&quot;: [
+            {
+              &quot;type&quot;: &quot;VariableDeclaration&quot;,
+              &quot;kind&quot;: &quot;readonly&quot;,
+              &quot;declarations&quot;: [
+                {
+                  &quot;type&quot;: &quot;VariableDeclarator&quot;,
+                  &quot;id&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;children&quot;
+                  },
+                  &quot;tstype&quot;: {
+                    &quot;type&quot;: &quot;MemberExpression&quot;,
+                    &quot;object&quot;: {
+                      &quot;type&quot;: &quot;Identifier&quot;,
+                      &quot;name&quot;: &quot;Map&quot;
+                    },
+                    &quot;property&quot;: {
+                      &quot;type&quot;: &quot;Identifier&quot;,
+                      &quot;name&quot;: &quot;Map&quot;
+                    },
+                    &quot;genericArguments&quot;: [
+                      {
+                        &quot;type&quot;: &quot;MemberExpression&quot;,
+                        &quot;object&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;String&quot;
+                        },
+                        &quot;property&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;String&quot;
+                        }
+                      },
+                      {
+                        &quot;type&quot;: &quot;MemberExpression&quot;,
+                        &quot;object&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;Number&quot;
+                        },
+                        &quot;property&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;Number&quot;
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              &quot;type&quot;: &quot;MethodDefinition&quot;,
+              &quot;kind&quot;: &quot;constructor&quot;,
+              &quot;key&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;constructor&quot;
+              },
+              &quot;value&quot;: {
+                &quot;type&quot;: &quot;FunctionExpression&quot;,
+                &quot;params&quot;: [
+                  {
+                    &quot;type&quot;: &quot;ObjectPattern&quot;,
+                    &quot;properties&quot;: [
+                      {
+                        &quot;type&quot;: &quot;Property&quot;,
+                        &quot;kind&quot;: &quot;init&quot;,
+                        &quot;shorthand&quot;: true,
+                        &quot;key&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;children&quot;
+                        },
+                        &quot;value&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;children&quot;
+                        }
+                      }
+                    ],
+                    &quot;tstype&quot;: {
+                      &quot;type&quot;: &quot;ObjectExpression&quot;,
+                      &quot;properties&quot;: [
+                        {
+                          &quot;type&quot;: &quot;Property&quot;,
+                          &quot;kind&quot;: &quot;init&quot;,
+                          &quot;key&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;children&quot;
+                          },
+                          &quot;value&quot;: {
+                            &quot;type&quot;: &quot;MemberExpression&quot;,
+                            &quot;object&quot;: {
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;name&quot;: &quot;Map&quot;
+                            },
+                            &quot;property&quot;: {
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;name&quot;: &quot;Map&quot;
+                            },
+                            &quot;genericArguments&quot;: [
+                              {
+                                &quot;type&quot;: &quot;MemberExpression&quot;,
+                                &quot;object&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;String&quot;
+                                },
+                                &quot;property&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;String&quot;
+                                }
+                              },
+                              {
+                                &quot;type&quot;: &quot;MemberExpression&quot;,
+                                &quot;object&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;Number&quot;
+                                },
+                                &quot;property&quot;: {
+                                  &quot;type&quot;: &quot;Identifier&quot;,
+                                  &quot;name&quot;: &quot;Number&quot;
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                &quot;body&quot;: {
+                  &quot;type&quot;: &quot;BlockStatement&quot;,
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;IfStatement&quot;,
+                      &quot;test&quot;: {
+                        &quot;type&quot;: &quot;UnaryExpression&quot;,
+                        &quot;operator&quot;: &quot;!&quot;,
+                        &quot;prefix&quot;: true,
+                        &quot;argument&quot;: {
+                          &quot;type&quot;: &quot;CallExpression&quot;,
+                          &quot;callee&quot;: {
+                            &quot;type&quot;: &quot;MemberExpression&quot;,
+                            &quot;object&quot;: {
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;name&quot;: &quot;Map&quot;
+                            },
+                            &quot;property&quot;: {
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;name&quot;: &quot;isMap&quot;
+                            }
+                          },
+                          &quot;arguments&quot;: [
+                            {
+                              &quot;type&quot;: &quot;Identifier&quot;,
+                              &quot;name&quot;: &quot;children&quot;
+                            }
+                          ]
+                        }
+                      },
+                      &quot;consequent&quot;: {
+                        &quot;type&quot;: &quot;ThrowStatement&quot;,
+                        &quot;argument&quot;: {
+                          &quot;type&quot;: &quot;NewExpression&quot;,
+                          &quot;callee&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;Error&quot;
+                          },
+                          &quot;arguments&quot;: [
+                            {
+                              &quot;type&quot;: &quot;BinaryExpression&quot;,
+                              &quot;left&quot;: {
+                                &quot;type&quot;: &quot;Literal&quot;,
+                                &quot;value&quot;: &quot;children is not a Map: &quot;
+                              },
+                              &quot;operator&quot;: &quot;+&quot;,
+                              &quot;right&quot;: {
+                                &quot;type&quot;: &quot;CallExpression&quot;,
+                                &quot;callee&quot;: {
+                                  &quot;type&quot;: &quot;MemberExpression&quot;,
+                                  &quot;object&quot;: {
+                                    &quot;type&quot;: &quot;Identifier&quot;,
+                                    &quot;name&quot;: &quot;Class&quot;
+                                  },
+                                  &quot;property&quot;: {
+                                    &quot;type&quot;: &quot;Identifier&quot;,
+                                    &quot;name&quot;: &quot;toString&quot;
+                                  }
+                                },
+                                &quot;arguments&quot;: [
+                                  {
+                                    &quot;type&quot;: &quot;Identifier&quot;,
+                                    &quot;name&quot;: &quot;children&quot;
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+                      &quot;expression&quot;: {
+                        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+                        &quot;left&quot;: {
+                          &quot;type&quot;: &quot;MemberExpression&quot;,
+                          &quot;object&quot;: {
+                            &quot;type&quot;: &quot;ThisExpression&quot;
+                          },
+                          &quot;property&quot;: {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;children&quot;
+                          }
+                        },
+                        &quot;operator&quot;: &quot;=&quot;,
+                        &quot;right&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;children&quot;
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              &quot;type&quot;: &quot;MethodDefinition&quot;,
+              &quot;kind&quot;: &quot;method&quot;,
+              &quot;static&quot;: true,
+              &quot;key&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;is&quot;
+              },
+              &quot;value&quot;: {
+                &quot;type&quot;: &quot;FunctionExpression&quot;,
+                &quot;params&quot;: [
+                  {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;value&quot;
+                  }
+                ],
+                &quot;body&quot;: {
+                  &quot;type&quot;: &quot;BlockStatement&quot;,
+                  &quot;body&quot;: [
+                    {
+                      &quot;type&quot;: &quot;ReturnStatement&quot;,
+                      &quot;argument&quot;: {
+                        &quot;type&quot;: &quot;CallExpression&quot;,
+                        &quot;callee&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;isUsesGeneric&quot;
+                        },
+                        &quot;arguments&quot;: [
+                          {
+                            &quot;type&quot;: &quot;Identifier&quot;,
+                            &quot;name&quot;: &quot;value&quot;
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                &quot;tstype&quot;: {
+                  &quot;type&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;value&quot;
+                  },
+                  &quot;operator&quot;: &quot;is&quot;,
+                  &quot;right&quot;: {
+                    &quot;type&quot;: &quot;Identifier&quot;,
+                    &quot;name&quot;: &quot;UsesGeneric&quot;
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+      &quot;expression&quot;: {
+        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+        &quot;left&quot;: {
+          &quot;type&quot;: &quot;MemberExpression&quot;,
+          &quot;object&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;UsesGeneric&quot;
+          },
+          &quot;property&quot;: {
+            &quot;type&quot;: &quot;Literal&quot;,
+            &quot;value&quot;: &quot;id&quot;
+          },
+          &quot;computed&quot;: true
+        },
+        &quot;operator&quot;: &quot;=&quot;,
+        &quot;right&quot;: {
+          &quot;type&quot;: &quot;Literal&quot;,
+          &quot;value&quot;: &quot;generics_UsesGeneric&quot;
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExpressionStatement&quot;,
+      &quot;expression&quot;: {
+        &quot;type&quot;: &quot;AssignmentExpression&quot;,
+        &quot;left&quot;: {
+          &quot;type&quot;: &quot;MemberExpression&quot;,
+          &quot;object&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;UsesGeneric&quot;
+          },
+          &quot;property&quot;: {
+            &quot;type&quot;: &quot;Literal&quot;,
+            &quot;value&quot;: &quot;implements&quot;
+          },
+          &quot;computed&quot;: true
+        },
+        &quot;operator&quot;: &quot;=&quot;,
+        &quot;right&quot;: {
+          &quot;type&quot;: &quot;NewExpression&quot;,
+          &quot;callee&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;Set&quot;
+          },
+          &quot;arguments&quot;: [
+            {
+              &quot;type&quot;: &quot;ArrayExpression&quot;,
+              &quot;elements&quot;: [
+                {
+                  &quot;type&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: &quot;generics_UsesGeneric&quot;
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;kind&quot;: &quot;const&quot;,
+        &quot;declarations&quot;: [
+          {
+            &quot;type&quot;: &quot;VariableDeclarator&quot;,
+            &quot;id&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;isUsesGeneric&quot;
+            },
+            &quot;init&quot;: {
+              &quot;type&quot;: &quot;FunctionExpression&quot;,
+              &quot;params&quot;: [
+                {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;value&quot;
+                }
+              ],
+              &quot;tstype&quot;: {
+                &quot;type&quot;: &quot;BinaryExpression&quot;,
+                &quot;left&quot;: {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;value&quot;
+                },
+                &quot;operator&quot;: &quot;is&quot;,
+                &quot;right&quot;: {
+                  &quot;type&quot;: &quot;Identifier&quot;,
+                  &quot;name&quot;: &quot;UsesGeneric&quot;
+                }
+              },
+              &quot;body&quot;: {
+                &quot;type&quot;: &quot;BlockStatement&quot;,
+                &quot;body&quot;: [
+                  {
+                    &quot;type&quot;: &quot;ReturnStatement&quot;,
+                    &quot;argument&quot;: {
+                      &quot;type&quot;: &quot;CallExpression&quot;,
+                      &quot;callee&quot;: {
+                        &quot;type&quot;: &quot;MemberExpression&quot;,
+                        &quot;object&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;Class&quot;
+                        },
+                        &quot;property&quot;: {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;isInstance&quot;
+                        }
+                      },
+                      &quot;arguments&quot;: [
+                        {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;UsesGeneric&quot;
+                        },
+                        {
+                          &quot;type&quot;: &quot;Identifier&quot;,
+                          &quot;name&quot;: &quot;value&quot;
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</pre></div></li><li class="jsondiffpatch-added" data-key="generics.index"><div class="jsondiffpatch-property-name">generics.index</div><div class="jsondiffpatch-value"><pre>{
+  &quot;type&quot;: &quot;Program&quot;,
+  &quot;body&quot;: [
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;_Generic&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;./Generic&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;kind&quot;: &quot;const&quot;,
+        &quot;declarations&quot;: [
+          {
+            &quot;type&quot;: &quot;VariableDeclarator&quot;,
+            &quot;id&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;Generic&quot;
+            },
+            &quot;init&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;_Generic&quot;
+            }
+          }
+        ]
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ImportDeclaration&quot;,
+      &quot;specifiers&quot;: [
+        {
+          &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+          &quot;local&quot;: {
+            &quot;type&quot;: &quot;Identifier&quot;,
+            &quot;name&quot;: &quot;_UsesGeneric&quot;
+          }
+        }
+      ],
+      &quot;source&quot;: {
+        &quot;type&quot;: &quot;Literal&quot;,
+        &quot;value&quot;: &quot;./UsesGeneric&quot;
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;VariableDeclaration&quot;,
+        &quot;kind&quot;: &quot;const&quot;,
+        &quot;declarations&quot;: [
+          {
+            &quot;type&quot;: &quot;VariableDeclarator&quot;,
+            &quot;id&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;UsesGeneric&quot;
+            },
+            &quot;init&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;_UsesGeneric&quot;
+            }
+          }
+        ]
+      }
+    }
+  ]
+}</pre></div></li></ul></li></ul></div></p>
+        </article>
+    
+        <article>
             <header><span>toTypescriptFiles</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-deleted" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + children);<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><div class="jsondiffpatch-value"><pre>{
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-deleted" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><div class="jsondiffpatch-value"><pre>{
   &quot;generics.Generic&quot;: {
     &quot;type&quot;: &quot;Program&quot;,
     &quot;leadingComments&quot;: [
@@ -4407,8 +5304,24 @@ ul.jsondiffpatch-textdiff {
                                 },
                                 &quot;operator&quot;: &quot;+&quot;,
                                 &quot;right&quot;: {
-                                  &quot;type&quot;: &quot;Identifier&quot;,
-                                  &quot;name&quot;: &quot;children&quot;
+                                  &quot;type&quot;: &quot;CallExpression&quot;,
+                                  &quot;callee&quot;: {
+                                    &quot;type&quot;: &quot;MemberExpression&quot;,
+                                    &quot;object&quot;: {
+                                      &quot;type&quot;: &quot;Identifier&quot;,
+                                      &quot;name&quot;: &quot;Class&quot;
+                                    },
+                                    &quot;property&quot;: {
+                                      &quot;type&quot;: &quot;Identifier&quot;,
+                                      &quot;name&quot;: &quot;toString&quot;
+                                    }
+                                  },
+                                  &quot;arguments&quot;: [
+                                    {
+                                      &quot;type&quot;: &quot;Identifier&quot;,
+                                      &quot;name&quot;: &quot;children&quot;
+                                    }
+                                  ]
                                 }
                               }
                             ]
@@ -4625,18 +5538,95 @@ ul.jsondiffpatch-textdiff {
         }
       }
     ]
+  },
+  &quot;generics.index&quot;: {
+    &quot;type&quot;: &quot;Program&quot;,
+    &quot;body&quot;: [
+      {
+        &quot;type&quot;: &quot;ImportDeclaration&quot;,
+        &quot;specifiers&quot;: [
+          {
+            &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+            &quot;local&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;_Generic&quot;
+            }
+          }
+        ],
+        &quot;source&quot;: {
+          &quot;type&quot;: &quot;Literal&quot;,
+          &quot;value&quot;: &quot;./Generic&quot;
+        }
+      },
+      {
+        &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+        &quot;declaration&quot;: {
+          &quot;type&quot;: &quot;VariableDeclaration&quot;,
+          &quot;kind&quot;: &quot;const&quot;,
+          &quot;declarations&quot;: [
+            {
+              &quot;type&quot;: &quot;VariableDeclarator&quot;,
+              &quot;id&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;Generic&quot;
+              },
+              &quot;init&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;_Generic&quot;
+              }
+            }
+          ]
+        }
+      },
+      {
+        &quot;type&quot;: &quot;ImportDeclaration&quot;,
+        &quot;specifiers&quot;: [
+          {
+            &quot;type&quot;: &quot;ImportNamespaceSpecifier&quot;,
+            &quot;local&quot;: {
+              &quot;type&quot;: &quot;Identifier&quot;,
+              &quot;name&quot;: &quot;_UsesGeneric&quot;
+            }
+          }
+        ],
+        &quot;source&quot;: {
+          &quot;type&quot;: &quot;Literal&quot;,
+          &quot;value&quot;: &quot;./UsesGeneric&quot;
+        }
+      },
+      {
+        &quot;type&quot;: &quot;ExportNamedDeclaration&quot;,
+        &quot;declaration&quot;: {
+          &quot;type&quot;: &quot;VariableDeclaration&quot;,
+          &quot;kind&quot;: &quot;const&quot;,
+          &quot;declarations&quot;: [
+            {
+              &quot;type&quot;: &quot;VariableDeclarator&quot;,
+              &quot;id&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;UsesGeneric&quot;
+              },
+              &quot;init&quot;: {
+                &quot;type&quot;: &quot;Identifier&quot;,
+                &quot;name&quot;: &quot;_UsesGeneric&quot;
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 }</pre></div></li></ul></div></p>
         </article>
     
         <article>
             <header><span>writeFiles</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + children);<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
         </article>
     
         <article>
             <header><span>Output</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + children);<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
         </article>
     
     </body>

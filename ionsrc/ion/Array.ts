@@ -1,6 +1,6 @@
 
-export type Array = any[]
+export type Array<T> = globalThis.Array<T>
 
-export function isArray(value): value is any[] {
+export function isArray<T>(value): value is Array<T> {
     return Array.isArray(value);
 }

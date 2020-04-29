@@ -5,6 +5,7 @@ import checkReferences from "../../phases/checkReferences";
 import toTypescriptAst from "./toTypescriptAst";
 import toTypescriptFiles, { removePrewritten } from "./toTypescriptFiles";
 import writeFiles from "../../phases/writeFiles";
+import addIndexFiles from "./addIndexFiles";
 
 export default [
     analysisToAssembly,
@@ -13,6 +14,7 @@ export default [
     createImports,
     checkReferences,
     toTypescriptAst,
+    addIndexFiles,
     toTypescriptFiles,
     writeFiles,
 ]

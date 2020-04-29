@@ -1,6 +1,8 @@
 
 export { default as Assembly } from "./Assembly";
 export { default as AssignmentStatement } from "./AssignmentStatement";
+export { default as ArrayPattern } from "./ArrayPattern";
+export { default as ArrayExpression } from "./ArrayExpression"
 export { default as BinaryExpression } from "./BinaryExpression";
 export { default as BlockStatement } from "./BlockStatement";
 export { default as CallExpression } from "./CallExpression";
