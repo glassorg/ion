@@ -27,9 +27,14 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X add is<Type> functions to classes for runtime type checking
     X add type guard to isClass functions
     X add Class.isClass functions with type guard.
-    - figure out how to publish and consume ion
+    X figure out how to publish and consume ion
         decision use npmjs with ion prefix:
             ion.ion
             ion.sample
             ion.glass.graphics
-    - publish compiler
+    X publish compiler
+    X use new ast
+    X parsing
+    X make instances immutable
+      Convert Traversal functions to be immutable / patch results.
+

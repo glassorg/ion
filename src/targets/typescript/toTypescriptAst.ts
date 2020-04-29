@@ -346,7 +346,20 @@ const toAstLeave = {
                                                         right: { type: "Identifier", name: localName }
                                                     }
                                                 }
-                                            })
+                                            }),
+                                            // Object.freeze(this)
+                                            {
+                                                type: "ExpressionStatement",
+                                                expression: {
+                                                    type: "CallExpression",
+                                                    callee: {
+                                                        type: "MemberExpression",
+                                                        object: { type: "Identifier", name: "Object" },
+                                                        property: { type: "Identifier", name: "freeze" }
+                                                    },
+                                                    arguments: [ { type: "ThisExpression" } ]
+                                                }
+                                            }
                                         ]
                                     }
                                 },

@@ -6,6 +6,7 @@ credentials.json
 webpack.config.js
 webpack.server.js
 app.yaml
+output.html
 .browserslistrc
 .gcloudignore
 .npmrc
