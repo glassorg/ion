@@ -15,6 +15,12 @@ export class Scope implements Node.Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new Scope({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Scope {
         return isScope(value);
     }

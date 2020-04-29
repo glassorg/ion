@@ -43,6 +43,17 @@ export class CallExpression implements Expression.Expression , Node.Node {
         this.arguments = _arguments;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        new?: Boolean.Boolean,
+        callee?: Expression.Expression,
+        arguments?: Array.Array<Argument>
+    }) {
+        return new CallExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is CallExpression {
         return isCallExpression(value);
     }

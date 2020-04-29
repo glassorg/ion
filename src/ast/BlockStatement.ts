@@ -23,6 +23,15 @@ export class BlockStatement implements Statement.Statement , Scope.Scope , Node.
         this.statements = statements;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        statements?: Array.Array<Statement.Statement>
+    }) {
+        return new BlockStatement({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is BlockStatement {
         return isBlockStatement(value);
     }

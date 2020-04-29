@@ -33,6 +33,17 @@ export class IfStatement implements Statement.Statement , Node.Node {
         this.alternate = alternate;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        test?: Expression.Expression,
+        consequent?: BlockStatement.BlockStatement,
+        alternate?: BlockStatement.BlockStatement | Null.Null
+    }) {
+        return new IfStatement({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is IfStatement {
         return isIfStatement(value);
     }

@@ -47,6 +47,19 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
         this.typeGuard = typeGuard;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        parameters?: Array.Array<Parameter.Parameter>,
+        returnType?: Expression.Expression | Null.Null,
+        body?: BlockStatement.BlockStatement,
+        typeGuard?: Reference.Reference | Null.Null
+    }) {
+        return new FunctionExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is FunctionExpression {
         return isFunctionExpression(value);
     }

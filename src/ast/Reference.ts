@@ -23,6 +23,15 @@ export class Reference implements Id.Id , Expression.Expression , Node.Node {
         this.name = name;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        name?: String.String
+    }) {
+        return new Reference({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Reference {
         return isReference(value);
     }

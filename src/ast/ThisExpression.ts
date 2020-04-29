@@ -16,6 +16,12 @@ export class ThisExpression implements Expression.Expression , Node.Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new ThisExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is ThisExpression {
         return isThisExpression(value);
     }

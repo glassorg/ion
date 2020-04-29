@@ -14,6 +14,12 @@ export class Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new Node({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Node {
         return isNode(value);
     }

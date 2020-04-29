@@ -26,6 +26,16 @@ export class MemberExpression implements Expression.Expression , Node.Node {
         this.property = property;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        object?: Expression.Expression,
+        property?: Expression.Expression
+    }) {
+        return new MemberExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is MemberExpression {
         return isMemberExpression(value);
     }

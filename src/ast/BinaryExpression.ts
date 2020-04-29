@@ -32,6 +32,17 @@ export class BinaryExpression implements Expression.Expression , Node.Node {
         this.right = right;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        left?: Expression.Expression,
+        operator?: String.String,
+        right?: Expression.Expression
+    }) {
+        return new BinaryExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is BinaryExpression {
         return isBinaryExpression(value);
     }

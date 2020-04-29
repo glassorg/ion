@@ -53,6 +53,19 @@ export class TypeDeclaration implements VariableDeclaration.VariableDeclaration 
         this.export = _export;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        type?: Expression.Expression | Null.Null,
+        value?: Expression.Expression | Null.Null,
+        assignable?: Boolean.Boolean,
+        export?: Boolean.Boolean
+    }) {
+        return new TypeDeclaration({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is TypeDeclaration {
         return isTypeDeclaration(value);
     }

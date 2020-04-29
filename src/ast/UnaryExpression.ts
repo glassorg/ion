@@ -19,6 +19,15 @@ export class UnaryExpression {
         this.argument = argument;
         Object.freeze(this);
     }
+    patch(properties: {
+        operator?: String.String,
+        argument?: Expression.Expression
+    }) {
+        return new UnaryExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is UnaryExpression {
         return isUnaryExpression(value);
     }

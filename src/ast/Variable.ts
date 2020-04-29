@@ -38,6 +38,18 @@ export class Variable implements Node.Node {
         this.assignable = assignable;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        type?: Expression.Expression | Null.Null,
+        value?: Expression.Expression | Null.Null,
+        assignable?: Boolean.Boolean
+    }) {
+        return new Variable({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Variable {
         return isVariable(value);
     }

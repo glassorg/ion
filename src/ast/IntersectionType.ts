@@ -34,6 +34,17 @@ export class IntersectionType implements BinaryExpression.BinaryExpression , Typ
         this.right = right;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        left?: Expression.Expression,
+        operator?: String.String,
+        right?: Expression.Expression
+    }) {
+        return new IntersectionType({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is IntersectionType {
         return isIntersectionType(value);
     }

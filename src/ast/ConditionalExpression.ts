@@ -31,6 +31,17 @@ export class ConditionalExpression implements Expression.Expression , Node.Node 
         this.alternate = alternate;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        test?: Expression.Expression,
+        consequent?: Expression.Expression,
+        alternate?: Expression.Expression
+    }) {
+        return new ConditionalExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is ConditionalExpression {
         return isConditionalExpression(value);
     }

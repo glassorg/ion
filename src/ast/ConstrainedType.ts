@@ -28,6 +28,16 @@ export class ConstrainedType implements TypeExpression.TypeExpression , Expressi
         this.constraint = constraint;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        baseType?: Reference.Reference,
+        constraint?: Expression.Expression
+    }) {
+        return new ConstrainedType({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is ConstrainedType {
         return isConstrainedType(value);
     }

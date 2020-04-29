@@ -24,6 +24,16 @@ export class Location {
         this.filename = filename;
         Object.freeze(this);
     }
+    patch(properties: {
+        start?: Position.Position,
+        end?: Position.Position,
+        filename?: String.String
+    }) {
+        return new Location({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Location {
         return isLocation(value);
     }

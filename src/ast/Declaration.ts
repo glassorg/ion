@@ -31,6 +31,16 @@ export class Declaration implements Node.Node {
         this.export = _export;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        export?: Boolean.Boolean
+    }) {
+        return new Declaration({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Declaration {
         return isDeclaration(value);
     }

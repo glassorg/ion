@@ -28,6 +28,16 @@ export class WhileStatement implements Statement.Statement , Node.Node {
         this.body = body;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        test?: Expression.Expression,
+        body?: BlockStatement.BlockStatement
+    }) {
+        return new WhileStatement({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is WhileStatement {
         return isWhileStatement(value);
     }

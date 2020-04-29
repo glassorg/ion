@@ -15,6 +15,12 @@ export class Statement implements Node.Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new Statement({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Statement {
         return isStatement(value);
     }

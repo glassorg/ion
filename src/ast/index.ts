@@ -54,6 +54,8 @@ import * as _Position from './Position';
 export const Position = _Position;
 import * as _Reference from './Reference';
 export const Reference = _Reference;
+import * as _ReturnStatement from './ReturnStatement';
+export const ReturnStatement = _ReturnStatement;
 import * as _Scope from './Scope';
 export const Scope = _Scope;
 import * as _Statement from './Statement';

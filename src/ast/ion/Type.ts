@@ -11,6 +11,12 @@ export class Type {
         this.id = id;
         Object.freeze(this);
     }
+    patch(properties: { id?: String.String }) {
+        return new Type({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Type {
         return isType(value);
     }

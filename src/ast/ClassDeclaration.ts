@@ -66,6 +66,21 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         this.meta = meta;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        export?: Boolean.Boolean,
+        isStructure?: Boolean.Boolean,
+        parameters?: Array.Array<Parameter.Parameter>,
+        baseClasses?: Array.Array<Reference.Reference>,
+        declarations?: Array.Array<Declaration.Declaration>,
+        meta?: Array.Array<KeyValuePair.KeyValuePair>
+    }) {
+        return new ClassDeclaration({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is ClassDeclaration {
         return isClassDeclaration(value);
     }

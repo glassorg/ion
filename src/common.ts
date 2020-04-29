@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as np from "path";
 import Assembly from "./ast/Assembly";
+import Reference from "./ast/Reference";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Import/Export Functions
@@ -9,13 +10,13 @@ import Assembly from "./ast/Assembly";
 export const PATH_SEPARATOR = "."
 export const EXPORT_DELIMITER = ":"
 
-// export function isTypeReference(node): node is Reference {
-//     if (!Reference.is(node)) {
-//         return false
-//     }
-//     let first = getLastName(node.name)[0]
-//     return first === first.toUpperCase()
-// }
+export function isTypeReference(node): node is Reference {
+    if (!Reference.is(node)) {
+        return false
+    }
+    let first = getLastName(node.name)[0]
+    return first === first.toUpperCase()
+}
 
 export function getLastName(absoluteName: string) {
     return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)

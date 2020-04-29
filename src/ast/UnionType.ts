@@ -34,6 +34,17 @@ export class UnionType implements BinaryExpression.BinaryExpression , TypeExpres
         this.right = right;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        left?: Expression.Expression,
+        operator?: String.String,
+        right?: Expression.Expression
+    }) {
+        return new UnionType({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is UnionType {
         return isUnionType(value);
     }

@@ -33,6 +33,16 @@ export class TemplateReference implements TypeExpression.TypeExpression , Expres
         this.arguments = _arguments;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        baseType?: Reference.Reference,
+        arguments?: Array.Array<TypeExpression.TypeExpression | Reference.Reference>
+    }) {
+        return new TemplateReference({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is TemplateReference {
         return isTemplateReference(value);
     }

@@ -1,52 +1,47 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as Statement from './Statement';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Expression from './Expression';
-import * as Id from './Id';
 import * as Class from './ion/Class';
-export class KeyValuePair implements Node.Node {
+export class ReturnStatement implements Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly key: Expression.Expression | Id.Id;
     readonly value: Expression.Expression;
-    constructor({location = null, key, value}: {
+    constructor({location = null, value}: {
         location?: Location.Location | Null.Null,
-        key: Expression.Expression | Id.Id,
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(Expression.isExpression(key) || Id.isId(key)))
-            throw new Error('key is not a Expression | Id: ' + Class.toString(key));
         if (!Expression.isExpression(value))
             throw new Error('value is not a Expression: ' + Class.toString(value));
         this.location = location;
-        this.key = key;
         this.value = value;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        key?: Expression.Expression | Id.Id,
         value?: Expression.Expression
     }) {
-        return new KeyValuePair({
+        return new ReturnStatement({
             ...this,
             ...properties
         });
     }
-    static is(value): value is KeyValuePair {
-        return isKeyValuePair(value);
+    static is(value): value is ReturnStatement {
+        return isReturnStatement(value);
     }
 }
-KeyValuePair['id'] = 'KeyValuePair';
-KeyValuePair['implements'] = new Set([
-    'KeyValuePair',
+ReturnStatement['id'] = 'ReturnStatement';
+ReturnStatement['implements'] = new Set([
+    'ReturnStatement',
+    'Statement',
     'Node'
 ]);
-export const isKeyValuePair = function (value): value is KeyValuePair {
-    return Class.isInstance(KeyValuePair, value);
+export const isReturnStatement = function (value): value is ReturnStatement {
+    return Class.isInstance(ReturnStatement, value);
 };
-export default KeyValuePair;
+export default ReturnStatement;

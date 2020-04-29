@@ -24,6 +24,15 @@ export class Analysis implements Scope.Scope , Node.Node {
         this.declarations = declarations;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        declarations?: Map.Map<String.String, Declaration.Declaration>
+    }) {
+        return new Analysis({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Analysis {
         return isAnalysis(value);
     }

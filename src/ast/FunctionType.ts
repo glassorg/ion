@@ -29,6 +29,16 @@ export class FunctionType implements TypeExpression.TypeExpression , Expression.
         this.returnType = returnType;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        parameters?: Array.Array<Parameter.Parameter>,
+        returnType?: Expression.Expression | Null.Null
+    }) {
+        return new FunctionType({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is FunctionType {
         return isFunctionType(value);
     }

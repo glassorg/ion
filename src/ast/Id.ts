@@ -22,6 +22,15 @@ export class Id implements Expression.Expression , Node.Node {
         this.name = name;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        name?: String.String
+    }) {
+        return new Id({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Id {
         return isId(value);
     }

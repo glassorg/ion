@@ -16,6 +16,12 @@ export class TypeExpression implements Expression.Expression , Node.Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new TypeExpression({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is TypeExpression {
         return isTypeExpression(value);
     }

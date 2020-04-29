@@ -35,6 +35,17 @@ export class Module implements Scope.Scope , Node.Node {
         this.declarations = declarations;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id | Null.Null,
+        imports?: Array.Array<ImportStep.ImportStep>,
+        declarations?: Array.Array<Declaration.Declaration>
+    }) {
+        return new Module({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Module {
         return isModule(value);
     }

@@ -23,6 +23,15 @@ export class LiteralType implements TypeExpression.TypeExpression , Expression.E
         this.literal = literal;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        literal?: Literal.Literal
+    }) {
+        return new LiteralType({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is LiteralType {
         return isLiteralType(value);
     }

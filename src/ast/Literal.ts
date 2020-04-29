@@ -16,6 +16,12 @@ export class Literal implements Expression.Expression , Node.Node {
         this.location = location;
         Object.freeze(this);
     }
+    patch(properties: { location?: Location.Location | Null.Null }) {
+        return new Literal({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Literal {
         return isLiteral(value);
     }

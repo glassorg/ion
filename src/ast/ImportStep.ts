@@ -38,6 +38,18 @@ export class ImportStep implements Node.Node {
         this.children = children;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        relative?: Boolean.Boolean,
+        id?: Id.Id | Null.Null,
+        as?: Id.Id | Null.Null,
+        children?: Array.Array<ImportStep> | Boolean.Boolean
+    }) {
+        return new ImportStep({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is ImportStep {
         return isImportStep(value);
     }

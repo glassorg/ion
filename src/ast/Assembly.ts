@@ -23,6 +23,15 @@ export class Assembly implements Node.Node {
         this.modules = modules;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        modules?: Map.Map<String.String, Module.Module>
+    }) {
+        return new Assembly({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Assembly {
         return isAssembly(value);
     }

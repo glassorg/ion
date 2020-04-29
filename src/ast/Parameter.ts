@@ -52,6 +52,19 @@ export class Parameter implements Variable.Variable , Declaration.Declaration , 
         this.export = _export;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        id?: Id.Id,
+        type?: Expression.Expression | Null.Null,
+        value?: Expression.Expression | Null.Null,
+        assignable?: Boolean.Boolean,
+        export?: Boolean.Boolean
+    }) {
+        return new Parameter({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is Parameter {
         return isParameter(value);
     }

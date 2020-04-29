@@ -28,6 +28,16 @@ export class AssignmentStatement implements Statement.Statement , Node.Node {
         this.right = right;
         Object.freeze(this);
     }
+    patch(properties: {
+        location?: Location.Location | Null.Null,
+        left?: Reference.Reference,
+        right?: Expression.Expression
+    }) {
+        return new AssignmentStatement({
+            ...this,
+            ...properties
+        });
+    }
     static is(value): value is AssignmentStatement {
         return isAssignmentStatement(value);
     }
