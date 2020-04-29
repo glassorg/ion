@@ -365,6 +365,59 @@ const toAstLeave = {
                                     }
                                 },
                             },
+                            ...(node.isStructure ? [] : [{
+                                type: "MethodDefinition",
+                                kind: "method",
+                                key: { type: "Identifier", name: "patch" },
+                                value: {
+                                    type: "FunctionExpression",
+                                    params: (() => {
+                                        // we need to use the ObjectPattern
+                                        return  [{
+                                            type: "Identifier",
+                                            name: "properties",
+                                            tstype: {
+                                                type: "ObjectExpression",
+                                                properties: node.declarations.map((d: any) => {
+                                                    let declaration = d.declarations[0]
+                                                    let name = declaration.id.name
+                                                    return {
+                                                        type: "Property",
+                                                        kind: "init",
+                                                        key: { type: "Identifier", name: `${name}?` },
+                                                        value: declaration.tstype,
+                                                    }
+                                                })
+                                            }
+                                        }]
+                                    })(),
+                                    body: {
+                                        type: "BlockStatement",
+                                        body: [
+                                            {
+                                                type: "ReturnStatement",
+                                                argument: {
+                                                    type: "NewExpression",
+                                                    callee: { type: "Identifier", name: node.id.name },
+                                                    arguments: [{
+                                                        type: "ObjectExpression",
+                                                        properties: [
+                                                            {
+                                                                type: "SpreadElement",
+                                                                argument: { type: "ThisExpression" }
+                                                            },
+                                                            {
+                                                                type: "SpreadElement",
+                                                                argument: { type: "Identifier", name: "properties" }
+                                                            }
+                                                        ]
+                                                    }]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                            }]),
                             {
                                 type: "MethodDefinition",
                                 kind: "method",
