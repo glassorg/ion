@@ -58,7 +58,7 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                                 if (ConstrainedType.is(node)) {
                                     return new BinaryExpression({
                                         left: new CallExpression({
-                                            callee: new Reference({ name: getTypeCheckFunctionName(node.baseType.name), location: node.baseType.location }),
+                                            callee: node.baseType.patch({ name: getTypeCheckFunctionName(node.baseType.name) }),
                                             arguments: [
                                                 new Reference({ name: "value", location: node.baseType.location })
                                             ]

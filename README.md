@@ -38,7 +38,8 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X make instances immutable
     X Convert Traversal functions to be immutable / patch results.
     X Ion => add Implements Clauses to class definition.
-      Implement ImportResolution.
-      Create .patch function on instances
+    X Implement ImportResolution.
+    X Create .patch function on instances
+      Need Readonly<Array<type>> to prevent modifying an elements arrays.
     
 

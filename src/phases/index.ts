@@ -4,8 +4,8 @@ import importResolution from "./importResolution";
 import typeCreation from "./typeCreation";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import assemblyToAnalysis from "./assemblyToAnalysis";
+import inheritBaseClasses from "./inheritBaseClasses";
 // import checkReferences from "./checkReferences";
-// import inheritBaseClasses from "./inheritBaseClasses";
 // import createClassTypeChecks from "./createClassTypeChecks";
 
 export default [
@@ -18,7 +18,7 @@ export default [
     // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,
-    // inheritBaseClasses,
+    inheritBaseClasses,
     // createClassTypeChecks,
     // checkReferences,
 ]
