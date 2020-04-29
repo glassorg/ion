@@ -21,6 +21,7 @@ export class BlockStatement {
             throw new Error('statements is not a Array: ' + Class.toString(statements));
         this.location = location;
         this.statements = statements;
+        Object.freeze(this);
     }
     static is(value): value is BlockStatement {
         return isBlockStatement(value);

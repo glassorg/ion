@@ -32,6 +32,7 @@ export class UnionType {
         this.left = left;
         this.operator = operator;
         this.right = right;
+        Object.freeze(this);
     }
     static is(value): value is UnionType {
         return isUnionType(value);

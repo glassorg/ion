@@ -27,6 +27,7 @@ export class FunctionType {
         this.location = location;
         this.parameters = parameters;
         this.returnType = returnType;
+        Object.freeze(this);
     }
     static is(value): value is FunctionType {
         return isFunctionType(value);

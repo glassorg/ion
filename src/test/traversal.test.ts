@@ -4,7 +4,7 @@ import * as t from "../Traversal";
 class MyNode {
     value: number
     children: MyNode[]
-    constructor(value: number, ...children: MyNode[]) {
+    constructor({value, children = []}: { value: number, children?: MyNode[] }) {
         this.value = value
         this.children = children
     }
@@ -12,9 +12,9 @@ class MyNode {
 
 (function testEnterLeaveOrderAndFilteringOutOfArray() {
     let root = [
-        new MyNode(1),
-        new MyNode(2),
-        new MyNode(3)
+        new MyNode({ value: 1 }),
+        new MyNode({ value: 2 }),
+        new MyNode({ value: 3 })
     ]
     let order: number[] = []
     let result = t.traverse(root, {
@@ -30,9 +30,9 @@ class MyNode {
 
 (function testChildrenPreOrder() {
     let root = [
-        new MyNode(1, new MyNode(11), new MyNode(12)),
-        new MyNode(2, new MyNode(21), new MyNode(22)),
-        new MyNode(3, new MyNode(31), new MyNode(32))
+        new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     ]
 
     let order: number[] = []
@@ -53,9 +53,9 @@ class MyNode {
 
 (function testSkippingChildren() {
     let root = [
-        new MyNode(1, new MyNode(11), new MyNode(12)),
-        new MyNode(2, new MyNode(21), new MyNode(22)),
-        new MyNode(3, new MyNode(31), new MyNode(32))
+        new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     ]
 
     let order: number[] = []
@@ -77,12 +77,11 @@ class MyNode {
     ])
 })();
 
-
 (function testArrayRemoval() {
     let root = [
-        new MyNode(1, new MyNode(11), new MyNode(12)),
-        new MyNode(2, new MyNode(21), new MyNode(22)),
-        new MyNode(3, new MyNode(31), new MyNode(32))
+        new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     ]
 
     let result = t.traverse(root, {
@@ -95,23 +94,23 @@ class MyNode {
     assert.deepEqual(
         result,
         [
-            new MyNode(2, new MyNode(22)),
-            new MyNode(3, new MyNode(32))
+            new MyNode({ value: 2, children: [new MyNode({ value: 22 }) ]}),
+            new MyNode({ value: 3, children: [new MyNode({ value: 32 }) ]}),
         ]
     )
 })();
 
 (function testArrayInsertion() {
     let root = [
-        new MyNode(1, new MyNode(11), new MyNode(12)),
-        new MyNode(2, new MyNode(21), new MyNode(22)),
-        new MyNode(3, new MyNode(31), new MyNode(32))
+        new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     ]
 
     let result = t.traverse(root, {
         leave(node) {
             if (node.value === 2) {
-                return t.replace(new MyNode(201), new MyNode(202))
+                return t.replace(new MyNode({ value: 201 }), new MyNode({ value: 202 }))
             }
         },
         skip(node) {
@@ -123,19 +122,19 @@ class MyNode {
     assert.deepEqual(
         result,
         [
-            new MyNode(1, new MyNode(11), new MyNode(12)),
-            new MyNode(201),
-            new MyNode(202),
-            new MyNode(3, new MyNode(31), new MyNode(32))
+            new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+            new MyNode({ value: 201 }),
+            new MyNode({ value: 202 }),
+            new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
         ]
     )
 })();
 
 (function testObjectRemoval() {
     let root = {
-        a: new MyNode(1, new MyNode(11), new MyNode(12)),
-        b: new MyNode(2, new MyNode(21), new MyNode(22)),
-        c: new MyNode(3, new MyNode(31), new MyNode(32))
+        a: new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        b: new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        c: new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     }
 
     let result = t.traverse(root, {
@@ -152,25 +151,25 @@ class MyNode {
     assert.deepEqual(
         result,
         {
-            a: new MyNode(1, new MyNode(11), new MyNode(12)),
-            c: new MyNode(3, new MyNode(31), new MyNode(32))
+            a: new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+            c: new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
         }
     )
 })();
 
 (function testObjectInsertion() {
     let root = {
-        a: new MyNode(1, new MyNode(11), new MyNode(12)),
-        b: new MyNode(2, new MyNode(21), new MyNode(22)),
-        c: new MyNode(3, new MyNode(31), new MyNode(32))
+        a: new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+        b: new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]}),
+        c: new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
     }
 
     let result = t.traverse(root, {
         leave(node) {
             if (node.value === 2) {
                 return t.replace(
-                    t.pair("b1", new MyNode(201)),
-                    t.pair("b2", new MyNode(202))
+                    t.pair("b1", new MyNode({ value: 201 })),
+                    t.pair("b2", new MyNode({ value: 202 }))
                 )
             }
         },
@@ -183,19 +182,19 @@ class MyNode {
     assert.deepEqual(
         JSON.stringify(result),
         JSON.stringify({
-            a: new MyNode(1, new MyNode(11), new MyNode(12)),
-            b1: new MyNode(201),
-            b2: new MyNode(202),
-            c: new MyNode(3, new MyNode(31), new MyNode(32))
+            a: new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]}),
+            b1: new MyNode({ value: 201 }),
+            b2: new MyNode({ value: 202 }),
+            c: new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]}),
         })
     )
 })();
 
 (function testMapRemoval() {
     let root = new Map([
-        ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
-        ["b", new MyNode(2, new MyNode(21), new MyNode(22))],
-        ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
+        ["a", new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]})],
+        ["b", new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]})],
+        ["c", new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]})],
     ])
 
     let result = t.traverse(root, {
@@ -208,25 +207,25 @@ class MyNode {
     assert.deepEqual(
         result,
         new Map([
-            ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
-            ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
+            ["a", new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]})],
+            ["c", new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]})],
         ])
     )
 })();
 
 (function testMapInsertion() {
     let root = new Map([
-        ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
-        ["b", new MyNode(2, new MyNode(21), new MyNode(22))],
-        ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
+        ["a", new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]})],
+        ["b", new MyNode({ value: 2, children: [new MyNode({ value: 21 }), new MyNode({ value: 22 }) ]})],
+        ["c", new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]})],
     ])
 
     let result = t.traverse(root, {
         leave(node) {
             if (node.value === 2) {
                 return t.replace(
-                    t.pair("b1", new MyNode(201)),
-                    t.pair("b2", new MyNode(202))
+                    t.pair("b1", new MyNode({ value: 201 })),
+                    t.pair("b2", new MyNode({ value: 202 }))
                 )
             }
         }
@@ -235,10 +234,10 @@ class MyNode {
     assert.deepEqual(
         result,
         new Map([
-            ["a", new MyNode(1, new MyNode(11), new MyNode(12))],
-            ["b1", new MyNode(201)],
-            ["b2", new MyNode(202)],
-            ["c", new MyNode(3, new MyNode(31), new MyNode(32))]
+            ["a", new MyNode({ value: 1, children: [new MyNode({ value: 11 }), new MyNode({ value: 12 }) ]})],
+            ["b1", new MyNode({ value: 201 })],
+            ["b2", new MyNode({ value: 202 })],
+            ["c", new MyNode({ value: 3, children: [new MyNode({ value: 31 }), new MyNode({ value: 32 }) ]})],
         ])
     )
 })();

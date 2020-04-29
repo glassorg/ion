@@ -26,6 +26,7 @@ export class AssignmentStatement {
         this.location = location;
         this.left = left;
         this.right = right;
+        Object.freeze(this);
     }
     static is(value): value is AssignmentStatement {
         return isAssignmentStatement(value);

@@ -45,6 +45,7 @@ export class FunctionExpression {
         this.returnType = returnType;
         this.body = body;
         this.typeGuard = typeGuard;
+        Object.freeze(this);
     }
     static is(value): value is FunctionExpression {
         return isFunctionExpression(value);

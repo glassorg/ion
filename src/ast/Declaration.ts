@@ -29,6 +29,7 @@ export class Declaration {
         this.location = location;
         this.id = id;
         this.export = _export;
+        Object.freeze(this);
     }
     static is(value): value is Declaration {
         return isDeclaration(value);

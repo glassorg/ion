@@ -36,6 +36,7 @@ export class ImportStep {
         this.id = id;
         this.as = as;
         this.children = children;
+        Object.freeze(this);
     }
     static is(value): value is ImportStep {
         return isImportStep(value);

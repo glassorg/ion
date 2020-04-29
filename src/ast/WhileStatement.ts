@@ -26,6 +26,7 @@ export class WhileStatement {
         this.location = location;
         this.test = test;
         this.body = body;
+        Object.freeze(this);
     }
     static is(value): value is WhileStatement {
         return isWhileStatement(value);

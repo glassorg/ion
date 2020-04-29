@@ -30,6 +30,7 @@ export class BinaryExpression {
         this.left = left;
         this.operator = operator;
         this.right = right;
+        Object.freeze(this);
     }
     static is(value): value is BinaryExpression {
         return isBinaryExpression(value);

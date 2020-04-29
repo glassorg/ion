@@ -24,6 +24,7 @@ export class MemberExpression {
         this.location = location;
         this.object = object;
         this.property = property;
+        Object.freeze(this);
     }
     static is(value): value is MemberExpression {
         return isMemberExpression(value);

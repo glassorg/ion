@@ -37,6 +37,7 @@ export class Parameter {
         this.type = type;
         this.value = value;
         this.assignable = assignable;
+        Object.freeze(this);
     }
     static is(value): value is Parameter {
         return isParameter(value);

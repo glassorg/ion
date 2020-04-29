@@ -50,6 +50,7 @@ export class VariableDeclaration {
         this.value = value;
         this.assignable = assignable;
         this.export = _export;
+        Object.freeze(this);
     }
     static is(value): value is VariableDeclaration {
         return isVariableDeclaration(value);

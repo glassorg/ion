@@ -9,6 +9,7 @@ export class Type {
         if (!String.isString(id))
             throw new Error('id is not a String: ' + Class.toString(id));
         this.id = id;
+        Object.freeze(this);
     }
     static is(value): value is Type {
         return isType(value);

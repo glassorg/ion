@@ -22,6 +22,7 @@ export class Location {
         this.start = start;
         this.end = end;
         this.filename = filename;
+        Object.freeze(this);
     }
     static is(value): value is Location {
         return isLocation(value);

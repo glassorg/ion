@@ -25,6 +25,7 @@ export class KeyValuePair {
         this.location = location;
         this.key = key;
         this.value = value;
+        Object.freeze(this);
     }
     static is(value): value is KeyValuePair {
         return isKeyValuePair(value);

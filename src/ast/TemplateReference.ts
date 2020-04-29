@@ -31,6 +31,7 @@ export class TemplateReference {
         this.location = location;
         this.baseType = baseType;
         this.arguments = _arguments;
+        Object.freeze(this);
     }
     static is(value): value is TemplateReference {
         return isTemplateReference(value);

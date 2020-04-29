@@ -36,6 +36,7 @@ export class Variable {
         this.type = type;
         this.value = value;
         this.assignable = assignable;
+        Object.freeze(this);
     }
     static is(value): value is Variable {
         return isVariable(value);

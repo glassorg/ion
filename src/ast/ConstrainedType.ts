@@ -26,6 +26,7 @@ export class ConstrainedType {
         this.location = location;
         this.baseType = baseType;
         this.constraint = constraint;
+        Object.freeze(this);
     }
     static is(value): value is ConstrainedType {
         return isConstrainedType(value);

@@ -32,6 +32,7 @@ export class IntersectionType {
         this.left = left;
         this.operator = operator;
         this.right = right;
+        Object.freeze(this);
     }
     static is(value): value is IntersectionType {
         return isIntersectionType(value);

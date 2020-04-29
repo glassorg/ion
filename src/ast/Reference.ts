@@ -21,6 +21,7 @@ export class Reference {
             throw new Error('name is not a String: ' + Class.toString(name));
         this.location = location;
         this.name = name;
+        Object.freeze(this);
     }
     static is(value): value is Reference {
         return isReference(value);

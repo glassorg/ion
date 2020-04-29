@@ -41,6 +41,7 @@ export class CallExpression {
         this.new = _new;
         this.callee = callee;
         this.arguments = _arguments;
+        Object.freeze(this);
     }
     static is(value): value is CallExpression {
         return isCallExpression(value);

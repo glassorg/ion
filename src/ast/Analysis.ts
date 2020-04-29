@@ -22,6 +22,7 @@ export class Analysis {
             throw new Error('declarations is not a Map: ' + Class.toString(declarations));
         this.location = location;
         this.declarations = declarations;
+        Object.freeze(this);
     }
     static is(value): value is Analysis {
         return isAnalysis(value);

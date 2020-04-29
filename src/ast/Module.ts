@@ -33,6 +33,7 @@ export class Module {
         this.id = id;
         this.imports = imports;
         this.declarations = declarations;
+        Object.freeze(this);
     }
     static is(value): value is Module {
         return isModule(value);

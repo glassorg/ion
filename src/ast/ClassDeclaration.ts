@@ -64,6 +64,7 @@ export class ClassDeclaration {
         this.baseClasses = baseClasses;
         this.declarations = declarations;
         this.meta = meta;
+        Object.freeze(this);
     }
     static is(value): value is ClassDeclaration {
         return isClassDeclaration(value);

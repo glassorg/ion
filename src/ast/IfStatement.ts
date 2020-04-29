@@ -31,6 +31,7 @@ export class IfStatement {
         this.test = test;
         this.consequent = consequent;
         this.alternate = alternate;
+        Object.freeze(this);
     }
     static is(value): value is IfStatement {
         return isIfStatement(value);

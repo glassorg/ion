@@ -21,6 +21,7 @@ export class Assembly {
             throw new Error('modules is not a Map: ' + Class.toString(modules));
         this.location = location;
         this.modules = modules;
+        Object.freeze(this);
     }
     static is(value): value is Assembly {
         return isAssembly(value);

@@ -13,6 +13,7 @@ export class Position {
             throw new Error('column is not a Number: ' + Class.toString(column));
         this.line = line;
         this.column = column;
+        Object.freeze(this);
     }
     static is(value): value is Position {
         return isPosition(value);

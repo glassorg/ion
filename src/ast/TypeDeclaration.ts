@@ -51,6 +51,7 @@ export class TypeDeclaration {
         this.value = value;
         this.assignable = assignable;
         this.export = _export;
+        Object.freeze(this);
     }
     static is(value): value is TypeDeclaration {
         return isTypeDeclaration(value);

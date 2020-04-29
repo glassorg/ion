@@ -17,6 +17,7 @@ export class UnaryExpression {
             throw new Error('argument is not a Expression: ' + Class.toString(argument));
         this.operator = operator;
         this.argument = argument;
+        Object.freeze(this);
     }
     static is(value): value is UnaryExpression {
         return isUnaryExpression(value);

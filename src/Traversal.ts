@@ -31,11 +31,11 @@ export type Visitor = { enter?: enter, leave?: leave, skip?: predicate, filter?:
 
 interface ContainerHelper<C = any, K = any, V = any> {
     type: string,
-    create(original: C): C
+    create(original: C, newValues: Map<K,V>): C
     keys(container: C): IterableIterator<K>
     getValue(container: C, key: K): V
-    setValue(container: C, key: K, value: V | Replace)
-    normalize(container: C): C
+    // setValue(container: C, key: K, value: V | Replace)
+    // normalize(container: C, values): C
 }
 
 // key value pairs in the Replace ??? or something else?
@@ -44,17 +44,35 @@ interface ContainerHelper<C = any, K = any, V = any> {
 //  Map => Pair(key, value)
 //  Set => value
 
-const objectContainerHelper: ContainerHelper<any, string, any> = {
+const objectContainerHelper: ContainerHelper<Readonly<any>, string, any> = {
     type: "Object",
-    create(original) {
-        // create a new empty object of the same type
-        if (original.constructor === Object) {
-            return {}
+    create(original, newValues: Map<any, any>) {
+        let ctor = original.constructor as any
+        let iterateValues = { ...original }
+        for (let key of newValues.keys()) {
+            iterateValues[key] = newValues.get(key)
         }
-        else {
-            // for typed objects, recycle self
-            return original
+        let values = {}
+        function setValue(name, value) {
+            if (value instanceof Pair) {
+                values[value.key] = value.value
+            }
+            else {
+                values[name] = value
+            }
         }
+        for (let name in iterateValues) {
+            let value = iterateValues[name]
+            if (value instanceof Replace) {
+                for (let item of value.items) {
+                    setValue(item.key, item.value)
+                }
+            }
+            else {
+                setValue(name, value)
+            }
+        }
+        return ctor === Object ? values : new ctor(values)
     },
     *keys(container) {
         for (let key in container) {
@@ -66,53 +84,18 @@ const objectContainerHelper: ContainerHelper<any, string, any> = {
     getValue(container, key: string) {
         return container[key]
     },
-    setValue(container, key: string, value) {
-        if (value instanceof Pair) {
-            // a Pair overrides the initial value
-            container[value.key] = value.value
-        }
-        else {
-            container[key] = value
-        }
-    },
-    normalize(container) {
-        let newContainer = this.create(container)
-        for (let key of this.keys(container)) {
-            let value = this.getValue(container, key)
-            if (value instanceof Replace) {
-                for (let item of value.items) {
-                    this.setValue(newContainer, key, item)
-                }
-            }
-            else {
-                this.setValue(newContainer, key, value)
-            }
-        }
-        return newContainer
-    }
 }
 
-const arrayContainerHelper: ContainerHelper<any[], number, any> = {
+const arrayContainerHelper: ContainerHelper<Readonly<Array<any>>, number, any> = {
     ...objectContainerHelper,
     type: "Array",
-    create(original: any[]) {
-        return []
-    },
-    keys(container: any[]) {
-        return container.keys()
-    },
-    getValue(container: any[], key: number) {
-        return container[key]
-    },
-    setValue(container: any[], key: number, value) {
-        if (value instanceof Pair) {
-            throw new Error("Cannot use a Pair on an Array container")
+    create(original: any[], newValues: Map<any, any>) {
+        let values = [...original]
+        for (let key of newValues.keys()) {
+            values[key] = newValues.get(key)
         }
-        container[key] = value
-    },
-    normalize(container) {
-        let newContainer = this.create(container)
-        for (let value of container) {
+        let newContainer: any[] = []
+        for (let value of values) {
             if (value instanceof Replace) {
                 for (let item of value.items) {
                     newContainer.push(item)
@@ -123,30 +106,52 @@ const arrayContainerHelper: ContainerHelper<any[], number, any> = {
             }
         }
         return newContainer
-    }
-}
-
-const mapContainerHelper: ContainerHelper<Map<any,any>, any, any> = {
-    ...objectContainerHelper,
-    type: "Map",
-    create() {
-        return new Map<any,any>()
     },
-    keys(container: Map<any,any>) {
+    keys(container: any[]) {
         return container.keys()
     },
-    getValue(container: Map<any,any>, key) {
+    getValue(container: any[], key: number) {
+        return container[key]
+    },
+}
+
+const mapContainerHelper: ContainerHelper<ReadonlyMap<any,any>, any, any> = {
+    ...objectContainerHelper as any,
+    type: "Map",
+    create(original: Map<any,any>, newValues: Map<any, any>) {
+        let iterateMap = new Map<any,any>(original.entries())
+        for (let key of newValues.keys()) {
+            iterateMap.set(key, newValues.get(key))
+        }
+
+        let newMap = new Map<any,any>()
+        function setValue(name, value) {
+            if (value instanceof Pair) {
+                newMap.set(value.key, value.value)
+            }
+            else {
+                newMap.set(name, value)
+            }
+        }
+        for (let name of iterateMap.keys()) {
+            let value = iterateMap.get(name)
+            if (value instanceof Replace) {
+                for (let item of value.items) {
+                    setValue(item.key, item.value)
+                }
+            }
+            else {
+                setValue(name, value)
+            }
+        }
+        return newMap
+    },
+    keys(container: ReadonlyMap<any,any>) {
+        return container.keys()
+    },
+    getValue(container: ReadonlyMap<any,any>, key) {
         return container.get(key)
     },
-    setValue(container: Map<any,any>, key, value) {
-        if (value instanceof Pair) {
-            // a Pair overrides the initial value
-            container.set(value.key, value.value)
-        }
-        else {
-            container.set(key, value)
-        }
-    }
 }
 
 function getContainerHelper(node): ContainerHelper | null {
@@ -168,10 +173,6 @@ export function getValue(container, key) {
     return getContainerHelper(container)!.getValue(container, key)
 }
 
-export function setValue(container, key, value) {
-    getContainerHelper(container)!.setValue(container, key, value)
-}
-
 export function defaultSkip(node) {
     return node instanceof Set || node instanceof Location
 }
@@ -182,32 +183,35 @@ export function defaultFilter(node) {
 
 // How do we know to skip some objects like raw objects? without knowing about Node.is?
 export function traverseChildren(
-    container: any,
+    container: Readonly<any>,
     visitor: Visitor,
     ancestors: object[] = [],
     path: any[] = []
 ) {
     const helper = getContainerHelper(container)
     if (helper != null) {
-        let hasReplaces = false
+        let values : Map<any, any> | null = null
 
         ancestors.push(container)
         for (let key of helper.keys(container)) {
             path.push(key)
             let child = helper.getValue(container, key)
             let result = traverse(child, visitor, ancestors, path)
-            if (result !== undefined) {
-                if (result instanceof Replace) {
-                    hasReplaces = true
+            if (result === undefined) {
+                result = child
+            }
+            if (result !== child) {
+                if (values == null) {
+                    values = new Map()
                 }
-                helper.setValue(container, key, result)
+                values.set(key, result)
             }
             path.pop()
         }
         ancestors.pop()
 
-        if (hasReplaces) {
-            container = helper.normalize(container)
+        if (values != null) {
+            container = helper.create(container, values)
         }
     }
 
@@ -215,7 +219,7 @@ export function traverseChildren(
 }
 
 export function traverse(
-    node:any,
+    node: Readonly<any>,
     visitor: Visitor,
     ancestors: object[] = [],
     path: string[] = []
