@@ -36,5 +36,6 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X use new ast
     X parsing
     X make instances immutable
-      Convert Traversal functions to be immutable / patch results.
+    X Convert Traversal functions to be immutable / patch results.
+      Ion => add Implements Clauses to class definition.
 

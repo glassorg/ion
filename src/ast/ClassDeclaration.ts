@@ -12,6 +12,7 @@ export default class ClassDeclaration extends Declaration {
     declarations!: Array<Declaration>
     meta!: Array<KeyValuePair>
     // used by runtime type checking
+    interfaces?: Array<Reference>
     implements?: Array<String>
 
     static is(node): node is ClassDeclaration {

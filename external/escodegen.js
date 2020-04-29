@@ -1171,6 +1171,14 @@
                 fragment = join('extends', this.generateExpression(stmt.superClass, Precedence.Unary, E_TTT));
                 result = join(result, fragment);
             }
+            if (stmt.implements && stmt.implements.length > 0) {
+                fragment = join('implements', this.generateExpression(stmt.implements[0], Precedence.Unary, E_TTT));
+                for (let i = 1; i < stmt.implements.length; i++) {
+                    fragment = join(fragment, ",")
+                    fragment = join(fragment, this.generateExpression(stmt.implements[i], Precedence.Unary, E_TTT));
+                }
+                result = join(result, fragment);
+            }
             result.push(space);
             result.push(this.generateStatement(stmt.body, S_TFFT));
             return result;

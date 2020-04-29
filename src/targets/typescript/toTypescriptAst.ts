@@ -203,6 +203,7 @@ const toAstLeave = {
                 {
                     type: "ClassDeclaration",
                     id: node.id,
+                    implements: node.baseClasses,
                     body: {
                         type: "ClassBody",
                         body: [

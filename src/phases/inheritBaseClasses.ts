@@ -58,6 +58,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
         let declaration = root.declarations[name]
         if (ClassDeclaration.is(declaration)) {
             ensureDeclarationsInherited(declaration, declaration)
+            declaration.interfaces = [new Reference({ name: declaration.id.name}), ...declaration.baseClasses.map(d => new Reference({ name: d.name }))]
             declaration.implements = [getUniqueClientName(declaration.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
         }
     }
