@@ -135,13 +135,24 @@ const toAstLeave = {
         }
         return esnode
     },
-    Module(node: Module) {
+    Module(node: Module, ancestors: object[], path: string[]) {
+        let lastName = path[path.length - 1].split('.').pop()
         return {
             type: "Program",
             leadingComments: [{
                 value: DO_NOT_EDIT_WARNING
             }],
-            body: Array.from(node.declarations.values())
+            body: [
+                ...node.declarations.values(),
+                // add a default export of declaration with same name as module
+                {
+                    type: "ExportDefaultDeclaration",
+                    declaration: {
+                        type: "Identifier",
+                        name: lastName
+                    }
+                }
+            ]
         }
     },
     BlockStatement(node: BlockStatement) {
@@ -363,30 +374,7 @@ const toAstLeave = {
                                     },
                                     tstype: ({ type: "BinaryExpression", left: { type: "Identifier", name: "value" }, operator: "is", right: node.id })
                                 }
-                            },
-                            // {
-                            //     type: "MethodDefinition",
-                            //     kind: "method",
-                            //     key: { type: "Identifier", name: "toString" },
-                            //     value: {
-                            //         type: "FunctionExpression",
-                            //         params: [ { type: "Identifier", name: "value" } ],
-                            //         body: {
-                            //             type: "BlockStatement",
-                            //             body: [
-                            //                 {
-                            //                     type: "ReturnStatement",
-                            //                     argument: {
-                            //                         type: "CallExpression",
-                            //                         callee: { type: "Identifier", name: getTypeCheckFunctionName(node.id.name) },
-                            //                         arguments: [{ type: "Identifier", name: "value" }]
-                            //                     }
-                            //                 }
-                            //             ]
-                            //         },
-                            //         tstype: ({ type: "BinaryExpression", left: { type: "Identifier", name: "value" }, operator: "is", right: node.id })
-                            //     }
-                            // }
+                            }
                         ]
                     }
                 }
@@ -515,14 +503,14 @@ function maybeExport(node: Declaration, typescriptAst) {
     return typescriptAst
 }
 
-export default function toTypescriptAst(node: Node) {
-    let scopes = createScopeMap(node)
-    traverseChildren(node, {
+export default function toTypescriptAst(root: Assembly) {
+    let scopes = createScopeMap(root)
+    traverseChildren(root, {
         enter(node, ancestors, path) {
             return (toAstEnter[node.constructor.name] || toAstEnter.default)(node, ancestors, path, scopes)
         },
         leave(node, ancestors, path) {
             return (toAstLeave[node.constructor.name] || toAstLeave.default)(node, ancestors, path, scopes) || node
         }
-    }, )
+    })
 }

@@ -3090,6 +3090,13 @@ ul.jsondiffpatch-textdiff {
         }
       ]
     }
+  },
+  {
+    &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+    &quot;declaration&quot;: {
+      &quot;type&quot;: &quot;Identifier&quot;,
+      &quot;name&quot;: &quot;Generic&quot;
+    }
   }
 ]</pre></div></li><li class="jsondiffpatch-deleted" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><div class="jsondiffpatch-value"><pre>[
   {
@@ -3685,6 +3692,13 @@ ul.jsondiffpatch-textdiff {
         }
       ]
     }
+  },
+  {
+    &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+    &quot;declaration&quot;: {
+      &quot;type&quot;: &quot;Identifier&quot;,
+      &quot;name&quot;: &quot;UsesGeneric&quot;
+    }
   }
 ]</pre></div></li><li class="jsondiffpatch-deleted" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><div class="jsondiffpatch-value"><pre>[
   {
@@ -4163,6 +4177,13 @@ ul.jsondiffpatch-textdiff {
             }
           }
         ]
+      }
+    },
+    {
+      &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;Identifier&quot;,
+        &quot;name&quot;: &quot;Generic&quot;
       }
     }
   ]
@@ -4653,6 +4674,13 @@ ul.jsondiffpatch-textdiff {
           }
         ]
       }
+    },
+    {
+      &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+      &quot;declaration&quot;: {
+        &quot;type&quot;: &quot;Identifier&quot;,
+        &quot;name&quot;: &quot;UsesGeneric&quot;
+      }
     }
   ]
 }</pre></div></li><li class="jsondiffpatch-added" data-key="generics.index"><div class="jsondiffpatch-property-name">generics.index</div><div class="jsondiffpatch-value"><pre>{
@@ -4736,7 +4764,7 @@ ul.jsondiffpatch-textdiff {
     
         <article>
             <header><span>toTypescriptFiles</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-deleted" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><div class="jsondiffpatch-value"><pre>{
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-deleted" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};<br>export default Generic;&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};<br>export default UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><div class="jsondiffpatch-value"><pre>{
   &quot;generics.Generic&quot;: {
     &quot;type&quot;: &quot;Program&quot;,
     &quot;leadingComments&quot;: [
@@ -5045,6 +5073,13 @@ ul.jsondiffpatch-textdiff {
               }
             }
           ]
+        }
+      },
+      {
+        &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+        &quot;declaration&quot;: {
+          &quot;type&quot;: &quot;Identifier&quot;,
+          &quot;name&quot;: &quot;Generic&quot;
         }
       }
     ]
@@ -5536,6 +5571,13 @@ ul.jsondiffpatch-textdiff {
             }
           ]
         }
+      },
+      {
+        &quot;type&quot;: &quot;ExportDefaultDeclaration&quot;,
+        &quot;declaration&quot;: {
+          &quot;type&quot;: &quot;Identifier&quot;,
+          &quot;name&quot;: &quot;UsesGeneric&quot;
+        }
       }
     ]
   },
@@ -5621,12 +5663,12 @@ ul.jsondiffpatch-textdiff {
     
         <article>
             <header><span>writeFiles</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};<br>export default Generic;&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};<br>export default UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
         </article>
     
         <article>
             <header><span>Output</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="generics/Generic.ts"><div class="jsondiffpatch-property-name">generics/Generic.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Class from &apos;../ion/Class&apos;;<br>export class Generic {<br>    readonly value: T;<br>    constructor({value}: { value: T }) {<br>        this.value = value;<br>    }<br>    static is(value): value is Generic {<br>        return isGeneric(value);<br>    }<br>}<br>Generic[&apos;id&apos;] = &apos;generics_Generic&apos;;<br>Generic[&apos;implements&apos;] = new Set([&apos;generics_Generic&apos;]);<br>export const isGeneric = function (value): value is Generic {<br>    return Class.isInstance(Generic, value);<br>};<br>export default Generic;&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/UsesGeneric.ts"><div class="jsondiffpatch-property-name">generics/UsesGeneric.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as Map from &apos;../ion/Map&apos;;<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>import * as Class from &apos;../ion/Class&apos;;<br>export class UsesGeneric {<br>    readonly children: Map.Map&lt;String.String, Number.Number&gt;;<br>    constructor({children}: { children: Map.Map&lt;String.String, Number.Number&gt; }) {<br>        if (!Map.isMap(children))<br>            throw new Error(&apos;children is not a Map: &apos; + Class.toString(children));<br>        this.children = children;<br>    }<br>    static is(value): value is UsesGeneric {<br>        return isUsesGeneric(value);<br>    }<br>}<br>UsesGeneric[&apos;id&apos;] = &apos;generics_UsesGeneric&apos;;<br>UsesGeneric[&apos;implements&apos;] = new Set([&apos;generics_UsesGeneric&apos;]);<br>export const isUsesGeneric = function (value): value is UsesGeneric {<br>    return Class.isInstance(UsesGeneric, value);<br>};<br>export default UsesGeneric;&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="generics/index.ts"><div class="jsondiffpatch-property-name">generics/index.ts</div><div class="jsondiffpatch-value"><pre>&quot;import * as _Generic from &apos;./Generic&apos;;<br>export const Generic = _Generic;<br>import * as _UsesGeneric from &apos;./UsesGeneric&apos;;<br>export const UsesGeneric = _UsesGeneric;&quot;</pre></div></li></ul></div></p>
         </article>
     
     </body>
