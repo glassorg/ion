@@ -1,0 +1,8 @@
+import
+    ion.*
+    .*
+
+export
+    class FunctionType extends TypeExpression
+        var parameters: Array<Parameter>
+        var returnType: Expression | Null = null

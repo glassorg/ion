@@ -1,0 +1,11 @@
+import
+    ion.*
+    .*
+
+export
+    class ClassDeclaration extends Declaration
+        var isStructure: Boolean = false
+        var parameters: Array<Parameter> = []
+        var baseClasses: Array<Reference> = []
+        var declarations: Array<Declaration>
+        var meta: Array<KeyValuePair> = []

@@ -1,15 +1,19 @@
 {
 
-    const ast = require("./ast")
+    const ast = require("./newast")
 
     function getLocation() {
         let { start, end, filename } = location()
-        return new ast.Location(start, end, filename)
+        return new ast.Location.Location({
+            start: new ast.Position.Position(start.line, start.column),
+            end: new ast.Position.Position(end.line, end.column),
+            filename
+        })
     }
 
     function node(type, ...values) {
         // we assign again in case it was overridden by copy values
-        let TypeConstructor = ast[type]
+        let TypeConstructor = ast[type][type]
         if (TypeConstructor == null) {
             throw new Error(`Missing Type: ${type}`)
         }
@@ -35,7 +39,6 @@
         )
     }
 
-
     //  TODO: Broken -> Map
 
 }
@@ -46,7 +49,9 @@
 
 Module
     = EOL? imports:Imports declarations:Declaration* exports:Exports EOL EOF
-    { return node("Module", { imports, declarations: [...declarations, ...exports] } ) }
+    { return node("Module", { imports, declarations: [...declarations, ...exports] }) }
+    / EOL? EOF
+    { return node("Module", { imports:[], declarations: [] }) }
 
 Exports
     //  Allow Declaration meta properties to be specified before the export declaration
@@ -178,7 +183,7 @@ Pattern
 
 ArrayPattern
     = "[" _ element:RestElement _ "]"
-    { return node("ArrayPattern", element) }
+    { return node("ArrayPattern", { elements: [element] }) }
     / "[" _ head:Pattern? tail:(_ "," _ !"." @Pattern?)* _ rest:("," _ @RestElement)? _ "]"
     {
         let elements = [head || null, ...tail.map((x) => x || null)]
@@ -205,9 +210,9 @@ AssignmentProperty
 
 ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
-        _ id:Id templateParameters:TemplateParameters? _ baseClasses:Extends? EOL
+        _ id:Id parameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, isStructure, templateParameters: templateParameters || [], meta, baseClasses: baseClasses || [], declarations }) }
+        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }
@@ -490,7 +495,7 @@ InlineArrayExpression
 
 Literal
     = NumericLiteral
-    // / BooleanLiteral
+    / BooleanLiteral
     / StringLiteral
     // / CharLiteral
     / NullLiteral
@@ -501,10 +506,10 @@ NumericLiteral
     / DecimalIntegerLiteral
 
 NullLiteral
-    = NullToken { return node('Literal', null) }
+    = NullToken { return node('Literal', { value: null }) }
 
-// BooleanLiteral
-//     = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? 1 : 0 } ) }
+BooleanLiteral
+    = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? true : false } ) }
 
 ExponentPart
     = 'e' [+-]? [0-9]+ !IdPart
@@ -568,8 +573,8 @@ Reference
 
 ThisToken       = @"this"       !IdPart
 NullToken       = @"null"       !IdPart
-// TrueToken       = @"false"      !IdPart
-// FalseToken      = @"true"       !IdPart
+TrueToken       = @"false"      !IdPart
+FalseToken      = @"true"       !IdPart
 TypeToken       = @"type"       !IdPart
 IsToken         = @"is"         !IdPart
 AsToken         = @"as"         !IdPart
@@ -577,6 +582,7 @@ AndToken        = @"and"        !IdPart
 OrToken         = @"or"         !IdPart
 XorToken        = @"xor"        !IdPart
 NotToken        = @"not"        !IdPart
+// NewToken        = @"new"        !IdPart
 WhereToken      = @"where"      !IdPart
 ImportToken     = @"import"     !IdPart
 ExportToken     = @"export"     !IdPart
@@ -600,14 +606,15 @@ AsmToken        = @"asm"        !IdPart
 Keyword
     = ThisToken
     / NullToken
-    // / TrueToken
-    // / FalseToken
+    / TrueToken
+    / FalseToken
     / AndToken
     / IsToken
-    / AsToken
+    // / AsToken
     / OrToken
     / XorToken
     / NotToken
+    // / NewToken
     / WhereToken
     / ClassToken
     / StructToken
@@ -620,8 +627,8 @@ Keyword
     / ReturnToken
     / BreakToken
     / ContinueToken
-    / ExportToken
-    / ImportToken
+    // / ExportToken
+    // / ImportToken
     / AsmToken
 
 ReservedWord

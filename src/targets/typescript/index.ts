@@ -7,12 +7,12 @@ import toTypescriptFiles, { removePrewritten } from "./toTypescriptFiles";
 import writeFiles from "../../phases/writeFiles";
 
 export default [
-    analysisToAssembly,
-    removePrewritten,
-    convertRefsToLocal,
-    createImports,
-    checkReferences,
-    toTypescriptAst,
-    toTypescriptFiles,
-    writeFiles,
+    // analysisToAssembly,
+    // removePrewritten,
+    // convertRefsToLocal,
+    // createImports,
+    // checkReferences,
+    // toTypescriptAst,
+    // toTypescriptFiles,
+    // writeFiles,
 ]

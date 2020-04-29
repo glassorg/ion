@@ -11,14 +11,14 @@ import createClassTypeChecks from "./createClassTypeChecks";
 export default [
     // input stage
     parsing,
-    semanticValidation,
-    importResolution,
-    typeCreation,
+    // semanticValidation,
+    // importResolution,
+    // typeCreation,
 
-    // analysis stage
-    convertRefsToAbsolute,
-    assemblyToAnalysis,
-    inheritBaseClasses,
-    createClassTypeChecks,
-    checkReferences,
+    // // analysis stage
+    // convertRefsToAbsolute,
+    // assemblyToAnalysis,
+    // inheritBaseClasses,
+    // createClassTypeChecks,
+    // checkReferences,
 ]

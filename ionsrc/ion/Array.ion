@@ -2,5 +2,5 @@ import
     .*
 
 export
-    class Array
+    class Array<T>
         let length: Integer where . >= 0
