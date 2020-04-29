@@ -9,7 +9,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class IntersectionType {
+export class IntersectionType implements BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Expression.Expression {
     readonly location: Location.Location | Null.Null;
     readonly left: Expression.Expression;
     readonly operator: String.String;

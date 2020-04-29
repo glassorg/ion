@@ -8,7 +8,7 @@ import * as Map from './ion/Map';
 import * as String from './ion/String';
 import * as Module from './Module';
 import * as Class from './ion/Class';
-export class Assembly {
+export class Assembly implements Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly modules: Map.Map<String.String, Module.Module>;
     constructor({location = null, modules}: {

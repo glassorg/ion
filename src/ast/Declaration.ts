@@ -7,7 +7,7 @@ import * as Null from './ion/Null';
 import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Declaration {
+export class Declaration implements Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;

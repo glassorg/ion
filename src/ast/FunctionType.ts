@@ -9,7 +9,7 @@ import * as Null from './ion/Null';
 import * as Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
-export class FunctionType {
+export class FunctionType implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly parameters: Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;

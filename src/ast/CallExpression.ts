@@ -13,7 +13,7 @@ export type Argument = KeyValuePair.KeyValuePair | Expression.Expression;
 export function isArgument(value): value is Argument {
     return KeyValuePair.isKeyValuePair(value) || Expression.isExpression(value);
 }
-export class CallExpression {
+export class CallExpression implements Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly new: Boolean.Boolean;
     readonly callee: Expression.Expression;

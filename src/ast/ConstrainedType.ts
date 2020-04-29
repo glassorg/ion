@@ -8,7 +8,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class ConstrainedType {
+export class ConstrainedType implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly baseType: Reference.Reference;
     readonly constraint: Expression.Expression;

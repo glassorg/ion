@@ -8,7 +8,7 @@ import * as Null from './ion/Null';
 import * as Reference from './Reference';
 import * as Expression from './Expression';
 import * as Class from './ion/Class';
-export class AssignmentStatement {
+export class AssignmentStatement implements Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly left: Reference.Reference;
     readonly right: Expression.Expression;

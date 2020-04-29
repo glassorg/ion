@@ -8,7 +8,7 @@ export default function parsing(root: { [name: string]: string }, options: Optio
     for (let name in root) {
         let source = root[name]
         let module: Module = options.parser.parse(source, name)
-        modules[name] = new Module({ ...module, id: new Id({ location: module.location, name }) })
+        modules.set(name, new Module({ ...module, id: new Id({ location: module.location, name }) }))
     }
     return new Assembly({ modules })
 }

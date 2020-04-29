@@ -9,7 +9,7 @@ import * as Map from './ion/Map';
 import * as String from './ion/String';
 import * as Declaration from './Declaration';
 import * as Class from './ion/Class';
-export class Analysis {
+export class Analysis implements Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly declarations: Map.Map<String.String, Declaration.Declaration>;
     constructor({location = null, declarations}: {

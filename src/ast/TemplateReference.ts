@@ -9,7 +9,7 @@ import * as Null from './ion/Null';
 import * as Reference from './Reference';
 import * as Array from './ion/Array';
 import * as Class from './ion/Class';
-export class TemplateReference {
+export class TemplateReference implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly baseType: Reference.Reference;
     readonly arguments: Array.Array<TypeExpression.TypeExpression | Reference.Reference>;

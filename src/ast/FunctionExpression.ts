@@ -12,7 +12,7 @@ import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression {
+export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly parameters: Array.Array<Parameter.Parameter>;

@@ -10,7 +10,7 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class VariableDeclaration {
+export class VariableDeclaration implements Variable.Variable , Declaration.Declaration , Node.Node , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;

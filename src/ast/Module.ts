@@ -10,7 +10,7 @@ import * as Array from './ion/Array';
 import * as ImportStep from './ImportStep';
 import * as Declaration from './Declaration';
 import * as Class from './ion/Class';
-export class Module {
+export class Module implements Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id | Null.Null;
     readonly imports: Array.Array<ImportStep.ImportStep>;

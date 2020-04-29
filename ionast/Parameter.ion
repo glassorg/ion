@@ -3,5 +3,5 @@ import
     .*
 
 export
-    class Parameter extends Variable
+    class Parameter extends Variable, Declaration
         let assignable: Boolean = false

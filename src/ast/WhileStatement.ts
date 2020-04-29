@@ -8,7 +8,7 @@ import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as BlockStatement from './BlockStatement';
 import * as Class from './ion/Class';
-export class WhileStatement {
+export class WhileStatement implements Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly test: Expression.Expression;
     readonly body: BlockStatement.BlockStatement;

@@ -8,7 +8,7 @@ import * as Boolean from './ion/Boolean';
 import * as Id from './Id';
 import * as Array from './ion/Array';
 import * as Class from './ion/Class';
-export class ImportStep {
+export class ImportStep implements Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly relative: Boolean.Boolean;
     readonly id: Id.Id | Null.Null;

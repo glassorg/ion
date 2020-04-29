@@ -8,7 +8,7 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Variable {
+export class Variable implements Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;

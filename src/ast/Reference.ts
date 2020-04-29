@@ -8,7 +8,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Reference {
+export class Reference implements Id.Id , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
     constructor({location = null, name}: {

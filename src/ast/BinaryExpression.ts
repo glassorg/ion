@@ -7,7 +7,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class BinaryExpression {
+export class BinaryExpression implements Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly left: Expression.Expression;
     readonly operator: String.String;

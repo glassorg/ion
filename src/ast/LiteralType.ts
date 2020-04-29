@@ -8,7 +8,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Literal from './Literal';
 import * as Class from './ion/Class';
-export class LiteralType {
+export class LiteralType implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly literal: Literal.Literal;
     constructor({location = null, literal}: {

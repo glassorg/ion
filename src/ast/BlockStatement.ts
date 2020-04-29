@@ -8,7 +8,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Array from './ion/Array';
 import * as Class from './ion/Class';
-export class BlockStatement {
+export class BlockStatement implements Statement.Statement , Scope.Scope , Node.Node , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly statements: Array.Array<Statement.Statement>;
     constructor({location = null, statements}: {

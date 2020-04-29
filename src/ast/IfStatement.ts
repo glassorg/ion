@@ -8,7 +8,7 @@ import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as BlockStatement from './BlockStatement';
 import * as Class from './ion/Class';
-export class IfStatement {
+export class IfStatement implements Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly test: Expression.Expression;
     readonly consequent: BlockStatement.BlockStatement;

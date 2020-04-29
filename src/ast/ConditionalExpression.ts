@@ -6,7 +6,7 @@ import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class ConditionalExpression {
+export class ConditionalExpression implements Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly test: Expression.Expression;
     readonly consequent: Expression.Expression;

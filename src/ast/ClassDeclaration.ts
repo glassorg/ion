@@ -12,7 +12,7 @@ import * as Parameter from './Parameter';
 import * as Reference from './Reference';
 import * as KeyValuePair from './KeyValuePair';
 import * as Class from './ion/Class';
-export class ClassDeclaration {
+export class ClassDeclaration implements Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;

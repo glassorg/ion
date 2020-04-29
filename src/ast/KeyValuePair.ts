@@ -7,7 +7,7 @@ import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as Id from './Id';
 import * as Class from './ion/Class';
-export class KeyValuePair {
+export class KeyValuePair implements Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly key: Expression.Expression | Id.Id;
     readonly value: Expression.Expression;

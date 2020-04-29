@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as np from "path";
-import { Module, Reference, Assembly } from "./ast";
+import Assembly from "./ast/Assembly";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Import/Export Functions
@@ -64,18 +64,17 @@ export function getLocalName(absoluteName: string, localModuleName: string) {
     return null
 }
 
-// export function getAllExports(root: Assembly) {
-//     let names: { [name: string]: true } = {}
-//     for (let moduleName in root.modules) {
-//         // names[moduleName] = true
-//         let module = root.modules[moduleName]
-//         for (let declaration of module.declarations) {
-//             let declarationName = declaration.id.name
-//             names[getAbsoluteName(moduleName, declarationName)] = true
-//         }
-//     }
-//     return names
-// }
+export function getAllExports(root: Assembly) {
+    let names = new Set<string>()
+    for (let moduleName of root.modules.keys()) {
+        let module = root.modules.get(moduleName)!
+        for (let declaration of module.declarations) {
+            let declarationName = declaration.id.name
+            names.add(getAbsoluteName(moduleName, declarationName))
+        }
+    }
+    return names
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Miscelaneous Functions
