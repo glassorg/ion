@@ -1,6 +1,6 @@
 {
 
-    const ast = require("./newast")
+    const ast = require("./ast")
 
     function getLocation() {
         let { start, end, filename } = location()

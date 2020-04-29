@@ -1,17 +1,17 @@
 import parsing from "./parsing";
-import importResolution from "./importResolution";
 import semanticValidation from "./semanticValidation";
-import checkReferences from "./checkReferences";
-import assemblyToAnalysis from "./assemblyToAnalysis";
-import inheritBaseClasses from "./inheritBaseClasses";
-import convertRefsToAbsolute from "./convertRefsToAbsolute";
-import typeCreation from "./typeCreation";
-import createClassTypeChecks from "./createClassTypeChecks";
+// import importResolution from "./importResolution";
+// import checkReferences from "./checkReferences";
+// import assemblyToAnalysis from "./assemblyToAnalysis";
+// import inheritBaseClasses from "./inheritBaseClasses";
+// import convertRefsToAbsolute from "./convertRefsToAbsolute";
+// import typeCreation from "./typeCreation";
+// import createClassTypeChecks from "./createClassTypeChecks";
 
 export default [
     // input stage
     parsing,
-    // semanticValidation,
+    semanticValidation,
     // importResolution,
     // typeCreation,
 

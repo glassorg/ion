@@ -1,4 +1,4 @@
-import { Location } from "./ast"
+import Location from "./ast/Location"
 
 class Replace {
     readonly items: readonly any[]

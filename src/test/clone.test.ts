@@ -5,7 +5,7 @@ import Node from "../ast/Node";
 import Variable from "../ast/Variable";
 import Declaration from "../ast/Declaration";
 import UnaryExpression from "../ast/UnaryExpression";
-import { Id } from "../ast";
+import Id from "../ast/Id";
 import { clone } from "../common";
 
 {

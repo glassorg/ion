@@ -4,12 +4,11 @@ import Id from "../ast/Id";
 import { Options } from "../Compiler";
 
 export default function parsing(root: { [name: string]: string }, options: Options) {
-    let modules: { [name: string]: Module } = {}
+    let modules = new Map<string,Module>()
     for (let name in root) {
         let source = root[name]
         let module: Module = options.parser.parse(source, name)
-        module.id = new Id({ location: module.location, name })
-        modules[name] = module 
+        modules[name] = new Module({ ...module, id: new Id({ location: module.location, name }) })
     }
     return new Assembly({ modules })
 }

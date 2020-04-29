@@ -1,7 +1,9 @@
 import Assembly from "../ast/Assembly";
 import { traverse } from "../Traversal";
-import { TypeDeclaration, VariableDeclaration, ClassDeclaration, Module } from "../ast";
 import { SemanticError } from "../common";
+import TypeDeclaration from "../ast/TypeDeclaration";
+import ClassDeclaration from "../ast/ClassDeclaration";
+import VariableDeclaration from "../ast/VariableDeclaration";
 
 function isUpperCase(char: string) {
     return char === char.toUpperCase()

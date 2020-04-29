@@ -1,10 +1,43 @@
-import Statement from "./Statement";
-import Reference from "./Reference";
-import Expression from "./Expression";
-
-export default class AssignmentStatement extends Statement {
-
-    left!: Reference
-    right!: Expression
-
+/*
+This file was generated from ion source. Do not edit.
+*/
+import * as Statement from './Statement';
+import * as Node from './Node';
+import * as Location from './Location';
+import * as Null from './ion/Null';
+import * as Reference from './Reference';
+import * as Expression from './Expression';
+import * as Class from './ion/Class';
+export class AssignmentStatement {
+    readonly location: Location.Location | Null.Null;
+    readonly left: Reference.Reference;
+    readonly right: Expression.Expression;
+    constructor({location = null, left, right}: {
+        location?: Location.Location | Null.Null,
+        left: Reference.Reference,
+        right: Expression.Expression
+    }) {
+        if (!(Location.isLocation(location) || Null.isNull(location)))
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+        if (!Reference.isReference(left))
+            throw new Error('left is not a Reference: ' + Class.toString(left));
+        if (!Expression.isExpression(right))
+            throw new Error('right is not a Expression: ' + Class.toString(right));
+        this.location = location;
+        this.left = left;
+        this.right = right;
+    }
+    static is(value): value is AssignmentStatement {
+        return isAssignmentStatement(value);
+    }
 }
+AssignmentStatement['id'] = 'AssignmentStatement';
+AssignmentStatement['implements'] = new Set([
+    'AssignmentStatement',
+    'Statement',
+    'Node'
+]);
+export const isAssignmentStatement = function (value): value is AssignmentStatement {
+    return Class.isInstance(AssignmentStatement, value);
+};
+export default AssignmentStatement;

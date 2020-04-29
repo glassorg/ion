@@ -19,3 +19,4 @@ Type['implements'] = new Set(['ion_Type']);
 export const isType = function (value): value is Type {
     return Class.isInstance(Type, value);
 };
+export default Type;

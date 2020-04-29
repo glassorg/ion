@@ -9,13 +9,13 @@ import { Module, Reference, Assembly } from "./ast";
 export const PATH_SEPARATOR = "."
 export const EXPORT_DELIMITER = ":"
 
-export function isTypeReference(node): node is Reference {
-    if (!Reference.is(node)) {
-        return false
-    }
-    let first = getLastName(node.name)[0]
-    return first === first.toUpperCase()
-}
+// export function isTypeReference(node): node is Reference {
+//     if (!Reference.is(node)) {
+//         return false
+//     }
+//     let first = getLastName(node.name)[0]
+//     return first === first.toUpperCase()
+// }
 
 export function getLastName(absoluteName: string) {
     return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)
@@ -64,18 +64,18 @@ export function getLocalName(absoluteName: string, localModuleName: string) {
     return null
 }
 
-export function getAllExports(root: Assembly) {
-    let names: { [name: string]: true } = {}
-    for (let moduleName in root.modules) {
-        // names[moduleName] = true
-        let module = root.modules[moduleName]
-        for (let declaration of module.declarations) {
-            let declarationName = declaration.id.name
-            names[getAbsoluteName(moduleName, declarationName)] = true
-        }
-    }
-    return names
-}
+// export function getAllExports(root: Assembly) {
+//     let names: { [name: string]: true } = {}
+//     for (let moduleName in root.modules) {
+//         // names[moduleName] = true
+//         let module = root.modules[moduleName]
+//         for (let declaration of module.declarations) {
+//             let declarationName = declaration.id.name
+//             names[getAbsoluteName(moduleName, declarationName)] = true
+//         }
+//     }
+//     return names
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Miscelaneous Functions

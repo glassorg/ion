@@ -1,26 +1,25 @@
-import Location from "./Location";
-import { isDerivedClass } from "./runtime";
-
-export default class Node {
-
-    location?: Location
-
-    constructor(...values) {
-        Object.assign(this, ...values)
+/*
+This file was generated from ion source. Do not edit.
+*/
+import * as Location from './Location';
+import * as Null from './ion/Null';
+import * as Class from './ion/Class';
+export class Node {
+    readonly location: Location.Location | Null.Null;
+    constructor({
+        location = null
+    }: { location?: Location.Location | Null.Null }) {
+        if (!(Location.isLocation(location) || Null.isNull(location)))
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+        this.location = location;
     }
-
-    static is(instance, debug?) {
-        return is(instance, this)
+    static is(value): value is Node {
+        return isNode(value);
     }
-
 }
-
-export function is(instance, cls) {
-    if (instance == null) {
-        return false
-    }
-    if (instance instanceof cls) {
-        return true
-    }
-    return isDerivedClass(cls, instance.constructor)
-}
+Node['id'] = 'Node';
+Node['implements'] = new Set(['Node']);
+export const isNode = function (value): value is Node {
+    return Class.isInstance(Node, value);
+};
+export default Node;
