@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as np from "path";
-import { Module, Reference, Assembly } from "./ast";
+import { Reference, Assembly } from "./ast";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Import/Export Functions
