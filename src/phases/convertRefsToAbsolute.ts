@@ -16,9 +16,10 @@ export default function convertRefsToAbsolute(root: Assembly, options: Options) 
                 return skip
             }
         },
-        leave(node) {
+        leave(node, ancestors, path) {
             if (Module.is(node)) {
                 let module = node
+                let moduleName = path[path.length - 1]
                 let rootModuleNames = new Set(module.declarations.map(d => d.id.name))
                 return traverse(module, {
                     leave(node) {
@@ -27,7 +28,7 @@ export default function convertRefsToAbsolute(root: Assembly, options: Options) 
                             // let isInternal = scope[node.name] != null
                             // ONLY if this is a reference to root identifiers..
                             if (rootModuleNames.has(node.name)) {
-                                let newName = getAbsoluteName(module.id!.name, node.name)
+                                let newName = getAbsoluteName(moduleName, node.name)
                                 return new Reference({ ...node, name: newName })
                             }
                         }

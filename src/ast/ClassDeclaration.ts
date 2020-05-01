@@ -11,6 +11,7 @@ import * as Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Reference from './Reference';
 import * as KeyValuePair from './KeyValuePair';
+import * as String from './ion/String';
 import * as Class from './ion/Class';
 export class ClassDeclaration implements Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
@@ -21,6 +22,7 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
     readonly baseClasses: Array.Array<Reference.Reference>;
     readonly declarations: Array.Array<Declaration.Declaration>;
     readonly meta: Array.Array<KeyValuePair.KeyValuePair>;
+    readonly _implements: Array.Array<String.String>;
     constructor({
         location = null,
         id,
@@ -29,7 +31,8 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         parameters = [],
         baseClasses = [],
         declarations,
-        meta = []
+        meta = [],
+        _implements = []
     }: {
         location?: Location.Location | Null.Null,
         id: Id.Id,
@@ -38,7 +41,8 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         parameters?: Array.Array<Parameter.Parameter>,
         baseClasses?: Array.Array<Reference.Reference>,
         declarations: Array.Array<Declaration.Declaration>,
-        meta?: Array.Array<KeyValuePair.KeyValuePair>
+        meta?: Array.Array<KeyValuePair.KeyValuePair>,
+        _implements?: Array.Array<String.String>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -56,6 +60,8 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
             throw new Error('declarations is not a Array: ' + Class.toString(declarations));
         if (!Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
+        if (!Array.isArray(_implements))
+            throw new Error('_implements is not a Array: ' + Class.toString(_implements));
         this.location = location;
         this.id = id;
         this.export = _export;
@@ -64,6 +70,7 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         this.baseClasses = baseClasses;
         this.declarations = declarations;
         this.meta = meta;
+        this._implements = _implements;
         Object.freeze(this);
     }
     patch(properties: {
@@ -74,7 +81,8 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         parameters?: Array.Array<Parameter.Parameter>,
         baseClasses?: Array.Array<Reference.Reference>,
         declarations?: Array.Array<Declaration.Declaration>,
-        meta?: Array.Array<KeyValuePair.KeyValuePair>
+        meta?: Array.Array<KeyValuePair.KeyValuePair>,
+        _implements?: Array.Array<String.String>
     }) {
         return new ClassDeclaration({
             ...this,

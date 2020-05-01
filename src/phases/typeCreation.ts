@@ -1,12 +1,11 @@
-import createScopeMap from "../createScopeMap";
 import Assembly from "../ast/Assembly";
-import { traverse, skip, replace, pair } from "../Traversal";
-import { isTypeReference, getLastName, getExternalModuleNameAndExportName, getAbsoluteName, getTypeCheckFunctionName } from "../common";
+import { traverse, skip, replace } from "../Traversal";
+import { getTypeCheckFunctionName, SemanticError } from "../common";
 import VariableDeclaration from "../ast/VariableDeclaration";
 import Id from "../ast/Id";
 import FunctionExpression from "../ast/FunctionExpression";
 import Parameter from "../ast/Parameter";
-import Reference, { isReference } from "../ast/Reference";
+import Reference from "../ast/Reference";
 import BlockStatement from "../ast/BlockStatement";
 import ReturnStatement from "../ast/ReturnStatement";
 import LiteralType from "../ast/LiteralType";
@@ -16,7 +15,6 @@ import CallExpression from "../ast/CallExpression";
 import ConstrainedType from "../ast/ConstrainedType";
 import DotExpression from "../ast/DotExpression";
 import TypeDeclaration from "../ast/TypeDeclaration";
-import TypeExpression from "../ast/TypeExpression";
 
 function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration, root: Assembly) {
     // shit... need a deep clone function for this shit.
@@ -56,6 +54,9 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                                     })
                                 }
                                 if (ConstrainedType.is(node)) {
+                                    if (!Reference.is(node.baseType)) {
+                                        throw SemanticError("Expected baseType to be Reference", node.baseType)
+                                    }
                                     return new BinaryExpression({
                                         left: new CallExpression({
                                             callee: node.baseType.patch({ name: getTypeCheckFunctionName(node.baseType.name) }),

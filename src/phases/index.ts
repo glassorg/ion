@@ -5,8 +5,8 @@ import typeCreation from "./typeCreation";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
-// import checkReferences from "./checkReferences";
-// import createClassTypeChecks from "./createClassTypeChecks";
+import createClassTypeChecks from "./createClassTypeChecks";
+import checkReferences from "./checkReferences";
 
 export default [
     // input stage
@@ -19,6 +19,6 @@ export default [
     convertRefsToAbsolute,
     assemblyToAnalysis,
     inheritBaseClasses,
-    // createClassTypeChecks,
-    // checkReferences,
+    createClassTypeChecks,
+    checkReferences,
 ]

@@ -1,45 +1,59 @@
-// import fs from "fs";
-// import path from "path";
-// import { Assembly } from "../../ast";
-// import { read, exists } from "../../common";
-// import { Options } from "../../Compiler";
-// const escodegen = require("../../../external/escodegen");
+import fs from "fs";
+import path from "path";
+import { read, exists } from "../../common";
+import { Options } from "../../Compiler";
+import Assembly from "../../ast/Assembly";
+import { traverse, skip } from "../../Traversal";
+import Module from "../../ast/Module";
+const escodegen = require("../../../external/escodegen");
 
-// export const verbatim = "verbatim"
+export const verbatim = "verbatim"
 
-// export function codegen(ast) {
-//     return escodegen.generate(ast, { verbatim, comment: true })
-// }
+export function codegen(ast) {
+    return escodegen.generate(ast, { verbatim, comment: true })
+}
 
-// export function getNativeFile(moduleName: string, options: Options): string | null {
-//     for (let input of options.inputs) {
-//         let filename = path.join(input, moduleName.replace('.', path.sep) + ".ts")
-//         if (exists(filename)) {
-//             return filename;
-//         }
-//     }
-//     return null;
-// }
+export function getNativeFile(moduleName: string, options: Options): string | null {
+    for (let input of options.inputs) {
+        let filename = path.join(input, moduleName.replace('.', path.sep) + ".ts")
+        if (exists(filename)) {
+            return filename;
+        }
+    }
+    return null;
+}
 
-// export function removePrewritten(root: Assembly, options: Options) {
-//     for (let moduleName in root.modules) {
-//         let nativeFile = getNativeFile(moduleName, options)
-//         if (nativeFile) {
-//             let module = root.modules[moduleName]
-//             // just remove all declarations
-//             module.declarations = []
-//         }
-//     }
-// }
+export function removePrewritten(root: Assembly, options: Options) {
+    return traverse(root, {
+        enter(node) {
+            if (Module.is(node)) {
+                return skip
+            }
+        },
+        leave(node, ancestors, path) {
+            if (Module.is(node)) {
+                let moduleName = path[path.length - 1]
+                let nativeFile = getNativeFile(moduleName, options)
+                if (nativeFile) {
+                    let module = root.modules.get(moduleName)
+                    //  just remove all declarations
+                    //  we don't remove the module entirely though
+                    //  since it's presence still is used to know to write the native later.
+                    return new Module({ declarations: [] })
+                }
+            }
+        }
+    })
+}
 
-// export default function toTypescriptFiles(root: Assembly, options: Options) {
-//     let files: { [name: string]: string } = {}
-//     for (let moduleName in root.modules) {
-//         let module = root.modules[moduleName]
-//         let nativeFile = getNativeFile(moduleName, options)
-//         let content = nativeFile ? read(nativeFile) : codegen(module)
-//         let outputFile = moduleName.replace('.', '/') + '.ts'
-//         files[outputFile] = content
-//     }
-//     return files
-// }
+export default function toTypescriptFiles(root: Assembly, options: Options) {
+    let files: { [name: string]: string } = {}
+    for (let moduleName of root.modules.keys()) {
+        let module = root.modules.get(moduleName)
+        let nativeFile = getNativeFile(moduleName, options)
+        let content = nativeFile ? read(nativeFile) : codegen(module)
+        let outputFile = moduleName.replace('.', '/') + '.ts'
+        files[outputFile] = content
+    }
+    return files
+}

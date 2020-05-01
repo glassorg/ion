@@ -29,7 +29,7 @@ export default function importResolution(root: Assembly) {
                         let steps = ancestors.filter(a => ImportStep.is(a)).concat([node]) as ImportStep[]
                         let path = steps.map(step => step.id ? step.id.name : "").filter(n => n.length).join(".")
                         if (steps[0].relative) {
-                            path = module.id!.name.split(PATH_SEPARATOR).slice(0, -1).concat([path]).filter(n => n.length).join(PATH_SEPARATOR)
+                            path = name.split(PATH_SEPARATOR).slice(0, -1).concat([path]).filter(n => n.length).join(PATH_SEPARATOR)
                         }
                         if (node.as) {
                             // We MUST find these AS references and convert them to direct external references.

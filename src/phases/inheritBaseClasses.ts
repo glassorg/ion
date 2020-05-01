@@ -49,10 +49,10 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
     return traverse(root, {
         leave(node) {
             if (ClassDeclaration.is(node)) {
-                node = ensureDeclarationsInherited(node, node)
+                let declaration = ensureDeclarationsInherited(node, node)
                 // TODO: Do we really need to track these implements here?
                 // or is there another way later to determine these?
-                return node.patch({ implements: [getUniqueClientName(node.id.name), ...node.baseClasses.map(d => getUniqueClientName(d.name))] })
+                return declaration.patch({ _implements: [getUniqueClientName(node.id.name), ...node.baseClasses.map(d => getUniqueClientName(d.name))] })
             }
         }
     })

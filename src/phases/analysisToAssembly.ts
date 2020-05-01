@@ -1,21 +1,32 @@
-// import Assembly from "../ast/Assembly";
-// import { Options } from "../Compiler";
-// import Analysis from "../ast/Analysis";
-// import { Declaration, Module } from "../ast";
+import Assembly from "../ast/Assembly";
+import { Options } from "../Compiler";
+import Analysis from "../ast/Analysis";
+import Module from "../ast/Module";
+import Declaration from "../ast/Declaration";
+import Id from "../ast/Id";
 
-// export default function analysisToAssembly(root: Analysis, options: Options): Assembly {
+export default function analysisToAssembly(root: Analysis, options: Options): Assembly {
 
-//     let modules: { [name: string]: Module } = {}
+    let moduleDeclarations = new Map<string, Array<Declaration>>()
 
-//     for (let name in root.declarations) {
-//         let declaration = root.declarations[name]
-//         let moduleName = declaration.location!.filename
-//         let module = modules[moduleName]
-//         if (module == null) {
-//             modules[moduleName] = module = new Module({ declarations: [] })
-//         }
-//         module.declarations.push(declaration)
-//     }
+    for (let name of root.declarations.keys()) {
+        let declaration = root.declarations.get(name)!
+        if (declaration.location == null) {
+            console.log("No location", declaration)
+        }
+        let moduleName = declaration.location!.filename
+        let declarations = moduleDeclarations.get(moduleName)
+        if (declarations == null) {
+            moduleDeclarations.set(moduleName, declarations = [])
+        }
+        declarations.push(declaration)
+    }
 
-//     return new Assembly({ modules })
-// }
+    let modules = new Map<string, Module>()
+    for (let name of moduleDeclarations.keys()) {
+        let declarations = moduleDeclarations.get(name)!
+        modules.set(name, new Module({ declarations }))
+    }
+
+    return new Assembly({ modules })
+}

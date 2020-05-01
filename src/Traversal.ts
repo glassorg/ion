@@ -24,14 +24,37 @@ export function pair(key, value) {
     return new Pair(key, value)
 }
 export const remove = Object.freeze(new Replace(Object.freeze([])))
-export type enter = (node: any, ancestors: object[], path: string[]) => Symbol | void
-export type leave = (node: any, ancestors: object[], path: string[]) => object | object[] | void
-export type predicate = (node: any) => boolean
-export type Visitor = { enter?: enter, leave?: leave, skip?: predicate, filter?: predicate }
+export type Enter = (
+    node: any,
+    ancestors: object[],
+    path: string[],
+) => Symbol | void
+export type Merge<T = any> = (
+    node: T,
+    changes: Partial<T> & any,
+    helper: { patch<T>(container: T, changes: Partial<T> & Object): T },
+    ancestors: object[],
+    path: string[],
+) => object | object[] | void
+export type Leave = (
+    node: any,
+    ancestors: object[],
+    path: string[],
+) => object | object[] | void
+export type Predicate = (node: any) => boolean
+export type Visitor = {
+    enter?: Enter,
+    merge?: Merge,
+    leave?: Leave,
+    skip?: Predicate,
+    filter?: Predicate,
+}
+
+const EmptyObject = Object.freeze({})
 
 interface ContainerHelper<C = any, K = any, V = any> {
     type: string,
-    create(original: C, newValues: Map<K,V>): C
+    patch(original: C, newValues: Partial<C> & any): C
     keys(container: C): IterableIterator<K>
     getValue(container: C, key: K): V
     // setValue(container: C, key: K, value: V | Replace)
@@ -46,11 +69,14 @@ interface ContainerHelper<C = any, K = any, V = any> {
 
 const objectContainerHelper: ContainerHelper<Readonly<any>, string, any> = {
     type: "Object",
-    create(original, newValues: Map<any, any>) {
+    patch(original, newValues) {
+        if (newValues.size === 0) {
+            return original
+        }
         let ctor = original.constructor as any
         let iterateValues = { ...original }
-        for (let key of newValues.keys()) {
-            iterateValues[key] = newValues.get(key)
+        for (let key in newValues) {
+            iterateValues[key] = newValues[key]
         }
         let values = {}
         function setValue(name, value) {
@@ -89,10 +115,10 @@ const objectContainerHelper: ContainerHelper<Readonly<any>, string, any> = {
 const arrayContainerHelper: ContainerHelper<Readonly<Array<any>>, number, any> = {
     ...objectContainerHelper,
     type: "Array",
-    create(original: any[], newValues: Map<any, any>) {
+    patch(original, newValues) {
         let values = [...original]
-        for (let key of newValues.keys()) {
-            values[key] = newValues.get(key)
+        for (let key in newValues) {
+            values[key] = newValues[key]
         }
         let newContainer: any[] = []
         for (let value of values) {
@@ -118,10 +144,10 @@ const arrayContainerHelper: ContainerHelper<Readonly<Array<any>>, number, any> =
 const mapContainerHelper: ContainerHelper<ReadonlyMap<any,any>, any, any> = {
     ...objectContainerHelper as any,
     type: "Map",
-    create(original: Map<any,any>, newValues: Map<any, any>) {
+    patch(original: Map<any,any>, newValues) {
         let iterateMap = new Map<any,any>(original.entries())
-        for (let key of newValues.keys()) {
-            iterateMap.set(key, newValues.get(key))
+        for (let key in newValues) {
+            iterateMap.set(key, newValues[key])
         }
 
         let newMap = new Map<any,any>()
@@ -186,11 +212,12 @@ export function traverseChildren(
     container: Readonly<any>,
     visitor: Visitor,
     ancestors: object[] = [],
-    path: any[] = []
+    path: any[] = [],
+    merge?: Merge,
 ) {
     const helper = getContainerHelper(container)
     if (helper != null) {
-        let values : Map<any, any> | null = null
+        let changes: any = null
 
         ancestors.push(container)
         for (let key of helper.keys(container)) {
@@ -201,17 +228,23 @@ export function traverseChildren(
                 result = child
             }
             if (result !== child) {
-                if (values == null) {
-                    values = new Map()
+                if (changes == null) {
+                    changes = {}
                 }
-                values.set(key, result)
+                changes[key] = result
             }
             path.pop()
         }
         ancestors.pop()
 
-        if (values != null) {
-            container = helper.create(container, values)
+        if (merge != null) {
+            let result = merge(container, changes ?? EmptyObject, helper, ancestors, path)
+            if (result !== undefined) {
+                container = result
+            }
+        }
+        else if (changes != null) {
+            container = helper.patch(container, changes)
         }
     }
 
@@ -224,7 +257,7 @@ export function traverse(
     ancestors: object[] = [],
     path: string[] = []
 ): any {
-    const {enter, leave, skip: _skip = defaultSkip, filter = defaultFilter} = visitor
+    const {enter, merge, leave, skip: _skip = defaultSkip, filter = defaultFilter} = visitor
     if (node == null || _skip(node)) {
         return node
     }
@@ -236,7 +269,7 @@ export function traverse(
         enterResult = enter(node, ancestors, path)
     }
     if (enterResult !== skip) {
-        node = traverseChildren(node, visitor, ancestors, path)
+        node = traverseChildren(node, visitor, ancestors, path, callback ? merge : undefined)
     }
     let leaveResult: any = null
     if (callback && leave != null) {

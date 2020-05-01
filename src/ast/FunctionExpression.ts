@@ -14,14 +14,14 @@ import * as Reference from './Reference';
 import * as Class from './ion/Class';
 export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly id: Id.Id;
+    readonly id: Id.Id | Null.Null;
     readonly parameters: Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;
     readonly body: BlockStatement.BlockStatement;
     readonly typeGuard: Reference.Reference | Null.Null;
-    constructor({location = null, id, parameters, returnType = null, body, typeGuard = null}: {
+    constructor({location = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,
-        id: Id.Id,
+        id?: Id.Id | Null.Null,
         parameters: Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body: BlockStatement.BlockStatement,
@@ -29,8 +29,8 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+        if (!(Id.isId(id) || Null.isNull(id)))
+            throw new Error('id is not a Id | Null: ' + Class.toString(id));
         if (!Array.isArray(parameters))
             throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
@@ -49,7 +49,7 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        id?: Id.Id,
+        id?: Id.Id | Null.Null,
         parameters?: Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body?: BlockStatement.BlockStatement,

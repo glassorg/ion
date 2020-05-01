@@ -4,6 +4,5 @@ import
 
 export
     class Module extends Scope
-        var id: Id | Null = null
-        var imports: Array<ImportStep>
+        var imports: Array<ImportStep> = []
         var declarations: Array<Declaration>

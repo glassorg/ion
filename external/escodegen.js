@@ -920,7 +920,7 @@
                         result.push(name);
                         let tstype = param.tstype || (param.left && param.left.tstype)
                         if (tstype) {
-                            result.push(": ", this.generateStatement(tstype));
+                            result.push(": ", this.generateExpression(tstype));
                         }
                         let init = param.init || param.right
                         if (init) {
@@ -953,7 +953,7 @@
         result = this.generateFunctionParams(node);
 
         if (node.tstype) {
-            result.push(": ", this.generateStatement(node.tstype))
+            result.push(": ", this.generateExpression(node.tstype))
         }
 
         if (node.type === Syntax.ArrowFunctionExpression) {
@@ -1169,6 +1169,14 @@
             }
             if (stmt.superClass) {
                 fragment = join('extends', this.generateExpression(stmt.superClass, Precedence.Unary, E_TTT));
+                result = join(result, fragment);
+            }
+            if (stmt.implements && stmt.implements.length > 0) {
+                fragment = join('implements', this.generateExpression(stmt.implements[0], Precedence.Unary, E_TTT));
+                for (let i = 1; i < stmt.implements.length; i++) {
+                    fragment = join(fragment, ",")
+                    fragment = join(fragment, this.generateExpression(stmt.implements[i], Precedence.Unary, E_TTT));
+                }
                 result = join(result, fragment);
             }
             result.push(space);
@@ -1454,7 +1462,7 @@
 
         VariableDeclarator: function (stmt, flags) {
             var itemFlags = (flags & F_ALLOW_IN) ? E_TTT : E_FTT;
-            let type = stmt.tstype ? [":", space, this.generateStatement(stmt.tstype, flags)] : []
+            let type = stmt.tstype ? [":", space, this.generateExpression(stmt.tstype, flags)] : []
             if (stmt.init) {
                 return [
                     this.generateExpression(stmt.id, Precedence.Assignment, itemFlags),
@@ -2369,6 +2377,8 @@
                 return expr.value ? 'true' : 'false';
             }
 
+            console.log("????", expr)
+
             return generateRegExp(expr.value);
         },
 
@@ -2505,6 +2515,9 @@
 
         result = this[type](expr, precedence, flags);
 
+        if (expr.genericArguments) {
+            result.push("<", expr.genericArguments.map(a => this.generateExpression(a, precedence, flags)).join(", ") ,">")
+        }
 
         if (extra.comment) {
             result = addComments(expr, result);

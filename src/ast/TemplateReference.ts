@@ -6,12 +6,12 @@ import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as Reference from './Reference';
 import * as Array from './ion/Array';
+import * as Reference from './Reference';
 import * as Class from './ion/Class';
 export class TemplateReference implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly baseType: Reference.Reference;
+    readonly baseType: Expression.Expression;
     readonly arguments: Array.Array<TypeExpression.TypeExpression | Reference.Reference>;
     constructor({
         location = null,
@@ -19,13 +19,13 @@ export class TemplateReference implements TypeExpression.TypeExpression , Expres
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
-        baseType: Reference.Reference,
+        baseType: Expression.Expression,
         arguments: Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!Reference.isReference(baseType))
-            throw new Error('baseType is not a Reference: ' + Class.toString(baseType));
+        if (!Expression.isExpression(baseType))
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!Array.isArray(_arguments))
             throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
@@ -35,7 +35,7 @@ export class TemplateReference implements TypeExpression.TypeExpression , Expres
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        baseType?: Reference.Reference,
+        baseType?: Expression.Expression,
         arguments?: Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         return new TemplateReference({

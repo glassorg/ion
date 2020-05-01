@@ -30,6 +30,8 @@ import * as _Id from './Id';
 export const Id = _Id;
 import * as _IfStatement from './IfStatement';
 export const IfStatement = _IfStatement;
+import * as _ImportDeclaration from './ImportDeclaration';
+export const ImportDeclaration = _ImportDeclaration;
 import * as _ImportStep from './ImportStep';
 export const ImportStep = _ImportStep;
 import * as _IntersectionType from './IntersectionType';

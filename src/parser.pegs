@@ -17,10 +17,8 @@
         if (TypeConstructor == null) {
             throw new Error(`Missing Type: ${type}`)
         }
-        return new TypeConstructor(
-            ...values,
-            { location: getLocation() },
-        )
+        let result = new TypeConstructor(Object.assign({ location: getLocation() }, ...values))
+        return result
     }
 
     function operation(left, operator, right) {
@@ -38,8 +36,6 @@
             ,head
         )
     }
-
-    //  TODO: Broken -> Map
 
 }
 

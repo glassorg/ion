@@ -1,4 +1,4 @@
-import { traverse, remove, skip, enter, leave, Visitor } from "./Traversal"
+import { traverse, remove, skip, Enter, Leave, Visitor } from "./Traversal"
 import { SemanticError } from "./common"
 import Declaration from "./ast/Declaration"
 import Id from "./ast/Id"
