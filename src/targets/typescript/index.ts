@@ -12,10 +12,7 @@ export default [
     convertRefsToLocal,
     createImports,
     checkReferences,
-
-    // TODO: At the good point of some serious shizniggity.
-
     toTypescriptAst,
-    toTypescriptFiles,
-    writeFiles,
+    // toTypescriptFiles,
+    // writeFiles,
 ]

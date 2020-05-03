@@ -105,9 +105,6 @@ const toAstEnter: { [name: string]: Enter } = {
 
 const toAstMerge: { [name: string]: Merge } = {
     default(node, changes, helper) {
-        if (Literal.is(node)) {
-            debugger
-        }
         let name = node.constructor.name
         let type = typeMap[name] || name
         let esnode = { ...node, type } as any
