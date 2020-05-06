@@ -21,6 +21,7 @@ import ThisExpression from "../ast/ThisExpression";
 import { type } from "os";
 import Node from "../ast/Node";
 import IdGenerator from "../IdGenerator";
+import TypeReference from "../ast/TypeReference";
 
 const opMap = {
     "|": "or",
@@ -75,6 +76,7 @@ export function getName(node) {
     return `!!!${node.constructor.name}!!!`
 }
 
+const typesFile = "_types"
 
 export default function normalizeTypes(root: Analysis) {
     let identifiers = new Set<string>()
@@ -87,11 +89,11 @@ export default function normalizeTypes(root: Analysis) {
         let absoluteName = typeNameToIdentifierName.get(name)
         if (absoluteName == null) {
             let localName = idGenerator.createNewIdName(name)
-            absoluteName = getAbsoluteName(context.location!.filename, localName)
+            absoluteName = getAbsoluteName(typesFile, localName)
             typeNameToIdentifierName.set(name, absoluteName)
             console.log("Creating: " + absoluteName)
             let declaration = new TypeDeclaration({
-                location: node.location,
+                location: node.location!.patch({ filename:  typesFile }),
                 id: new Id({ location: node.location, name: absoluteName }),
                 value: node
             })
@@ -100,7 +102,7 @@ export default function normalizeTypes(root: Analysis) {
         else {
             console.log("Reusing: " + absoluteName)
         }
-        return new Reference({ location: node.location, name: absoluteName })
+        return new TypeReference({ location: node.location, name: absoluteName, original: node })
     }
     root = traverse(root, {
         merge(node, changes, helper, ancestors, path) {

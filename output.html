@@ -2182,19 +2182,50 @@ ul.jsondiffpatch-textdiff {
     
         <article>
             <header><span>normalizeTypes</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Analysis&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Map&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="func ) returns ion.String:ion_String_String___length_lte_this_length_"><div class="jsondiffpatch-property-name">func ) returns ion.String:ion_String_String___length_lte_this_length_</div><div class="jsondiffpatch-value"><pre>{
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Analysis&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Map&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="func ) returns _types:ion_String_String___length_lte_this_length_"><div class="jsondiffpatch-property-name">func ) returns _types:ion_String_String___length_lte_this_length_</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
-    &quot;name&quot;: &quot;ion.String:func___returns_ion_String_ion_String_String___length_lte_this_length_&quot;
+    &quot;name&quot;: &quot;_types:func___returns__types_ion_String_String___length_lte_this_length_&quot;
   },
   &quot;type&quot;: null,
   &quot;value&quot;: {
     &quot;&quot;: &quot;FunctionType&quot;,
     &quot;parameters&quot;: [],
     &quot;returnType&quot;: {
-      &quot;&quot;: &quot;Reference&quot;,
-      &quot;name&quot;: &quot;ion.String:ion_String_String___length_lte_this_length_&quot;
+      &quot;&quot;: &quot;TypeReference&quot;,
+      &quot;name&quot;: &quot;_types:ion_String_String___length_lte_this_length_&quot;,
+      &quot;original&quot;: {
+        &quot;&quot;: &quot;ConstrainedType&quot;,
+        &quot;baseType&quot;: {
+          &quot;&quot;: &quot;Reference&quot;,
+          &quot;name&quot;: &quot;ion.String:String&quot;
+        },
+        &quot;constraint&quot;: {
+          &quot;&quot;: &quot;BinaryExpression&quot;,
+          &quot;left&quot;: {
+            &quot;&quot;: &quot;MemberExpression&quot;,
+            &quot;object&quot;: {
+              &quot;&quot;: &quot;DotExpression&quot;
+            },
+            &quot;property&quot;: {
+              &quot;&quot;: &quot;Id&quot;,
+              &quot;name&quot;: &quot;length&quot;
+            }
+          },
+          &quot;operator&quot;: &quot;&lt;=&quot;,
+          &quot;right&quot;: {
+            &quot;&quot;: &quot;MemberExpression&quot;,
+            &quot;object&quot;: {
+              &quot;&quot;: &quot;ThisExpression&quot;
+            },
+            &quot;property&quot;: {
+              &quot;&quot;: &quot;Id&quot;,
+              &quot;name&quot;: &quot;length&quot;
+            }
+          }
+        }
+      }
     }
   },
   &quot;assignable&quot;: false,
@@ -2203,7 +2234,7 @@ ul.jsondiffpatch-textdiff {
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
-    &quot;name&quot;: &quot;ion.Class:func__class__ion_Class_Class_instance__UNDEFINED__returns_ion_Boolean_Boolean&quot;
+    &quot;name&quot;: &quot;_types:func__class__ion_Class_Class_instance__UNDEFINED__returns_ion_Boolean_Boolean&quot;
   },
   &quot;type&quot;: null,
   &quot;value&quot;: {
@@ -2246,7 +2277,7 @@ ul.jsondiffpatch-textdiff {
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
-    &quot;name&quot;: &quot;ion.String:func_pattern__ion_String_String__returns_ion_Boolean_Boolean&quot;
+    &quot;name&quot;: &quot;_types:func_pattern__ion_String_String__returns_ion_Boolean_Boolean&quot;
   },
   &quot;type&quot;: null,
   &quot;value&quot;: {
@@ -2278,7 +2309,7 @@ ul.jsondiffpatch-textdiff {
   &quot;&quot;: &quot;TypeDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
-    &quot;name&quot;: &quot;ion.Set:func_value__UNDEFINED__returns_ion_Boolean_Boolean&quot;
+    &quot;name&quot;: &quot;_types:func_value__UNDEFINED__returns_ion_Boolean_Boolean&quot;
   },
   &quot;type&quot;: null,
   &quot;value&quot;: {
@@ -2480,10 +2511,21 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Parameter&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;value&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="type"><div class="jsondiffpatch-property-name">type</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;UnionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;Reference&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="type"><div class="jsondiffpatch-property-name">type</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;UnionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;TypeReference&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;ion.String:String&quot;
-}</pre></div></li><li class="jsondiffpatch-added" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value"><pre>&quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-added" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value"><pre>&quot;_types:ion_String_String_or_ion_Number_Number&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="original"><div class="jsondiffpatch-property-name">original</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;UnionType&quot;,
+  &quot;left&quot;: {
+    &quot;&quot;: &quot;Reference&quot;,
+    &quot;name&quot;: &quot;ion.String:String&quot;
+  },
+  &quot;operator&quot;: &quot;|&quot;,
+  &quot;right&quot;: {
+    &quot;&quot;: &quot;Reference&quot;,
+    &quot;name&quot;: &quot;ion.Number:Number&quot;
+  }
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Reference&quot;,
   &quot;name&quot;: &quot;ion.Number:Number&quot;
 }</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="typeGuard"><div class="jsondiffpatch-property-name">typeGuard</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li></ul></li></ul></div></p>
@@ -2511,8 +2553,20 @@ ul.jsondiffpatch-textdiff {
             &quot;name&quot;: &quot;value&quot;
           },
           &quot;type&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;
+            &quot;&quot;: &quot;TypeReference&quot;,
+            &quot;name&quot;: &quot;_types:ion_String_String_or_ion_Number_Number&quot;,
+            &quot;original&quot;: {
+              &quot;&quot;: &quot;UnionType&quot;,
+              &quot;left&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;ion.String:String&quot;
+              },
+              &quot;operator&quot;: &quot;|&quot;,
+              &quot;right&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;ion.Number:Number&quot;
+              }
+            }
           },
           &quot;value&quot;: null,
           &quot;assignable&quot;: false,
@@ -2702,7 +2756,7 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;TypeDeclaration&quot;,
     &quot;id&quot;: {
       &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;ion.Class:func__class__ion_Class_Class_instance__UNDEFINED__returns_ion_Boolean_Boolean&quot;
+      &quot;name&quot;: &quot;_types:func__class__ion_Class_Class_instance__UNDEFINED__returns_ion_Boolean_Boolean&quot;
     },
     &quot;type&quot;: null,
     &quot;value&quot;: {
@@ -2746,7 +2800,7 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;TypeDeclaration&quot;,
     &quot;id&quot;: {
       &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;ion.Set:func_value__UNDEFINED__returns_ion_Boolean_Boolean&quot;
+      &quot;name&quot;: &quot;_types:func_value__UNDEFINED__returns_ion_Boolean_Boolean&quot;
     },
     &quot;type&quot;: null,
     &quot;value&quot;: {
@@ -2772,19 +2826,50 @@ ul.jsondiffpatch-textdiff {
     &quot;assignable&quot;: false,
     &quot;export&quot;: false
   },
-  &quot;func ) returns ion.String:ion_String_String___length_lte_this_length_&quot;: {
+  &quot;func ) returns _types:ion_String_String___length_lte_this_length_&quot;: {
     &quot;&quot;: &quot;TypeDeclaration&quot;,
     &quot;id&quot;: {
       &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;ion.String:func___returns_ion_String_ion_String_String___length_lte_this_length_&quot;
+      &quot;name&quot;: &quot;_types:func___returns__types_ion_String_String___length_lte_this_length_&quot;
     },
     &quot;type&quot;: null,
     &quot;value&quot;: {
       &quot;&quot;: &quot;FunctionType&quot;,
       &quot;parameters&quot;: [],
       &quot;returnType&quot;: {
-        &quot;&quot;: &quot;Reference&quot;,
-        &quot;name&quot;: &quot;ion.String:ion_String_String___length_lte_this_length_&quot;
+        &quot;&quot;: &quot;TypeReference&quot;,
+        &quot;name&quot;: &quot;_types:ion_String_String___length_lte_this_length_&quot;,
+        &quot;original&quot;: {
+          &quot;&quot;: &quot;ConstrainedType&quot;,
+          &quot;baseType&quot;: {
+            &quot;&quot;: &quot;Reference&quot;,
+            &quot;name&quot;: &quot;ion.String:String&quot;
+          },
+          &quot;constraint&quot;: {
+            &quot;&quot;: &quot;BinaryExpression&quot;,
+            &quot;left&quot;: {
+              &quot;&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;&quot;: &quot;DotExpression&quot;
+              },
+              &quot;property&quot;: {
+                &quot;&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;length&quot;
+              }
+            },
+            &quot;operator&quot;: &quot;&lt;=&quot;,
+            &quot;right&quot;: {
+              &quot;&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;&quot;: &quot;ThisExpression&quot;
+              },
+              &quot;property&quot;: {
+                &quot;&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;length&quot;
+              }
+            }
+          }
+        }
       }
     },
     &quot;assignable&quot;: false,
@@ -2794,7 +2879,7 @@ ul.jsondiffpatch-textdiff {
     &quot;&quot;: &quot;TypeDeclaration&quot;,
     &quot;id&quot;: {
       &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;ion.String:func_pattern__ion_String_String__returns_ion_Boolean_Boolean&quot;
+      &quot;name&quot;: &quot;_types:func_pattern__ion_String_String__returns_ion_Boolean_Boolean&quot;
     },
     &quot;type&quot;: null,
     &quot;value&quot;: {
@@ -2847,8 +2932,20 @@ ul.jsondiffpatch-textdiff {
                 &quot;name&quot;: &quot;value&quot;
               },
               &quot;type&quot;: {
-                &quot;&quot;: &quot;Reference&quot;,
-                &quot;name&quot;: &quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;
+                &quot;&quot;: &quot;TypeReference&quot;,
+                &quot;name&quot;: &quot;_types:ion_String_String_or_ion_Number_Number&quot;,
+                &quot;original&quot;: {
+                  &quot;&quot;: &quot;UnionType&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;ion.String:String&quot;
+                  },
+                  &quot;operator&quot;: &quot;|&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;ion.Number:Number&quot;
+                  }
+                }
               },
               &quot;value&quot;: null,
               &quot;assignable&quot;: false,
@@ -3033,28 +3130,6 @@ ul.jsondiffpatch-textdiff {
         },
         &quot;assignable&quot;: false,
         &quot;export&quot;: true
-      },
-      {
-        &quot;&quot;: &quot;TypeDeclaration&quot;,
-        &quot;id&quot;: {
-          &quot;&quot;: &quot;Id&quot;,
-          &quot;name&quot;: &quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;
-        },
-        &quot;type&quot;: null,
-        &quot;value&quot;: {
-          &quot;&quot;: &quot;UnionType&quot;,
-          &quot;left&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;ion.String:String&quot;
-          },
-          &quot;operator&quot;: &quot;|&quot;,
-          &quot;right&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;ion.Number:Number&quot;
-          }
-        },
-        &quot;assignable&quot;: false,
-        &quot;export&quot;: false
       }
     ]
   }
@@ -3087,8 +3162,20 @@ ul.jsondiffpatch-textdiff {
                 &quot;name&quot;: &quot;value&quot;
               },
               &quot;type&quot;: {
-                &quot;&quot;: &quot;Reference&quot;,
-                &quot;name&quot;: &quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;
+                &quot;&quot;: &quot;TypeReference&quot;,
+                &quot;name&quot;: &quot;_types:ion_String_String_or_ion_Number_Number&quot;,
+                &quot;original&quot;: {
+                  &quot;&quot;: &quot;UnionType&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;ion.String:String&quot;
+                  },
+                  &quot;operator&quot;: &quot;|&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;ion.Number:Number&quot;
+                  }
+                }
               },
               &quot;value&quot;: null,
               &quot;assignable&quot;: false,
@@ -3273,28 +3360,6 @@ ul.jsondiffpatch-textdiff {
         },
         &quot;assignable&quot;: false,
         &quot;export&quot;: true
-      },
-      {
-        &quot;&quot;: &quot;TypeDeclaration&quot;,
-        &quot;id&quot;: {
-          &quot;&quot;: &quot;Id&quot;,
-          &quot;name&quot;: &quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;
-        },
-        &quot;type&quot;: null,
-        &quot;value&quot;: {
-          &quot;&quot;: &quot;UnionType&quot;,
-          &quot;left&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;ion.String:String&quot;
-          },
-          &quot;operator&quot;: &quot;|&quot;,
-          &quot;right&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;ion.Number:Number&quot;
-          }
-        },
-        &quot;assignable&quot;: false,
-        &quot;export&quot;: false
       }
     ]
   }
@@ -3302,8 +3367,11 @@ ul.jsondiffpatch-textdiff {
         </article>
     
         <article>
-            <header><span>convertRefsToLocal</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Map&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="sample.Vector"><div class="jsondiffpatch-property-name">sample.Vector</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Module&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>true</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:toString&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;toString&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;FunctionExpression&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="body"><div class="jsondiffpatch-property-name">body</div><div class="jsondiffpatch-value"><pre>{
+            <header><span>restoreOriginalTypes</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Map&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="sample.Vector"><div class="jsondiffpatch-property-name">sample.Vector</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Module&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>true</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;Id&quot;,
+  &quot;name&quot;: &quot;sample.Vector:toString&quot;
+}</pre></div></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;FunctionExpression&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="body"><div class="jsondiffpatch-property-name">body</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;BlockStatement&quot;,
   &quot;statements&quot;: [
     {
@@ -3351,7 +3419,230 @@ ul.jsondiffpatch-textdiff {
 }</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Parameter&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;Id&quot;,
   &quot;name&quot;: &quot;value&quot;
-}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="type"><div class="jsondiffpatch-property-name">type</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Reference&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ion_String_String_or_ion_Number_Number&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="typeGuard"><div class="jsondiffpatch-property-name">typeGuard</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="1"><div class="jsondiffpatch-property-name">1</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>true</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:add&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;add&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>{
+}</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="type"><div class="jsondiffpatch-property-name">type</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;TypeReference&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;UnionType&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;Reference&quot;,
+  &quot;name&quot;: &quot;ion.String:String&quot;
+}</pre></div></li><li class="jsondiffpatch-deleted" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value"><pre>&quot;_types:ion_String_String_or_ion_Number_Number&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="original"><div class="jsondiffpatch-property-name">original</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;UnionType&quot;,
+  &quot;left&quot;: {
+    &quot;&quot;: &quot;Reference&quot;,
+    &quot;name&quot;: &quot;ion.String:String&quot;
+  },
+  &quot;operator&quot;: &quot;|&quot;,
+  &quot;right&quot;: {
+    &quot;&quot;: &quot;Reference&quot;,
+    &quot;name&quot;: &quot;ion.Number:Number&quot;
+  }
+}</pre></div></li><li class="jsondiffpatch-added" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;Reference&quot;,
+  &quot;name&quot;: &quot;ion.Number:Number&quot;
+}</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="typeGuard"><div class="jsondiffpatch-property-name">typeGuard</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="1"><div class="jsondiffpatch-property-name">1</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;VariableDeclaration&quot;,
+  &quot;id&quot;: {
+    &quot;&quot;: &quot;Id&quot;,
+    &quot;name&quot;: &quot;sample.Vector:add&quot;
+  },
+  &quot;type&quot;: null,
+  &quot;value&quot;: {
+    &quot;&quot;: &quot;FunctionExpression&quot;,
+    &quot;id&quot;: null,
+    &quot;parameters&quot;: [
+      {
+        &quot;&quot;: &quot;Parameter&quot;,
+        &quot;id&quot;: {
+          &quot;&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;a&quot;
+        },
+        &quot;type&quot;: null,
+        &quot;value&quot;: null,
+        &quot;assignable&quot;: false,
+        &quot;export&quot;: false
+      },
+      {
+        &quot;&quot;: &quot;Parameter&quot;,
+        &quot;id&quot;: {
+          &quot;&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;b&quot;
+        },
+        &quot;type&quot;: null,
+        &quot;value&quot;: null,
+        &quot;assignable&quot;: false,
+        &quot;export&quot;: false
+      }
+    ],
+    &quot;returnType&quot;: null,
+    &quot;body&quot;: {
+      &quot;&quot;: &quot;BlockStatement&quot;,
+      &quot;statements&quot;: [
+        {
+          &quot;&quot;: &quot;IfStatement&quot;,
+          &quot;test&quot;: {
+            &quot;&quot;: &quot;BinaryExpression&quot;,
+            &quot;left&quot;: {
+              &quot;&quot;: &quot;Reference&quot;,
+              &quot;name&quot;: &quot;a&quot;
+            },
+            &quot;operator&quot;: &quot;&lt;&quot;,
+            &quot;right&quot;: {
+              &quot;&quot;: &quot;Literal&quot;,
+              &quot;value&quot;: 0
+            }
+          },
+          &quot;consequent&quot;: {
+            &quot;&quot;: &quot;BlockStatement&quot;,
+            &quot;statements&quot;: [
+              {
+                &quot;&quot;: &quot;ExpressionStatement&quot;,
+                &quot;value&quot;: {
+                  &quot;&quot;: &quot;BinaryExpression&quot;,
+                  &quot;left&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;a&quot;
+                  },
+                  &quot;operator&quot;: &quot;+&quot;,
+                  &quot;right&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;b&quot;
+                  }
+                }
+              }
+            ]
+          },
+          &quot;alternate&quot;: {
+            &quot;&quot;: &quot;IfStatement&quot;,
+            &quot;test&quot;: {
+              &quot;&quot;: &quot;BinaryExpression&quot;,
+              &quot;left&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;a&quot;
+              },
+              &quot;operator&quot;: &quot;&gt;&quot;,
+              &quot;right&quot;: {
+                &quot;&quot;: &quot;Literal&quot;,
+                &quot;value&quot;: 0
+              }
+            },
+            &quot;consequent&quot;: {
+              &quot;&quot;: &quot;BlockStatement&quot;,
+              &quot;statements&quot;: [
+                {
+                  &quot;&quot;: &quot;ExpressionStatement&quot;,
+                  &quot;value&quot;: {
+                    &quot;&quot;: &quot;BinaryExpression&quot;,
+                    &quot;left&quot;: {
+                      &quot;&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;a&quot;
+                    },
+                    &quot;operator&quot;: &quot;-&quot;,
+                    &quot;right&quot;: {
+                      &quot;&quot;: &quot;Reference&quot;,
+                      &quot;name&quot;: &quot;b&quot;
+                    }
+                  }
+                }
+              ]
+            },
+            &quot;alternate&quot;: {
+              &quot;&quot;: &quot;BlockStatement&quot;,
+              &quot;statements&quot;: [
+                {
+                  &quot;&quot;: &quot;ExpressionStatement&quot;,
+                  &quot;value&quot;: {
+                    &quot;&quot;: &quot;Literal&quot;,
+                    &quot;value&quot;: 0
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    &quot;typeGuard&quot;: null
+  },
+  &quot;assignable&quot;: false,
+  &quot;export&quot;: true
+}</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="imports"><div class="jsondiffpatch-property-name">imports</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li></ul></li></ul></li></ul></div></p>
+        </article>
+    
+        <article>
+            <header><span>convertRefsToLocal</span></header>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="modules"><div class="jsondiffpatch-property-name">modules</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Map&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="sample.Vector"><div class="jsondiffpatch-property-name">sample.Vector</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Module&quot;</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-array" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-array"><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="0"><div class="jsondiffpatch-property-name">0</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>true</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:toString&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;toString&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;FunctionExpression&quot;,
+  &quot;id&quot;: null,
+  &quot;parameters&quot;: [
+    {
+      &quot;&quot;: &quot;Parameter&quot;,
+      &quot;id&quot;: {
+        &quot;&quot;: &quot;Id&quot;,
+        &quot;name&quot;: &quot;value&quot;
+      },
+      &quot;type&quot;: {
+        &quot;&quot;: &quot;UnionType&quot;,
+        &quot;left&quot;: {
+          &quot;&quot;: &quot;Reference&quot;,
+          &quot;name&quot;: &quot;ion.String:String&quot;
+        },
+        &quot;operator&quot;: &quot;|&quot;,
+        &quot;right&quot;: {
+          &quot;&quot;: &quot;Reference&quot;,
+          &quot;name&quot;: &quot;ion.Number:Number&quot;
+        }
+      },
+      &quot;value&quot;: null,
+      &quot;assignable&quot;: false,
+      &quot;export&quot;: false
+    }
+  ],
+  &quot;returnType&quot;: null,
+  &quot;body&quot;: {
+    &quot;&quot;: &quot;BlockStatement&quot;,
+    &quot;statements&quot;: [
+      {
+        &quot;&quot;: &quot;IfStatement&quot;,
+        &quot;test&quot;: {
+          &quot;&quot;: &quot;CallExpression&quot;,
+          &quot;new&quot;: false,
+          &quot;callee&quot;: {
+            &quot;&quot;: &quot;Reference&quot;,
+            &quot;name&quot;: &quot;ion.String:isString&quot;
+          },
+          &quot;arguments&quot;: [
+            {
+              &quot;&quot;: &quot;Reference&quot;,
+              &quot;name&quot;: &quot;value&quot;
+            }
+          ]
+        },
+        &quot;consequent&quot;: {
+          &quot;&quot;: &quot;BlockStatement&quot;,
+          &quot;statements&quot;: [
+            {
+              &quot;&quot;: &quot;ExpressionStatement&quot;,
+              &quot;value&quot;: {
+                &quot;&quot;: &quot;Literal&quot;,
+                &quot;value&quot;: &quot;String&quot;
+              }
+            }
+          ]
+        },
+        &quot;alternate&quot;: {
+          &quot;&quot;: &quot;BlockStatement&quot;,
+          &quot;statements&quot;: [
+            {
+              &quot;&quot;: &quot;ExpressionStatement&quot;,
+              &quot;value&quot;: {
+                &quot;&quot;: &quot;Literal&quot;,
+                &quot;value&quot;: &quot;Number&quot;
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  &quot;typeGuard&quot;: null
+}</pre></div></li></ul></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="1"><div class="jsondiffpatch-property-name">1</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>true</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:add&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;add&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;FunctionExpression&quot;,
   &quot;id&quot;: null,
   &quot;parameters&quot;: [
@@ -3467,17 +3758,6 @@ ul.jsondiffpatch-textdiff {
     ]
   },
   &quot;typeGuard&quot;: null
-}</pre></div></li></ul></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="2"><div class="jsondiffpatch-property-name">2</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;TypeDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-unchanged" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;sample.Vector:ion_String_String_or_ion_Number_Number&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;ion_String_String_or_ion_Number_Number&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-unchanged" data-key="value"><div class="jsondiffpatch-property-name">value</div><div class="jsondiffpatch-value"><pre>{
-  &quot;&quot;: &quot;UnionType&quot;,
-  &quot;left&quot;: {
-    &quot;&quot;: &quot;Reference&quot;,
-    &quot;name&quot;: &quot;ion.String:String&quot;
-  },
-  &quot;operator&quot;: &quot;|&quot;,
-  &quot;right&quot;: {
-    &quot;&quot;: &quot;Reference&quot;,
-    &quot;name&quot;: &quot;ion.Number:Number&quot;
-  }
 }</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-unchanged" data-key="imports"><div class="jsondiffpatch-property-name">imports</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li></ul></li></ul></li></ul></div></p>
         </article>
     
@@ -3494,8 +3774,16 @@ ul.jsondiffpatch-textdiff {
         &quot;name&quot;: &quot;value&quot;
       },
       &quot;type&quot;: {
-        &quot;&quot;: &quot;Reference&quot;,
-        &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
+        &quot;&quot;: &quot;UnionType&quot;,
+        &quot;left&quot;: {
+          &quot;&quot;: &quot;Reference&quot;,
+          &quot;name&quot;: &quot;ion.String:String&quot;
+        },
+        &quot;operator&quot;: &quot;|&quot;,
+        &quot;right&quot;: {
+          &quot;&quot;: &quot;Reference&quot;,
+          &quot;name&quot;: &quot;ion.Number:Number&quot;
+        }
       },
       &quot;value&quot;: null,
       &quot;assignable&quot;: false,
@@ -3666,80 +3954,113 @@ ul.jsondiffpatch-textdiff {
     ]
   },
   &quot;typeGuard&quot;: null
-}</pre></div></li></ul></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="2"><div class="jsondiffpatch-property-name">2</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;TypeDeclaration&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;VariableDeclaration&quot;</pre></div></li><li class="jsondiffpatch-unchanged" data-key="assignable"><div class="jsondiffpatch-property-name">assignable</div><div class="jsondiffpatch-value"><pre>false</pre></div></li><li class="jsondiffpatch-modified" data-key="export"><div class="jsondiffpatch-property-name">export</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>false</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>true</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="id"><div class="jsondiffpatch-property-name">id</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value"><pre>&quot;Id&quot;</pre></div></li><li class="jsondiffpatch-modified" data-key="name"><div class="jsondiffpatch-property-name">name</div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;ion_String_String_or_ion_Number_Number&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;toString&quot;</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-node jsondiffpatch-child-node-type-object" data-key="value"><div class="jsondiffpatch-property-name">value</div><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-modified" data-key=""><div class="jsondiffpatch-property-name"></div><div class="jsondiffpatch-value jsondiffpatch-left-value"><pre>&quot;UnionType&quot;</pre></div><div class="jsondiffpatch-value jsondiffpatch-right-value"><pre>&quot;FunctionExpression&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="body"><div class="jsondiffpatch-property-name">body</div><div class="jsondiffpatch-value"><pre>{
-  &quot;&quot;: &quot;BlockStatement&quot;,
-  &quot;statements&quot;: [
-    {
-      &quot;&quot;: &quot;IfStatement&quot;,
-      &quot;test&quot;: {
-        &quot;&quot;: &quot;CallExpression&quot;,
-        &quot;new&quot;: false,
-        &quot;callee&quot;: {
-          &quot;&quot;: &quot;MemberExpression&quot;,
-          &quot;object&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;String&quot;
+}</pre></div></li></ul></li><li class="jsondiffpatch-added" data-key="2"><div class="jsondiffpatch-property-name">2</div><div class="jsondiffpatch-value"><pre>{
+  &quot;&quot;: &quot;VariableDeclaration&quot;,
+  &quot;id&quot;: {
+    &quot;&quot;: &quot;Id&quot;,
+    &quot;name&quot;: &quot;toString&quot;
+  },
+  &quot;type&quot;: null,
+  &quot;value&quot;: {
+    &quot;&quot;: &quot;FunctionExpression&quot;,
+    &quot;id&quot;: null,
+    &quot;parameters&quot;: [
+      {
+        &quot;&quot;: &quot;Parameter&quot;,
+        &quot;id&quot;: {
+          &quot;&quot;: &quot;Id&quot;,
+          &quot;name&quot;: &quot;value&quot;
+        },
+        &quot;type&quot;: {
+          &quot;&quot;: &quot;UnionType&quot;,
+          &quot;left&quot;: {
+            &quot;&quot;: &quot;MemberExpression&quot;,
+            &quot;object&quot;: {
+              &quot;&quot;: &quot;Reference&quot;,
+              &quot;name&quot;: &quot;String&quot;
+            },
+            &quot;property&quot;: {
+              &quot;&quot;: &quot;Id&quot;,
+              &quot;name&quot;: &quot;String&quot;
+            }
           },
-          &quot;property&quot;: {
-            &quot;&quot;: &quot;Id&quot;,
-            &quot;name&quot;: &quot;isString&quot;
+          &quot;operator&quot;: &quot;|&quot;,
+          &quot;right&quot;: {
+            &quot;&quot;: &quot;MemberExpression&quot;,
+            &quot;object&quot;: {
+              &quot;&quot;: &quot;Reference&quot;,
+              &quot;name&quot;: &quot;Number&quot;
+            },
+            &quot;property&quot;: {
+              &quot;&quot;: &quot;Id&quot;,
+              &quot;name&quot;: &quot;Number&quot;
+            }
           }
         },
-        &quot;arguments&quot;: [
-          {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;value&quot;
-          }
-        ]
-      },
-      &quot;consequent&quot;: {
-        &quot;&quot;: &quot;BlockStatement&quot;,
-        &quot;statements&quot;: [
-          {
-            &quot;&quot;: &quot;ExpressionStatement&quot;,
-            &quot;value&quot;: {
-              &quot;&quot;: &quot;Literal&quot;,
-              &quot;value&quot;: &quot;String&quot;
-            }
-          }
-        ]
-      },
-      &quot;alternate&quot;: {
-        &quot;&quot;: &quot;BlockStatement&quot;,
-        &quot;statements&quot;: [
-          {
-            &quot;&quot;: &quot;ExpressionStatement&quot;,
-            &quot;value&quot;: {
-              &quot;&quot;: &quot;Literal&quot;,
-              &quot;value&quot;: &quot;Number&quot;
-            }
-          }
-        ]
+        &quot;value&quot;: null,
+        &quot;assignable&quot;: false,
+        &quot;export&quot;: false
       }
-    }
-  ]
-}</pre></div></li><li class="jsondiffpatch-added" data-key="id"><div class="jsondiffpatch-property-name">id</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-deleted" data-key="left"><div class="jsondiffpatch-property-name">left</div><div class="jsondiffpatch-value"><pre>{
-  &quot;&quot;: &quot;Reference&quot;,
-  &quot;name&quot;: &quot;ion.String:String&quot;
-}</pre></div></li><li class="jsondiffpatch-deleted" data-key="operator"><div class="jsondiffpatch-property-name">operator</div><div class="jsondiffpatch-value"><pre>&quot;|&quot;</pre></div></li><li class="jsondiffpatch-added" data-key="parameters"><div class="jsondiffpatch-property-name">parameters</div><div class="jsondiffpatch-value"><pre>[
-  {
-    &quot;&quot;: &quot;Parameter&quot;,
-    &quot;id&quot;: {
-      &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;value&quot;
+    ],
+    &quot;returnType&quot;: null,
+    &quot;body&quot;: {
+      &quot;&quot;: &quot;BlockStatement&quot;,
+      &quot;statements&quot;: [
+        {
+          &quot;&quot;: &quot;IfStatement&quot;,
+          &quot;test&quot;: {
+            &quot;&quot;: &quot;CallExpression&quot;,
+            &quot;new&quot;: false,
+            &quot;callee&quot;: {
+              &quot;&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;String&quot;
+              },
+              &quot;property&quot;: {
+                &quot;&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;isString&quot;
+              }
+            },
+            &quot;arguments&quot;: [
+              {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;value&quot;
+              }
+            ]
+          },
+          &quot;consequent&quot;: {
+            &quot;&quot;: &quot;BlockStatement&quot;,
+            &quot;statements&quot;: [
+              {
+                &quot;&quot;: &quot;ExpressionStatement&quot;,
+                &quot;value&quot;: {
+                  &quot;&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: &quot;String&quot;
+                }
+              }
+            ]
+          },
+          &quot;alternate&quot;: {
+            &quot;&quot;: &quot;BlockStatement&quot;,
+            &quot;statements&quot;: [
+              {
+                &quot;&quot;: &quot;ExpressionStatement&quot;,
+                &quot;value&quot;: {
+                  &quot;&quot;: &quot;Literal&quot;,
+                  &quot;value&quot;: &quot;Number&quot;
+                }
+              }
+            ]
+          }
+        }
+      ]
     },
-    &quot;type&quot;: {
-      &quot;&quot;: &quot;Reference&quot;,
-      &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
-    },
-    &quot;value&quot;: null,
-    &quot;assignable&quot;: false,
-    &quot;export&quot;: false
-  }
-]</pre></div></li><li class="jsondiffpatch-added" data-key="returnType"><div class="jsondiffpatch-property-name">returnType</div><div class="jsondiffpatch-value"><pre>null</pre></div></li><li class="jsondiffpatch-deleted" data-key="right"><div class="jsondiffpatch-property-name">right</div><div class="jsondiffpatch-value"><pre>{
-  &quot;&quot;: &quot;Reference&quot;,
-  &quot;name&quot;: &quot;ion.Number:Number&quot;
-}</pre></div></li><li class="jsondiffpatch-added" data-key="typeGuard"><div class="jsondiffpatch-property-name">typeGuard</div><div class="jsondiffpatch-value"><pre>null</pre></div></li></ul></li></ul></li><li class="jsondiffpatch-added" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
+    &quot;typeGuard&quot;: null
+  },
+  &quot;assignable&quot;: false,
+  &quot;export&quot;: true
+}</pre></div></li><li class="jsondiffpatch-added" data-key="3"><div class="jsondiffpatch-property-name">3</div><div class="jsondiffpatch-value"><pre>{
   &quot;&quot;: &quot;VariableDeclaration&quot;,
   &quot;id&quot;: {
     &quot;&quot;: &quot;Id&quot;,
@@ -3865,41 +4186,6 @@ ul.jsondiffpatch-textdiff {
   },
   &quot;assignable&quot;: false,
   &quot;export&quot;: true
-}</pre></div></li><li class="jsondiffpatch-added" data-key="4"><div class="jsondiffpatch-property-name">4</div><div class="jsondiffpatch-value"><pre>{
-  &quot;&quot;: &quot;TypeDeclaration&quot;,
-  &quot;id&quot;: {
-    &quot;&quot;: &quot;Id&quot;,
-    &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
-  },
-  &quot;type&quot;: null,
-  &quot;value&quot;: {
-    &quot;&quot;: &quot;UnionType&quot;,
-    &quot;left&quot;: {
-      &quot;&quot;: &quot;MemberExpression&quot;,
-      &quot;object&quot;: {
-        &quot;&quot;: &quot;Reference&quot;,
-        &quot;name&quot;: &quot;String&quot;
-      },
-      &quot;property&quot;: {
-        &quot;&quot;: &quot;Id&quot;,
-        &quot;name&quot;: &quot;String&quot;
-      }
-    },
-    &quot;operator&quot;: &quot;|&quot;,
-    &quot;right&quot;: {
-      &quot;&quot;: &quot;MemberExpression&quot;,
-      &quot;object&quot;: {
-        &quot;&quot;: &quot;Reference&quot;,
-        &quot;name&quot;: &quot;Number&quot;
-      },
-      &quot;property&quot;: {
-        &quot;&quot;: &quot;Id&quot;,
-        &quot;name&quot;: &quot;Number&quot;
-      }
-    }
-  },
-  &quot;assignable&quot;: false,
-  &quot;export&quot;: false
 }</pre></div></li></ul></li><li class="jsondiffpatch-unchanged" data-key="imports"><div class="jsondiffpatch-property-name">imports</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li></ul></li></ul></li></ul></div></p>
         </article>
     
@@ -3947,8 +4233,30 @@ ul.jsondiffpatch-textdiff {
                 &quot;name&quot;: &quot;value&quot;
               },
               &quot;type&quot;: {
-                &quot;&quot;: &quot;Reference&quot;,
-                &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
+                &quot;&quot;: &quot;UnionType&quot;,
+                &quot;left&quot;: {
+                  &quot;&quot;: &quot;MemberExpression&quot;,
+                  &quot;object&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;String&quot;
+                  },
+                  &quot;property&quot;: {
+                    &quot;&quot;: &quot;Id&quot;,
+                    &quot;name&quot;: &quot;String&quot;
+                  }
+                },
+                &quot;operator&quot;: &quot;|&quot;,
+                &quot;right&quot;: {
+                  &quot;&quot;: &quot;MemberExpression&quot;,
+                  &quot;object&quot;: {
+                    &quot;&quot;: &quot;Reference&quot;,
+                    &quot;name&quot;: &quot;Number&quot;
+                  },
+                  &quot;property&quot;: {
+                    &quot;&quot;: &quot;Id&quot;,
+                    &quot;name&quot;: &quot;Number&quot;
+                  }
+                }
               },
               &quot;value&quot;: null,
               &quot;assignable&quot;: false,
@@ -4140,42 +4448,6 @@ ul.jsondiffpatch-textdiff {
         },
         &quot;assignable&quot;: false,
         &quot;export&quot;: true
-      },
-      {
-        &quot;&quot;: &quot;TypeDeclaration&quot;,
-        &quot;id&quot;: {
-          &quot;&quot;: &quot;Id&quot;,
-          &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
-        },
-        &quot;type&quot;: null,
-        &quot;value&quot;: {
-          &quot;&quot;: &quot;UnionType&quot;,
-          &quot;left&quot;: {
-            &quot;&quot;: &quot;MemberExpression&quot;,
-            &quot;object&quot;: {
-              &quot;&quot;: &quot;Reference&quot;,
-              &quot;name&quot;: &quot;String&quot;
-            },
-            &quot;property&quot;: {
-              &quot;&quot;: &quot;Id&quot;,
-              &quot;name&quot;: &quot;String&quot;
-            }
-          },
-          &quot;operator&quot;: &quot;|&quot;,
-          &quot;right&quot;: {
-            &quot;&quot;: &quot;MemberExpression&quot;,
-            &quot;object&quot;: {
-              &quot;&quot;: &quot;Reference&quot;,
-              &quot;name&quot;: &quot;Number&quot;
-            },
-            &quot;property&quot;: {
-              &quot;&quot;: &quot;Id&quot;,
-              &quot;name&quot;: &quot;Number&quot;
-            }
-          }
-        },
-        &quot;assignable&quot;: false,
-        &quot;export&quot;: false
       }
     ]
   }
@@ -4230,8 +4502,30 @@ ul.jsondiffpatch-textdiff {
           &quot;name&quot;: &quot;value&quot;,
           &quot;type&quot;: &quot;Identifier&quot;,
           &quot;tstype&quot;: {
-            &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;,
-            &quot;type&quot;: &quot;Identifier&quot;
+            &quot;left&quot;: {
+              &quot;object&quot;: {
+                &quot;name&quot;: &quot;String&quot;,
+                &quot;type&quot;: &quot;Identifier&quot;
+              },
+              &quot;property&quot;: {
+                &quot;name&quot;: &quot;String&quot;,
+                &quot;type&quot;: &quot;Identifier&quot;
+              },
+              &quot;type&quot;: &quot;MemberExpression&quot;
+            },
+            &quot;operator&quot;: &quot;|&quot;,
+            &quot;right&quot;: {
+              &quot;object&quot;: {
+                &quot;name&quot;: &quot;Number&quot;,
+                &quot;type&quot;: &quot;Identifier&quot;
+              },
+              &quot;property&quot;: {
+                &quot;name&quot;: &quot;Number&quot;,
+                &quot;type&quot;: &quot;Identifier&quot;
+              },
+              &quot;type&quot;: &quot;MemberExpression&quot;
+            },
+            &quot;type&quot;: &quot;BinaryExpression&quot;
           }
         }
       ],
@@ -4395,45 +4689,6 @@ ul.jsondiffpatch-textdiff {
         ]
       }
     }
-  },
-  {
-    &quot;type&quot;: &quot;VariableDeclaration&quot;,
-    &quot;kind&quot;: &quot;type&quot;,
-    &quot;declarations&quot;: [
-      {
-        &quot;type&quot;: &quot;VariableDeclarator&quot;,
-        &quot;id&quot;: {
-          &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;,
-          &quot;type&quot;: &quot;Identifier&quot;
-        },
-        &quot;init&quot;: {
-          &quot;left&quot;: {
-            &quot;object&quot;: {
-              &quot;name&quot;: &quot;String&quot;,
-              &quot;type&quot;: &quot;Identifier&quot;
-            },
-            &quot;property&quot;: {
-              &quot;name&quot;: &quot;String&quot;,
-              &quot;type&quot;: &quot;Identifier&quot;
-            },
-            &quot;type&quot;: &quot;MemberExpression&quot;
-          },
-          &quot;operator&quot;: &quot;|&quot;,
-          &quot;right&quot;: {
-            &quot;object&quot;: {
-              &quot;name&quot;: &quot;Number&quot;,
-              &quot;type&quot;: &quot;Identifier&quot;
-            },
-            &quot;property&quot;: {
-              &quot;name&quot;: &quot;Number&quot;,
-              &quot;type&quot;: &quot;Identifier&quot;
-            },
-            &quot;type&quot;: &quot;MemberExpression&quot;
-          },
-          &quot;type&quot;: &quot;BinaryExpression&quot;
-        }
-      }
-    ]
   }
 ]</pre></div></li><li class="jsondiffpatch-deleted" data-key="declarations"><div class="jsondiffpatch-property-name">declarations</div><div class="jsondiffpatch-value"><pre>[
   {
@@ -4472,8 +4727,30 @@ ul.jsondiffpatch-textdiff {
             &quot;name&quot;: &quot;value&quot;
           },
           &quot;type&quot;: {
-            &quot;&quot;: &quot;Reference&quot;,
-            &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
+            &quot;&quot;: &quot;UnionType&quot;,
+            &quot;left&quot;: {
+              &quot;&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;String&quot;
+              },
+              &quot;property&quot;: {
+                &quot;&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;String&quot;
+              }
+            },
+            &quot;operator&quot;: &quot;|&quot;,
+            &quot;right&quot;: {
+              &quot;&quot;: &quot;MemberExpression&quot;,
+              &quot;object&quot;: {
+                &quot;&quot;: &quot;Reference&quot;,
+                &quot;name&quot;: &quot;Number&quot;
+              },
+              &quot;property&quot;: {
+                &quot;&quot;: &quot;Id&quot;,
+                &quot;name&quot;: &quot;Number&quot;
+              }
+            }
           },
           &quot;value&quot;: null,
           &quot;assignable&quot;: false,
@@ -4665,42 +4942,6 @@ ul.jsondiffpatch-textdiff {
     },
     &quot;assignable&quot;: false,
     &quot;export&quot;: true
-  },
-  {
-    &quot;&quot;: &quot;TypeDeclaration&quot;,
-    &quot;id&quot;: {
-      &quot;&quot;: &quot;Id&quot;,
-      &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;
-    },
-    &quot;type&quot;: null,
-    &quot;value&quot;: {
-      &quot;&quot;: &quot;UnionType&quot;,
-      &quot;left&quot;: {
-        &quot;&quot;: &quot;MemberExpression&quot;,
-        &quot;object&quot;: {
-          &quot;&quot;: &quot;Reference&quot;,
-          &quot;name&quot;: &quot;String&quot;
-        },
-        &quot;property&quot;: {
-          &quot;&quot;: &quot;Id&quot;,
-          &quot;name&quot;: &quot;String&quot;
-        }
-      },
-      &quot;operator&quot;: &quot;|&quot;,
-      &quot;right&quot;: {
-        &quot;&quot;: &quot;MemberExpression&quot;,
-        &quot;object&quot;: {
-          &quot;&quot;: &quot;Reference&quot;,
-          &quot;name&quot;: &quot;Number&quot;
-        },
-        &quot;property&quot;: {
-          &quot;&quot;: &quot;Id&quot;,
-          &quot;name&quot;: &quot;Number&quot;
-        }
-      }
-    },
-    &quot;assignable&quot;: false,
-    &quot;export&quot;: false
   }
 ]</pre></div></li><li class="jsondiffpatch-deleted" data-key="imports"><div class="jsondiffpatch-property-name">imports</div><div class="jsondiffpatch-value"><pre>[]</pre></div></li><li class="jsondiffpatch-added" data-key="leadingComments"><div class="jsondiffpatch-property-name">leadingComments</div><div class="jsondiffpatch-value"><pre>[
   {
@@ -4766,8 +5007,30 @@ ul.jsondiffpatch-textdiff {
               &quot;name&quot;: &quot;value&quot;,
               &quot;type&quot;: &quot;Identifier&quot;,
               &quot;tstype&quot;: {
-                &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;,
-                &quot;type&quot;: &quot;Identifier&quot;
+                &quot;left&quot;: {
+                  &quot;object&quot;: {
+                    &quot;name&quot;: &quot;String&quot;,
+                    &quot;type&quot;: &quot;Identifier&quot;
+                  },
+                  &quot;property&quot;: {
+                    &quot;name&quot;: &quot;String&quot;,
+                    &quot;type&quot;: &quot;Identifier&quot;
+                  },
+                  &quot;type&quot;: &quot;MemberExpression&quot;
+                },
+                &quot;operator&quot;: &quot;|&quot;,
+                &quot;right&quot;: {
+                  &quot;object&quot;: {
+                    &quot;name&quot;: &quot;Number&quot;,
+                    &quot;type&quot;: &quot;Identifier&quot;
+                  },
+                  &quot;property&quot;: {
+                    &quot;name&quot;: &quot;Number&quot;,
+                    &quot;type&quot;: &quot;Identifier&quot;
+                  },
+                  &quot;type&quot;: &quot;MemberExpression&quot;
+                },
+                &quot;type&quot;: &quot;BinaryExpression&quot;
               }
             }
           ],
@@ -4931,59 +5194,20 @@ ul.jsondiffpatch-textdiff {
             ]
           }
         }
-      },
-      {
-        &quot;type&quot;: &quot;VariableDeclaration&quot;,
-        &quot;kind&quot;: &quot;type&quot;,
-        &quot;declarations&quot;: [
-          {
-            &quot;type&quot;: &quot;VariableDeclarator&quot;,
-            &quot;id&quot;: {
-              &quot;name&quot;: &quot;ion_String_String_or_ion_Number_Number&quot;,
-              &quot;type&quot;: &quot;Identifier&quot;
-            },
-            &quot;init&quot;: {
-              &quot;left&quot;: {
-                &quot;object&quot;: {
-                  &quot;name&quot;: &quot;String&quot;,
-                  &quot;type&quot;: &quot;Identifier&quot;
-                },
-                &quot;property&quot;: {
-                  &quot;name&quot;: &quot;String&quot;,
-                  &quot;type&quot;: &quot;Identifier&quot;
-                },
-                &quot;type&quot;: &quot;MemberExpression&quot;
-              },
-              &quot;operator&quot;: &quot;|&quot;,
-              &quot;right&quot;: {
-                &quot;object&quot;: {
-                  &quot;name&quot;: &quot;Number&quot;,
-                  &quot;type&quot;: &quot;Identifier&quot;
-                },
-                &quot;property&quot;: {
-                  &quot;name&quot;: &quot;Number&quot;,
-                  &quot;type&quot;: &quot;Identifier&quot;
-                },
-                &quot;type&quot;: &quot;MemberExpression&quot;
-              },
-              &quot;type&quot;: &quot;BinaryExpression&quot;
-            }
-          }
-        ]
       }
     ]
   }
-}</pre></div></li><li class="jsondiffpatch-added" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: ion_String_String_or_ion_Number_Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}<br>type ion_String_String_or_ion_Number_Number = String.String | Number.Number;&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li></ul></div></p>
+}</pre></div></li><li class="jsondiffpatch-added" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: String.String | Number.Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}&quot;</pre></div></li><li class="jsondiffpatch-deleted" data-key="type"><div class="jsondiffpatch-property-name">type</div><div class="jsondiffpatch-value"><pre>&quot;Assembly&quot;</pre></div></li></ul></div></p>
         </article>
     
         <article>
             <header><span>writeFiles</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: ion_String_String_or_ion_Number_Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}<br>type ion_String_String_or_ion_Number_Number = String.String | Number.Number;&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: String.String | Number.Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}&quot;</pre></div></li></ul></div></p>
         </article>
     
         <article>
             <header><span>Output</span></header>
-            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: ion_String_String_or_ion_Number_Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}<br>type ion_String_String_or_ion_Number_Number = String.String | Number.Number;&quot;</pre></div></li></ul></div></p>
+            <p><div class="jsondiffpatch-delta jsondiffpatch-node jsondiffpatch-child-node-type-object"><ul class="jsondiffpatch-node jsondiffpatch-node-type-object"><li class="jsondiffpatch-unchanged" data-key="sample/Vector.ts"><div class="jsondiffpatch-property-name">sample/Vector.ts</div><div class="jsondiffpatch-value"><pre>&quot;/*<br>This file was generated from ion source. Do not edit.<br>*/<br>import * as String from &apos;../ion/String&apos;;<br>import * as Number from &apos;../ion/Number&apos;;<br>export function toString(value: String.String | Number.Number) {<br>    if (String.isString(value)) {<br>        &apos;String&apos;;<br>    } else {<br>        &apos;Number&apos;;<br>    }<br>}<br>export function add(a, b) {<br>    if (a &lt; 0) {<br>        a + b;<br>    } else if (a &gt; 0) {<br>        a - b;<br>    } else {<br>        0;<br>    }<br>}&quot;</pre></div></li></ul></div></p>
         </article>
     
     </body>

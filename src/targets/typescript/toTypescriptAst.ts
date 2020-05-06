@@ -19,6 +19,7 @@ import TemplateReference from "../../ast/TemplateReference";
 import CallExpression from "../../ast/CallExpression";
 import Reference from "../../ast/Reference";
 import ExpressionStatement from "../../ast/ExpressionStatement";
+import TypeReference from "../../ast/TypeReference";
 import UnionType from "../../ast/UnionType";
 
 const DO_NOT_EDIT_WARNING = `

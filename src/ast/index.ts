@@ -72,6 +72,8 @@ import * as _TypeDeclaration from './TypeDeclaration';
 export const TypeDeclaration = _TypeDeclaration;
 import * as _TypeExpression from './TypeExpression';
 export const TypeExpression = _TypeExpression;
+import * as _TypeReference from './TypeReference';
+export const TypeReference = _TypeReference;
 import * as _UnaryExpression from './UnaryExpression';
 export const UnaryExpression = _UnaryExpression;
 import * as _UnionType from './UnionType';
