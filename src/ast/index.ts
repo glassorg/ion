@@ -1,5 +1,9 @@
 import * as _Analysis from './Analysis';
 export const Analysis = _Analysis;
+import * as _ArrayExpression from './ArrayExpression';
+export const ArrayExpression = _ArrayExpression;
+import * as _ArrayPattern from './ArrayPattern';
+export const ArrayPattern = _ArrayPattern;
 import * as _Assembly from './Assembly';
 export const Assembly = _Assembly;
 import * as _AssignmentStatement from './AssignmentStatement';
