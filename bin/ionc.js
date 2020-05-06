@@ -1,17 +1,22 @@
 #!/usr/bin/env node
-const path = require("path")
-const [,,output,...inputs] = process.argv
+const path = require("path");
+const [,,output,...inputs] = process.argv;
 
-if (name == null) {
+if (inputs.length == 0) {
     //  if they don't provide a command then we display usage and available commands
     console.log(
 `
     Usage: ionc output input1 input2...
 
-`)
+`);
     return 1
 } else {
-    // const Compiler = require()
-    console.log("ion c here")
-    return 0
+    // always add our local ionsrc directory to the inputs
+    inputs.push(path.join(__dirname, "..", "ionsrc"));
+    const { default: Compiler, Options } = require("../lib/Compiler");
+    let options = new Options(inputs, output);
+    let logger = (names, ast) => { console.log(names) };
+    let compiler = new Compiler(logger);
+    compiler.compile(options);
+    return 0;
 }
