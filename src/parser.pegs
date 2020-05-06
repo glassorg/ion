@@ -97,11 +97,16 @@ Imports
 Statement
     = Declaration
     / AssignmentStatement
-    / OutlineExpression
+    // / OutlineExpression
     / IfStatement
     / ForInStatement
-    / ReturnStatement
+    // / ReturnStatement
     / WhileStatement
+    / ExpressionStatement
+
+ExpressionStatement
+    = value:OutlineExpression
+    { return node("ExpressionStatement", { value }) }
 
 Declaration
     = ClassDeclaration
@@ -164,9 +169,9 @@ IfStatement
         alternate:(Dent ElseToken _ @(BlockStatement / IfStatement))?
     { return node("IfStatement", { test, consequent, alternate }) }
 
-ReturnStatement
-    = ReturnToken _ value:InlineExpression? EOL
-    { return node("ReturnStatement", { value }) }
+// ReturnStatement
+//     = ReturnToken _ value:InlineExpression? EOL
+//     { return node("ReturnStatement", { value }) }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Patterns
@@ -378,12 +383,12 @@ FunctionParameters
     / "(" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ")" { return [head, ...tail] }
 
 FunctionHead
-    = id:(@Id _ &"(")? parameters:FunctionParameters? type:(_ ":" _ @Type)? _ "->"
+    = id:(@Id _ &"(")? parameters:FunctionParameters? type:(_ ":" _ @Type)? _ "=>"
     { return { id, type, parameters: parameters || [] } }
 
 InlineFunction
     = head:FunctionHead _ value:InlineExpression
-    { return node("FunctionExpression", { ...head, body: node("BlockStatement", { value: node("ReturnStatement", { value } ) } ) } ) }
+    { return node("FunctionExpression", { ...head, body: node("BlockStatement", { statements: [node("ExpressionStatement", { value } )] } ) } ) }
 
 OutlineFunction
     = head:FunctionHead _ body:BlockStatement

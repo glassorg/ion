@@ -41,5 +41,11 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Implement ImportResolution.
     X Create .patch function on instances
       Need Readonly<Array<type>> to prevent modifying an elements arrays.
+      ReadonlySet
+      ReadonlyMap
+      toString
+      migrate other properties to static for runtime type checking.
+    X Normalize Type Declarations
+      Fix bug where Vector.toString is not using right referenced type.
+      Normalize identifiers to safe for language (general solution)
     
-

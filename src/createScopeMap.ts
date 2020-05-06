@@ -12,11 +12,14 @@ export type ScopeMap = {
 
 /**
  * Returns a Map which will contain a scope object with variable names returning Declarations.
+ * scopes.get(null) will return the global scope
  * @param root the ast
  */
 export default function createScopeMap(root, { checkDeclareBeforeUse=false } = {}): ScopeMap {
     let map = new Map()
-    let scopes: object[] = []
+    let global = {}
+    let scopes: object[] = [global]
+    map.set(null, global)
 
     function declare(node: Declaration, id: Id = node.id) {
         let scope: any = scopes[scopes.length - 1]

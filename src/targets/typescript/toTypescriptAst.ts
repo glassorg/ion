@@ -1,6 +1,6 @@
 import Assembly from "../../ast/Assembly";
 import { traverse, skip, remove, traverseChildren, replace, Merge, Leave, Enter } from "../../Traversal";
-import { getTypeCheckFunctionName } from "../../common";
+import { getTypeCheckFunctionName, isTypeReference } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
 import BinaryExpression from "../../ast/BinaryExpression";
 import Module from "../../ast/Module";
@@ -16,6 +16,10 @@ import Declaration from "../../ast/Declaration";
 import Node from "../../ast/Node";
 import Literal from "../../ast/Literal";
 import TemplateReference from "../../ast/TemplateReference";
+import CallExpression from "../../ast/CallExpression";
+import Reference from "../../ast/Reference";
+import ExpressionStatement from "../../ast/ExpressionStatement";
+import UnionType from "../../ast/UnionType";
 
 const DO_NOT_EDIT_WARNING = `
 This file was generated from ion source. Do not edit.
@@ -29,8 +33,6 @@ const typeMap = {
 const operatorMap = {
     "==": "===",
     "!=": "!==",
-    "and": "&&",
-    "or": "||",
 }
 
 function toRelativeModulePath(from: string, to: string) {
@@ -110,6 +112,7 @@ const toAstMerge: { [name: string]: Merge } = {
         let esnode = { ...node, type } as any
         esnode = helper.patch(esnode, changes)
         if (BinaryExpression.is(node)) {
+            esnode.type = "BinaryExpression",
             esnode.operator = operatorMap[node.operator] ?? node.operator
         }
         return esnode
@@ -129,6 +132,20 @@ const toAstMerge: { [name: string]: Merge } = {
             genericArguments: changes.arguments
         }
         return result
+    },
+    ExpressionStatement(node: ExpressionStatement, changes: Partial<ExpressionStatement>) {
+        return {
+            type: "ExpressionStatement",
+            expression: changes.value!
+        }
+    },
+    CallExpression(node: CallExpression, changes: Partial<CallExpression>) {
+        const isConstructor = node.new || isTypeReference(node.callee)
+        return {
+            type: isConstructor ? "NewExpression" : "CallExpression",
+            callee: changes.callee,
+            arguments: changes.arguments
+        }
     },
     ClassDeclaration(node: ClassDeclaration, changes: Partial<ClassDeclaration>) {
         return replace(
@@ -365,7 +382,7 @@ const toAstMerge: { [name: string]: Merge } = {
             }
         }
         else {
-            return changes.id
+            return { ...changes.id, tstype: changes.type }
         }
     },
     ReturnStatement(node: ReturnStatement, changes: Partial<ReturnStatement>) {
@@ -418,12 +435,12 @@ const toAstMerge: { [name: string]: Merge } = {
     },
     VariableDeclaration(node: VariableDeclaration, changes: Partial<VariableDeclaration>, helper, ancestors, path: string[], kind?: string) {
         let value = changes.value as any
-        if (value && value.type === "FunctionExpression" && value.id && node.id.name === value.id.name) {
+        if (value && value.type === "FunctionExpression" && (value.id == null || node.id.name === value.id.name)) {
             // simplify
             //  const foo = function foo() {}
             // into
             //  function foo() {}
-            return maybeExport(node, { ...value, type: "FunctionDeclaration" })
+            return maybeExport(node, { ...value, id: { type: "Identifier", name: node.id.name }, type: "FunctionDeclaration" })
         }
 
         return maybeExport(node, {

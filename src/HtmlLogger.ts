@@ -10,6 +10,10 @@ const ignoreProperties: {[name:string]:boolean} = {
     location: true
 }
 
+function ignore(property) {
+    return ignoreProperties[property] || property.startsWith("_") || property.startsWith("ion")
+}
+
 export function stringify(object, indent = 2) {
     return JSON.stringify(cloneWithJsonReferences(object), null, indent);
 }
@@ -25,6 +29,9 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     let clone: any = Array.isArray(object) ? [] : className === "Object" ? {} : {"": className}
     if (object instanceof Map) {
         for (let key of object.keys()) {
+            if (ignore(key)) {
+                continue
+            }
             clone[key] = cloneWithJsonReferences(object.get(key), path)
         }
     }
@@ -36,7 +43,7 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     }
     else {
         for (let property in object) {
-            if (ignoreProperties[property] || property.startsWith("_")) {
+            if (ignore(property)) {
                 continue
             }
     

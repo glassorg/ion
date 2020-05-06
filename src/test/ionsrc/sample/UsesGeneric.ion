@@ -1,6 +1,0 @@
-import
-    ion.*
-
-export
-    class UsesGeneric
-        let children: Map<String,Number>

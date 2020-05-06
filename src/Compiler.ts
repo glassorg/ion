@@ -5,6 +5,8 @@ import frontPhases from "./phases";
 import * as targets from "./targets";
 import Parser = require("./parser");
 
+console.log(":LSKJF:SDLKJF:DSLFJKD:LFJ", require.resolve("./phases"))
+
 type Logger = (names?: string | string[], ast?: any) => void
 
 export class Options {
@@ -38,21 +40,24 @@ export default class Compiler {
         this.logger("Input", root)
         try {
             for (let phase of phases) {
+                console.log(".......", phase.name)
                 root = phase(root, options) || root
                 this.logger(phase.name, root)
             }
             this.logger("Output", root)
+            this.logger()
         }
         catch (e) {
+            this.logger()
             let location = e.location
-            if (location == null || location.start == null)
+            if (location == null || location.start == null) {
                 throw e
+            }
             let { filename } = location
             let source = files[filename]!
             let error = options.parser.getError(e.message, location, source, filename)
             console.log(error.message)
         }
-        this.logger()
     }
 
 }

@@ -50,7 +50,7 @@ export type Visitor = {
     filter?: Predicate,
 }
 
-const EmptyObject = Object.freeze({})
+const nochanges = Object.freeze({})
 
 interface ContainerHelper<C = any, K = any, V = any> {
     type: string,
@@ -70,9 +70,6 @@ interface ContainerHelper<C = any, K = any, V = any> {
 const objectContainerHelper: ContainerHelper<Readonly<any>, string, any> = {
     type: "Object",
     patch(original, newValues) {
-        if (newValues.size === 0) {
-            return original
-        }
         let ctor = original.constructor as any
         let iterateValues = { ...original }
         for (let key in newValues) {
@@ -238,7 +235,10 @@ export function traverseChildren(
         ancestors.pop()
 
         if (merge != null) {
-            let result = merge(container, changes ?? EmptyObject, helper, ancestors, path)
+            let result = merge(container, changes ?? nochanges, helper, ancestors, path)
+            if (result === undefined && changes !== nochanges) {
+                result = helper.patch(container, changes)
+            }
             if (result !== undefined) {
                 container = result
             }

@@ -3,8 +3,9 @@ import Assembly from "../ast/Assembly";
 import { traverse } from "../Traversal";
 import { SemanticError } from "../common";
 import Reference from "../ast/Reference";
+import Analysis from "../ast/Analysis";
 
-export default function checkReferences(root: Assembly) {
+export default function normalizeTypes(root: Assembly | Analysis) {
     let scopes = createScopeMap(root)
     traverse(root, {
         enter(node) {

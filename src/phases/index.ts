@@ -7,6 +7,7 @@ import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
 import createClassTypeChecks from "./createClassTypeChecks";
 import checkReferences from "./checkReferences";
+import normalizeTypes from "./normalizeTypes";
 
 export default [
     // input stage
@@ -20,5 +21,6 @@ export default [
     assemblyToAnalysis,
     inheritBaseClasses,
     createClassTypeChecks,
-    checkReferences,
+    normalizeTypes,
+    // checkReferences,
 ]

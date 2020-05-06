@@ -1,0 +1,105 @@
+import createScopeMap from "../createScopeMap";
+import { traverse } from "../Traversal";
+import { SemanticError, isTypeReference } from "../common";
+import Analysis from "../ast/Analysis";
+import Declaration from "../ast/Declaration";
+import TypeDeclaration from "../ast/TypeDeclaration";
+import Reference from "../ast/Reference";
+import TypeExpression from "../ast/TypeExpression";
+import BinaryExpression from "../ast/BinaryExpression";
+import ClassDeclaration from "../ast/ClassDeclaration";
+import ConstrainedType from "../ast/ConstrainedType";
+import Expression from "../ast/Expression";
+import Literal from "../ast/Literal";
+import LiteralType from "../ast/LiteralType";
+import MemberExpression from "../ast/MemberExpression";
+import Id from "../ast/Id";
+import FunctionType from "../ast/FunctionType";
+import Parameter from "../ast/Parameter";
+import DotExpression from "../ast/DotExpression";
+import ThisExpression from "../ast/ThisExpression";
+import { type } from "os";
+
+const opMap = {
+    "|": "_or_",
+    "&": "_and_",
+}
+
+// This is pretty O(n) performance. Functions on Nodes would be good.
+export function getName(node) {
+    if (node == null) {
+        return `UNDEFINED`
+    }
+    // if this is a reference, then it ought to be easy, just return the name
+    if (Reference.is(node)) {
+        return node.name
+    }
+    if (Literal.is(node)) {
+        return JSON.stringify(node.value)
+    }
+    if (LiteralType.is(node)) {
+        return getName(node.literal)
+    }
+    if (BinaryExpression.is(node)) {
+        return `${getName(node.left)} ${node.operator} ${getName(node.right)}`
+    }
+    if (Id.is(node)) {
+        return node.name
+    }
+    if (MemberExpression.is(node)) {
+        return `${getName(node.object)}.${getName(node.property)}`
+    }
+    if (ConstrainedType.is(node)) {
+        return `${getName(node.baseType)}(${getName(node.constraint)})`
+    }
+    if (Parameter.is(node)) {
+        return `${getName(node.id)}: ${getName(node.type)}`
+    }
+    if (FunctionType.is(node)) {
+        return `${node.parameters.map(getName).join(",")}) => ${getName(node.returnType)}`
+    }
+    if (ThisExpression.is(node)) {
+        return `this`
+    }
+    if (DotExpression.is(node)) {
+        return `.`
+    }
+    return `!!!${node.constructor.name}!!!`
+}
+
+export default function normalizeTypes(root: Analysis) {
+    let scopes = createScopeMap(root)
+    let globalScope = scopes.get(null)
+    let newTypeDeclarations = new Map<string,TypeDeclaration>()
+    function ensureTypeExistsReturnReference(scope, node: TypeExpression) {
+        let name = getName(node)
+        if (scope[name] == null) {
+            console.log("Creating: " + name)
+            let declaration = new TypeDeclaration({
+                location: node.location,
+                id: new Id({ location: node.location, name }),
+                value: node
+            })
+            newTypeDeclarations.set(name, declaration)
+            globalScope[name] = declaration
+        }
+        else {
+            console.log("Reusing: " + name)
+        }
+        return new Reference({ location: node.location, name })
+    }
+    root = traverse(root, {
+        merge(node, changes, helper, ancestors, path) {
+            //  Find TypeExpressions which are NOT References and turn them into References.
+            if (TypeExpression.is(node) && !Reference.is(node) && !TypeDeclaration.is(ancestors[2])) {
+                // Next we need to generate a unique canonical name for this type
+                // that we can use to create a shared type declaration
+                // then we create that type declaration and convert this node to a reference to it
+                let scope = scopes.get(node)
+                return ensureTypeExistsReturnReference(scope, helper.patch(node, changes))
+            }
+        }
+    })
+
+    return new Analysis({ declarations: new Map([...root.declarations, ...newTypeDeclarations])})
+}

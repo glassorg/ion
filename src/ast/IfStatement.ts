@@ -12,12 +12,12 @@ export class IfStatement implements Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly test: Expression.Expression;
     readonly consequent: BlockStatement.BlockStatement;
-    readonly alternate: BlockStatement.BlockStatement | Null.Null;
+    readonly alternate: BlockStatement.BlockStatement | (IfStatement | Null.Null);
     constructor({location = null, test, consequent, alternate = null}: {
         location?: Location.Location | Null.Null,
         test: Expression.Expression,
         consequent: BlockStatement.BlockStatement,
-        alternate?: BlockStatement.BlockStatement | Null.Null
+        alternate?: BlockStatement.BlockStatement | (IfStatement | Null.Null)
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -25,8 +25,8 @@ export class IfStatement implements Statement.Statement , Node.Node {
             throw new Error('test is not a Expression: ' + Class.toString(test));
         if (!BlockStatement.isBlockStatement(consequent))
             throw new Error('consequent is not a BlockStatement: ' + Class.toString(consequent));
-        if (!(BlockStatement.isBlockStatement(alternate) || Null.isNull(alternate)))
-            throw new Error('alternate is not a BlockStatement | Null: ' + Class.toString(alternate));
+        if (!(BlockStatement.isBlockStatement(alternate) || (isIfStatement(alternate) || Null.isNull(alternate))))
+            throw new Error('alternate is not a BlockStatement | IfStatement | Null: ' + Class.toString(alternate));
         this.location = location;
         this.test = test;
         this.consequent = consequent;
@@ -37,7 +37,7 @@ export class IfStatement implements Statement.Statement , Node.Node {
         location?: Location.Location | Null.Null,
         test?: Expression.Expression,
         consequent?: BlockStatement.BlockStatement,
-        alternate?: BlockStatement.BlockStatement | Null.Null
+        alternate?: BlockStatement.BlockStatement | (IfStatement | Null.Null)
     }) {
         return new IfStatement({
             ...this,

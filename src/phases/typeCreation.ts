@@ -17,9 +17,6 @@ import DotExpression from "../ast/DotExpression";
 import TypeDeclaration from "../ast/TypeDeclaration";
 
 function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration, root: Assembly) {
-    // shit... need a deep clone function for this shit.
-    //  as we need to traverse and modify the one but not the other.
-    // !! TODO:
     return new VariableDeclaration({
         location: node.location,
         id: new Id({ name }),
@@ -95,6 +92,20 @@ export default function typeCreation(root: Assembly) {
                     node,
                     createRuntimeTypeCheckingFunctionDeclaration(isName, node, root)
                 )
+            }
+            else if (BinaryExpression.is(node)) {
+                // convert A is Foo type checks into calls to runtime function.
+                if (node.operator === "is") {
+                    if (!Reference.is(node.right)) {
+                        throw SemanticError("Right side of type check must be a type reference", node.right)
+                    }
+                    let isName = getTypeCheckFunctionName(node.right.name)
+                    return new CallExpression({
+                        location: node.location,
+                        callee: new Reference({ location: node.right.location, name: isName }),
+                        arguments: [node.left]
+                    })
+                }
             }
         }
     })

@@ -1,0 +1,17 @@
+import
+    ion.*
+
+export
+    let toString = (value: String | Number) =>
+        if value is String
+            "String"
+        else
+            "Number"
+
+    let add = (a, b) =>
+        if a < 0
+            a + b
+        else if a > 0
+            a - b
+        else
+            0

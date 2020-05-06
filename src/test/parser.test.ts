@@ -2,7 +2,7 @@ import { strict as assert } from "assert"
 import Compiler, { Options } from "../Compiler";
 import path from "path";
 
-const perfTest = true
+const perfTest = false
 
 let compiler = new Compiler(perfTest ? (() => {}) : undefined)
 let start = Date.now()

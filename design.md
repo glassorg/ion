@@ -23,15 +23,16 @@
 
 # inline function signature
 
-    (b: Vector, c: Vector): Vector =>
+    let add = (a = 0, b = 0) => a + b
 
 # outline function signature
 
-    (
-        b: Vector
-        c: Vector
-    ): Vector =>
-        a + b
+    let add =
+        ()
+            a = 0
+            b = 0
+        =>
+            a + b
 
 # outline function call
 
@@ -43,6 +44,13 @@
 # inline function call
 
     Vector(this.x * b.y, this.y * b.z, this.z * b.x)
+
+# juxtaposition function call?
+    translate location x, y
+    # no, I don't think so, without parentheses it's ambiguous whether y is a paramter to location or translate
+    # also, with Uniform Function Call Syntax, we can always chain function calls to the right anyways
+    # which is easier to read in logical order of operations.
+    location(x,y).translate()
 
 # outline if else
 
@@ -69,9 +77,9 @@
 # outline for
 
     for value in array
-    for index, value in array
     for value in set
-    for index, value in set
-    for value in map
-    for key, value in map
-    for index, key, value in map
+    for [key, value] in map
+
+# array comprehensions? Not yet.
+
+    [0 .. 100]

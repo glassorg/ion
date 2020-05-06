@@ -13,6 +13,6 @@ export default [
     createImports,
     checkReferences,
     toTypescriptAst,
-    // toTypescriptFiles,
-    // writeFiles,
+    toTypescriptFiles,
+    writeFiles,
 ]

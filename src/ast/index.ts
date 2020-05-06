@@ -22,6 +22,8 @@ import * as _DotExpression from './DotExpression';
 export const DotExpression = _DotExpression;
 import * as _Expression from './Expression';
 export const Expression = _Expression;
+import * as _ExpressionStatement from './ExpressionStatement';
+export const ExpressionStatement = _ExpressionStatement;
 import * as _FunctionExpression from './FunctionExpression';
 export const FunctionExpression = _FunctionExpression;
 import * as _FunctionType from './FunctionType';
