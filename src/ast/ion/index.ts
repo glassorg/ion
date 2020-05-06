@@ -12,6 +12,8 @@ import * as _Null from './Null';
 export const Null = _Null;
 import * as _Number from './Number';
 export const Number = _Number;
+import * as _Object from './Object';
+export const Object = _Object;
 import * as _Set from './Set';
 export const Set = _Set;
 import * as _String from './String';

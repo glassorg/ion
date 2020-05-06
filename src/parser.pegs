@@ -248,7 +248,7 @@ LiteralType
    = literal:Literal { return node('LiteralType', {literal}) }
 
 FunctionType
-    = parameters:FunctionParameters _ "->" _ returnType:Type
+    = parameters:FunctionParameters _ "=>" _ returnType:Type
     { return node("FunctionType", {parameters, returnType}) }
 
 TemplateArgument
@@ -374,7 +374,7 @@ ConditionalExpression
 ////////////////////////////////////////////////////////////////////////////////
 
 Parameter
-    = id:Pattern _ type:(":" _ @Type)? _ value:("=" _ @InlineExpression)?
+    = id:Pattern _ type:(":" _ @Type)? _ value:("=" !">" _ @InlineExpression)?
     { return node("Parameter", { id, type, value })}
 
 FunctionParameters

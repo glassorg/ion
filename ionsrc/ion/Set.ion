@@ -3,4 +3,4 @@ import
 
 export
     class Set<V>
-        let has: value -> Boolean
+        let has: value => Boolean
