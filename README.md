@@ -40,9 +40,10 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Ion => add Implements Clauses to class definition.
     X Implement ImportResolution.
     X Create .patch function on instances
-      Need Readonly<Array<type>> to prevent modifying an elements arrays.
-      ReadonlySet
-      ReadonlyMap
+    X Need Readonly<Array<type>> to prevent modifying an elements arrays.
+    X ReadonlySet
+    X ReadonlyMap
+      Merge Bootstrapped into main.
       toString
       migrate other properties to static for runtime type checking.
     X Normalize Type Declarations
