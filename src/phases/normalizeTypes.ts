@@ -1,6 +1,6 @@
 import createScopeMap from "../createScopeMap";
 import { traverse } from "../Traversal";
-import { SemanticError, isTypeReference } from "../common";
+import { SemanticError, isTypeReference, getAbsoluteName } from "../common";
 import Analysis from "../ast/Analysis";
 import Declaration from "../ast/Declaration";
 import TypeDeclaration from "../ast/TypeDeclaration";
@@ -19,10 +19,18 @@ import Parameter from "../ast/Parameter";
 import DotExpression from "../ast/DotExpression";
 import ThisExpression from "../ast/ThisExpression";
 import { type } from "os";
+import Node from "../ast/Node";
+import IdGenerator from "../IdGenerator";
 
 const opMap = {
-    "|": "_or_",
-    "&": "_and_",
+    "|": "or",
+    "&": "and",
+    "<": "lt",
+    ">": "lt",
+    "<=": "lte",
+    ">=": "gte",
+    "==": "eq",
+    "!=": "neq",
 }
 
 // This is pretty O(n) performance. Functions on Nodes would be good.
@@ -41,7 +49,7 @@ export function getName(node) {
         return getName(node.literal)
     }
     if (BinaryExpression.is(node)) {
-        return `${getName(node.left)} ${node.operator} ${getName(node.right)}`
+        return `${getName(node.left)} ${opMap[node.operator] ?? node.operator} ${getName(node.right)}`
     }
     if (Id.is(node)) {
         return node.name
@@ -56,7 +64,7 @@ export function getName(node) {
         return `${getName(node.id)}: ${getName(node.type)}`
     }
     if (FunctionType.is(node)) {
-        return `${node.parameters.map(getName).join(",")}) => ${getName(node.returnType)}`
+        return `func ${node.parameters.map(getName).join(",")}) returns ${getName(node.returnType)}`
     }
     if (ThisExpression.is(node)) {
         return `this`
@@ -67,26 +75,32 @@ export function getName(node) {
     return `!!!${node.constructor.name}!!!`
 }
 
+
 export default function normalizeTypes(root: Analysis) {
-    let scopes = createScopeMap(root)
-    let globalScope = scopes.get(null)
+    let identifiers = new Set<string>()
+    let scopes = createScopeMap(root, { identifiers })
+    let idGenerator = new IdGenerator(identifiers)
     let newTypeDeclarations = new Map<string,TypeDeclaration>()
-    function ensureTypeExistsReturnReference(scope, node: TypeExpression) {
+    let typeNameToIdentifierName = new Map<string,string>()
+    function ensureTypeExistsReturnReference(context: Node, node: TypeExpression) {
         let name = getName(node)
-        if (scope[name] == null) {
-            console.log("Creating: " + name)
+        let absoluteName = typeNameToIdentifierName.get(name)
+        if (absoluteName == null) {
+            let localName = idGenerator.createNewIdName(name)
+            absoluteName = getAbsoluteName(context.location!.filename, localName)
+            typeNameToIdentifierName.set(name, absoluteName)
+            console.log("Creating: " + absoluteName)
             let declaration = new TypeDeclaration({
                 location: node.location,
-                id: new Id({ location: node.location, name }),
+                id: new Id({ location: node.location, name: absoluteName }),
                 value: node
             })
             newTypeDeclarations.set(name, declaration)
-            globalScope[name] = declaration
         }
         else {
-            console.log("Reusing: " + name)
+            console.log("Reusing: " + absoluteName)
         }
-        return new Reference({ location: node.location, name })
+        return new Reference({ location: node.location, name: absoluteName })
     }
     root = traverse(root, {
         merge(node, changes, helper, ancestors, path) {
@@ -95,8 +109,7 @@ export default function normalizeTypes(root: Analysis) {
                 // Next we need to generate a unique canonical name for this type
                 // that we can use to create a shared type declaration
                 // then we create that type declaration and convert this node to a reference to it
-                let scope = scopes.get(node)
-                return ensureTypeExistsReturnReference(scope, helper.patch(node, changes))
+                return ensureTypeExistsReturnReference(node, helper.patch(node, changes))
             }
         }
     })

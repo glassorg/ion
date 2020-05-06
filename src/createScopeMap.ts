@@ -15,13 +15,14 @@ export type ScopeMap = {
  * scopes.get(null) will return the global scope
  * @param root the ast
  */
-export default function createScopeMap(root, { checkDeclareBeforeUse=false } = {}): ScopeMap {
+export default function createScopeMap(root, { checkDeclareBeforeUse=false, identifiers } = { identifiers: new Set<string>()}): ScopeMap {
     let map = new Map()
     let global = {}
     let scopes: object[] = [global]
     map.set(null, global)
 
     function declare(node: Declaration, id: Id = node.id) {
+        identifiers.add(id.name)
         let scope: any = scopes[scopes.length - 1]
         scope[id.name as any] = node
     }
