@@ -11,3 +11,4 @@ app.yaml
 .npmrc
 .cache
 dist
+output.html

@@ -76,11 +76,11 @@ export function getName(node) {
     return `!!!${node.constructor.name}!!!`
 }
 
-const typesFile = "_types"
+const typesFile = "ion.types"
 
 export default function normalizeTypes(root: Analysis) {
     let identifiers = new Set<string>()
-    let scopes = createScopeMap(root, { identifiers })
+    let scopes = createScopeMap(root, { identifiers }) // DO NOT REMOVE THIS LINE, scopes is not used, but identifiers is
     let idGenerator = new IdGenerator(identifiers)
     let newTypeDeclarations = new Map<string,TypeDeclaration>()
     let typeNameToIdentifierName = new Map<string,string>()
@@ -91,16 +91,13 @@ export default function normalizeTypes(root: Analysis) {
             let localName = idGenerator.createNewIdName(name)
             absoluteName = getAbsoluteName(typesFile, localName)
             typeNameToIdentifierName.set(name, absoluteName)
-            console.log("Creating: " + absoluteName)
             let declaration = new TypeDeclaration({
                 location: node.location!.patch({ filename:  typesFile }),
                 id: new Id({ location: node.location, name: absoluteName }),
-                value: node
+                value: node,
+                export: true,
             })
             newTypeDeclarations.set(name, declaration)
-        }
-        else {
-            console.log("Reusing: " + absoluteName)
         }
         return new TypeReference({ location: node.location, name: absoluteName, original: node })
     }
