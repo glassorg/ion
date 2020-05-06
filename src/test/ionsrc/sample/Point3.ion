@@ -1,0 +1,7 @@
+import
+    ion.*
+    .Point2.*
+
+export
+    struct Point3 extends Point2
+        let z: Whole
