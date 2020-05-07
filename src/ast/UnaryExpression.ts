@@ -12,9 +12,9 @@ export class UnaryExpression {
         argument: Expression.Expression
     }) {
         if (!String.isString(operator))
-            throw new Error('operator is not a String: ' + operator);
+            throw new Error('operator is not a String: ' + Class.toString(operator));
         if (!Expression.isExpression(argument))
-            throw new Error('argument is not a Expression: ' + argument);
+            throw new Error('argument is not a Expression: ' + Class.toString(argument));
         this.operator = operator;
         this.argument = argument;
         Object.freeze(this);

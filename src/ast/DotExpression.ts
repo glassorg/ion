@@ -12,7 +12,7 @@ export class DotExpression implements Expression.Expression , Node.Node {
         location = null
     }: { location?: Location.Location | Null.Null }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         this.location = location;
         Object.freeze(this);
     }

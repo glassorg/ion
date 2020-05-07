@@ -16,9 +16,9 @@ export class LiteralType implements TypeExpression.TypeExpression , Expression.E
         literal: Literal.Literal
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Literal.isLiteral(literal))
-            throw new Error('literal is not a Literal: ' + literal);
+            throw new Error('literal is not a Literal: ' + Class.toString(literal));
         this.location = location;
         this.literal = literal;
         Object.freeze(this);

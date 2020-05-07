@@ -20,11 +20,11 @@ export class TypeReference implements Reference.Reference , Id.Id , Expression.E
         original: TypeExpression.TypeExpression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + name);
+            throw new Error('name is not a String: ' + Class.toString(name));
         if (!TypeExpression.isTypeExpression(original))
-            throw new Error('original is not a TypeExpression: ' + original);
+            throw new Error('original is not a TypeExpression: ' + Class.toString(original));
         this.location = location;
         this.name = name;
         this.original = original;

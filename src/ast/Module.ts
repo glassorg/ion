@@ -19,11 +19,11 @@ export class Module implements Scope.Scope , Node.Node {
         declarations: Array.Array<Declaration.Declaration>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Array.isArray(imports))
-            throw new Error('imports is not a Array: ' + imports);
+            throw new Error('imports is not a Array: ' + Class.toString(imports));
         if (!Array.isArray(declarations))
-            throw new Error('declarations is not a Array: ' + declarations);
+            throw new Error('declarations is not a Array: ' + Class.toString(declarations));
         this.location = location;
         this.imports = imports;
         this.declarations = declarations;

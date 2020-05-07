@@ -17,11 +17,11 @@ export class ConstrainedType implements TypeExpression.TypeExpression , Expressi
         constraint: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + baseType);
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!Expression.isExpression(constraint))
-            throw new Error('constraint is not a Expression: ' + constraint);
+            throw new Error('constraint is not a Expression: ' + Class.toString(constraint));
         this.location = location;
         this.baseType = baseType;
         this.constraint = constraint;

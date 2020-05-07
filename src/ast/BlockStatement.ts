@@ -16,9 +16,9 @@ export class BlockStatement implements Statement.Statement , Scope.Scope , Node.
         statements: Array.Array<Statement.Statement>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Array.isArray(statements))
-            throw new Error('statements is not a Array: ' + statements);
+            throw new Error('statements is not a Array: ' + Class.toString(statements));
         this.location = location;
         this.statements = statements;
         Object.freeze(this);

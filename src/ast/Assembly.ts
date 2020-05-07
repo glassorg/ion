@@ -16,9 +16,9 @@ export class Assembly implements Node.Node {
         modules: Map.Map<String.String, Module.Module>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Map.isMap(modules))
-            throw new Error('modules is not a Map: ' + modules);
+            throw new Error('modules is not a Map: ' + Class.toString(modules));
         this.location = location;
         this.modules = modules;
         Object.freeze(this);

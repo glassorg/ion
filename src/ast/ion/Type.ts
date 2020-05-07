@@ -7,7 +7,7 @@ export class Type {
     readonly id: String.String;
     constructor({id}: { id: String.String }) {
         if (!String.isString(id))
-            throw new Error('id is not a String: ' + id);
+            throw new Error('id is not a String: ' + Class.toString(id));
         this.id = id;
         Object.freeze(this);
     }

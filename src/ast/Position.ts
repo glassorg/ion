@@ -8,9 +8,9 @@ export class Position {
     readonly column: Number.Number;
     constructor(line: Number.Number, column: Number.Number) {
         if (!Number.isNumber(line))
-            throw new Error('line is not a Number: ' + line);
+            throw new Error('line is not a Number: ' + Class.toString(line));
         if (!Number.isNumber(column))
-            throw new Error('column is not a Number: ' + column);
+            throw new Error('column is not a Number: ' + Class.toString(column));
         this.line = line;
         this.column = column;
         Object.freeze(this);

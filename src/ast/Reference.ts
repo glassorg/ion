@@ -16,9 +16,9 @@ export class Reference implements Id.Id , Expression.Expression , Node.Node {
         name: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + name);
+            throw new Error('name is not a String: ' + Class.toString(name));
         this.location = location;
         this.name = name;
         Object.freeze(this);

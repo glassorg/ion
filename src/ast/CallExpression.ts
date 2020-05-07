@@ -30,13 +30,13 @@ export class CallExpression implements Expression.Expression , Node.Node {
         arguments: Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + _new);
+            throw new Error('new is not a Boolean: ' + Class.toString(_new));
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + callee);
+            throw new Error('callee is not a Expression: ' + Class.toString(callee));
         if (!Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.new = _new;
         this.callee = callee;

@@ -21,13 +21,13 @@ export class UnionType implements BinaryExpression.BinaryExpression , TypeExpres
         right: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(left))
-            throw new Error('left is not a Expression: ' + left);
+            throw new Error('left is not a Expression: ' + Class.toString(left));
         if (!String.isString(operator))
-            throw new Error('operator is not a String: ' + operator);
+            throw new Error('operator is not a String: ' + Class.toString(operator));
         if (!Expression.isExpression(right))
-            throw new Error('right is not a Expression: ' + right);
+            throw new Error('right is not a Expression: ' + Class.toString(right));
         this.location = location;
         this.left = left;
         this.operator = operator;

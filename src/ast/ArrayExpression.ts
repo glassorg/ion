@@ -15,9 +15,9 @@ export class ArrayExpression implements Expression.Expression , Node.Node {
         elements: Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + elements);
+            throw new Error('elements is not a Array: ' + Class.toString(elements));
         this.location = location;
         this.elements = elements;
         Object.freeze(this);

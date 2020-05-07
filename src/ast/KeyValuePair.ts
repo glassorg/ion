@@ -17,11 +17,11 @@ export class KeyValuePair implements Node.Node {
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(key) || Id.isId(key)))
-            throw new Error('key is not a Expression | Id: ' + key);
+            throw new Error('key is not a Expression | Id: ' + Class.toString(key));
         if (!Expression.isExpression(value))
-            throw new Error('value is not a Expression: ' + value);
+            throw new Error('value is not a Expression: ' + Class.toString(value));
         this.location = location;
         this.key = key;
         this.value = value;

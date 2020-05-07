@@ -23,11 +23,11 @@ export class TemplateReference implements TypeExpression.TypeExpression , Expres
         arguments: Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + baseType);
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.baseType = baseType;
         this.arguments = _arguments;

@@ -17,9 +17,9 @@ export class Literal implements Expression.Expression , Node.Node {
         value: String.String | (Number.Number | (Boolean.Boolean | Null.Null))
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(String.isString(value) || (Number.isNumber(value) || (Boolean.isBoolean(value) || Null.isNull(value)))))
-            throw new Error('value is not a String | Number | Boolean | Null: ' + value);
+            throw new Error('value is not a String | Number | Boolean | Null: ' + Class.toString(value));
         this.location = location;
         this.value = value;
         Object.freeze(this);

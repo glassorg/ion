@@ -18,11 +18,11 @@ export class WhileStatement implements Statement.Statement , Node.Node {
         body: BlockStatement.BlockStatement
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + test);
+            throw new Error('test is not a Expression: ' + Class.toString(test));
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + body);
+            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
         this.location = location;
         this.test = test;
         this.body = body;

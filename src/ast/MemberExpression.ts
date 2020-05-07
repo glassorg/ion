@@ -16,11 +16,11 @@ export class MemberExpression implements Expression.Expression , Node.Node {
         property: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(object))
-            throw new Error('object is not a Expression: ' + object);
+            throw new Error('object is not a Expression: ' + Class.toString(object));
         if (!Expression.isExpression(property))
-            throw new Error('property is not a Expression: ' + property);
+            throw new Error('property is not a Expression: ' + Class.toString(property));
         this.location = location;
         this.object = object;
         this.property = property;
