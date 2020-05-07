@@ -15,9 +15,9 @@ export class ArrayExpression implements Expression.Expression , Node.Node {
         elements: Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + Class.toString(elements));
+            throw new Error('elements is not a Array: ' + elements);
         this.location = location;
         this.elements = elements;
         Object.freeze(this);
@@ -41,7 +41,7 @@ ArrayExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isArrayExpression = function (value): value is ArrayExpression {
+export function isArrayExpression(value): value is ArrayExpression {
     return Class.isInstance(ArrayExpression, value);
-};
+}
 export default ArrayExpression;

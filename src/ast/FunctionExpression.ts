@@ -12,7 +12,7 @@ import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node , Node.Node {
+export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id | Null.Null;
     readonly parameters: Array.Array<Parameter.Parameter>;
@@ -28,17 +28,17 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
         typeGuard?: Reference.Reference | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + Class.toString(id));
+            throw new Error('id is not a Id | Null: ' + id);
         if (!Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
+            throw new Error('returnType is not a Expression | Null: ' + returnType);
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
+            throw new Error('body is not a BlockStatement: ' + body);
         if (!(Reference.isReference(typeGuard) || Null.isNull(typeGuard)))
-            throw new Error('typeGuard is not a Reference | Null: ' + Class.toString(typeGuard));
+            throw new Error('typeGuard is not a Reference | Null: ' + typeGuard);
         this.location = location;
         this.id = id;
         this.parameters = parameters;
@@ -69,10 +69,9 @@ FunctionExpression['implements'] = new Set([
     'FunctionExpression',
     'Expression',
     'Scope',
-    'Node',
     'Node'
 ]);
-export const isFunctionExpression = function (value): value is FunctionExpression {
+export function isFunctionExpression(value): value is FunctionExpression {
     return Class.isInstance(FunctionExpression, value);
-};
+}
 export default FunctionExpression;

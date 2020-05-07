@@ -16,9 +16,9 @@ export class LiteralType implements TypeExpression.TypeExpression , Expression.E
         literal: Literal.Literal
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Literal.isLiteral(literal))
-            throw new Error('literal is not a Literal: ' + Class.toString(literal));
+            throw new Error('literal is not a Literal: ' + literal);
         this.location = location;
         this.literal = literal;
         Object.freeze(this);
@@ -43,7 +43,7 @@ LiteralType['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isLiteralType = function (value): value is LiteralType {
+export function isLiteralType(value): value is LiteralType {
     return Class.isInstance(LiteralType, value);
-};
+}
 export default LiteralType;

@@ -17,9 +17,9 @@ export class Analysis implements Scope.Scope , Node.Node {
         declarations: Map.Map<String.String, Declaration.Declaration>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Map.isMap(declarations))
-            throw new Error('declarations is not a Map: ' + Class.toString(declarations));
+            throw new Error('declarations is not a Map: ' + declarations);
         this.location = location;
         this.declarations = declarations;
         Object.freeze(this);
@@ -43,7 +43,7 @@ Analysis['implements'] = new Set([
     'Scope',
     'Node'
 ]);
-export const isAnalysis = function (value): value is Analysis {
+export function isAnalysis(value): value is Analysis {
     return Class.isInstance(Analysis, value);
-};
+}
 export default Analysis;

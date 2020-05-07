@@ -8,9 +8,9 @@ export class Position {
     readonly column: Number.Number;
     constructor(line: Number.Number, column: Number.Number) {
         if (!Number.isNumber(line))
-            throw new Error('line is not a Number: ' + Class.toString(line));
+            throw new Error('line is not a Number: ' + line);
         if (!Number.isNumber(column))
-            throw new Error('column is not a Number: ' + Class.toString(column));
+            throw new Error('column is not a Number: ' + column);
         this.line = line;
         this.column = column;
         Object.freeze(this);
@@ -21,7 +21,7 @@ export class Position {
 }
 Position['id'] = 'Position';
 Position['implements'] = new Set(['Position']);
-export const isPosition = function (value): value is Position {
+export function isPosition(value): value is Position {
     return Class.isInstance(Position, value);
-};
+}
 export default Position;

@@ -15,9 +15,9 @@ export class ReturnStatement implements Statement.Statement , Node.Node {
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(value))
-            throw new Error('value is not a Expression: ' + Class.toString(value));
+            throw new Error('value is not a Expression: ' + value);
         this.location = location;
         this.value = value;
         Object.freeze(this);
@@ -41,7 +41,7 @@ ReturnStatement['implements'] = new Set([
     'Statement',
     'Node'
 ]);
-export const isReturnStatement = function (value): value is ReturnStatement {
+export function isReturnStatement(value): value is ReturnStatement {
     return Class.isInstance(ReturnStatement, value);
-};
+}
 export default ReturnStatement;

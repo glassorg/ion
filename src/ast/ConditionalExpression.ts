@@ -18,13 +18,13 @@ export class ConditionalExpression implements Expression.Expression , Node.Node 
         alternate: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + Class.toString(test));
+            throw new Error('test is not a Expression: ' + test);
         if (!Expression.isExpression(consequent))
-            throw new Error('consequent is not a Expression: ' + Class.toString(consequent));
+            throw new Error('consequent is not a Expression: ' + consequent);
         if (!Expression.isExpression(alternate))
-            throw new Error('alternate is not a Expression: ' + Class.toString(alternate));
+            throw new Error('alternate is not a Expression: ' + alternate);
         this.location = location;
         this.test = test;
         this.consequent = consequent;
@@ -52,7 +52,7 @@ ConditionalExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isConditionalExpression = function (value): value is ConditionalExpression {
+export function isConditionalExpression(value): value is ConditionalExpression {
     return Class.isInstance(ConditionalExpression, value);
-};
+}
 export default ConditionalExpression;

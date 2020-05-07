@@ -22,15 +22,15 @@ export class ImportStep implements Node.Node {
         children: Array.Array<ImportStep> | Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Boolean.isBoolean(relative))
-            throw new Error('relative is not a Boolean: ' + Class.toString(relative));
+            throw new Error('relative is not a Boolean: ' + relative);
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + Class.toString(id));
+            throw new Error('id is not a Id | Null: ' + id);
         if (!(Id.isId(as) || Null.isNull(as)))
-            throw new Error('as is not a Id | Null: ' + Class.toString(as));
+            throw new Error('as is not a Id | Null: ' + as);
         if (!(Array.isArray(children) || Boolean.isBoolean(children)))
-            throw new Error('children is not a Array | Boolean: ' + Class.toString(children));
+            throw new Error('children is not a Array | Boolean: ' + children);
         this.location = location;
         this.relative = relative;
         this.id = id;
@@ -59,7 +59,7 @@ ImportStep['implements'] = new Set([
     'ImportStep',
     'Node'
 ]);
-export const isImportStep = function (value): value is ImportStep {
+export function isImportStep(value): value is ImportStep {
     return Class.isInstance(ImportStep, value);
-};
+}
 export default ImportStep;

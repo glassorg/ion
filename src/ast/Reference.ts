@@ -16,9 +16,9 @@ export class Reference implements Id.Id , Expression.Expression , Node.Node {
         name: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + Class.toString(name));
+            throw new Error('name is not a String: ' + name);
         this.location = location;
         this.name = name;
         Object.freeze(this);
@@ -43,7 +43,7 @@ Reference['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isReference = function (value): value is Reference {
+export function isReference(value): value is Reference {
     return Class.isInstance(Reference, value);
-};
+}
 export default Reference;

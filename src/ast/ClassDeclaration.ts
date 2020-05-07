@@ -45,23 +45,23 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         _implements?: Array.Array<String.String>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+            throw new Error('id is not a Id: ' + id);
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + Class.toString(_export));
+            throw new Error('export is not a Boolean: ' + _export);
         if (!Boolean.isBoolean(isStructure))
-            throw new Error('isStructure is not a Boolean: ' + Class.toString(isStructure));
+            throw new Error('isStructure is not a Boolean: ' + isStructure);
         if (!Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!Array.isArray(baseClasses))
-            throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
+            throw new Error('baseClasses is not a Array: ' + baseClasses);
         if (!Array.isArray(declarations))
-            throw new Error('declarations is not a Array: ' + Class.toString(declarations));
+            throw new Error('declarations is not a Array: ' + declarations);
         if (!Array.isArray(meta))
-            throw new Error('meta is not a Array: ' + Class.toString(meta));
+            throw new Error('meta is not a Array: ' + meta);
         if (!Array.isArray(_implements))
-            throw new Error('_implements is not a Array: ' + Class.toString(_implements));
+            throw new Error('_implements is not a Array: ' + _implements);
         this.location = location;
         this.id = id;
         this.export = _export;
@@ -99,7 +99,7 @@ ClassDeclaration['implements'] = new Set([
     'Declaration',
     'Node'
 ]);
-export const isClassDeclaration = function (value): value is ClassDeclaration {
+export function isClassDeclaration(value): value is ClassDeclaration {
     return Class.isInstance(ClassDeclaration, value);
-};
+}
 export default ClassDeclaration;

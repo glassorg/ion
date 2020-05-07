@@ -1,11 +1,11 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as Location from '../Location';
+import * as Null from './Null';
 import * as Map from './Map';
 import * as String from './String';
 import * as Declaration from '../Declaration';
-import * as Location from '../Location';
-import * as Null from './Null';
 import * as Id from '../Id';
 import * as Expression from '../Expression';
 import * as Reference from '../Reference';
@@ -18,8 +18,8 @@ import * as Number from './Number';
 import * as TypeExpression from '../TypeExpression';
 import * as Integer from './Integer';
 import * as Class from './Class';
-export type ___TemplateReference___ = Map.Map<String.String, Declaration.Declaration>;
 export type Location_Location_or_ion_Null_Null = Location.Location | Null.Null;
+export type ___TemplateReference___ = Map.Map<String.String, Declaration.Declaration>;
 export type Id_Id_or_ion_Null_Null = Id.Id | Null.Null;
 export type Expression_Expression_or_ion_Null_Null = Expression.Expression | Null.Null;
 export type Reference_Reference_or_ion_Null_Null = Reference.Reference | Null.Null;

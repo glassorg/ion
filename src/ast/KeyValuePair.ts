@@ -17,11 +17,11 @@ export class KeyValuePair implements Node.Node {
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!(Expression.isExpression(key) || Id.isId(key)))
-            throw new Error('key is not a Expression | Id: ' + Class.toString(key));
+            throw new Error('key is not a Expression | Id: ' + key);
         if (!Expression.isExpression(value))
-            throw new Error('value is not a Expression: ' + Class.toString(value));
+            throw new Error('value is not a Expression: ' + value);
         this.location = location;
         this.key = key;
         this.value = value;
@@ -46,7 +46,7 @@ KeyValuePair['implements'] = new Set([
     'KeyValuePair',
     'Node'
 ]);
-export const isKeyValuePair = function (value): value is KeyValuePair {
+export function isKeyValuePair(value): value is KeyValuePair {
     return Class.isInstance(KeyValuePair, value);
-};
+}
 export default KeyValuePair;

@@ -7,7 +7,7 @@ export class Type {
     readonly id: String.String;
     constructor({id}: { id: String.String }) {
         if (!String.isString(id))
-            throw new Error('id is not a String: ' + Class.toString(id));
+            throw new Error('id is not a String: ' + id);
         this.id = id;
         Object.freeze(this);
     }
@@ -23,7 +23,7 @@ export class Type {
 }
 Type['id'] = 'ion_Type';
 Type['implements'] = new Set(['ion_Type']);
-export const isType = function (value): value is Type {
+export function isType(value): value is Type {
     return Class.isInstance(Type, value);
-};
+}
 export default Type;

@@ -30,13 +30,13 @@ export class CallExpression implements Expression.Expression , Node.Node {
         arguments: Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + Class.toString(_new));
+            throw new Error('new is not a Boolean: ' + _new);
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + Class.toString(callee));
+            throw new Error('callee is not a Expression: ' + callee);
         if (!Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
+            throw new Error('arguments is not a Array: ' + _arguments);
         this.location = location;
         this.new = _new;
         this.callee = callee;
@@ -64,7 +64,7 @@ CallExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isCallExpression = function (value): value is CallExpression {
+export function isCallExpression(value): value is CallExpression {
     return Class.isInstance(CallExpression, value);
-};
+}
 export default CallExpression;

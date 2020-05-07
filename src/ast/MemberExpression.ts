@@ -16,11 +16,11 @@ export class MemberExpression implements Expression.Expression , Node.Node {
         property: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(object))
-            throw new Error('object is not a Expression: ' + Class.toString(object));
+            throw new Error('object is not a Expression: ' + object);
         if (!Expression.isExpression(property))
-            throw new Error('property is not a Expression: ' + Class.toString(property));
+            throw new Error('property is not a Expression: ' + property);
         this.location = location;
         this.object = object;
         this.property = property;
@@ -46,7 +46,7 @@ MemberExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isMemberExpression = function (value): value is MemberExpression {
+export function isMemberExpression(value): value is MemberExpression {
     return Class.isInstance(MemberExpression, value);
-};
+}
 export default MemberExpression;

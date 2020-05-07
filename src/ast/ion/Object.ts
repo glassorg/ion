@@ -43,6 +43,10 @@ export function toString(value, b?: string[]) {
     return join ? b.join('') : null
 }
 
+export function freeze<T>(value: T): Readonly<T> {
+    return globalThis.Object.freeze(value)
+}
+
 export class Object {
 
     toString() {

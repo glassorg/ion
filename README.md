@@ -43,8 +43,10 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Need Readonly<Array<type>> to prevent modifying an elements arrays.
     X ReadonlySet
     X ReadonlyMap
-      Merge Bootstrapped into main.
+    X Merge Bootstrapped into main.
+      extend Object
       toString
+      implement static fields
       migrate other properties to static for runtime type checking.
     X Normalize Type Declarations
       Fix bug where Vector.toString is not using right referenced type.

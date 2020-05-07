@@ -17,11 +17,11 @@ export class ConstrainedType implements TypeExpression.TypeExpression , Expressi
         constraint: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
+            throw new Error('baseType is not a Expression: ' + baseType);
         if (!Expression.isExpression(constraint))
-            throw new Error('constraint is not a Expression: ' + Class.toString(constraint));
+            throw new Error('constraint is not a Expression: ' + constraint);
         this.location = location;
         this.baseType = baseType;
         this.constraint = constraint;
@@ -48,7 +48,7 @@ ConstrainedType['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isConstrainedType = function (value): value is ConstrainedType {
+export function isConstrainedType(value): value is ConstrainedType {
     return Class.isInstance(ConstrainedType, value);
-};
+}
 export default ConstrainedType;

@@ -20,13 +20,13 @@ export class IfStatement implements Statement.Statement , Node.Node {
         alternate?: BlockStatement.BlockStatement | (IfStatement | Null.Null)
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + Class.toString(test));
+            throw new Error('test is not a Expression: ' + test);
         if (!BlockStatement.isBlockStatement(consequent))
-            throw new Error('consequent is not a BlockStatement: ' + Class.toString(consequent));
+            throw new Error('consequent is not a BlockStatement: ' + consequent);
         if (!(BlockStatement.isBlockStatement(alternate) || (isIfStatement(alternate) || Null.isNull(alternate))))
-            throw new Error('alternate is not a BlockStatement | IfStatement | Null: ' + Class.toString(alternate));
+            throw new Error('alternate is not a BlockStatement | IfStatement | Null: ' + alternate);
         this.location = location;
         this.test = test;
         this.consequent = consequent;
@@ -54,7 +54,7 @@ IfStatement['implements'] = new Set([
     'Statement',
     'Node'
 ]);
-export const isIfStatement = function (value): value is IfStatement {
+export function isIfStatement(value): value is IfStatement {
     return Class.isInstance(IfStatement, value);
-};
+}
 export default IfStatement;

@@ -11,7 +11,7 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class TypeDeclaration implements VariableDeclaration.VariableDeclaration , Variable.Variable , Declaration.Declaration , Node.Node , Node.Node {
+export class TypeDeclaration implements VariableDeclaration.VariableDeclaration , Variable.Variable , Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;
@@ -34,17 +34,17 @@ export class TypeDeclaration implements VariableDeclaration.VariableDeclaration 
         export?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+            throw new Error('id is not a Id: ' + id);
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!(Expression.isExpression(value) || Null.isNull(value)))
-            throw new Error('value is not a Expression | Null: ' + Class.toString(value));
+            throw new Error('value is not a Expression | Null: ' + value);
         if (!Boolean.isBoolean(assignable))
-            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
+            throw new Error('assignable is not a Boolean: ' + assignable);
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + Class.toString(_export));
+            throw new Error('export is not a Boolean: ' + _export);
         this.location = location;
         this.id = id;
         this.type = type;
@@ -76,10 +76,9 @@ TypeDeclaration['implements'] = new Set([
     'VariableDeclaration',
     'Variable',
     'Declaration',
-    'Node',
     'Node'
 ]);
-export const isTypeDeclaration = function (value): value is TypeDeclaration {
+export function isTypeDeclaration(value): value is TypeDeclaration {
     return Class.isInstance(TypeDeclaration, value);
-};
+}
 export default TypeDeclaration;

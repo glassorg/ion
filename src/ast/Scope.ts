@@ -11,7 +11,7 @@ export class Scope implements Node.Node {
         location = null
     }: { location?: Location.Location | Null.Null }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         this.location = location;
         Object.freeze(this);
     }
@@ -30,7 +30,7 @@ Scope['implements'] = new Set([
     'Scope',
     'Node'
 ]);
-export const isScope = function (value): value is Scope {
+export function isScope(value): value is Scope {
     return Class.isInstance(Scope, value);
-};
+}
 export default Scope;

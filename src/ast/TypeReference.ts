@@ -20,11 +20,11 @@ export class TypeReference implements Reference.Reference , Id.Id , Expression.E
         original: TypeExpression.TypeExpression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + Class.toString(name));
+            throw new Error('name is not a String: ' + name);
         if (!TypeExpression.isTypeExpression(original))
-            throw new Error('original is not a TypeExpression: ' + Class.toString(original));
+            throw new Error('original is not a TypeExpression: ' + original);
         this.location = location;
         this.name = name;
         this.original = original;
@@ -52,7 +52,7 @@ TypeReference['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isTypeReference = function (value): value is TypeReference {
+export function isTypeReference(value): value is TypeReference {
     return Class.isInstance(TypeReference, value);
-};
+}
 export default TypeReference;

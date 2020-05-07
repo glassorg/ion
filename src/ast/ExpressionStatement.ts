@@ -15,9 +15,9 @@ export class ExpressionStatement implements Statement.Statement , Node.Node {
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(value))
-            throw new Error('value is not a Expression: ' + Class.toString(value));
+            throw new Error('value is not a Expression: ' + value);
         this.location = location;
         this.value = value;
         Object.freeze(this);
@@ -41,7 +41,7 @@ ExpressionStatement['implements'] = new Set([
     'Statement',
     'Node'
 ]);
-export const isExpressionStatement = function (value): value is ExpressionStatement {
+export function isExpressionStatement(value): value is ExpressionStatement {
     return Class.isInstance(ExpressionStatement, value);
-};
+}
 export default ExpressionStatement;

@@ -7,6 +7,7 @@ import Declaration from "../ast/Declaration";
 import UnaryExpression from "../ast/UnaryExpression";
 import Id from "../ast/Id";
 
+debugger
 let varDec = new VariableDeclaration({ id: new Id({ name: "foo" }) })
 assert(Node.is(varDec))
 assert(Variable.is(varDec))

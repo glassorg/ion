@@ -289,8 +289,15 @@ const toAstMerge: { [name: string]: Merge } = {
                                                                 },
                                                                 operator: "+",
                                                                 right: {
-                                                                    type: "Identifier",
-                                                                    name: localName
+                                                                    type: "CallExpression",
+                                                                    callee: {
+                                                                        type: "MemberExpression",
+                                                                        object: { type: "Identifier", name: "Class" },
+                                                                        property: { type: "Identifier", name: "toString" }
+                                                                    },
+                                                                    arguments: [
+                                                                        { type: "Identifier", name: localName }
+                                                                    ]
                                                                 }
                                                             }]
                                                         }
@@ -313,7 +320,20 @@ const toAstMerge: { [name: string]: Merge } = {
                                                         right: { type: "Identifier", name: localName }
                                                     }
                                                 }
-                                            })
+                                            }),
+                                            // Object.freeze(this)
+                                            {
+                                                type: "ExpressionStatement",
+                                                expression: {
+                                                    type: "CallExpression",
+                                                    callee: {
+                                                        type: "MemberExpression",
+                                                        object: { type: "Identifier", name: "Object" },
+                                                        property: { type: "Identifier", name: "freeze" }
+                                                    },
+                                                    arguments: [ { type: "ThisExpression" } ]
+                                                }
+                                            }
                                         ]
                                     }
                                 },

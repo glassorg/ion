@@ -9,7 +9,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class IntersectionType implements BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Expression.Expression {
+export class IntersectionType implements BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly left: Expression.Expression;
     readonly operator: String.String;
@@ -21,13 +21,13 @@ export class IntersectionType implements BinaryExpression.BinaryExpression , Typ
         right: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(left))
-            throw new Error('left is not a Expression: ' + Class.toString(left));
+            throw new Error('left is not a Expression: ' + left);
         if (!String.isString(operator))
-            throw new Error('operator is not a String: ' + Class.toString(operator));
+            throw new Error('operator is not a String: ' + operator);
         if (!Expression.isExpression(right))
-            throw new Error('right is not a Expression: ' + Class.toString(right));
+            throw new Error('right is not a Expression: ' + right);
         this.location = location;
         this.left = left;
         this.operator = operator;
@@ -55,10 +55,9 @@ IntersectionType['implements'] = new Set([
     'BinaryExpression',
     'TypeExpression',
     'Expression',
-    'Node',
-    'Expression'
+    'Node'
 ]);
-export const isIntersectionType = function (value): value is IntersectionType {
+export function isIntersectionType(value): value is IntersectionType {
     return Class.isInstance(IntersectionType, value);
-};
+}
 export default IntersectionType;

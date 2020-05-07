@@ -26,13 +26,13 @@ export class ImportDeclaration implements Declaration.Declaration , Node.Node {
         from: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+            throw new Error('id is not a Id: ' + id);
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + Class.toString(_export));
+            throw new Error('export is not a Boolean: ' + _export);
         if (!String.isString(from))
-            throw new Error('from is not a String: ' + Class.toString(from));
+            throw new Error('from is not a String: ' + from);
         this.location = location;
         this.id = id;
         this.export = _export;
@@ -60,7 +60,7 @@ ImportDeclaration['implements'] = new Set([
     'Declaration',
     'Node'
 ]);
-export const isImportDeclaration = function (value): value is ImportDeclaration {
+export function isImportDeclaration(value): value is ImportDeclaration {
     return Class.isInstance(ImportDeclaration, value);
-};
+}
 export default ImportDeclaration;

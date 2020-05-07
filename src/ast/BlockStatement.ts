@@ -8,7 +8,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Array from './ion/Array';
 import * as Class from './ion/Class';
-export class BlockStatement implements Statement.Statement , Scope.Scope , Node.Node , Node.Node {
+export class BlockStatement implements Statement.Statement , Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly statements: Array.Array<Statement.Statement>;
     constructor({location = null, statements}: {
@@ -16,9 +16,9 @@ export class BlockStatement implements Statement.Statement , Scope.Scope , Node.
         statements: Array.Array<Statement.Statement>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Array.isArray(statements))
-            throw new Error('statements is not a Array: ' + Class.toString(statements));
+            throw new Error('statements is not a Array: ' + statements);
         this.location = location;
         this.statements = statements;
         Object.freeze(this);
@@ -41,10 +41,9 @@ BlockStatement['implements'] = new Set([
     'BlockStatement',
     'Statement',
     'Scope',
-    'Node',
     'Node'
 ]);
-export const isBlockStatement = function (value): value is BlockStatement {
+export function isBlockStatement(value): value is BlockStatement {
     return Class.isInstance(BlockStatement, value);
-};
+}
 export default BlockStatement;

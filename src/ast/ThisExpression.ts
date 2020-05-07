@@ -12,7 +12,7 @@ export class ThisExpression implements Expression.Expression , Node.Node {
         location = null
     }: { location?: Location.Location | Null.Null }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         this.location = location;
         Object.freeze(this);
     }
@@ -32,7 +32,7 @@ ThisExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isThisExpression = function (value): value is ThisExpression {
+export function isThisExpression(value): value is ThisExpression {
     return Class.isInstance(ThisExpression, value);
-};
+}
 export default ThisExpression;

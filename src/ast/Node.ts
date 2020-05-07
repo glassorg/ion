@@ -10,7 +10,7 @@ export class Node {
         location = null
     }: { location?: Location.Location | Null.Null }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         this.location = location;
         Object.freeze(this);
     }
@@ -26,7 +26,7 @@ export class Node {
 }
 Node['id'] = 'Node';
 Node['implements'] = new Set(['Node']);
-export const isNode = function (value): value is Node {
+export function isNode(value): value is Node {
     return Class.isInstance(Node, value);
-};
+}
 export default Node;

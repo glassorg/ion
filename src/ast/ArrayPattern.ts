@@ -16,9 +16,9 @@ export class ArrayPattern implements ArrayExpression.ArrayExpression , Expressio
         elements: Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + Class.toString(elements));
+            throw new Error('elements is not a Array: ' + elements);
         this.location = location;
         this.elements = elements;
         Object.freeze(this);
@@ -43,7 +43,7 @@ ArrayPattern['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isArrayPattern = function (value): value is ArrayPattern {
+export function isArrayPattern(value): value is ArrayPattern {
     return Class.isInstance(ArrayPattern, value);
-};
+}
 export default ArrayPattern;

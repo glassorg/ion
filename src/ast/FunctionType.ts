@@ -19,11 +19,11 @@ export class FunctionType implements TypeExpression.TypeExpression , Expression.
         returnType?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
+            throw new Error('returnType is not a Expression | Null: ' + returnType);
         this.location = location;
         this.parameters = parameters;
         this.returnType = returnType;
@@ -50,7 +50,7 @@ FunctionType['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isFunctionType = function (value): value is FunctionType {
+export function isFunctionType(value): value is FunctionType {
     return Class.isInstance(FunctionType, value);
-};
+}
 export default FunctionType;

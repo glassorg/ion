@@ -16,9 +16,9 @@ export class Assembly implements Node.Node {
         modules: Map.Map<String.String, Module.Module>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Map.isMap(modules))
-            throw new Error('modules is not a Map: ' + Class.toString(modules));
+            throw new Error('modules is not a Map: ' + modules);
         this.location = location;
         this.modules = modules;
         Object.freeze(this);
@@ -41,7 +41,7 @@ Assembly['implements'] = new Set([
     'Assembly',
     'Node'
 ]);
-export const isAssembly = function (value): value is Assembly {
+export function isAssembly(value): value is Assembly {
     return Class.isInstance(Assembly, value);
-};
+}
 export default Assembly;

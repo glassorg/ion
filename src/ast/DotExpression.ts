@@ -12,7 +12,7 @@ export class DotExpression implements Expression.Expression , Node.Node {
         location = null
     }: { location?: Location.Location | Null.Null }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         this.location = location;
         Object.freeze(this);
     }
@@ -32,7 +32,7 @@ DotExpression['implements'] = new Set([
     'Expression',
     'Node'
 ]);
-export const isDotExpression = function (value): value is DotExpression {
+export function isDotExpression(value): value is DotExpression {
     return Class.isInstance(DotExpression, value);
-};
+}
 export default DotExpression;

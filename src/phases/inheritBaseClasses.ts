@@ -1,6 +1,6 @@
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
-import { SemanticError, getUniqueClientName } from "../common";
+import { SemanticError, getUniqueClientName, getAbsoluteName } from "../common";
 import ClassDeclaration from "../ast/ClassDeclaration";
 import Declaration from "../ast/Declaration";
 import Reference from "../ast/Reference";
@@ -11,6 +11,9 @@ function mergeDeclarations(base: Declaration, sub: Declaration) {
     // this should actually check that the types can be merged.
     return sub
 }
+
+// cannot extend from ion.Object until we provide ability to change reserved names.
+const rootClassReference = new Reference({ name: getAbsoluteName("ion.Object", "Object")})
 
 export default function inheritBaseClasses(root: Analysis, options: Options) {
 
@@ -24,7 +27,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             }
             inprogress.add(classDeclaration)
             let baseDeclarations = new Map<string, Declaration>()
-            let baseClasses = new Map<string,Reference>(classDeclaration.baseClasses.map(r => [r.name, r]))
+            let baseClasses = new Map<string,Reference>([/*rootClassReference, */...classDeclaration.baseClasses].map(r => [r.name, r]))
             function addDeclarations(declarations: readonly Declaration[]) {
                 for (let declaration of declarations) {
                     let current = baseDeclarations.get(declaration.id.name)
