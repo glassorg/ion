@@ -1,6 +1,6 @@
 {
     "name": "@glas/ion",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "repository": "https://github.com/glassorg/ion.git",
     "author": "Kris Nye <krisnye@gmail.com>",
     "bin": {
