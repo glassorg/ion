@@ -1,11 +1,11 @@
-import { Assembly } from "../ast";
 import { join } from "path";
 import { write } from "../common";
 import { Options } from "../Compiler";
+import Output from "../ast/Output";
 
-export default function writeFiles(ast: { [name: string]: string }, options: Options) {
-    for (let path in ast) {
-        let content = ast[path]
+export default function writeFiles(output: Output, options: Options) {
+    for (let path of output.files.keys()) {
+        let content = output.files.get(path) as string
         write(join(options.output, path), content)
     }
     return null

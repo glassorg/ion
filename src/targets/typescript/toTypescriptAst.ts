@@ -22,6 +22,8 @@ import ExpressionStatement from "../../ast/ExpressionStatement";
 import TypeReference from "../../ast/TypeReference";
 import UnionType from "../../ast/UnionType";
 import reservedWords from "./reservedWords";
+import * as ast from "../../ast";
+import Output from "../../ast/Output";
 
 const DO_NOT_EDIT_WARNING = `
 This file was generated from ion source. Do not edit.
@@ -125,12 +127,13 @@ const toAstEnter: { [name: string]: Enter } = {
     },
 }
 
-const toAstMerge: { [name: string]: Merge } = {
+const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
     default(node, changes, helper) {
         let name = node.constructor.name
         let type = typeMap[name] || name
-        let esnode = { ...node, type } as any
+        let esnode = { ...node } as any
         esnode = helper.patch(esnode, changes)
+        esnode.type = type
         if (BinaryExpression.is(node)) {
             esnode.type = "BinaryExpression",
             esnode.operator = operatorMap[node.operator] ?? node.operator
@@ -530,6 +533,9 @@ const toAstMerge: { [name: string]: Merge } = {
             }]
         })
     },
+    Assembly(node: Assembly, changes: Partial<Assembly>) {
+        return new Output({ files: changes.modules as any })
+    }
 }
 
 function maybeExport(node: Declaration, ast) {
@@ -551,6 +557,6 @@ const visitor = {
     },
 };
 
-export default function toTypescriptAst(node: Node) {
-    return traverse(node, visitor)
+export default function toTypescriptAst(assembly: Assembly): Output {
+    return traverse(assembly, visitor)
 }

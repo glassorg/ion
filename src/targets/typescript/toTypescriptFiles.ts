@@ -5,6 +5,7 @@ import { Options } from "../../Compiler";
 import Assembly from "../../ast/Assembly";
 import { traverse, skip } from "../../Traversal";
 import Module from "../../ast/Module";
+import Output from "../../ast/Output";
 const escodegen = require("../../../external/escodegen");
 
 export const verbatim = "verbatim"
@@ -46,14 +47,14 @@ export function removePrewritten(root: Assembly, options: Options) {
     })
 }
 
-export default function toTypescriptFiles(root: Assembly, options: Options) {
-    let files: { [name: string]: string } = {}
-    for (let moduleName of root.modules.keys()) {
-        let module = root.modules.get(moduleName)
+export default function toTypescriptFiles(root: Output, options: Options) {
+    let files = new Map<string,string>()
+    for (let moduleName of root.files.keys()) {
+        let module = root.files.get(moduleName)
         let nativeFile = getNativeFile(moduleName, options)
         let content = nativeFile ? read(nativeFile) : codegen(module)
         let outputFile = moduleName.replace('.', '/') + '.ts'
-        files[outputFile] = content
+        files.set(outputFile, content)
     }
-    return files
+    return new Output({ files })
 }

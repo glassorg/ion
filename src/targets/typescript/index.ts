@@ -8,6 +8,7 @@ import writeFiles from "../../phases/writeFiles";
 import restoreOriginalTypes from "../../phases/restoreOriginalTypes";
 import reservedWords from "./reservedWords";
 import renameReservedWords from "../../phases/renameReservedWords";
+import createIndexFiles from "./createIndexFiles";
 
 export default [
     analysisToAssembly,
@@ -17,7 +18,9 @@ export default [
     createImports,
     renameReservedWords(reservedWords),
     checkReferences,
+
     toTypescriptAst,
+    createIndexFiles,
     toTypescriptFiles,
     writeFiles,
 ]

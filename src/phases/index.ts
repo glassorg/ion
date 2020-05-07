@@ -9,6 +9,7 @@ import createClassTypeChecks from "./createClassTypeChecks";
 import checkReferences from "./checkReferences";
 import normalizeTypes from "./normalizeTypes";
 import addImplicitReturns from "./addImplicitReturns";
+import inferTypes from "./inferTypes";
 
 export default [
     // input stage
@@ -24,5 +25,6 @@ export default [
     inheritBaseClasses,
     createClassTypeChecks,
     normalizeTypes,
+    inferTypes,
     // checkReferences,
 ]
