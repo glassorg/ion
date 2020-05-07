@@ -9,7 +9,6 @@ export
     let toString = (value: String | Number) =>
         if value is String
             "String"
-            let x = 12
         else
             "Number"
 
