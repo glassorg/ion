@@ -6,6 +6,8 @@ import toTypescriptFiles, { removePrewritten } from "./toTypescriptFiles";
 import toTypescriptAst from "./toTypescriptAst";
 import writeFiles from "../../phases/writeFiles";
 import restoreOriginalTypes from "../../phases/restoreOriginalTypes";
+import reservedWords from "./reservedWords";
+import renameReservedWords from "../../phases/renameReservedWords";
 
 export default [
     analysisToAssembly,
@@ -13,6 +15,7 @@ export default [
     restoreOriginalTypes,
     convertRefsToLocal,
     createImports,
+    renameReservedWords(reservedWords),
     checkReferences,
     toTypescriptAst,
     toTypescriptFiles,

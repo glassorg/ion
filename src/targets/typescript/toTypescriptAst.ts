@@ -21,6 +21,7 @@ import Reference from "../../ast/Reference";
 import ExpressionStatement from "../../ast/ExpressionStatement";
 import TypeReference from "../../ast/TypeReference";
 import UnionType from "../../ast/UnionType";
+import reservedWords from "./reservedWords";
 
 const DO_NOT_EDIT_WARNING = `
 This file was generated from ion source. Do not edit.
@@ -36,10 +37,8 @@ const operatorMap = {
     "!=": "!==",
 }
 
-const reserved = new Set(["arguments", "new", "import", "export", "class"])
-
 function renameIfReserved(name: string) {
-    return reserved.has(name) ? "_" + name : name
+    return reservedWords.has(name) ? "_" + name : name
 }
 
 function toRelativeModulePath(from: string, to: string) {
@@ -198,6 +197,36 @@ const toAstMerge: { [name: string]: Merge } = {
                                     declarations: d.declarations.map(dd => ({ ...dd, init: null }))
                                 }
                             }),
+                            // static readonly id = "ClassName"
+                            {
+                                type: "VariableDeclaration",
+                                kind: "static readonly",
+                                declarations: [{
+                                    type: "VariableDeclarator",
+                                    id: { type: "Identifier", name: "id" },
+                                    init: {
+                                        type: "Literal",
+                                        value: node._implements[0] 
+                                    }
+                                }]
+                            },
+                            // static readonly implements = new Set(...)
+                            {
+                                type: "VariableDeclaration",
+                                kind: "static readonly",
+                                declarations: [{
+                                    type: "VariableDeclarator",
+                                    id: { type: "Identifier", name: "implements" },
+                                    init: {
+                                        type: "NewExpression",
+                                        callee: { type: "Identifier", name: "Set" },
+                                        arguments: [{                            
+                                            type: "ArrayExpression",
+                                            elements: node._implements.map(value => ({ type: "Literal", value }))
+                                        }]
+                                    }
+                                }]
+                            },
                             {
                                 type: "MethodDefinition",
                                 kind: "constructor",
@@ -288,17 +317,7 @@ const toAstMerge: { [name: string]: Merge } = {
                                                                     value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
                                                                 },
                                                                 operator: "+",
-                                                                right: {
-                                                                    type: "CallExpression",
-                                                                    callee: {
-                                                                        type: "MemberExpression",
-                                                                        object: { type: "Identifier", name: "Class" },
-                                                                        property: { type: "Identifier", name: "toString" }
-                                                                    },
-                                                                    arguments: [
-                                                                        { type: "Identifier", name: localName }
-                                                                    ]
-                                                                }
+                                                                right: { type: "Identifier", name: localName }
                                                             }]
                                                         }
                                                     }
@@ -419,58 +438,6 @@ const toAstMerge: { [name: string]: Merge } = {
                     }
                 }
             ),
-            // set the Type.id property
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "AssignmentExpression",
-                    left: {
-                        type: "MemberExpression",
-                        object: {
-                            type: "Identifier",
-                            name: node.id.name,
-                        },
-                        property: {
-                            type: "Literal",
-                            value: "id"
-                        },
-                        computed: true
-                    },
-                    operator: "=",
-                    right: {
-                        type: "Literal",
-                        value: node._implements[0]
-                    }
-                }
-            },
-            // set the Type.implements property for runtime type checking.
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "AssignmentExpression",
-                    left: {
-                        type: "MemberExpression",
-                        object: {
-                            type: "Identifier",
-                            name: node.id.name,
-                        },
-                        property: {
-                            type: "Literal",
-                            value: "implements"
-                        },
-                        computed: true
-                    },
-                    operator: "=",
-                    right: {
-                        type: "NewExpression",
-                        callee: { type: "Identifier", name: "Set" },
-                        arguments: [{                            
-                            type: "ArrayExpression",
-                            elements: node._implements.map(value => ({ type: "Literal", value }))
-                        }]
-                    }
-                }
-            }
         )
     },
     BlockStatement(node: BlockStatement, changes: Partial<BlockStatement>) {

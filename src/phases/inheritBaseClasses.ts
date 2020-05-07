@@ -27,7 +27,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             }
             inprogress.add(classDeclaration)
             let baseDeclarations = new Map<string, Declaration>()
-            let baseClasses = new Map<string,Reference>([/*rootClassReference, */...classDeclaration.baseClasses].map(r => [r.name, r]))
+            let baseClasses = new Map<string,Reference>([rootClassReference, ...classDeclaration.baseClasses].map(r => [r.name, r]))
             function addDeclarations(declarations: readonly Declaration[]) {
                 for (let declaration of declarations) {
                     let current = baseDeclarations.get(declaration.id.name)

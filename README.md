@@ -44,11 +44,12 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X ReadonlySet
     X ReadonlyMap
     X Merge Bootstrapped into main.
-      extend Object
-      toString
-      implement static fields
-      migrate other properties to static for runtime type checking.
+    X extend Object
+    X toString
+    X implement static fields (was typescript.. only, should be generic)
+    X migrate other properties to static for runtime type checking.
     X Normalize Type Declarations
-      Fix bug where Vector.toString is not using right referenced type.
-      Normalize identifiers to safe for language (general solution)
-    
+    X Fix bug where Vector.toString is not using right referenced type.
+    X Normalize identifiers to safe for language (general solution)
+    X Then actually extend Object for .toString
+

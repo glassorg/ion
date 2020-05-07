@@ -2,6 +2,10 @@ import
     ion.*
 
 export
+    class Vector
+        let x: Number = 0
+        let y: Number = 0
+
     let toString = (value: String | Number) =>
         if value is String
             "String"

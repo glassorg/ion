@@ -3,7 +3,6 @@ import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
 import Module from "../ast/Module";
 import Declaration from "../ast/Declaration";
-import Id from "../ast/Id";
 
 export default function analysisToAssembly(root: Analysis, options: Options): Assembly {
 
