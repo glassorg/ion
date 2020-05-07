@@ -3,41 +3,56 @@ This file was generated from ion source. Do not edit.
 */
 import * as KeyValuePair from './KeyValuePair';
 import * as Expression from './Expression';
+import * as _Object from './ion/Object';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
+import * as TypeExpression from './TypeExpression';
 import * as Boolean from './ion/Boolean';
-import * as Array from './ion/Array';
+import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
 export type Argument = KeyValuePair.KeyValuePair | Expression.Expression;
 export function isArgument(value): value is Argument {
     return KeyValuePair.isKeyValuePair(value) || Expression.isExpression(value);
 }
-export class CallExpression implements Expression.Expression , Node.Node {
+export class CallExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
+    readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly new: Boolean.Boolean;
     readonly callee: Expression.Expression;
-    readonly arguments: Array.Array<Argument>;
+    readonly arguments: _Array.Array<Argument>;
+    static readonly id = 'CallExpression';
+    static readonly implements = new Set([
+        'CallExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({
         location = null,
+        type = null,
         new: _new = false,
         callee,
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         new?: Boolean.Boolean,
         callee: Expression.Expression,
-        arguments: Array.Array<Argument>
+        arguments: _Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a TypeExpression | Null: ' + type);
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + Class.toString(_new));
+            throw new Error('new is not a Boolean: ' + _new);
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + Class.toString(callee));
-        if (!Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
+            throw new Error('callee is not a Expression: ' + callee);
+        if (!_Array.isArray(_arguments))
+            throw new Error('arguments is not a Array: ' + _arguments);
         this.location = location;
+        this.type = type;
         this.new = _new;
         this.callee = callee;
         this.arguments = _arguments;
@@ -45,9 +60,10 @@ export class CallExpression implements Expression.Expression , Node.Node {
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         new?: Boolean.Boolean,
         callee?: Expression.Expression,
-        arguments?: Array.Array<Argument>
+        arguments?: _Array.Array<Argument>
     }) {
         return new CallExpression({
             ...this,
@@ -58,12 +74,6 @@ export class CallExpression implements Expression.Expression , Node.Node {
         return isCallExpression(value);
     }
 }
-CallExpression['id'] = 'CallExpression';
-CallExpression['implements'] = new Set([
-    'CallExpression',
-    'Expression',
-    'Node'
-]);
 export function isCallExpression(value): value is CallExpression {
     return Class.isInstance(CallExpression, value);
 }

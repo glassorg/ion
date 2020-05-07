@@ -8,12 +8,14 @@ import inheritBaseClasses from "./inheritBaseClasses";
 import createClassTypeChecks from "./createClassTypeChecks";
 import checkReferences from "./checkReferences";
 import normalizeTypes from "./normalizeTypes";
+import addImplicitReturns from "./addImplicitReturns";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
     importResolution,
+    addImplicitReturns,
     typeCreation,
 
     // analysis stage

@@ -1,31 +1,45 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
+import * as TypeExpression from './TypeExpression';
 import * as Class from './ion/Class';
-export class ConditionalExpression implements Expression.Expression , Node.Node {
+export class ConditionalExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
+    readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly test: Expression.Expression;
     readonly consequent: Expression.Expression;
     readonly alternate: Expression.Expression;
-    constructor({location = null, test, consequent, alternate}: {
+    static readonly id = 'ConditionalExpression';
+    static readonly implements = new Set([
+        'ConditionalExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
+    constructor({location = null, type = null, test, consequent, alternate}: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         test: Expression.Expression,
         consequent: Expression.Expression,
         alternate: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a TypeExpression | Null: ' + type);
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + Class.toString(test));
+            throw new Error('test is not a Expression: ' + test);
         if (!Expression.isExpression(consequent))
-            throw new Error('consequent is not a Expression: ' + Class.toString(consequent));
+            throw new Error('consequent is not a Expression: ' + consequent);
         if (!Expression.isExpression(alternate))
-            throw new Error('alternate is not a Expression: ' + Class.toString(alternate));
+            throw new Error('alternate is not a Expression: ' + alternate);
         this.location = location;
+        this.type = type;
         this.test = test;
         this.consequent = consequent;
         this.alternate = alternate;
@@ -33,6 +47,7 @@ export class ConditionalExpression implements Expression.Expression , Node.Node 
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         test?: Expression.Expression,
         consequent?: Expression.Expression,
         alternate?: Expression.Expression
@@ -46,12 +61,6 @@ export class ConditionalExpression implements Expression.Expression , Node.Node 
         return isConditionalExpression(value);
     }
 }
-ConditionalExpression['id'] = 'ConditionalExpression';
-ConditionalExpression['implements'] = new Set([
-    'ConditionalExpression',
-    'Expression',
-    'Node'
-]);
 export function isConditionalExpression(value): value is ConditionalExpression {
     return Class.isInstance(ConditionalExpression, value);
 }

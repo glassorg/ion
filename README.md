@@ -52,4 +52,7 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Fix bug where Vector.toString is not using right referenced type.
     X Normalize identifiers to safe for language (general solution)
     X Then actually extend Object for .toString
-
+    X Add Implicit ReturnStatement within functions.
+    - Do we allow numeric style operations on other classes like Vectors etc?
+      Perform Basic Type Inference.
+      Finalize Initial Type System Design.

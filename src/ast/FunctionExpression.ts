@@ -1,45 +1,60 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Scope from './Scope';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
+import * as TypeExpression from './TypeExpression';
 import * as Id from './Id';
-import * as Array from './ion/Array';
+import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node {
+export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
+    readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly id: Id.Id | Null.Null;
-    readonly parameters: Array.Array<Parameter.Parameter>;
+    readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;
     readonly body: BlockStatement.BlockStatement;
     readonly typeGuard: Reference.Reference | Null.Null;
-    constructor({location = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
+    static readonly id = 'FunctionExpression';
+    static readonly implements = new Set([
+        'FunctionExpression',
+        'ion_Object',
+        'Expression',
+        'Scope',
+        'Node'
+    ]);
+    constructor({location = null, type = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         id?: Id.Id | Null.Null,
-        parameters: Array.Array<Parameter.Parameter>,
+        parameters: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body: BlockStatement.BlockStatement,
         typeGuard?: Reference.Reference | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a TypeExpression | Null: ' + type);
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + Class.toString(id));
-        if (!Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('id is not a Id | Null: ' + id);
+        if (!_Array.isArray(parameters))
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
+            throw new Error('returnType is not a Expression | Null: ' + returnType);
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
+            throw new Error('body is not a BlockStatement: ' + body);
         if (!(Reference.isReference(typeGuard) || Null.isNull(typeGuard)))
-            throw new Error('typeGuard is not a Reference | Null: ' + Class.toString(typeGuard));
+            throw new Error('typeGuard is not a Reference | Null: ' + typeGuard);
         this.location = location;
+        this.type = type;
         this.id = id;
         this.parameters = parameters;
         this.returnType = returnType;
@@ -49,8 +64,9 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
+        type?: TypeExpression.TypeExpression | Null.Null,
         id?: Id.Id | Null.Null,
-        parameters?: Array.Array<Parameter.Parameter>,
+        parameters?: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body?: BlockStatement.BlockStatement,
         typeGuard?: Reference.Reference | Null.Null
@@ -64,13 +80,6 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
         return isFunctionExpression(value);
     }
 }
-FunctionExpression['id'] = 'FunctionExpression';
-FunctionExpression['implements'] = new Set([
-    'FunctionExpression',
-    'Expression',
-    'Scope',
-    'Node'
-]);
 export function isFunctionExpression(value): value is FunctionExpression {
     return Class.isInstance(FunctionExpression, value);
 }
