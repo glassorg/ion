@@ -20,6 +20,7 @@
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js",
         "buildAst": "ionc src/ast ionast",
+        "bootAst": "./bin/ionc.js src/ast ionast",
         "watchAst": "nodemon -w ionast -e ion -x yarn buildAst",
         "debug": "node --inspect-brk node_modules/\\@glas/build/bin/gtest.js lib",
         "deploy": "yarn build && yarn publish --patch"
