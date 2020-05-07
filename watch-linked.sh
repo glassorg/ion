@@ -3,7 +3,7 @@
 trap "kill 0" SIGINT SIGTERM EXIT
 
 # watch ast
-nodemon -w ionast -w -e ion,js -x yarn buildAst &
+nodemon -w ionast -w ../ion/lib -e ion,js -x yarn buildAst &
 
 guild build && yarn run watchGrammar &
 guild watch &
