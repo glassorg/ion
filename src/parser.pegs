@@ -2,8 +2,6 @@
 
     const ast = require("./ast")
 
-    console.log(">>>>>> AST", ast)
-
     function getLocation() {
         let { start, end, filename } = location()
         return new ast.Location.Location({
@@ -381,7 +379,7 @@ Parameter
 
 FunctionParameters
     = "(" _ ")" { return [] }
-    / bare:Parameter { return [bare] }
+    / id:Id { return [node("Parameter", { id } )] }
     / "(" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ")" { return [head, ...tail] }
 
 FunctionHead

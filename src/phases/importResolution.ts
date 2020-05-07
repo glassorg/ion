@@ -75,7 +75,10 @@ export default function importResolution(root: Assembly) {
         for (let name of unresolvedReferences.keys()) {
             let found = false
             for (let path of importPaths) {
-                let checkPaths = [path + EXPORT_DELIMITER + name, path + PATH_SEPARATOR + name + EXPORT_DELIMITER + name]
+                let checkPaths = [
+                    path + EXPORT_DELIMITER + name,
+                    path + (path.length ? PATH_SEPARATOR : "") + name + EXPORT_DELIMITER + name
+                ]
                 for (let checkPath of checkPaths) {
                     // let newName = path + name
                     if (exports.has(checkPath)) {

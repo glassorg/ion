@@ -1,6 +1,6 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip, replace } from "../Traversal";
-import { getTypeCheckFunctionName, SemanticError } from "../common";
+import { getTypeCheckFunctionName, SemanticError, isTypeReference } from "../common";
 import VariableDeclaration from "../ast/VariableDeclaration";
 import Id from "../ast/Id";
 import FunctionExpression from "../ast/FunctionExpression";
@@ -50,17 +50,17 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                                         right: node.right
                                     })
                                 }
+                                if (isTypeReference(node)) {
+                                    return new CallExpression({
+                                        callee: new Reference({ name: getTypeCheckFunctionName(node.name), location: node.location }),
+                                        arguments: [
+                                            new Reference({ name: "value", location: node.location })
+                                        ]
+                                    })
+                                }
                                 if (ConstrainedType.is(node)) {
-                                    if (!Reference.is(node.baseType)) {
-                                        throw SemanticError("Expected baseType to be Reference", node.baseType)
-                                    }
                                     return new BinaryExpression({
-                                        left: new CallExpression({
-                                            callee: node.baseType.patch({ name: getTypeCheckFunctionName(node.baseType.name) }),
-                                            arguments: [
-                                                new Reference({ name: "value", location: node.baseType.location })
-                                            ]
-                                        }),
+                                        left: node.baseType,
                                         operator: "&&",
                                         right: node.constraint
                                     })

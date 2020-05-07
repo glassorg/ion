@@ -12,7 +12,8 @@ export default function analysisToAssembly(root: Analysis, options: Options): As
     for (let name of root.declarations.keys()) {
         let declaration = root.declarations.get(name)!
         if (declaration.location == null) {
-            console.log("No location", declaration)
+            console.error("No location", declaration)
+            throw new Error("No location: " + name)
         }
         let moduleName = declaration.location!.filename
         let declarations = moduleDeclarations.get(moduleName)

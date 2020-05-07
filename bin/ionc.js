@@ -15,8 +15,8 @@ if (inputs.length == 0) {
     inputs.push(path.join(__dirname, "..", "ionsrc"));
     const { default: Compiler, Options } = require("../lib/Compiler");
     let options = new Options(inputs, output);
-    let logger = (names, ast) => { console.log(names) };
-    let compiler = new Compiler(logger);
+    // let logger = (names, ast) => { console.log(names) };
+    let compiler = new Compiler();
     compiler.compile(options);
     return 0;
 }

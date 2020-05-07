@@ -36,6 +36,12 @@ const operatorMap = {
     "!=": "!==",
 }
 
+const reserved = new Set(["arguments", "new", "import", "export", "class"])
+
+function renameIfReserved(name: string) {
+    return reserved.has(name) ? "_" + name : name
+}
+
 function toRelativeModulePath(from: string, to: string) {
     let a = from.split('.')
     let b = to.split('.')
@@ -74,26 +80,40 @@ function getTypeReferenceName(node) {
     else if (node.type === "MemberExpression") {
         return node.property.name
     }
+    else if (node.type === "BinaryExpression") {
+        return getTypeReferenceName(node.left) + " " + node.operator + " " + getTypeReferenceName(node.right)
+    }
     else {
         throw new Error("Expected Identifier or MemberExpression: " + node.type)
     }
 }
-
-function toIsFunctionReference(node) {
+function toRuntimeTypeCheck(node, value) {
+    function call(callee) {
+        return { type: "CallExpression", callee, arguments: [ value ] }
+    }
+    
     if (node.type === "Identifier") {
-        return {
+        return call({
             type: "Identifier",
             name: "is" + node.name
-        }
+        })
     }
     else if (node.type === "MemberExpression") {
-        return {
+        return call({
             type: "MemberExpression",
             object: node.object,
             property: {
                 type: "Identifier",
                 name: "is" + node.property.name
             }
+        })
+    }
+    else if (node.type === "BinaryExpression") {
+        return {
+            type: "BinaryExpression",
+            left: toRuntimeTypeCheck(node.left, value),
+            operator: node.operator == "|" ? "||" : "&&",
+            right: toRuntimeTypeCheck(node.right, value)
         }
     }
     else {
@@ -118,13 +138,25 @@ const toAstMerge: { [name: string]: Merge } = {
         }
         return esnode
     },
-    Module(node: Module, changes: Partial<Module>) {
+    Module(node: Module, changes: Partial<Module>, helper, ancestors, path) {
+        let lastName = path[path.length - 1].split('.').pop()!
         return {
             type: "Program",
             leadingComments: [{
                 value: DO_NOT_EDIT_WARNING
             }],
-            body: changes.declarations ?? []
+            body: [
+                ...(changes.declarations ?? []).values(),
+                // add a default export of declaration with same name as module if such a declaration exists.
+                ...(
+                    node.declarations.map(d => d.id.name).includes(lastName) ? [{
+                    type: "ExportDefaultDeclaration",
+                    declaration: {
+                        type: "Identifier",
+                        name: lastName
+                    }
+                }] : [])
+            ]
         }
     },
     TemplateReference(node: TemplateReference, changes: Partial<TemplateReference>) {
@@ -155,6 +187,7 @@ const toAstMerge: { [name: string]: Merge } = {
                 {
                     type: "ClassDeclaration",
                     id: changes.id,
+                    implements: changes.baseClasses!,
                     body: {
                         type: "ClassBody",
                         body: [
@@ -162,7 +195,7 @@ const toAstMerge: { [name: string]: Merge } = {
                                 return {
                                     ...d,
                                     kind: "readonly",
-                                    declarations: d.declarations.map(dd => Object.assign(dd, { init: null }))
+                                    declarations: d.declarations.map(dd => ({ ...dd, init: null }))
                                 }
                             }),
                             {
@@ -179,17 +212,18 @@ const toAstMerge: { [name: string]: Merge } = {
                                                 properties: (changes.declarations ?? []).map((d: any) => {
                                                     let declaration = d.declarations[0]
                                                     let name = declaration.id.name
+                                                    let localName = renameIfReserved(name)
                                                     return {
                                                         type: "Property",
                                                         kind: "init",
-                                                        shorthand: true,
+                                                        shorthand: name === localName,
                                                         key: { type: "Identifier", name },
                                                         value: declaration.init ? {
                                                             type: "AssignmentPattern",
-                                                            left: { type: "Identifier", name },
+                                                            left: { type: "Identifier", name: localName },
                                                             right: declaration.init
                                                         }
-                                                        : { type: "Identifier", name },
+                                                        : { type: "Identifier", name: localName },
                                                     }
                                                 }),
                                                 tstype: {
@@ -229,19 +263,18 @@ const toAstMerge: { [name: string]: Merge } = {
                                         body: [
                                             ...(changes.declarations ?? []).filter((d: any) => d.declarations[0].tstype).map((d: any) => {
                                                 let declarator = d.declarations[0]
+                                                let name = declarator.id.name
+                                                let localName = renameIfReserved(name)
                                                 return {
                                                     type: "IfStatement",
                                                     test: {
                                                         type: "UnaryExpression",
                                                         operator: "!",
                                                         prefix: true,
-                                                        argument: {
-                                                            type: "CallExpression",
-                                                            callee: toIsFunctionReference(declarator.tstype),
-                                                            arguments: [
-                                                                { type: "Identifier", name: declarator.id.name }
-                                                            ]
-                                                        }
+                                                        argument: toRuntimeTypeCheck(
+                                                            declarator.tstype,
+                                                            { type: "Identifier", name: localName }
+                                                        )
                                                     },
                                                     consequent: {
                                                         type: "ThrowStatement",
@@ -257,7 +290,7 @@ const toAstMerge: { [name: string]: Merge } = {
                                                                 operator: "+",
                                                                 right: {
                                                                     type: "Identifier",
-                                                                    name: declarator.id.name
+                                                                    name: localName
                                                                 }
                                                             }]
                                                         }
@@ -265,6 +298,8 @@ const toAstMerge: { [name: string]: Merge } = {
                                                 }
                                             }),
                                             ...(changes.declarations ?? []).map((d: any) => {
+                                                let name = d.declarations[0].id.name
+                                                let localName = renameIfReserved(name)
                                                 return {
                                                     type: "ExpressionStatement",
                                                     expression: {
@@ -272,10 +307,10 @@ const toAstMerge: { [name: string]: Merge } = {
                                                         left: {
                                                             type: "MemberExpression",
                                                             object: { type: "ThisExpression" },
-                                                            property: { type: "Identifier", name: d.declarations[0].id.name }
+                                                            property: { type: "Identifier", name: name }
                                                         },
                                                         operator: "=",
-                                                        right: { type: "Identifier", name: d.declarations[0].id.name }
+                                                        right: { type: "Identifier", name: localName }
                                                     }
                                                 }
                                             })
@@ -283,6 +318,59 @@ const toAstMerge: { [name: string]: Merge } = {
                                     }
                                 },
                             },
+                            ...(node.isStructure ? [] : [{
+                                type: "MethodDefinition",
+                                kind: "method",
+                                key: { type: "Identifier", name: "patch" },
+                                value: {
+                                    type: "FunctionExpression",
+                                    params: (() => {
+                                        // we need to use the ObjectPattern
+                                        return  [{
+                                            type: "Identifier",
+                                            name: "properties",
+                                            tstype: {
+                                                type: "ObjectExpression",
+                                                properties: (changes.declarations ?? []).map((d: any) => {
+                                                    let declaration = d.declarations[0]
+                                                    let name = declaration.id.name
+                                                    return {
+                                                        type: "Property",
+                                                        kind: "init",
+                                                        key: { type: "Identifier", name: `${name}?` },
+                                                        value: declaration.tstype,
+                                                    }
+                                                })
+                                            }
+                                        }]
+                                    })(),
+                                    body: {
+                                        type: "BlockStatement",
+                                        body: [
+                                            {
+                                                type: "ReturnStatement",
+                                                argument: {
+                                                    type: "NewExpression",
+                                                    callee: { type: "Identifier", name: node.id.name },
+                                                    arguments: [{
+                                                        type: "ObjectExpression",
+                                                        properties: [
+                                                            {
+                                                                type: "SpreadElement",
+                                                                argument: { type: "ThisExpression" }
+                                                            },
+                                                            {
+                                                                type: "SpreadElement",
+                                                                argument: { type: "Identifier", name: "properties" }
+                                                            }
+                                                        ]
+                                                    }]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                            }]),
                             {
                                 type: "MethodDefinition",
                                 kind: "method",

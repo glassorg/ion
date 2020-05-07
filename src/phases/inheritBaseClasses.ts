@@ -7,6 +7,11 @@ import Reference from "../ast/Reference";
 import Node from "../ast/Node";
 import { traverse } from "../Traversal";
 
+function mergeDeclarations(base: Declaration, sub: Declaration) {
+    // this should actually check that the types can be merged.
+    return sub
+}
+
 export default function inheritBaseClasses(root: Analysis, options: Options) {
 
     let finished = new Map<ClassDeclaration,ClassDeclaration>()
@@ -18,29 +23,39 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                 throw SemanticError(`Circular class extension`, source)
             }
             inprogress.add(classDeclaration)
-            let baseDeclarations: Declaration[] = []
-            let baseClasses = new Set<Reference>()
+            let baseDeclarations = new Map<string, Declaration>()
+            let baseClasses = new Map<string,Reference>(classDeclaration.baseClasses.map(r => [r.name, r]))
+            function addDeclarations(declarations: readonly Declaration[]) {
+                for (let declaration of declarations) {
+                    let current = baseDeclarations.get(declaration.id.name)
+                    if (current) {
+                        declaration = mergeDeclarations(current, declaration)
+                    }
+                    baseDeclarations.set(declaration.id.name, declaration)
+                }
+            }
             for (let baseClass of classDeclaration.baseClasses) {
-                let baseDeclaration = root.declarations.get(baseClass.name)
+                let baseDeclaration = root.declarations.get(baseClass.name) as ClassDeclaration
                 
                 if (!ClassDeclaration.is(baseDeclaration)) {
-                    console.log(baseClass)
                     throw SemanticError(`BaseClass is not a class declaration`, baseClass)
                 }
                 if (classDeclaration.isStructure && !baseDeclaration.isStructure) {
                     throw SemanticError(`Structs cannot inherit from classes`, baseClass)
                 }
-                ensureDeclarationsInherited(baseDeclaration, baseClass)
+                baseDeclaration = ensureDeclarationsInherited(baseDeclaration, source)
                 for (let ref of baseDeclaration.baseClasses) {
-                    baseClasses.add(ref)
+                    baseClasses.set(ref.name, ref)
                 }
-                baseDeclarations.push(...baseDeclaration.declarations)
+                addDeclarations(baseDeclaration.declarations)
             }
-            // now insert the base declarations
-            result = classDeclaration.patch({ declarations: [...baseDeclarations, ...classDeclaration.declarations] })
-            // also add all of the subclasses recursively we implicitly implement all their interfaces
-            // TODO: Need Readonly on arrays and shit.
-            // classDeclaration.baseClasses.push(...baseClasses.values())
+            // now insert the current class declarations
+            addDeclarations(classDeclaration.declarations)
+            // override properties with the same name
+            result = classDeclaration.patch({
+                baseClasses: Array.from(baseClasses.values()),
+                declarations: Array.from(baseDeclarations.values())
+            })
             finished.set(classDeclaration, result)
         }
         return result
@@ -52,7 +67,13 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                 let declaration = ensureDeclarationsInherited(node, node)
                 // TODO: Do we really need to track these implements here?
                 // or is there another way later to determine these?
-                return declaration.patch({ _implements: [getUniqueClientName(node.id.name), ...node.baseClasses.map(d => getUniqueClientName(d.name))] })
+                return declaration.patch({
+                    _implements: [getUniqueClientName(node.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
+                })
+
+                // declaration.interfaces = [new Reference({ name: declaration.id.name}), ...declaration.baseClasses.map(d => new Reference({ name: d.name }))]
+                // declaration.implements = [getUniqueClientName(declaration.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
+    
             }
         }
     })
