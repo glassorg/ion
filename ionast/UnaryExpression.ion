@@ -3,6 +3,6 @@ import
     .*
 
 export
-    class UnaryExpression
+    class UnaryExpression extends Expression
         var operator: String
         var argument: Expression
