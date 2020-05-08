@@ -5,12 +5,13 @@ import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
-export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
+export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly parameters: _Array.Array<Parameter.Parameter>;
@@ -21,7 +22,8 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
         'ion_Object',
         'TypeExpression',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, parameters, returnType = null}: {
         location?: Location.Location | Null.Null,

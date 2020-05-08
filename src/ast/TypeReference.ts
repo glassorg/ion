@@ -6,12 +6,13 @@ import * as Reference from './Reference';
 import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class TypeReference implements _Object.Object , Reference.Reference , Id.Id , Expression.Expression , Node.Node {
+export class TypeReference implements _Object.Object , Reference.Reference , Id.Id , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly name: String.String;
@@ -23,7 +24,8 @@ export class TypeReference implements _Object.Object , Reference.Reference , Id.
         'Reference',
         'Id',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, name, original}: {
         location?: Location.Location | Null.Null,

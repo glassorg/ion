@@ -5,6 +5,7 @@ import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Scope from './Scope';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
@@ -14,7 +15,7 @@ import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Node.Node {
+export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly id: Id.Id | Null.Null;
@@ -28,7 +29,8 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
         'ion_Object',
         'Expression',
         'Scope',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,

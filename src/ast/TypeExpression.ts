@@ -4,10 +4,11 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class TypeExpression implements _Object.Object , Expression.Expression , Node.Node {
+export class TypeExpression implements _Object.Object , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression | Null.Null;
     static readonly id = 'TypeExpression';
@@ -15,7 +16,8 @@ export class TypeExpression implements _Object.Object , Expression.Expression , 
         'TypeExpression',
         'ion_Object',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null}: {
         location?: Location.Location | Null.Null,

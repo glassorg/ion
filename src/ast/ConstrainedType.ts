@@ -5,10 +5,11 @@ import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
+export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly baseType: Expression.Expression;
@@ -19,7 +20,8 @@ export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpr
         'ion_Object',
         'TypeExpression',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, baseType, constraint}: {
         location?: Location.Location | Null.Null,

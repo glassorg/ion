@@ -6,11 +6,12 @@ import * as BinaryExpression from './BinaryExpression';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class UnionType implements _Object.Object , BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
+export class UnionType implements _Object.Object , BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly left: Expression.Expression;
@@ -23,7 +24,8 @@ export class UnionType implements _Object.Object , BinaryExpression.BinaryExpres
         'BinaryExpression',
         'TypeExpression',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, left, operator = '|', right}: {
         location?: Location.Location | Null.Null,

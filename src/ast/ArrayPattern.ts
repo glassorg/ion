@@ -5,12 +5,13 @@ import * as _Object from './ion/Object';
 import * as ArrayExpression from './ArrayExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
 import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
-export class ArrayPattern implements _Object.Object , ArrayExpression.ArrayExpression , Expression.Expression , Node.Node {
+export class ArrayPattern implements _Object.Object , ArrayExpression.ArrayExpression , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly elements: _Array.Array<Expression.Expression>;
@@ -20,7 +21,8 @@ export class ArrayPattern implements _Object.Object , ArrayExpression.ArrayExpre
         'ion_Object',
         'ArrayExpression',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, elements}: {
         location?: Location.Location | Null.Null,

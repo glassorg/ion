@@ -5,6 +5,7 @@ import * as KeyValuePair from './KeyValuePair';
 import * as Expression from './Expression';
 import * as _Object from './ion/Object';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
@@ -15,7 +16,7 @@ export type Argument = KeyValuePair.KeyValuePair | Expression.Expression;
 export function isArgument(value): value is Argument {
     return KeyValuePair.isKeyValuePair(value) || Expression.isExpression(value);
 }
-export class CallExpression implements _Object.Object , Expression.Expression , Node.Node {
+export class CallExpression implements _Object.Object , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly new: Boolean.Boolean;
@@ -26,7 +27,8 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         'CallExpression',
         'ion_Object',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({
         location = null,

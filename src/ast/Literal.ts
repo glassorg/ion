@@ -4,6 +4,7 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
@@ -11,7 +12,7 @@ import * as String from './ion/String';
 import * as Number from './ion/Number';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Literal implements _Object.Object , Expression.Expression , Node.Node {
+export class Literal implements _Object.Object , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly value: String.String | (Number.Number | (Boolean.Boolean | Null.Null));
@@ -20,7 +21,8 @@ export class Literal implements _Object.Object , Expression.Expression , Node.No
         'Literal',
         'ion_Object',
         'Expression',
-        'Node'
+        'Node',
+        'Typed'
     ]);
     constructor({location = null, type = null, value}: {
         location?: Location.Location | Null.Null,

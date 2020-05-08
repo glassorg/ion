@@ -4,16 +4,16 @@
 
     function getLocation() {
         let { start, end, filename } = location()
-        return new ast.Location.Location({
-            start: new ast.Position.Position(start.line, start.column),
-            end: new ast.Position.Position(end.line, end.column),
+        return new ast.Location({
+            start: new ast.Position(start.line, start.column),
+            end: new ast.Position(end.line, end.column),
             filename
         })
     }
 
     function node(type, ...values) {
         // we assign again in case it was overridden by copy values
-        let TypeConstructor = ast[type][type]
+        let TypeConstructor = ast[type]
         if (TypeConstructor == null) {
             throw new Error(`Missing Type: ${type}`)
         }
