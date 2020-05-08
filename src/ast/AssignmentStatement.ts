@@ -26,11 +26,11 @@ export class AssignmentStatement implements _Object.Object , Statement.Statement
         right: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Reference.isReference(left))
-            throw new Error('left is not a Reference: ' + Class.toString(left));
+            throw new Error('left is not a Reference: ' + left);
         if (!Expression.isExpression(right))
-            throw new Error('right is not a Expression: ' + Class.toString(right));
+            throw new Error('right is not a Expression: ' + right);
         this.location = location;
         this.left = left;
         this.right = right;

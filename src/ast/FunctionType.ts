@@ -13,7 +13,7 @@ import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
 export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;
     static readonly id = 'FunctionType';
@@ -27,18 +27,18 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
     ]);
     constructor({location = null, type = null, parameters, returnType = null}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         parameters: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
+            throw new Error('returnType is not a Expression | Null: ' + returnType);
         this.location = location;
         this.type = type;
         this.parameters = parameters;
@@ -47,7 +47,7 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         parameters?: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null
     }) {

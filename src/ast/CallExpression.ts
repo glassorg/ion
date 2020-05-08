@@ -8,7 +8,6 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
 import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
@@ -18,7 +17,7 @@ export function isArgument(value): value is Argument {
 }
 export class CallExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly new: Boolean.Boolean;
     readonly callee: Expression.Expression;
     readonly arguments: _Array.Array<Argument>;
@@ -38,21 +37,21 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         new?: Boolean.Boolean,
         callee: Expression.Expression,
         arguments: _Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + Class.toString(_new));
+            throw new Error('new is not a Boolean: ' + _new);
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + Class.toString(callee));
+            throw new Error('callee is not a Expression: ' + callee);
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
+            throw new Error('arguments is not a Array: ' + _arguments);
         this.location = location;
         this.type = type;
         this.new = _new;
@@ -62,7 +61,7 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         new?: Boolean.Boolean,
         callee?: Expression.Expression,
         arguments?: _Array.Array<Argument>

@@ -25,9 +25,9 @@ export class BlockStatement implements _Object.Object , Statement.Statement , Sc
         statements: _Array.Array<Statement.Statement>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!_Array.isArray(statements))
-            throw new Error('statements is not a Array: ' + Class.toString(statements));
+            throw new Error('statements is not a Array: ' + statements);
         this.location = location;
         this.statements = statements;
         Object.freeze(this);

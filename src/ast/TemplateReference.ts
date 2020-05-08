@@ -13,7 +13,7 @@ import * as Reference from './Reference';
 import * as Class from './ion/Class';
 export class TemplateReference implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly baseType: Expression.Expression;
     readonly arguments: _Array.Array<TypeExpression.TypeExpression | Reference.Reference>;
     static readonly id = 'TemplateReference';
@@ -32,18 +32,18 @@ export class TemplateReference implements _Object.Object , TypeExpression.TypeEx
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         baseType: Expression.Expression,
         arguments: _Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
+            throw new Error('baseType is not a Expression: ' + baseType);
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
+            throw new Error('arguments is not a Array: ' + _arguments);
         this.location = location;
         this.type = type;
         this.baseType = baseType;
@@ -52,7 +52,7 @@ export class TemplateReference implements _Object.Object , TypeExpression.TypeEx
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         baseType?: Expression.Expression,
         arguments?: _Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {

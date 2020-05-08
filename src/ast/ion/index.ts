@@ -31,5 +31,6 @@ export {
 export {
     default as Type
 } from './Type';
-import * as _types from './types';
-export const types = _types;
+export {
+    default as types
+} from './types';

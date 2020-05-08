@@ -28,11 +28,11 @@ export class Declaration implements _Object.Object , Node.Node {
         export?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+            throw new Error('id is not a Id: ' + id);
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + Class.toString(_export));
+            throw new Error('export is not a Boolean: ' + _export);
         this.location = location;
         this.id = id;
         this.export = _export;

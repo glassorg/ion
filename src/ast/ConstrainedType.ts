@@ -11,7 +11,7 @@ import * as Null from './ion/Null';
 import * as Class from './ion/Class';
 export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly baseType: Expression.Expression;
     readonly constraint: Expression.Expression;
     static readonly id = 'ConstrainedType';
@@ -25,18 +25,18 @@ export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpr
     ]);
     constructor({location = null, type = null, baseType, constraint}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         baseType: Expression.Expression,
         constraint: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
+            throw new Error('baseType is not a Expression: ' + baseType);
         if (!Expression.isExpression(constraint))
-            throw new Error('constraint is not a Expression: ' + Class.toString(constraint));
+            throw new Error('constraint is not a Expression: ' + constraint);
         this.location = location;
         this.type = type;
         this.baseType = baseType;
@@ -45,7 +45,7 @@ export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpr
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         baseType?: Expression.Expression,
         constraint?: Expression.Expression
     }) {

@@ -8,12 +8,11 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
 export class Reference implements _Object.Object , Id.Id , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly name: String.String;
     static readonly id = 'Reference';
     static readonly implements = new Set([
@@ -26,15 +25,15 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
     ]);
     constructor({location = null, type = null, name}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         name: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + Class.toString(name));
+            throw new Error('name is not a String: ' + name);
         this.location = location;
         this.type = type;
         this.name = name;
@@ -42,7 +41,7 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         name?: String.String
     }) {
         return new Reference({

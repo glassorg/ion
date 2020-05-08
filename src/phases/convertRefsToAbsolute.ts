@@ -29,7 +29,7 @@ export default function convertRefsToAbsolute(root: Assembly, options: Options) 
                             // ONLY if this is a reference to root identifiers..
                             if (rootModuleNames.has(node.name)) {
                                 let newName = getAbsoluteName(moduleName, node.name)
-                                return new Reference({ ...node, name: newName })
+                                return node.patch({ name: newName })
                             }
                         }
                     }

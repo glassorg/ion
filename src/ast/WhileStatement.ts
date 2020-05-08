@@ -26,11 +26,11 @@ export class WhileStatement implements _Object.Object , Statement.Statement , No
         body: BlockStatement.BlockStatement
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + Class.toString(test));
+            throw new Error('test is not a Expression: ' + test);
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
+            throw new Error('body is not a BlockStatement: ' + body);
         this.location = location;
         this.test = test;
         this.body = body;

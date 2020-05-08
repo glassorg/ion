@@ -53,23 +53,23 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         _implements?: _Array.Array<String.String>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + Class.toString(id));
+            throw new Error('id is not a Id: ' + id);
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + Class.toString(_export));
+            throw new Error('export is not a Boolean: ' + _export);
         if (!Boolean.isBoolean(isStructure))
-            throw new Error('isStructure is not a Boolean: ' + Class.toString(isStructure));
+            throw new Error('isStructure is not a Boolean: ' + isStructure);
         if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
+            throw new Error('parameters is not a Array: ' + parameters);
         if (!_Array.isArray(baseClasses))
-            throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
+            throw new Error('baseClasses is not a Array: ' + baseClasses);
         if (!_Array.isArray(declarations))
-            throw new Error('declarations is not a Array: ' + Class.toString(declarations));
+            throw new Error('declarations is not a Array: ' + declarations);
         if (!_Array.isArray(meta))
-            throw new Error('meta is not a Array: ' + Class.toString(meta));
+            throw new Error('meta is not a Array: ' + meta);
         if (!_Array.isArray(_implements))
-            throw new Error('_implements is not a Array: ' + Class.toString(_implements));
+            throw new Error('_implements is not a Array: ' + _implements);
         this.location = location;
         this.id = id;
         this.export = _export;

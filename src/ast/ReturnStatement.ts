@@ -23,9 +23,9 @@ export class ReturnStatement implements _Object.Object , Statement.Statement , N
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
+            throw new Error('location is not a Location | Null: ' + location);
         if (!Expression.isExpression(value))
-            throw new Error('value is not a Expression: ' + Class.toString(value));
+            throw new Error('value is not a Expression: ' + value);
         this.location = location;
         this.value = value;
         Object.freeze(this);

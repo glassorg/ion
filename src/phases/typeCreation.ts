@@ -15,6 +15,7 @@ import CallExpression from "../ast/CallExpression";
 import ConstrainedType from "../ast/ConstrainedType";
 import DotExpression from "../ast/DotExpression";
 import TypeDeclaration from "../ast/TypeDeclaration";
+import TypeReference from "../ast/TypeReference";
 
 function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration, root: Assembly) {
     return new VariableDeclaration({
@@ -30,7 +31,7 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                 })
             ],
             // flag to indicate that this is a type guard.
-            typeGuard: new Reference({ name: node.id.name }),
+            typeGuard: new TypeReference({ name: node.id.name }),
             body: new BlockStatement({
                 statements: [
                     new ReturnStatement({

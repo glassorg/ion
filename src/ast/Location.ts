@@ -20,11 +20,11 @@ export class Location implements _Object.Object {
         filename: String.String
     }) {
         if (!Position.isPosition(start))
-            throw new Error('start is not a Position: ' + Class.toString(start));
+            throw new Error('start is not a Position: ' + start);
         if (!Position.isPosition(end))
-            throw new Error('end is not a Position: ' + Class.toString(end));
+            throw new Error('end is not a Position: ' + end);
         if (!String.isString(filename))
-            throw new Error('filename is not a String: ' + Class.toString(filename));
+            throw new Error('filename is not a String: ' + filename);
         this.start = start;
         this.end = end;
         this.filename = filename;

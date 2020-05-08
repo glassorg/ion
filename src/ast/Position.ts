@@ -14,9 +14,9 @@ export class Position implements _Object.Object {
     ]);
     constructor(line: Number.Number, column: Number.Number) {
         if (!Number.isNumber(line))
-            throw new Error('line is not a Number: ' + Class.toString(line));
+            throw new Error('line is not a Number: ' + line);
         if (!Number.isNumber(column))
-            throw new Error('column is not a Number: ' + Class.toString(column));
+            throw new Error('column is not a Number: ' + column);
         this.line = line;
         this.column = column;
         Object.freeze(this);

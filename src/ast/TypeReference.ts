@@ -14,7 +14,7 @@ import * as String from './ion/String';
 import * as Class from './ion/Class';
 export class TypeReference implements _Object.Object , Reference.Reference , TypeExpression.TypeExpression , Id.Id , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly name: String.String;
     readonly original: TypeExpression.TypeExpression | Null.Null;
     static readonly id = 'TypeReference';
@@ -30,18 +30,18 @@ export class TypeReference implements _Object.Object , Reference.Reference , Typ
     ]);
     constructor({location = null, type = null, name, original = null}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         name: String.String,
         original?: TypeExpression.TypeExpression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + Class.toString(name));
+            throw new Error('name is not a String: ' + name);
         if (!(TypeExpression.isTypeExpression(original) || Null.isNull(original)))
-            throw new Error('original is not a TypeExpression | Null: ' + Class.toString(original));
+            throw new Error('original is not a TypeExpression | Null: ' + original);
         this.location = location;
         this.type = type;
         this.name = name;
@@ -50,7 +50,7 @@ export class TypeReference implements _Object.Object , Reference.Reference , Typ
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         name?: String.String,
         original?: TypeExpression.TypeExpression | Null.Null
     }) {

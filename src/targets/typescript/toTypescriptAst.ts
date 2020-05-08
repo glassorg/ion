@@ -140,6 +140,9 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
         }
         return esnode
     },
+    TypeReference(node: TypeReference) {
+        return { type: "Identifier", name: node.name }
+    },
     Module(node: Module, changes: Partial<Module>, helper, ancestors, path) {
         let lastName = path[path.length - 1].split('.').pop()!
         return {
@@ -320,7 +323,17 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                                     value: `${declarator.id.name} is not a ${getTypeReferenceName(declarator.tstype)}: `
                                                                 },
                                                                 operator: "+",
-                                                                right: { type: "Identifier", name: localName }
+                                                                right: {
+                                                                    type: "CallExpression",
+                                                                    callee: {
+                                                                        type: "MemberExpression",
+                                                                        object: { type: "Identifier", name: "Class" },
+                                                                        property: { type: "Identifier", name: "toString" }
+                                                                    },
+                                                                    arguments: [
+                                                                        { type: "Identifier", name: localName }
+                                                                    ]
+                                                                }
                                                             }]
                                                         }
                                                     }

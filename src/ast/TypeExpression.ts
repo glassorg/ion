@@ -10,7 +10,7 @@ import * as Null from './ion/Null';
 import * as Class from './ion/Class';
 export class TypeExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     static readonly id = 'TypeExpression';
     static readonly implements = new Set([
         'TypeExpression',
@@ -21,19 +21,19 @@ export class TypeExpression implements _Object.Object , Expression.Expression , 
     ]);
     constructor({location = null, type = null}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression | Null.Null
+        type?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         this.location = location;
         this.type = type;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression | Null.Null
+        type?: Expression.Expression | Null.Null
     }) {
         return new TypeExpression({
             ...this,

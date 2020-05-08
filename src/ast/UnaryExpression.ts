@@ -18,9 +18,9 @@ export class UnaryExpression implements _Object.Object {
         argument: Expression.Expression
     }) {
         if (!String.isString(operator))
-            throw new Error('operator is not a String: ' + Class.toString(operator));
+            throw new Error('operator is not a String: ' + operator);
         if (!Expression.isExpression(argument))
-            throw new Error('argument is not a Expression: ' + Class.toString(argument));
+            throw new Error('argument is not a Expression: ' + argument);
         this.operator = operator;
         this.argument = argument;
         Object.freeze(this);

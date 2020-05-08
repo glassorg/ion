@@ -7,12 +7,11 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
 import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
 export class ArrayExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | Null.Null;
+    readonly type: Expression.Expression | Null.Null;
     readonly elements: _Array.Array<Expression.Expression>;
     static readonly id = 'ArrayExpression';
     static readonly implements = new Set([
@@ -24,15 +23,15 @@ export class ArrayExpression implements _Object.Object , Expression.Expression ,
     ]);
     constructor({location = null, type = null, elements}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         elements: _Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
+            throw new Error('location is not a Location | Null: ' + location);
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + type);
         if (!_Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + Class.toString(elements));
+            throw new Error('elements is not a Array: ' + elements);
         this.location = location;
         this.type = type;
         this.elements = elements;
@@ -40,7 +39,7 @@ export class ArrayExpression implements _Object.Object , Expression.Expression ,
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | Null.Null,
+        type?: Expression.Expression | Null.Null,
         elements?: _Array.Array<Expression.Expression>
     }) {
         return new ArrayExpression({
