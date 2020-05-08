@@ -37,13 +37,13 @@ export class TemplateReference implements _Object.Object , TypeExpression.TypeEx
         arguments: _Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + baseType);
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.type = type;
         this.baseType = baseType;

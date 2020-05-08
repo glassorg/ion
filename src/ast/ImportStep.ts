@@ -29,15 +29,15 @@ export class ImportStep implements _Object.Object , Node.Node {
         children: _Array.Array<ImportStep> | Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Boolean.isBoolean(relative))
-            throw new Error('relative is not a Boolean: ' + relative);
+            throw new Error('relative is not a Boolean: ' + Class.toString(relative));
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + id);
+            throw new Error('id is not a Id | Null: ' + Class.toString(id));
         if (!(Id.isId(as) || Null.isNull(as)))
-            throw new Error('as is not a Id | Null: ' + as);
+            throw new Error('as is not a Id | Null: ' + Class.toString(as));
         if (!(_Array.isArray(children) || Boolean.isBoolean(children)))
-            throw new Error('children is not a Array | Boolean: ' + children);
+            throw new Error('children is not a Array | Boolean: ' + Class.toString(children));
         this.location = location;
         this.relative = relative;
         this.id = id;

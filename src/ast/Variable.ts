@@ -31,15 +31,15 @@ export class Variable implements _Object.Object , Typed.Typed , Node.Node {
         assignable?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + id);
+            throw new Error('id is not a Id: ' + Class.toString(id));
         if (!(Expression.isExpression(value) || Null.isNull(value)))
-            throw new Error('value is not a Expression | Null: ' + value);
+            throw new Error('value is not a Expression | Null: ' + Class.toString(value));
         if (!Boolean.isBoolean(assignable))
-            throw new Error('assignable is not a Boolean: ' + assignable);
+            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         this.location = location;
         this.type = type;
         this.id = id;

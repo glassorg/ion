@@ -43,15 +43,15 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         arguments: _Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + _new);
+            throw new Error('new is not a Boolean: ' + Class.toString(_new));
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + callee);
+            throw new Error('callee is not a Expression: ' + Class.toString(callee));
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.type = type;
         this.new = _new;

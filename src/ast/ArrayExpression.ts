@@ -27,11 +27,11 @@ export class ArrayExpression implements _Object.Object , Expression.Expression ,
         elements: _Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!_Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + elements);
+            throw new Error('elements is not a Array: ' + Class.toString(elements));
         this.location = location;
         this.type = type;
         this.elements = elements;

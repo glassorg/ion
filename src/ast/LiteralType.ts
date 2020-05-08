@@ -29,11 +29,11 @@ export class LiteralType implements _Object.Object , TypeExpression.TypeExpressi
         literal: Literal.Literal
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Literal.isLiteral(literal))
-            throw new Error('literal is not a Literal: ' + literal);
+            throw new Error('literal is not a Literal: ' + Class.toString(literal));
         this.location = location;
         this.type = type;
         this.literal = literal;

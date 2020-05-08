@@ -41,19 +41,19 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
         typeGuard?: Reference.Reference | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + id);
+            throw new Error('id is not a Id | Null: ' + Class.toString(id));
         if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + parameters);
+            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + returnType);
+            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + body);
+            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
         if (!(Reference.isReference(typeGuard) || Null.isNull(typeGuard)))
-            throw new Error('typeGuard is not a Reference | Null: ' + typeGuard);
+            throw new Error('typeGuard is not a Reference | Null: ' + Class.toString(typeGuard));
         this.location = location;
         this.type = type;
         this.id = id;

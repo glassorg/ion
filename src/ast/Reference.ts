@@ -29,11 +29,11 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
         name: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + name);
+            throw new Error('name is not a String: ' + Class.toString(name));
         this.location = location;
         this.type = type;
         this.name = name;

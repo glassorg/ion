@@ -35,13 +35,13 @@ export class TypeReference implements _Object.Object , Reference.Reference , Typ
         original?: TypeExpression.TypeExpression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + name);
+            throw new Error('name is not a String: ' + Class.toString(name));
         if (!(TypeExpression.isTypeExpression(original) || Null.isNull(original)))
-            throw new Error('original is not a TypeExpression | Null: ' + original);
+            throw new Error('original is not a TypeExpression | Null: ' + Class.toString(original));
         this.location = location;
         this.type = type;
         this.name = name;

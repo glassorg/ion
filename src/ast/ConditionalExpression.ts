@@ -30,15 +30,15 @@ export class ConditionalExpression implements _Object.Object , Expression.Expres
         alternate: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + test);
+            throw new Error('test is not a Expression: ' + Class.toString(test));
         if (!Expression.isExpression(consequent))
-            throw new Error('consequent is not a Expression: ' + consequent);
+            throw new Error('consequent is not a Expression: ' + Class.toString(consequent));
         if (!Expression.isExpression(alternate))
-            throw new Error('alternate is not a Expression: ' + alternate);
+            throw new Error('alternate is not a Expression: ' + Class.toString(alternate));
         this.location = location;
         this.type = type;
         this.test = test;

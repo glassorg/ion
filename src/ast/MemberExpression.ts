@@ -28,13 +28,13 @@ export class MemberExpression implements _Object.Object , Expression.Expression 
         property: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Expression.isExpression(object))
-            throw new Error('object is not a Expression: ' + object);
+            throw new Error('object is not a Expression: ' + Class.toString(object));
         if (!Expression.isExpression(property))
-            throw new Error('property is not a Expression: ' + property);
+            throw new Error('property is not a Expression: ' + Class.toString(property));
         this.location = location;
         this.type = type;
         this.object = object;

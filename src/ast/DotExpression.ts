@@ -24,9 +24,9 @@ export class DotExpression implements _Object.Object , Expression.Expression , T
         type?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         this.location = location;
         this.type = type;
         Object.freeze(this);
