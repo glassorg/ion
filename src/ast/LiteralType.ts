@@ -4,13 +4,13 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Literal from './Literal';
 import * as Class from './ion/Class';
-export class LiteralType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
+export class LiteralType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly literal: Literal.Literal;
@@ -20,8 +20,8 @@ export class LiteralType implements _Object.Object , TypeExpression.TypeExpressi
         'ion_Object',
         'TypeExpression',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({location = null, type = null, literal}: {
         location?: Location.Location | Null.Null,
@@ -29,11 +29,11 @@ export class LiteralType implements _Object.Object , TypeExpression.TypeExpressi
         literal: Literal.Literal
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!Literal.isLiteral(literal))
-            throw new Error('literal is not a Literal: ' + literal);
+            throw new Error('literal is not a Literal: ' + Class.toString(literal));
         this.location = location;
         this.type = type;
         this.literal = literal;

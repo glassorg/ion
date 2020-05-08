@@ -4,14 +4,14 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as _Array from './ion/Array';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class TemplateReference implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
+export class TemplateReference implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly baseType: Expression.Expression;
@@ -22,8 +22,8 @@ export class TemplateReference implements _Object.Object , TypeExpression.TypeEx
         'ion_Object',
         'TypeExpression',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({
         location = null,
@@ -37,13 +37,13 @@ export class TemplateReference implements _Object.Object , TypeExpression.TypeEx
         arguments: _Array.Array<TypeExpression.TypeExpression | Reference.Reference>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + baseType);
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.type = type;
         this.baseType = baseType;

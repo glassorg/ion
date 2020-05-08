@@ -4,8 +4,8 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Scope from './Scope';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
@@ -15,7 +15,7 @@ import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Node.Node , Typed.Typed {
+export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly id: Id.Id | Null.Null;
@@ -29,8 +29,8 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
         'ion_Object',
         'Expression',
         'Scope',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({location = null, type = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,
@@ -42,19 +42,19 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
         typeGuard?: Reference.Reference | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!(Id.isId(id) || Null.isNull(id)))
-            throw new Error('id is not a Id | Null: ' + id);
+            throw new Error('id is not a Id | Null: ' + Class.toString(id));
         if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + parameters);
+            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + returnType);
+            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
         if (!BlockStatement.isBlockStatement(body))
-            throw new Error('body is not a BlockStatement: ' + body);
+            throw new Error('body is not a BlockStatement: ' + Class.toString(body));
         if (!(Reference.isReference(typeGuard) || Null.isNull(typeGuard)))
-            throw new Error('typeGuard is not a Reference | Null: ' + typeGuard);
+            throw new Error('typeGuard is not a Reference | Null: ' + Class.toString(typeGuard));
         this.location = location;
         this.type = type;
         this.id = id;

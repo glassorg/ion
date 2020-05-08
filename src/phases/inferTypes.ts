@@ -5,7 +5,6 @@ import Expression from "../ast/Expression";
 import Literal from "../ast/Literal";
 import LiteralType from "../ast/LiteralType";
 import * as ast from "../ast"
-import BinaryExpression from "../ast/BinaryExpression";
 
 // that is some typescript kung fu right there.
 const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>) => Iterator<Expression>} = {
@@ -13,7 +12,10 @@ const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P
         yield node.left
         yield node.right
     },
-    *Literal(node) {        
+    *Literal(node) {
+    },
+    *FunctionExpression(node) {
+        // yield node.parameters
     }
 }
 

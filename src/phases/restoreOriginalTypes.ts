@@ -10,7 +10,7 @@ import TypeReference from "../ast/TypeReference";
 export default function restoreOriginalTypes(root: Assembly, options: Options) {
     return traverse(root, {
         leave(node) {
-            if (TypeReference.is(node)) {
+            if (TypeReference.is(node) && node.original != null) {
                 return node.original
             }
         }

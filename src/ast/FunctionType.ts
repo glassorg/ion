@@ -4,14 +4,14 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
-export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Typed.Typed {
+export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly parameters: _Array.Array<Parameter.Parameter>;
@@ -22,8 +22,8 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
         'ion_Object',
         'TypeExpression',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({location = null, type = null, parameters, returnType = null}: {
         location?: Location.Location | Null.Null,
@@ -32,13 +32,13 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
         returnType?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + parameters);
+            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
-            throw new Error('returnType is not a Expression | Null: ' + returnType);
+            throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
         this.location = location;
         this.type = type;
         this.parameters = parameters;

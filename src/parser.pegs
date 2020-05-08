@@ -260,7 +260,7 @@ TemplateArguments
     { return [head, ...tail] }
 
 TypeReference
-    = Reference
+    = ref:Reference { return node("TypeReference", { name: ref.name }) }
 
 TemplateReference
     = baseType:TypeReference args:(_ @TemplateArguments)?

@@ -4,14 +4,14 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as Id from './Id';
 import * as Expression from './Expression';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Reference implements _Object.Object , Id.Id , Expression.Expression , Node.Node , Typed.Typed {
+export class Reference implements _Object.Object , Id.Id , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly name: String.String;
@@ -21,8 +21,8 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
         'ion_Object',
         'Id',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({location = null, type = null, name}: {
         location?: Location.Location | Null.Null,
@@ -30,11 +30,11 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
         name: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!String.isString(name))
-            throw new Error('name is not a String: ' + name);
+            throw new Error('name is not a String: ' + Class.toString(name));
         this.location = location;
         this.type = type;
         this.name = name;

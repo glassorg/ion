@@ -19,7 +19,6 @@ export default function createIndexFiles(root: Output) {
         newFiles.set(path, {
             type: "Program",
             body: children.map(child => {
-                let module = root.files.get(child)
                 let hasDefaultExport = child[0] === child[0].toUpperCase()
                 let localName = "_" + child
                 return hasDefaultExport ?

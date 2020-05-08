@@ -38,6 +38,7 @@ export default class Compiler {
         this.logger("Input", root)
         try {
             for (let phase of phases) {
+                console.log(phase.name)
                 root = phase(root, options) || root
                 this.logger(phase.name, root)
             }

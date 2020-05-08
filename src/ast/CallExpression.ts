@@ -4,8 +4,8 @@ This file was generated from ion source. Do not edit.
 import * as KeyValuePair from './KeyValuePair';
 import * as Expression from './Expression';
 import * as _Object from './ion/Object';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
@@ -16,7 +16,7 @@ export type Argument = KeyValuePair.KeyValuePair | Expression.Expression;
 export function isArgument(value): value is Argument {
     return KeyValuePair.isKeyValuePair(value) || Expression.isExpression(value);
 }
-export class CallExpression implements _Object.Object , Expression.Expression , Node.Node , Typed.Typed {
+export class CallExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly new: Boolean.Boolean;
@@ -27,8 +27,8 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         'CallExpression',
         'ion_Object',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({
         location = null,
@@ -44,15 +44,15 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         arguments: _Array.Array<Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + _new);
+            throw new Error('new is not a Boolean: ' + Class.toString(_new));
         if (!Expression.isExpression(callee))
-            throw new Error('callee is not a Expression: ' + callee);
+            throw new Error('callee is not a Expression: ' + Class.toString(callee));
         if (!_Array.isArray(_arguments))
-            throw new Error('arguments is not a Array: ' + _arguments);
+            throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.type = type;
         this.new = _new;

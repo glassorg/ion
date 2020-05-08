@@ -28,13 +28,13 @@ export class IfStatement implements _Object.Object , Statement.Statement , Node.
         alternate?: BlockStatement.BlockStatement | (IfStatement | Null.Null)
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Expression.isExpression(test))
-            throw new Error('test is not a Expression: ' + test);
+            throw new Error('test is not a Expression: ' + Class.toString(test));
         if (!BlockStatement.isBlockStatement(consequent))
-            throw new Error('consequent is not a BlockStatement: ' + consequent);
+            throw new Error('consequent is not a BlockStatement: ' + Class.toString(consequent));
         if (!(BlockStatement.isBlockStatement(alternate) || (isIfStatement(alternate) || Null.isNull(alternate))))
-            throw new Error('alternate is not a BlockStatement | IfStatement | Null: ' + alternate);
+            throw new Error('alternate is not a BlockStatement | IfStatement | Null: ' + Class.toString(alternate));
         this.location = location;
         this.test = test;
         this.consequent = consequent;

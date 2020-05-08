@@ -3,14 +3,14 @@ This file was generated from ion source. Do not edit.
 */
 import * as _Object from './ion/Object';
 import * as Expression from './Expression';
-import * as Node from './Node';
 import * as Typed from './Typed';
+import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
 import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
-export class ArrayExpression implements _Object.Object , Expression.Expression , Node.Node , Typed.Typed {
+export class ArrayExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | Null.Null;
     readonly elements: _Array.Array<Expression.Expression>;
@@ -19,8 +19,8 @@ export class ArrayExpression implements _Object.Object , Expression.Expression ,
         'ArrayExpression',
         'ion_Object',
         'Expression',
-        'Node',
-        'Typed'
+        'Typed',
+        'Node'
     ]);
     constructor({location = null, type = null, elements}: {
         location?: Location.Location | Null.Null,
@@ -28,11 +28,11 @@ export class ArrayExpression implements _Object.Object , Expression.Expression ,
         elements: _Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!_Array.isArray(elements))
-            throw new Error('elements is not a Array: ' + elements);
+            throw new Error('elements is not a Array: ' + Class.toString(elements));
         this.location = location;
         this.type = type;
         this.elements = elements;
