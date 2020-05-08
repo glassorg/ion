@@ -30,11 +30,11 @@ export class Literal implements _Object.Object , Expression.Expression , Node.No
         value: String.String | (Number.Number | (Boolean.Boolean | Null.Null))
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!(String.isString(value) || (Number.isNumber(value) || (Boolean.isBoolean(value) || Null.isNull(value)))))
-            throw new Error('value is not a String | Number | Boolean | Null: ' + value);
+            throw new Error('value is not a String | Number | Boolean | Null: ' + Class.toString(value));
         this.location = location;
         this.type = type;
         this.value = value;

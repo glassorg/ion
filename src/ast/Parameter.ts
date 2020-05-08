@@ -42,17 +42,17 @@ export class Parameter implements _Object.Object , Variable.Variable , Declarati
         export?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!Id.isId(id))
-            throw new Error('id is not a Id: ' + id);
+            throw new Error('id is not a Id: ' + Class.toString(id));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + type);
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!(Expression.isExpression(value) || Null.isNull(value)))
-            throw new Error('value is not a Expression | Null: ' + value);
+            throw new Error('value is not a Expression | Null: ' + Class.toString(value));
         if (!Boolean.isBoolean(assignable))
-            throw new Error('assignable is not a Boolean: ' + assignable);
+            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(_export))
-            throw new Error('export is not a Boolean: ' + _export);
+            throw new Error('export is not a Boolean: ' + Class.toString(_export));
         this.location = location;
         this.id = id;
         this.type = type;

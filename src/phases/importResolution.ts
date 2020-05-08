@@ -67,7 +67,7 @@ export default function importResolution(root: Assembly) {
             for (let ref of unresolvedReferences.get(oldName)!) {
                 //  patch function would be cool as it would construct
                 //  the correct class if this is a subclass
-                replace.set(ref, new Reference({ ...ref, name: newName }))
+                replace.set(ref, ref.patch({ ...ref, name: newName }))
             }
         }
 

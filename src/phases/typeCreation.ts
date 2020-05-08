@@ -30,7 +30,7 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                 })
             ],
             // flag to indicate that this is a type guard.
-            typeGuard: new Reference({ name: node.id.name }),
+            typeGuard: new TypeReference({ name: node.id.name }),
             body: new BlockStatement({
                 statements: [
                     new ReturnStatement({

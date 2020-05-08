@@ -14,7 +14,7 @@ export class Output implements _Object.Object {
     ]);
     constructor({files}: { files: Map.Map<String.String, _Object.Object | String.String> }) {
         if (!Map.isMap(files))
-            throw new Error('files is not a Map: ' + files);
+            throw new Error('files is not a Map: ' + Class.toString(files));
         this.files = files;
         Object.freeze(this);
     }

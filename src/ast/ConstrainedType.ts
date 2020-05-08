@@ -30,13 +30,13 @@ export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpr
         constraint: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
-            throw new Error('location is not a Location | Null: ' + location);
+            throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a TypeExpression | Null: ' + type);
+            throw new Error('type is not a TypeExpression | Null: ' + Class.toString(type));
         if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + baseType);
+            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
         if (!Expression.isExpression(constraint))
-            throw new Error('constraint is not a Expression: ' + constraint);
+            throw new Error('constraint is not a Expression: ' + Class.toString(constraint));
         this.location = location;
         this.type = type;
         this.baseType = baseType;
