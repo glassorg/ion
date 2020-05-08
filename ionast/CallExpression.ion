@@ -3,7 +3,6 @@ import
     .*
 
 export
-    type Argument = KeyValuePair | Expression
     class CallExpression extends Expression
         var new : Boolean = false
         var callee: Expression

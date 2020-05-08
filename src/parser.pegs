@@ -440,7 +440,7 @@ DotExpression
 
 Argument
     = key:(@Id _ ":")? _ value:InlineExpression
-    { return key ? node("KeyValuePair", {key,value}) : value }
+    { return node("Argument", {key,value}) }
 
 ArgumentList
     = head:Argument tail:(_ "," _ @Argument)* { return [head, ...tail] }

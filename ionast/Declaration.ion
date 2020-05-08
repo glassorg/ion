@@ -3,6 +3,6 @@ import
     .*
 
 export
-    class Declaration extends Node
+    class Declaration extends Typed
         var id: Id
         var export: Boolean = false

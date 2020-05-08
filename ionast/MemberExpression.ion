@@ -5,4 +5,4 @@ import
 export
     class MemberExpression extends Expression
         var object: Expression
-        var property: Expression
+        var property: Id | Expression

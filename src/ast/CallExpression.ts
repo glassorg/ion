@@ -1,26 +1,22 @@
 /*
 This file was generated from ion source. Do not edit.
 */
-import * as KeyValuePair from './KeyValuePair';
-import * as Expression from './Expression';
 import * as _Object from './ion/Object';
+import * as Expression from './Expression';
 import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
+import * as Argument from './Argument';
 import * as Class from './ion/Class';
-export type Argument = KeyValuePair.KeyValuePair | Expression.Expression;
-export function isArgument(value): value is Argument {
-    return KeyValuePair.isKeyValuePair(value) || Expression.isExpression(value);
-}
 export class CallExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: Expression.Expression | Null.Null;
     readonly new: Boolean.Boolean;
     readonly callee: Expression.Expression;
-    readonly arguments: _Array.Array<Argument>;
+    readonly arguments: _Array.Array<Argument.Argument>;
     static readonly id = 'CallExpression';
     static readonly implements = new Set([
         'CallExpression',
@@ -40,7 +36,7 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         type?: Expression.Expression | Null.Null,
         new?: Boolean.Boolean,
         callee: Expression.Expression,
-        arguments: _Array.Array<Argument>
+        arguments: _Array.Array<Argument.Argument>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -64,7 +60,7 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         type?: Expression.Expression | Null.Null,
         new?: Boolean.Boolean,
         callee?: Expression.Expression,
-        arguments?: _Array.Array<Argument>
+        arguments?: _Array.Array<Argument.Argument>
     }) {
         return new CallExpression({
             ...this,

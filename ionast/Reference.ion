@@ -3,4 +3,4 @@ import
     .*
 
 export
-    class Reference extends Id
+    class Reference extends Id, Expression

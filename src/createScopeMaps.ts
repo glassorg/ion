@@ -6,8 +6,10 @@ import Scope from "./ast/Scope"
 import Reference from "./ast/Reference"
 import FunctionExpression from "./ast/FunctionExpression"
 
-export type ScopeMap = {
-    get(node: any) : any
+export type ScopeMap = { [id: string]: Declaration }
+
+export type ScopeMaps = {
+    get(node: any): ScopeMap
 }
 
 /**
@@ -15,7 +17,7 @@ export type ScopeMap = {
  * scopes.get(null) will return the global scope
  * @param root the ast
  */
-export default function createScopeMap(root, { checkDeclareBeforeUse=false, identifiers } = { identifiers: new Set<string>()}): ScopeMap {
+export default function createScopeMaps(root, { checkDeclareBeforeUse=false, identifiers } = { identifiers: new Set<string>()}): ScopeMaps {
     let map = new Map()
     let global = {}
     let scopes: object[] = [global]

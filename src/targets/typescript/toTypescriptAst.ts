@@ -140,6 +140,9 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
         }
         return esnode
     },
+    Argument(node: ast.Argument, changes: Partial<ast.Argument>) {
+        return changes.value
+    },
     TypeReference(node: TypeReference) {
         return { type: "Identifier", name: node.name }
     },

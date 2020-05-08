@@ -3,5 +3,5 @@ import
     .*
 
 export
-    class Id extends Expression
+    class Id extends Node
         var name: String

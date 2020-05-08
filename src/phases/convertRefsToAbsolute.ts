@@ -2,7 +2,7 @@ import Assembly from "../ast/Assembly";
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
 import { getAbsoluteName } from "../common";
-import createScopeMap from "../createScopeMap";
+import createScopeMaps from "../createScopeMaps";
 import { traverse, skip } from "../Traversal";
 import Reference from "../ast/Reference";
 import Module from "../ast/Module";

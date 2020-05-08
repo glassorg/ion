@@ -3,14 +3,14 @@ import { traverse } from "../Traversal";
 import { SemanticError } from "../common";
 import Reference from "../ast/Reference";
 import Analysis from "../ast/Analysis";
-import createScopeMap from "../createScopeMap";
+import createScopeMaps from "../createScopeMaps";
 import IdGenerator from "../IdGenerator";
 import ImportDeclaration from "../ast/ImportDeclaration";
 
 export default function(reservedWords: Set<string>) {
     return function renameReservedWords(root: Assembly) {
         let identifiers = new Set<string>()
-        let scopes = createScopeMap(root, { identifiers })
+        let scopes = createScopeMaps(root, { identifiers })
         let idGenerator = new IdGenerator(identifiers)
 
         let newNames = new Map<string,string>()

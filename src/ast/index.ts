@@ -2,6 +2,9 @@ export {
     default as Analysis
 } from './Analysis';
 export {
+    default as Argument
+} from './Argument';
+export {
     default as ArrayExpression
 } from './ArrayExpression';
 export {

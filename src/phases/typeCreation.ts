@@ -16,6 +16,7 @@ import ConstrainedType from "../ast/ConstrainedType";
 import DotExpression from "../ast/DotExpression";
 import TypeDeclaration from "../ast/TypeDeclaration";
 import TypeReference from "../ast/TypeReference";
+import { Argument } from "../ast";
 
 function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDeclaration, root: Assembly) {
     return new VariableDeclaration({
@@ -55,7 +56,7 @@ function createRuntimeTypeCheckingFunctionDeclaration(name: string, node: TypeDe
                                     return new CallExpression({
                                         callee: new Reference({ name: getTypeCheckFunctionName(node.name), location: node.location }),
                                         arguments: [
-                                            new Reference({ name: "value", location: node.location })
+                                            new Argument({ value: new Reference({ name: "value", location: node.location }) })
                                         ]
                                     })
                                 }
@@ -104,7 +105,7 @@ export default function typeCreation(root: Assembly) {
                     return new CallExpression({
                         location: node.location,
                         callee: new Reference({ location: node.right.location, name: isName }),
-                        arguments: [node.left]
+                        arguments: [new Argument({ value: node.left })]
                     })
                 }
             }

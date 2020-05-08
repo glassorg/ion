@@ -1,4 +1,4 @@
-import createScopeMap from "../createScopeMap";
+import createScopeMaps from "../createScopeMaps";
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
 // import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
@@ -43,7 +43,7 @@ export default function importResolution(root: Assembly) {
             }
         })
     
-        let scopes = createScopeMap(module)
+        let scopes = createScopeMaps(module)
         // now let's traverse and find unreferenced modules
         let unresolvedReferences = new Map<string,Reference[]>()
 

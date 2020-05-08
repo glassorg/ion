@@ -4,45 +4,45 @@ This file was generated from ion source. Do not edit.
 import * as _Object from './ion/Object';
 import * as Id from './Id';
 import * as Expression from './Expression';
-import * as Typed from './Typed';
 import * as Node from './Node';
+import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Reference implements _Object.Object , Id.Id , Expression.Expression , Typed.Typed , Node.Node {
+export class Reference implements _Object.Object , Id.Id , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
-    readonly type: Expression.Expression | Null.Null;
     readonly name: String.String;
+    readonly type: Expression.Expression | Null.Null;
     static readonly id = 'Reference';
     static readonly implements = new Set([
         'Reference',
         'ion_Object',
         'Id',
         'Expression',
-        'Typed',
-        'Node'
+        'Node',
+        'Typed'
     ]);
-    constructor({location = null, type = null, name}: {
+    constructor({location = null, name, type = null}: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
-        name: String.String
+        name: String.String,
+        type?: Expression.Expression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!String.isString(name))
             throw new Error('name is not a String: ' + Class.toString(name));
+        if (!(Expression.isExpression(type) || Null.isNull(type)))
+            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         this.location = location;
-        this.type = type;
         this.name = name;
+        this.type = type;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
-        name?: String.String
+        name?: String.String,
+        type?: Expression.Expression | Null.Null
     }) {
         return new Reference({
             ...this,

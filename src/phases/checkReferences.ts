@@ -1,4 +1,4 @@
-import createScopeMap from "../createScopeMap";
+import createScopeMaps from "../createScopeMaps";
 import Assembly from "../ast/Assembly";
 import { traverse } from "../Traversal";
 import { SemanticError } from "../common";
@@ -6,7 +6,7 @@ import Reference from "../ast/Reference";
 import Analysis from "../ast/Analysis";
 
 export default function normalizeTypes(root: Assembly | Analysis) {
-    let scopes = createScopeMap(root)
+    let scopes = createScopeMaps(root)
     traverse(root, {
         enter(node) {
             if (Reference.is(node)) {

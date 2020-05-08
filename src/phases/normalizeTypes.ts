@@ -1,4 +1,4 @@
-import createScopeMap from "../createScopeMap";
+import createScopeMaps from "../createScopeMaps";
 import { traverse } from "../Traversal";
 import { SemanticError, isTypeReference, getAbsoluteName } from "../common";
 import Analysis from "../ast/Analysis";
@@ -80,7 +80,7 @@ const typesFile = "ion.types"
 
 export default function normalizeTypes(root: Analysis) {
     let identifiers = new Set<string>()
-    let scopes = createScopeMap(root, { identifiers }) // DO NOT REMOVE THIS LINE, scopes is not used, but identifiers is
+    let scopes = createScopeMaps(root, { identifiers }) // DO NOT REMOVE THIS LINE, scopes is not used, but identifiers is
     let idGenerator = new IdGenerator(identifiers)
     let newTypeDeclarations = new Map<string,TypeDeclaration>()
     let typeNameToIdentifierName = new Map<string,string>()

@@ -11,6 +11,7 @@ import BlockStatement from "../ast/BlockStatement";
 import ReturnStatement from "../ast/ReturnStatement";
 import CallExpression from "../ast/CallExpression";
 import Declaration from "../ast/Declaration";
+import { Argument } from "../ast";
 
 export default function createClassTypeChecks(root: Analysis, options: Options) {
 
@@ -37,8 +38,8 @@ export default function createClassTypeChecks(root: Analysis, options: Options) 
                                     value: new CallExpression({
                                         callee: new Reference({ name: "ion.Class:isInstance" }),
                                         arguments: [
-                                            new Reference({ name: name }),
-                                            new Reference({ name: "value" })
+                                            new Argument({ value: new Reference({ name: name }) }),
+                                            new Argument({ value: new Reference({ name: "value" }) })
                                         ]
                                     })
                                 })
