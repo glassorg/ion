@@ -1,6 +1,6 @@
 {
     "name": "@glas/ion",
-    "version": "0.1.7",
+    "version": "0.1.8",
     "repository": "https://github.com/glassorg/ion.git",
     "author": "Kris Nye <krisnye@gmail.com>",
     "bin": {
@@ -8,6 +8,7 @@
     },
     "files": [
         "/bin",
+        "/ionsrc",
         "/external",
         "/lib"
     ],
