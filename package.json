@@ -34,6 +34,6 @@
     },
     "devDependencies": {
         "@glas/build": "^0.2.8",
-        "@glas/ion": "0.1.4"
+        "@glas/ion": "0.1.7"
     }
 }
