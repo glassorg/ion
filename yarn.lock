@@ -854,10 +854,10 @@
     webpack-cli "^3.1.2"
     webpack-dev-server "^3.1.10"
 
-"@glas/ion@0.1.7":
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/@glas/ion/-/ion-0.1.7.tgz#e96aa233f242ae6b63fc75649abcc5122ffe6f9f"
-  integrity sha512-tKbmivJVazRcM1GIM5u6RrlTp//ghAf+aZrDrHgpj9PWvrw1E8YJkjwhKcC2b5mswK7nbHh4lcuvVKvmPfy68g==
+"@glas/ion@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@glas/ion/-/ion-0.1.8.tgz#1552d24e4097f042f846022dc71a2d72169cdf45"
+  integrity sha512-yKJ/fv1CnKFwzIFLsRbuZoIfibP6o6lq8Gsw56PgRDfMR0+QUdWQ7T5kAuWlvBkIAnUZ+FUnRcMkUA9AI8qlPg==
   dependencies:
     escodegen "^1.14.1"
     jsondiffpatch "0.2.5"
