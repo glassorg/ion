@@ -19,10 +19,10 @@ export default function createIndexFiles(root: Output) {
         newFiles.set(path, {
             type: "Program",
             body: children.map(child => {
-                // let module = root.files.get(child)
-                // let hasDefaultExport = child[0] === child[0].toUpperCase()
-                // let localName = "_" + child
-                return [
+                let module = root.files.get(child)
+                let hasDefaultExport = child[0] === child[0].toUpperCase()
+                let localName = "_" + child
+                return hasDefaultExport ?
                     {
                         type: "ExportNamedDeclaration",
                         specifiers: [{
@@ -32,7 +32,32 @@ export default function createIndexFiles(root: Output) {
                         }],
                         source: { type: "Literal", value: `./${child}` }
                     }
-                ]
+                    : [
+                        {
+                            type: "ImportDeclaration",
+                            specifiers: [
+                                {
+                                    type: "ImportNamespaceSpecifier",
+                                    local: { type: "Identifier", name: localName }
+                                }
+                            ],
+                            source: { type: "Literal", value: `./${child}` }
+                        },
+                        {
+                            type: "ExportNamedDeclaration",
+                            declaration: {
+                                type: "VariableDeclaration",
+                                kind: "const",
+                                declarations: [
+                                    {
+                                        type: "VariableDeclarator",
+                                        id: { type: "Identifier", name: child },
+                                        init: { type: "Identifier", name: localName }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
             }).flat()
         } as any)
     }
