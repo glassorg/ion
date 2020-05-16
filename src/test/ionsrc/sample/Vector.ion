@@ -3,21 +3,22 @@ import
 
 export
     class Vector
-        let x: Number = 0
-        let y: Number = 0
+        var x: Number = 0
+        var y: Number = 0
+        let length: Number = (x ^ 2 + y ^ 2) ^ 0.5
 
-    let total = 69 + 69
+    # let total = 69 + 69
 
-    let toString = (value: String | Number) =>
-        if value is String
-            "String"
-        else
-            "Number"
+    # let toString = (value: String | Number) =>
+    #     if value is String
+    #         "String"
+    #     else
+    #         "Number"
 
-    let add = (a, b) =>
-        if a < 0
-            a + b
-        else if a > 0
-            a - b
-        else
-            0
+    # let add = (a, b) =>
+    #     if a < 0
+    #         a + b
+    #     else if a > 0
+    #         a - b
+    #     else
+    #         0

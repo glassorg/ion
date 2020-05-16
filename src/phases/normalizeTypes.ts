@@ -59,13 +59,13 @@ export function getName(node) {
         return `${getName(node.object)}.${getName(node.property)}`
     }
     if (ConstrainedType.is(node)) {
-        return `${getName(node.baseType)}(${getName(node.constraint)})`
+        return `${getName(node.baseType)} where ${getName(node.constraint)}`
     }
     if (Parameter.is(node)) {
         return `${getName(node.id)}: ${getName(node.type)}`
     }
     if (FunctionType.is(node)) {
-        return `func ${node.parameters.map(getName).join(",")}) returns ${getName(node.returnType)}`
+        return `func ${node.parameters.map(getName).join(",")} returns ${getName(node.returnType)}`
     }
     if (ThisExpression.is(node)) {
         return `this`

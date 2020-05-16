@@ -56,3 +56,8 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     - Do we allow numeric style operations on other classes like Vectors etc?
       Perform Basic Type Inference.
       Finalize Initial Type System Design.
+    X Generate 'this' in class variable functions that reference it.
+      Handle 'this' in exported functions.
+    X Add implicit 'this.' values for references to instance variables.
+    X Implement "getters" for let variables.
+    X Remove "let" variables from constructor and patch.

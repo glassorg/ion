@@ -5,19 +5,36 @@ import Id from "./ast/Id"
 import Scope from "./ast/Scope"
 import Reference from "./ast/Reference"
 import FunctionExpression from "./ast/FunctionExpression"
+import { Node } from "./ast"
+
+export type NodeMap<T> = {
+    get(node: Node): T
+}
 
 export type ScopeMap = { [id: string]: Declaration }
-
-export type ScopeMaps = {
-    get(node: any): ScopeMap
-}
+export type ScopeMaps = NodeMap<ScopeMap>
 
 /**
  * Returns a Map which will contain a scope object with variable names returning Declarations.
  * scopes.get(null) will return the global scope
  * @param root the ast
  */
-export default function createScopeMaps(root, { checkDeclareBeforeUse=false, identifiers } = { identifiers: new Set<string>()}): ScopeMaps {
+export default function createScopeMaps(
+    root,
+    options: {
+        checkDeclareBeforeUse?: boolean,
+        identifiers?: Set<String>,
+        ancestorsMap?: Map<Node, Array<any>>,
+        pathMap?: Map<Node, Array<String>>,
+    } = {}
+): ScopeMaps {
+    let {
+        checkDeclareBeforeUse,
+        identifiers = new Set<String>(),
+        ancestorsMap,
+        pathMap
+    } = options
+
     let map = new Map()
     let global = {}
     let scopes: object[] = [global]
@@ -30,11 +47,17 @@ export default function createScopeMaps(root, { checkDeclareBeforeUse=false, ide
     }
 
     traverse(root, {
-        enter(node) {
+        enter(node, ancestors, path) {
             //  get the current scope
             let scope = scopes[scopes.length - 1]
             //  save a map from this nodes location to it's scope
             map.set(node, scope)
+            if (ancestorsMap) {
+                ancestorsMap.set(node, ancestors.slice(0))
+            }
+            if (pathMap) {
+                pathMap.set(node, path.slice(0))
+            }
             //  if this node is a scope then we push a new scope
             if (Scope.is(node)) {
                 // console.log('++++')

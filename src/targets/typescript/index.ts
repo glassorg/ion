@@ -9,10 +9,12 @@ import restoreOriginalTypes from "../../phases/restoreOriginalTypes";
 import reservedWords from "./reservedWords";
 import renameReservedWords from "../../phases/renameReservedWords";
 import createIndexFiles from "./createIndexFiles";
+import insertThis from "./insertThis";
 
 export default [
     analysisToAssembly,
     removePrewritten,
+    insertThis,
     restoreOriginalTypes,
     convertRefsToLocal,
     createImports,

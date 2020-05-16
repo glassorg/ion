@@ -113,9 +113,9 @@ Declaration
     / VariableDeclaration
 
 VariableDeclarationType
-    = VarToken { return "Var" }
-    / LetToken { return "Let" }
-    / PropertyToken { return "Property" }
+    = VarToken { return { assignable: true } }
+    / LetToken { return { assignable: false } }
+    // / PropertyToken { return "Property" } // I think this was used for meta?
 
 VariableDeclaration
     = TypeToken _ id:Id _ "=" _ value:Type EOL
@@ -123,7 +123,7 @@ VariableDeclaration
     / meta:MetaProperties declarationType: VariableDeclarationType
         _ id:Pattern _ type:(":" _ @Type)? _ value:('=' _ @OutlineExpression / EOL {return null})?
     {
-        return node("VariableDeclaration", { declarationType, id, type, value, meta })
+        return node("VariableDeclaration", { ...declarationType, id, type, value, meta })
     }
 
 MetaProperties

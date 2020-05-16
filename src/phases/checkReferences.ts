@@ -5,7 +5,7 @@ import { SemanticError } from "../common";
 import Reference from "../ast/Reference";
 import Analysis from "../ast/Analysis";
 
-export default function normalizeTypes(root: Assembly | Analysis) {
+export default function checkReferences(root: Assembly | Analysis) {
     let scopes = createScopeMaps(root)
     traverse(root, {
         enter(node) {

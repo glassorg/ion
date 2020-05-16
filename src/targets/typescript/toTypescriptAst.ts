@@ -189,6 +189,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
         }
     },
     ClassDeclaration(node: ClassDeclaration, changes: Partial<ClassDeclaration>) {
+        const isAssignable = d => d.kind === "let"
         return replace(
             maybeExport(
                 node,
@@ -200,10 +201,30 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                         type: "ClassBody",
                         body: [
                             ...(changes.declarations ?? []).map((d: any) => {
-                                return {
-                                    ...d,
-                                    kind: "readonly",
-                                    declarations: d.declarations.map(dd => ({ ...dd, init: null }))
+                                if (isAssignable(d)) {
+                                    return {
+                                        ...d,
+                                        kind: "readonly",
+                                        declarations: d.declarations.map(dd => ({ ...dd, init: null }))
+                                    }
+                                }
+                                else {
+                                    return {
+                                        type: "MethodDefinition",
+                                        kind: "get",
+                                        key: d.declarations[0].id,
+                                        value: {
+                                            type: "FunctionExpression",
+                                            params: [],
+                                            body: {
+                                                type: "BlockStatement",
+                                                body: [{
+                                                    type: "ReturnStatement",
+                                                    argument: d.declarations[0].init
+                                                }]
+                                            }
+                                        }
+                                    }
                                 }
                             }),
                             // static readonly id = "ClassName"
@@ -247,7 +268,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                         return  [
                                             {
                                                 type: "ObjectPattern",
-                                                properties: (changes.declarations ?? []).map((d: any) => {
+                                                properties: (changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                                     let declaration = d.declarations[0]
                                                     let name = declaration.id.name
                                                     let localName = renameIfReserved(name)
@@ -266,7 +287,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                 }),
                                                 tstype: {
                                                     type: "ObjectExpression",
-                                                    properties: (changes.declarations ?? []).map((d: any) => {
+                                                    properties: (changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                                         let declaration = d.declarations[0]
                                                         let required = declaration.init == null
                                                         let name = declaration.id.name
@@ -280,7 +301,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                 }
                                             }
                                         ]
-                                    })() : (changes.declarations ?? []).map((d: any) => {
+                                    })() : (changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                         let declaration = d.declarations[0]
                                         let parameter: any = {
                                             type: "Identifier",
@@ -299,7 +320,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                     body: {
                                         type: "BlockStatement",
                                         body: [
-                                            ...(changes.declarations ?? []).filter((d: any) => d.declarations[0].tstype).map((d: any) => {
+                                            ...(changes.declarations ?? []).filter((d: any) => isAssignable(d) && d.declarations[0].tstype).map((d: any) => {
                                                 let declarator = d.declarations[0]
                                                 let name = declarator.id.name
                                                 let localName = renameIfReserved(name)
@@ -342,7 +363,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                     }
                                                 }
                                             }),
-                                            ...(changes.declarations ?? []).map((d: any) => {
+                                            ...(changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                                 let name = d.declarations[0].id.name
                                                 let localName = renameIfReserved(name)
                                                 return {

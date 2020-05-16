@@ -6,6 +6,7 @@ import Analysis from "../ast/Analysis";
 import createScopeMaps from "../createScopeMaps";
 import IdGenerator from "../IdGenerator";
 import ImportDeclaration from "../ast/ImportDeclaration";
+import { VariableDeclaration } from "../ast";
 
 export default function(reservedWords: Set<string>) {
     return function renameReservedWords(root: Assembly) {

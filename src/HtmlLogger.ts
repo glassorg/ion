@@ -11,7 +11,7 @@ const ignoreProperties: {[name:string]:boolean} = {
 }
 
 function ignore(property) {
-    return ignoreProperties[property] || property.startsWith("_") || property.startsWith("ion")
+    return ignoreProperties[property] || property.startsWith("_") || /\bion\b/.test(property)
 }
 
 export function stringify(object, indent = 2) {
