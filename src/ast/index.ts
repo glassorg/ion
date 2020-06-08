@@ -35,6 +35,9 @@ export {
     default as ConstrainedType
 } from './ConstrainedType';
 export {
+    default as Constraint
+} from './Constraint';
+export {
     default as Declaration
 } from './Declaration';
 export {
@@ -64,9 +67,6 @@ export {
 export {
     default as ImportStep
 } from './ImportStep';
-export {
-    default as IntersectionType
-} from './IntersectionType';
 export {
     default as KeyValuePair
 } from './KeyValuePair';

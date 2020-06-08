@@ -61,3 +61,10 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Add implicit 'this.' values for references to instance variables.
     X Implement "getters" for let variables.
     X Remove "let" variables from constructor and patch.
+      Constant "let" declarations should be defined in Object.defineProperties(Class.prototype, { ... })
+    X Migrate Runtime checks to use above format.
+    -   Next step is to add a way to define static variables... on classes?
+    X   Or else just remove the _implements and leave the id value and use that.
+
+      Remove old types
+      Use new types

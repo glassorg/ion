@@ -4,3 +4,4 @@ type Patch<T> = T | null | {
 }
 
 export default Patch
+

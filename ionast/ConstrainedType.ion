@@ -4,5 +4,4 @@ import
 
 export
     class ConstrainedType extends TypeExpression
-        var baseType: Expression
-        var constraint: Expression
+        var constraints: Array<Constraint>

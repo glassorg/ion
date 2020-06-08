@@ -4,6 +4,8 @@ import
 export
     struct Number
 
+    let fraction: Number
+
     #   +
     let add: (left: Number, right: Number) => Number
     #   -

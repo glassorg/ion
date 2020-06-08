@@ -25,11 +25,7 @@ export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typ
     },
     UnionType(node) {
     },
-    IntersectionType(node) {
-    },
     Literal(node) {
-    },
-    LiteralType(node) {
     },
     ClassDeclaration(node) {
     },

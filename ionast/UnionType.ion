@@ -3,5 +3,5 @@ import
     .*
 
 export
-    class UnionType extends BinaryExpression, TypeExpression
-        var operator: String = "|"
+    class UnionType extends TypeExpression
+        var types: Array<ConstrainedType>

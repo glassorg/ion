@@ -1,0 +1,10 @@
+import
+    ion.*
+    .*
+
+# at runtime a constraint becomes a boolean expression that can be evaluated within a context.
+export
+    class Constraint extends Node
+        var left: Array<Id>
+        var operator: String # ">" | "<" | ">=" | "<=" | "==" | "!=" | "is"
+        var right: Literal | Reference | FunctionType | Expression # Remove Expression later?

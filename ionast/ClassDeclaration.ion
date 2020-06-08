@@ -10,4 +10,4 @@ export
         var declarations: Array<Declaration>
         var meta: Array<KeyValuePair> = []
         # used for runtime type checking in javascript
-        var _implements: Array<String> = []
+        # var _implements: Array<String> = []

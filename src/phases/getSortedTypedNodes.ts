@@ -29,12 +29,7 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         yield node.right
     },
     *UnionType(node) {
-        yield node.left
-        yield node.right
-    },
-    *IntersectionType(node) {
-        yield node.left
-        yield node.right
+        yield* node.types
     },
     *Literal(node) {
     },
@@ -86,8 +81,6 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         yield* node.arguments
     },
     *ConstrainedType(node) {
-        yield node.baseType
-        yield node.constraint
     },
     *UnaryExpression(node) {
         yield node.argument

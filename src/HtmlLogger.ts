@@ -11,6 +11,9 @@ const ignoreProperties: {[name:string]:boolean} = {
 }
 
 function ignore(property) {
+    if (property == null) {
+        debugger
+    }
     return ignoreProperties[property] || property.startsWith("_") || /\bion\b/.test(property)
 }
 

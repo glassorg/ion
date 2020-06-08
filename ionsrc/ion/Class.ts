@@ -5,13 +5,7 @@ export type Class = any & {
 }
 
 export function isInstance(_class: Class, instance) {
-    if (instance != null) {
-        let _implements = instance.constructor.implements as Set<string> | undefined
-        if (_implements) {
-            return _implements.has(_class.id)
-        }
-    }
-    return false
+    return instance?.[_class.id] ?? false
 }
 
 export function toString(value, b?: string[]) {

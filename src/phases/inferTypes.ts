@@ -8,29 +8,50 @@ import * as ast from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes from "./getSortedTypedNodes";
 import simplify from "./simplify";
+import { getAbsoluteName, SemanticError } from "../common";
+
+function getTypeReference(name: string) {
+    return new ast.TypeReference({ name: getAbsoluteName(`ion.${name}`, name)})
+}
+
+const literalTypes = {
+    boolean: getTypeReference("Boolean"),
+    number: getTypeReference("Number"),
+    object: getTypeReference("Null"),
+    string: getTypeReference("String"),
+}
 
 // that is some typescript kung fu right there.
-export const inferTypeFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
-    BinaryExpression(node) {
+export const inferType: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
+    BinaryExpression(node, resolved) {
+        // for now just use the left type
+        return resolved.get(node.left).type
     },
     UnionType(node) {
     },
-    IntersectionType(node) {
-    },
     Literal(node) {
-        return node.patch({ type: new LiteralType({ location: node.location, literal: node }) })
-    },
-    LiteralType(node) {
+        let type = literalTypes[typeof node.value]
+        if (type == null) {
+            throw SemanticError(`Cannot find type`, type)
+        }
+        return type
     },
     ClassDeclaration(node) {
     },
     Parameter(node) {
     },
-    VariableDeclaration(node) {
+    VariableDeclaration(node, resolved) {
+        if (node.value) {
+            let value = resolved.get(node.value)
+            return value.type
+        }
     },
     FunctionExpression(node) {
     },
-    Reference(node, scopes) {
+    Reference(node, resolved, scopes) {
+        let scope = scopes.get(node)
+        let declaration = resolved.get(scope[node.name])
+        return declaration.type
     },
     MemberExpression(node) {
     },
@@ -43,6 +64,7 @@ export const inferTypeFunctions: { [P in keyof typeof ast]?: (e: InstanceType<ty
     ConstrainedType(node) {
     },
     UnaryExpression(node) {
+        return node.argument.type
     }
 }
 
@@ -55,9 +77,18 @@ export default function inferTypes(root: Analysis) {
         let result = simplify(node, resolved, scopes) ?? node
         resolved.set(node, result)
         // then try to infer types
-        let func = inferTypeFunctions[result.constructor.name]
-        result = func?.(result, resolved, scopes) ?? result
-        resolved.set(node, result)
+        if (result.type == null) {
+            let func = inferType[result.constructor.name]
+            let type = func?.(
+                node,   // Must be original node else scopes won't work
+                resolved,
+                scopes
+            )
+            if (type != null) {
+                result = node.patch({ type })
+                resolved.set(node, result)
+            }
+        }
     }
 
     return traverse(root, {

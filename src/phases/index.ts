@@ -1,7 +1,7 @@
 import parsing from "./parsing";
 import semanticValidation from "./semanticValidation";
 import importResolution from "./importResolution";
-import typeCreation from "./typeCreation";
+import addIsTypeFunctions from "./addIsTypeFunctions";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
@@ -17,14 +17,14 @@ export default [
     semanticValidation,
     importResolution,
     addImplicitReturns,
-    typeCreation,
-
+    addIsTypeFunctions,
     // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,
     inheritBaseClasses,
+    // post most analysis
     createClassTypeChecks,
-    normalizeTypes,
+    // normalizeTypes,
     inferTypes,
-    // checkReferences,
+    checkReferences,
 ]

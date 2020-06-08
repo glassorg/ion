@@ -3,5 +3,5 @@ import
 
 export
     class String extends Array
-        let trim: () => String where .length <= this.length
+        let trim: () => String
         let match: (pattern: String) => Boolean

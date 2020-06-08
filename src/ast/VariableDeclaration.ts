@@ -19,6 +19,7 @@ export class VariableDeclaration implements _Object.Object , Variable.Variable ,
     readonly value: Expression.Expression | Null.Null;
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
+    readonly virtual: Boolean.Boolean;
     static readonly id = 'VariableDeclaration';
     static readonly implements = new Set([
         'VariableDeclaration',
@@ -34,14 +35,16 @@ export class VariableDeclaration implements _Object.Object , Variable.Variable ,
         id,
         value = null,
         assignable = false,
-        export: _export = false
+        export: _export = false,
+        virtual = false
     }: {
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
         id: Id.Id,
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean,
-        export?: Boolean.Boolean
+        export?: Boolean.Boolean,
+        virtual?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -55,12 +58,15 @@ export class VariableDeclaration implements _Object.Object , Variable.Variable ,
             throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(_export))
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
+        if (!Boolean.isBoolean(virtual))
+            throw new Error('virtual is not a Boolean: ' + Class.toString(virtual));
         this.location = location;
         this.type = type;
         this.id = id;
         this.value = value;
         this.assignable = assignable;
         this.export = _export;
+        this.virtual = virtual;
         Object.freeze(this);
     }
     patch(properties: {
@@ -69,7 +75,8 @@ export class VariableDeclaration implements _Object.Object , Variable.Variable ,
         id?: Id.Id,
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean,
-        export?: Boolean.Boolean
+        export?: Boolean.Boolean,
+        virtual?: Boolean.Boolean
     }) {
         return new VariableDeclaration({
             ...this,

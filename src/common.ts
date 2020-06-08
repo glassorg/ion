@@ -22,6 +22,11 @@ export function getLastName(absoluteName: string) {
     return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)
 }
 
+const validIdRegex = /^[a-z_][a-z0-9_]*$/i
+export function isValidId(name: string) {
+    return validIdRegex.test(name)
+}
+
 export function getTypeCheckFunctionName(name: string) {
     // this could be an external file.path:Name
     let names = getExternalModuleNameAndExportName(name)!
@@ -37,7 +42,7 @@ export function getTypeCheckFunctionName(name: string) {
 export function getUniqueClientName(absoluteName: string) {
     let [ moduleName, declarationName ] = getExternalModuleNameAndExportName(absoluteName)!
     let lastName = getLastName(moduleName)
-    return moduleName.replace(".", "_") + (lastName === declarationName ? "" : "_" + declarationName)
+    return moduleName + (lastName === declarationName ? "" : "." + declarationName)
 }
 
 export function getAbsoluteName(moduleName: string, declarationName: string) {

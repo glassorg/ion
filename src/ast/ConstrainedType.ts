@@ -8,12 +8,13 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
+import * as _Array from './ion/Array';
+import * as Constraint from './Constraint';
 import * as Class from './ion/Class';
 export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: Expression.Expression | Null.Null;
-    readonly baseType: Expression.Expression;
-    readonly constraint: Expression.Expression;
+    readonly constraints: _Array.Array<Constraint.Constraint>;
     static readonly id = 'ConstrainedType';
     static readonly implements = new Set([
         'ConstrainedType',
@@ -23,31 +24,26 @@ export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpr
         'Typed',
         'Node'
     ]);
-    constructor({location = null, type = null, baseType, constraint}: {
+    constructor({location = null, type = null, constraints}: {
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
-        baseType: Expression.Expression,
-        constraint: Expression.Expression
+        constraints: _Array.Array<Constraint.Constraint>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
             throw new Error('type is not a Expression | Null: ' + Class.toString(type));
-        if (!Expression.isExpression(baseType))
-            throw new Error('baseType is not a Expression: ' + Class.toString(baseType));
-        if (!Expression.isExpression(constraint))
-            throw new Error('constraint is not a Expression: ' + Class.toString(constraint));
+        if (!_Array.isArray(constraints))
+            throw new Error('constraints is not a Array: ' + Class.toString(constraints));
         this.location = location;
         this.type = type;
-        this.baseType = baseType;
-        this.constraint = constraint;
+        this.constraints = constraints;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
-        baseType?: Expression.Expression,
-        constraint?: Expression.Expression
+        constraints?: _Array.Array<Constraint.Constraint>
     }) {
         return new ConstrainedType({
             ...this,

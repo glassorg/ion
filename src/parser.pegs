@@ -227,29 +227,27 @@ Extends
 ////////////////////////////////////////////////////////////////////////////////
 
 Type
-    = FunctionType
-    / UnionType
-    / "(" _ @Type _ ")"
+    = UnionType
 
 UnionType
-    = left:IntersectionType right:(_ "|" _ @UnionType)?
-    { return right ? node('UnionType', {left, right}) : left }
-
-IntersectionType
-    = left:ConstrainedType right:(_ "&" _ @IntersectionType)?
-    { return right ? node('IntersectionType', {left, right}) : left }
+    = types:( head:ConstrainedType+ tail:(_ "|" _ @ConstrainedType)* { return [...head, ...tail] } )
+    { return node('UnionType', { types }) }
 
 ConstrainedType
-    = baseType:TemplateReference constraint:(' ' WhereToken ' ' _ @InlineExpression)?
-    { return constraint ? node('ConstrainedType', {baseType,constraint}) : baseType }
-    / LiteralType
+    = head:Constraint tail:(_ "&" _ @Constraint)* { return node('ConstrainedType', { constraints: [head, ...tail] }) }
 
-LiteralType
-   = literal:Literal { return node('LiteralType', {literal}) }
+Constraint
+    = right:Literal
+    { return node('Constraint', {left:[], operator: '==', right}) }
+    / left:Id* _ operator:(">=" / "<=" / ">" / "<" / "==" / "!=" / "is") _ right:(Literal / Reference)
+    { return node('Constraint', {left, operator, right}) }
+    / right:(FunctionType / Reference /* Regex */)
+    { return node('Constraint', {left:[], operator: 'is', right}) }
 
 FunctionType
     = parameters:FunctionParameters _ "=>" _ returnType:Type
     { return node("FunctionType", {parameters, returnType}) }
+    / "(" _ @FunctionType _ ")"
 
 TemplateArgument
     = Type
@@ -265,14 +263,6 @@ TypeReference
 TemplateReference
     = baseType:TypeReference args:(_ @TemplateArguments)?
     { return args ? node("TemplateReference", {baseType,arguments:args}) : baseType }
-    // / "[" _ type:Type '*' _ "]"
-    // { return node("TemplateReference", {id:node('Id',{name:"Array"}), arguments:[type]}) }
-    // / "[" _ head:Type tail:(_ "," _ @Type)+ _ "]"
-    // {
-    //     //  no actual pattern yet, just types
-    //     let types = [head, ...tail]
-    //     return node("TemplateReference", {id:node('Id',{name:"Array"}), arguments:[node("UnionType", {types})], pattern:types})
-    // }
 
 Quantifier
     = "?" { return [0,1] }

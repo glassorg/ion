@@ -22,6 +22,7 @@ import { type } from "os";
 import Node from "../ast/Node";
 import IdGenerator from "../IdGenerator";
 import TypeReference from "../ast/TypeReference";
+import { Constraint } from "../ast";
 
 const opMap = {
     "|": "or",
@@ -58,8 +59,11 @@ export function getName(node) {
     if (MemberExpression.is(node)) {
         return `${getName(node.object)}.${getName(node.property)}`
     }
+    if (Constraint.is(node)) {
+        return `${node.left.map(id => id.name).join(',')} ${node.operator} ${getName(node.right)}`
+    }
     if (ConstrainedType.is(node)) {
-        return `${getName(node.baseType)} where ${getName(node.constraint)}`
+        return node.constraints.map(getName).join(' & ')
     }
     if (Parameter.is(node)) {
         return `${getName(node.id)}: ${getName(node.type)}`

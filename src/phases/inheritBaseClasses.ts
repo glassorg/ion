@@ -6,7 +6,7 @@ import Declaration from "../ast/Declaration";
 import Reference from "../ast/Reference";
 import Node from "../ast/Node";
 import { traverse } from "../Traversal";
-import { TypeReference } from "../ast";
+import { TypeReference, VariableDeclaration, Id, Literal } from "../ast";
 
 function mergeDeclarations(base: Declaration, sub: Declaration) {
     // this should actually check that the types can be merged.
@@ -71,9 +71,28 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                 let declaration = ensureDeclarationsInherited(node, node)
                 // TODO: Do we really need to track these implements here?
                 // or is there another way later to determine these?
+                let names = [getUniqueClientName(node.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
+                let typeNameDeclarations = names.map(name => {
+                    return new VariableDeclaration({
+                        location: node.location,
+                        id: new Id({ name }),
+                        assignable: false,
+                        value: new Literal({ value: true })
+                    })
+                })
                 return declaration.patch({
-                    _implements: [getUniqueClientName(node.id.name), ...declaration.baseClasses.map(d => getUniqueClientName(d.name))]
-                })    
+                    // _implements: names,
+                    declarations: [
+                        ...declaration.declarations,
+                        ...typeNameDeclarations,
+                        new VariableDeclaration({
+                            location: node.location,
+                            id: new Id({ name: "classId" }),
+                            assignable: false,
+                            value: new Literal({ value: getUniqueClientName(node.id.name) })
+                        })
+                    ],
+                })
             }
         }
     })

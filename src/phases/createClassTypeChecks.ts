@@ -11,7 +11,7 @@ import BlockStatement from "../ast/BlockStatement";
 import ReturnStatement from "../ast/ReturnStatement";
 import CallExpression from "../ast/CallExpression";
 import Declaration from "../ast/Declaration";
-import { Argument } from "../ast";
+import { Argument, BinaryExpression } from "../ast";
 
 export default function createClassTypeChecks(root: Analysis, options: Options) {
 

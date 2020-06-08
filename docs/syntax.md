@@ -38,3 +38,18 @@
         alternate
     else
         default
+
+# Inline conditional chain
+    a is Point && a.x > 0 && b is Point && b.y < 0
+
+# Converted to nested if statements which will allow us to insert new type assertions
+    if a is Point
+        (let a: Point) # VariableDeclaration & virtual == true
+        if a.x > 0
+            (let a: Point & a.x > 0)
+            if b is Point
+                (let b: Point)
+                if b.y < 0
+                    (let b: Point & b.y < 0)
+                    true
+    false

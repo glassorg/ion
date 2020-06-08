@@ -3,6 +3,6 @@ import
     ion.*
 
 export
-    type Integer = Number where . % 1 == 0
+    type Integer = Number # & fraction == 0
     # indented functions on a type indicates usage of this: Type
     #    let parse: () -> Integer

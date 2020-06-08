@@ -1,6 +1,6 @@
 import Assembly from "../../ast/Assembly";
 import { traverse, skip, remove, traverseChildren, replace, Merge, Leave, Enter } from "../../Traversal";
-import { getTypeCheckFunctionName, isTypeReference } from "../../common";
+import { getTypeCheckFunctionName, isTypeReference, isValidId, getUniqueClientName, getAbsoluteName } from "../../common";
 import ImportDeclaration from "../../ast/ImportDeclaration";
 import BinaryExpression from "../../ast/BinaryExpression";
 import Module from "../../ast/Module";
@@ -24,6 +24,7 @@ import UnionType from "../../ast/UnionType";
 import reservedWords from "./reservedWords";
 import * as ast from "../../ast";
 import Output from "../../ast/Output";
+import { createRuntimeTypeCheckExpression } from "../../phases/addIsTypeFunctions";
 
 const DO_NOT_EDIT_WARNING = `
 This file was generated from ion source. Do not edit.
@@ -84,42 +85,34 @@ function getTypeReferenceName(node) {
     else if (node.type === "BinaryExpression") {
         return getTypeReferenceName(node.left) + " " + node.operator + " " + getTypeReferenceName(node.right)
     }
+    else if (node.type === "LiteralType") {
+        return JSON.stringify(node.literal)
+    }
+    else if (node.type === "UnionType") {
+        return node.types.map(getTypeReferenceName).join(" | ")
+    }
+    else if (node.type === "Literal") {
+        return node.value.toString()
+    }
     else {
         throw new Error("Expected Identifier or MemberExpression: " + node.type)
     }
 }
-function toRuntimeTypeCheck(node, value) {
-    function call(callee) {
-        return { type: "CallExpression", callee, arguments: [ value ] }
+
+function toTypeCheckFunction(ref: Reference | ast.MemberExpression, value: ast.Expression) {
+    let callee: ast.Expression
+    if (Reference.is(ref)) {
+        callee = new Reference({ name: getTypeCheckFunctionName(ref.name) })
     }
-    
-    if (node.type === "Identifier") {
-        return call({
-            type: "Identifier",
-            name: "is" + node.name
+    else if (ast.MemberExpression.is(ref) && ast.Id.is(ref.property)) {
+        callee = ref.patch({
+            property: new ast.Id({ name: getTypeCheckFunctionName(ref.property.name)})
         })
-    }
-    else if (node.type === "MemberExpression") {
-        return call({
-            type: "MemberExpression",
-            object: node.object,
-            property: {
-                type: "Identifier",
-                name: "is" + node.property.name
-            }
-        })
-    }
-    else if (node.type === "BinaryExpression") {
-        return {
-            type: "BinaryExpression",
-            left: toRuntimeTypeCheck(node.left, value),
-            operator: node.operator == "|" ? "||" : "&&",
-            right: toRuntimeTypeCheck(node.right, value)
-        }
     }
     else {
-        throw new Error("Unrecognized node type for is : " + node.type)
+        throw new Error("Type not implemented: " + ref.type)
     }
+    return new CallExpression({ callee, arguments: [new ast.Argument({ value })] })
 }
 
 const toAstEnter: { [name: string]: Enter } = {
@@ -139,6 +132,29 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
             esnode.operator = operatorMap[node.operator] ?? node.operator
         }
         return esnode
+    },
+    Constraint(node: ast.Constraint, changes: Partial<ast.Constraint>) {
+        if (node.left.length === 0 && node.operator === "is") {
+            return changes.right!
+        }
+        else {
+            return null as any
+        }
+    },
+    ConstrainedType(node: ast.ConstrainedType, changes: Partial<ast.ConstrainedType>) {
+        for (let constraint of changes.constraints!) {
+            if (constraint != null) {
+                return constraint
+            }
+        }
+        throw new Error("Missing Constraint")
+    },
+    UnionType(node: ast.UnionType, changes: Partial<ast.UnionType>) {
+        let value = changes.types![0] as any
+        for (let i = 1; i < changes.types!.length; i++) {
+            value = { type: "BinaryExpression", left: value, operator: "|", right: changes.types![i] }
+        }
+        return value
     },
     Argument(node: ast.Argument, changes: Partial<ast.Argument>) {
         return changes.value
@@ -188,7 +204,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
             arguments: changes.arguments
         }
     },
-    ClassDeclaration(node: ClassDeclaration, changes: Partial<ClassDeclaration>) {
+    ClassDeclaration(node: ClassDeclaration, changes: Partial<ClassDeclaration>, helper, ancestors, path) {
         const isAssignable = d => d.kind === "let"
         return replace(
             maybeExport(
@@ -200,6 +216,19 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                     body: {
                         type: "ClassBody",
                         body: [
+                            // static readonly id = "ClassName"
+                            {
+                                type: "VariableDeclaration",
+                                kind: "static readonly",
+                                declarations: [{
+                                    type: "VariableDeclarator",
+                                    id: { type: "Identifier", name: "id" },
+                                    init: {
+                                        type: "Literal",
+                                        value: getUniqueClientName(getAbsoluteName(path[1], node.id.name))
+                                    }
+                                }]
+                            },
                             ...(changes.declarations ?? []).map((d: any) => {
                                 if (isAssignable(d)) {
                                     return {
@@ -209,10 +238,11 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                     }
                                 }
                                 else {
+                                    let id = d.declarations[0].id
                                     return {
                                         type: "MethodDefinition",
                                         kind: "get",
-                                        key: d.declarations[0].id,
+                                        key: isValidId(id.name) ? id : { type: "Literal", value: id.name },
                                         value: {
                                             type: "FunctionExpression",
                                             params: [],
@@ -227,36 +257,23 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                     }
                                 }
                             }),
-                            // static readonly id = "ClassName"
-                            {
-                                type: "VariableDeclaration",
-                                kind: "static readonly",
-                                declarations: [{
-                                    type: "VariableDeclarator",
-                                    id: { type: "Identifier", name: "id" },
-                                    init: {
-                                        type: "Literal",
-                                        value: node._implements[0] 
-                                    }
-                                }]
-                            },
-                            // static readonly implements = new Set(...)
-                            {
-                                type: "VariableDeclaration",
-                                kind: "static readonly",
-                                declarations: [{
-                                    type: "VariableDeclarator",
-                                    id: { type: "Identifier", name: "implements" },
-                                    init: {
-                                        type: "NewExpression",
-                                        callee: { type: "Identifier", name: "Set" },
-                                        arguments: [{                            
-                                            type: "ArrayExpression",
-                                            elements: node._implements.map(value => ({ type: "Literal", value }))
-                                        }]
-                                    }
-                                }]
-                            },
+                            // // static readonly implements = new Set(...)
+                            // {
+                            //     type: "VariableDeclaration",
+                            //     kind: "static readonly",
+                            //     declarations: [{
+                            //         type: "VariableDeclarator",
+                            //         id: { type: "Identifier", name: "implements" },
+                            //         init: {
+                            //             type: "NewExpression",
+                            //             callee: { type: "Identifier", name: "Set" },
+                            //             arguments: [{                            
+                            //                 type: "ArrayExpression",
+                            //                 elements: node._implements.map(value => ({ type: "Literal", value }))
+                            //             }]
+                            //         }
+                            //     }]
+                            // },
                             {
                                 type: "MethodDefinition",
                                 kind: "constructor",
@@ -320,7 +337,11 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                     body: {
                                         type: "BlockStatement",
                                         body: [
-                                            ...(changes.declarations ?? []).filter((d: any) => isAssignable(d) && d.declarations[0].tstype).map((d: any) => {
+                                            ...(changes.declarations ?? []).map((d: any, index) => {
+                                                if (!isAssignable(d) || d.declarations[0].tstype == null) {
+                                                    return null
+                                                }
+                                                let originalDeclaration = node.declarations[0]
                                                 let declarator = d.declarations[0]
                                                 let name = declarator.id.name
                                                 let localName = renameIfReserved(name)
@@ -330,10 +351,18 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                         type: "UnaryExpression",
                                                         operator: "!",
                                                         prefix: true,
-                                                        argument: toRuntimeTypeCheck(
-                                                            declarator.tstype,
-                                                            { type: "Identifier", name: localName }
-                                                        )
+                                                        argument: toTypescriptAst(traverse(createRuntimeTypeCheckExpression(
+                                                            originalDeclaration.type as UnionType,
+                                                            new Reference({ name: localName })
+                                                        ), {
+                                                            leave(node) {
+                                                                // Not pretty, but it works for now.
+                                                                // TODO: Make a better intermediate language.
+                                                                if (BinaryExpression.is(node) && node.operator === "is") {
+                                                                    return toTypeCheckFunction(node.right as any, new Reference({ name: localName }))
+                                                                }
+                                                            }
+                                                        }))
                                                     },
                                                     consequent: {
                                                         type: "ThrowStatement",
@@ -362,7 +391,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                                         }
                                                     }
                                                 }
-                                            }),
+                                            }).filter(d => d != null),
                                             ...(changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                                 let name = d.declarations[0].id.name
                                                 let localName = renameIfReserved(name)
@@ -410,7 +439,7 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
                                             name: "properties",
                                             tstype: {
                                                 type: "ObjectExpression",
-                                                properties: (changes.declarations ?? []).map((d: any) => {
+                                                properties: (changes.declarations ?? []).filter(isAssignable).map((d: any) => {
                                                     let declaration = d.declarations[0]
                                                     let name = declaration.id.name
                                                     return {
@@ -485,9 +514,6 @@ const toAstMerge: { [P in keyof typeof ast]?: Merge } & { default: Merge } = {
             type: "BlockStatement",
             body: changes.statements ?? [],
         }
-    },
-    ConstrainedType(node: ConstrainedType, changes: Partial<ConstrainedType>) {
-        return changes.baseType
     },
     Parameter(node: Parameter, changes: Partial<Parameter>) {
         if (node.value) {
@@ -594,6 +620,6 @@ const visitor = {
     },
 };
 
-export default function toTypescriptAst(assembly: Assembly): Output {
-    return traverse(assembly, visitor)
+export default function toTypescriptAst(node): Output {
+    return traverse(node, visitor)
 }

@@ -14,7 +14,6 @@ import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Reference from './Reference';
 import * as KeyValuePair from './KeyValuePair';
-import * as String from './ion/String';
 import * as Class from './ion/Class';
 export class ClassDeclaration implements _Object.Object , Declaration.Declaration , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
@@ -26,7 +25,6 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     readonly baseClasses: _Array.Array<Reference.Reference>;
     readonly declarations: _Array.Array<Declaration.Declaration>;
     readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
-    readonly _implements: _Array.Array<String.String>;
     static readonly id = 'ClassDeclaration';
     static readonly implements = new Set([
         'ClassDeclaration',
@@ -44,8 +42,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters = [],
         baseClasses = [],
         declarations,
-        meta = [],
-        _implements = []
+        meta = []
     }: {
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
@@ -55,8 +52,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations: _Array.Array<Declaration.Declaration>,
-        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
-        _implements?: _Array.Array<String.String>
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -76,8 +72,6 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
             throw new Error('declarations is not a Array: ' + Class.toString(declarations));
         if (!_Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
-        if (!_Array.isArray(_implements))
-            throw new Error('_implements is not a Array: ' + Class.toString(_implements));
         this.location = location;
         this.type = type;
         this.id = id;
@@ -87,7 +81,6 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         this.baseClasses = baseClasses;
         this.declarations = declarations;
         this.meta = meta;
-        this._implements = _implements;
         Object.freeze(this);
     }
     patch(properties: {
@@ -99,8 +92,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations?: _Array.Array<Declaration.Declaration>,
-        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
-        _implements?: _Array.Array<String.String>
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>
     }) {
         return new ClassDeclaration({
             ...this,
