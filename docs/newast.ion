@@ -1,0 +1,21 @@
+
+class Id
+    var name: String
+
+class Reference extends Id
+
+class Variable
+    var id: Id
+    var value: Expression | Null = null
+    var kind: "var" | "let" | "type" | "assignment" | "parameter"
+
+class Call
+    var callee: Expression
+    var arguments: Array<Expression>
+
+class Block
+    var body: Array<Statement | Expression>
+
+class Function extends Block
+    var id: Id
+    var parameters: Array<Variable>
