@@ -4,18 +4,29 @@ class Id
 
 class Reference extends Id
 
-class Variable
+class Declaration
+    var id: Id
+
+class Expression
+
+class Variable extends Declaration
     var id: Id
     var value: Expression | Null = null
     var kind: "var" | "let" | "type" | "assignment" | "parameter"
 
-class Call
+class Call extends Expression
     var callee: Expression
     var arguments: Array<Expression>
 
-class Block
+class Block extends Expression
     var body: Array<Statement | Expression>
 
 class Function extends Block
     var id: Id
     var parameters: Array<Variable>
+
+class Operation extends Expression
+    var left: Expression
+    var operator: String
+    var right: Expression
+
