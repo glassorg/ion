@@ -2,9 +2,6 @@
 This file was generated from ion source. Do not edit.
 */
 import * as _Object from './ion/Object';
-import * as TypeDeclaration from './TypeDeclaration';
-import * as VariableDeclaration from './VariableDeclaration';
-import * as Variable from './Variable';
 import * as Declaration from './Declaration';
 import * as Typed from './Typed';
 import * as Node from './Node';
@@ -12,23 +9,19 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as Id from './Id';
-import * as TypeExpression from './TypeExpression';
 import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Reference from './Reference';
 import * as KeyValuePair from './KeyValuePair';
 import * as Class from './ion/Class';
-export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDeclaration , VariableDeclaration.VariableDeclaration , Variable.Variable , Declaration.Declaration , Typed.Typed , Node.Node {
+export class ClassDeclaration implements _Object.Object , Declaration.Declaration , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: Expression.Expression | Null.Null;
     readonly id: Id.Id;
-    readonly value: TypeExpression.TypeExpression | Null.Null;
-    readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
-    readonly virtual: Boolean.Boolean;
-    readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly isStructure: Boolean.Boolean;
+    readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly baseClasses: _Array.Array<Reference.Reference>;
     readonly declarations: _Array.Array<Declaration.Declaration>;
     readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
@@ -36,9 +29,6 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
     static readonly implements = new Set([
         'ClassDeclaration',
         'ion_Object',
-        'TypeDeclaration',
-        'VariableDeclaration',
-        'Variable',
         'Declaration',
         'Typed',
         'Node'
@@ -47,12 +37,9 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
         location = null,
         type = null,
         id,
-        value = null,
-        assignable = false,
         export: _export = false,
-        virtual = false,
-        parameters = [],
         isStructure = false,
+        parameters = [],
         baseClasses = [],
         declarations,
         meta = []
@@ -60,12 +47,9 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
         id: Id.Id,
-        value?: TypeExpression.TypeExpression | Null.Null,
-        assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
-        virtual?: Boolean.Boolean,
-        parameters?: _Array.Array<Parameter.Parameter>,
         isStructure?: Boolean.Boolean,
+        parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations: _Array.Array<Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>
@@ -76,18 +60,12 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
             throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Id.isId(id))
             throw new Error('id is not a Id: ' + Class.toString(id));
-        if (!(TypeExpression.isTypeExpression(value) || Null.isNull(value)))
-            throw new Error('value is not a TypeExpression | Null: ' + Class.toString(value));
-        if (!Boolean.isBoolean(assignable))
-            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(_export))
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
-        if (!Boolean.isBoolean(virtual))
-            throw new Error('virtual is not a Boolean: ' + Class.toString(virtual));
-        if (!_Array.isArray(parameters))
-            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!Boolean.isBoolean(isStructure))
             throw new Error('isStructure is not a Boolean: ' + Class.toString(isStructure));
+        if (!_Array.isArray(parameters))
+            throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!_Array.isArray(baseClasses))
             throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
         if (!_Array.isArray(declarations))
@@ -97,12 +75,9 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
         this.location = location;
         this.type = type;
         this.id = id;
-        this.value = value;
-        this.assignable = assignable;
         this.export = _export;
-        this.virtual = virtual;
-        this.parameters = parameters;
         this.isStructure = isStructure;
+        this.parameters = parameters;
         this.baseClasses = baseClasses;
         this.declarations = declarations;
         this.meta = meta;
@@ -112,12 +87,9 @@ export class ClassDeclaration implements _Object.Object , TypeDeclaration.TypeDe
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
         id?: Id.Id,
-        value?: TypeExpression.TypeExpression | Null.Null,
-        assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
-        virtual?: Boolean.Boolean,
-        parameters?: _Array.Array<Parameter.Parameter>,
         isStructure?: Boolean.Boolean,
+        parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations?: _Array.Array<Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>

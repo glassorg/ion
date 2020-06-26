@@ -230,7 +230,7 @@ Type
     = type:UnionType
     {
         let isReference = ast.BinaryExpression.is(type) && type.operator === "is" && ast.Reference.is(type.right)
-        return isReference ? type.right : node("TypeDefinition", { expression: type })
+        return isReference ? type.right : node("TypeExpression", { value: type })
     }
 
 UnionType
@@ -262,12 +262,9 @@ TemplateArguments
     = "<" _ head:TemplateArgument tail:(_ "," _ @TemplateArgument)*  _ ">"
     { return [head, ...tail] }
 
-TypeReference
-    = Reference
-
 TemplateReference
-    = baseType:TypeReference args:(_ @TemplateArguments)?
-    { return args ? baseType.patch({ arguments: args }) : baseType }
+    = reference:Reference args:(_ @TemplateArguments)?
+    { return args ? node("TemplateReference", { reference, arguments: args }) : reference }
 
 Quantifier
     = "?" { return [0,1] }
@@ -562,8 +559,7 @@ Id
 
 Reference
     = name:IdName {
-        let isUpperCase = name[0] === name[0].toUpperCase()
-        return node( isUpperCase ? "TypeReference" : "Reference", { name })
+        return node("Reference", { name })
     }
 
 ////////////////////////////////////////////////////////////////////////////////

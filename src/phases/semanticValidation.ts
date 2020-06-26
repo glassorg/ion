@@ -4,7 +4,7 @@ import { SemanticError } from "../common";
 import TypeDeclaration from "../ast/TypeDeclaration";
 import ClassDeclaration from "../ast/ClassDeclaration";
 import VariableDeclaration from "../ast/VariableDeclaration";
-import { TypeDefinition, Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, DotExpression, ExpressionStatement } from "../ast";
+import { Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, DotExpression, ExpressionStatement, TypeExpression } from "../ast";
 
 function isUpperCase(char: string) {
     return char === char.toUpperCase()
@@ -52,14 +52,11 @@ export default function semanticValidation(root: Assembly) {
                     throw SemanticError("Variables must be lowercase", node.id)
                 }
             }
-            if (TypeDefinition.is(node)) {
+            if (TypeExpression.is(node)) {
                 return skip
             }
         },
         leave(node) {
-            // if (TypeDefinition.is(node)) {
-            //     return convertToTypeFunction(node.expression)
-            // }
             if (DotExpression.is(node)) {
                 throw SemanticError(`Dot Expression is only valid within Type Definitions`, node)
             }

@@ -3,8 +3,9 @@ import
     .*
 
 export
-    class ClassDeclaration extends TypeDeclaration
+    class ClassDeclaration extends Declaration
         var isStructure: Boolean = false
+        var parameters: Array<Parameter> = []
         var baseClasses: Array<Reference> = []
         var declarations: Array<Declaration>
         var meta: Array<KeyValuePair> = []

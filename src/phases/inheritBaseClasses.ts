@@ -6,7 +6,7 @@ import Declaration from "../ast/Declaration";
 import Reference from "../ast/Reference";
 import Node from "../ast/Node";
 import { traverse } from "../Traversal";
-import { TypeReference, VariableDeclaration, Id, Literal } from "../ast";
+import { VariableDeclaration, Id, Literal } from "../ast";
 
 function mergeDeclarations(base: Declaration, sub: Declaration) {
     // this should actually check that the types can be merged.
@@ -14,7 +14,7 @@ function mergeDeclarations(base: Declaration, sub: Declaration) {
 }
 
 // cannot extend from ion.Object until we provide ability to change reserved names.
-const rootClassReference = new TypeReference({ name: getAbsoluteName("ion.Object", "Object")})
+const rootClassReference = new Reference({ name: getAbsoluteName("ion.Object", "Object")})
 
 export default function inheritBaseClasses(root: Analysis, options: Options) {
 

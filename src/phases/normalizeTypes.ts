@@ -19,7 +19,6 @@ import ThisExpression from "../ast/ThisExpression";
 import { type } from "os";
 import Node from "../ast/Node";
 import IdGenerator from "../IdGenerator";
-import TypeReference from "../ast/TypeReference";
 
 const opMap = {
     "|": "or",
@@ -91,7 +90,7 @@ export default function normalizeTypes(root: Analysis) {
             })
             newTypeDeclarations.set(name, declaration)
         }
-        return new TypeReference({ location: node.location, name: absoluteName })
+        return new Reference({ location: node.location, name: absoluteName })
     }
     root = traverse(root, {
         merge(node, changes, helper, ancestors, path) {

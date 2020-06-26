@@ -8,13 +8,11 @@
 // import Reference from "../ast/Reference";
 // import BlockStatement from "../ast/BlockStatement";
 // import ReturnStatement from "../ast/ReturnStatement";
-// import LiteralType from "../ast/LiteralType";
 // import BinaryExpression from "../ast/BinaryExpression";
 // import CallExpression from "../ast/CallExpression";
 // import ConstrainedType from "../ast/ConstrainedType";
 // import DotExpression from "../ast/DotExpression";
 // import TypeDeclaration from "../ast/TypeDeclaration";
-// import TypeReference from "../ast/TypeReference";
 // import { Argument, Expression, MemberExpression, Literal, ThisExpression } from "../ast";
 
 // function toMemberExpressions(ids: readonly Id[], value: Expression) {

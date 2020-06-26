@@ -1,7 +1,7 @@
 import { traverse, skip } from "../Traversal";
 import { ScopeMaps } from "../createScopeMaps";
 import toposort from "../toposort";
-import { Typed, FunctionExpression, ReturnStatement, CallExpression, Expression } from "../ast";
+import { Typed, FunctionExpression, ReturnStatement, CallExpression, Expression, TemplateReference } from "../ast";
 import * as ast from "../ast";
 
 
@@ -58,11 +58,9 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     *Reference(node, scopes) {
         yield scopes.get(node)[node.name]
     },
-    *TypeReference(node, scopes) {
-        yield scopes.get(node)[node.name]
-        if (node.arguments) {
-            yield* node.arguments
-        }
+    *TemplateReference(node, scopes) {
+        yield node.reference
+        yield* node.arguments
     },
     *MemberExpression(node) {
         yield node.object

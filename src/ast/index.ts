@@ -101,20 +101,17 @@ export {
     default as Statement
 } from './Statement';
 export {
+    default as TemplateReference
+} from './TemplateReference';
+export {
     default as ThisExpression
 } from './ThisExpression';
 export {
     default as TypeDeclaration
 } from './TypeDeclaration';
 export {
-    default as TypeDefinition
-} from './TypeDefinition';
-export {
     default as TypeExpression
 } from './TypeExpression';
-export {
-    default as TypeReference
-} from './TypeReference';
 export {
     default as Typed
 } from './Typed';

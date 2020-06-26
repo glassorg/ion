@@ -11,6 +11,7 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as Id from './Id';
+import * as Reference from './Reference';
 import * as TypeExpression from './TypeExpression';
 import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
@@ -20,7 +21,7 @@ export class TypeDeclaration implements _Object.Object , VariableDeclaration.Var
     readonly location: Location.Location | Null.Null;
     readonly type: Expression.Expression | Null.Null;
     readonly id: Id.Id;
-    readonly value: TypeExpression.TypeExpression | Null.Null;
+    readonly value: Reference.Reference | TypeExpression.TypeExpression;
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
     readonly virtual: Boolean.Boolean;
@@ -39,7 +40,7 @@ export class TypeDeclaration implements _Object.Object , VariableDeclaration.Var
         location = null,
         type = null,
         id,
-        value = null,
+        value,
         assignable = false,
         export: _export = false,
         virtual = false,
@@ -48,7 +49,7 @@ export class TypeDeclaration implements _Object.Object , VariableDeclaration.Var
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
         id: Id.Id,
-        value?: TypeExpression.TypeExpression | Null.Null,
+        value: Reference.Reference | TypeExpression.TypeExpression,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
         virtual?: Boolean.Boolean,
@@ -60,8 +61,8 @@ export class TypeDeclaration implements _Object.Object , VariableDeclaration.Var
             throw new Error('type is not a Expression | Null: ' + Class.toString(type));
         if (!Id.isId(id))
             throw new Error('id is not a Id: ' + Class.toString(id));
-        if (!(TypeExpression.isTypeExpression(value) || Null.isNull(value)))
-            throw new Error('value is not a TypeExpression | Null: ' + Class.toString(value));
+        if (!(Reference.isReference(value) || TypeExpression.isTypeExpression(value)))
+            throw new Error('value is not a Reference | TypeExpression: ' + Class.toString(value));
         if (!Boolean.isBoolean(assignable))
             throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(_export))
@@ -84,7 +85,7 @@ export class TypeDeclaration implements _Object.Object , VariableDeclaration.Var
         location?: Location.Location | Null.Null,
         type?: Expression.Expression | Null.Null,
         id?: Id.Id,
-        value?: TypeExpression.TypeExpression | Null.Null,
+        value?: Reference.Reference | TypeExpression.TypeExpression,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
         virtual?: Boolean.Boolean,

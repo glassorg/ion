@@ -10,7 +10,7 @@ import simplify from "./simplify";
 import { getAbsoluteName, SemanticError } from "../common";
 
 function getTypeReference(name: string) {
-    return new ast.TypeReference({ name: getAbsoluteName(`ion.${name}`, name)})
+    return new ast.Reference({ name: getAbsoluteName(`ion.${name}`, name)})
 }
 
 const literalTypes = {
