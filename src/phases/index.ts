@@ -26,6 +26,6 @@ export default [
     // post most analysis
     // createClassTypeChecks,
     // // normalizeTypes,
-    // inferTypes,
+    inferTypes,
     // checkReferences,
 ]

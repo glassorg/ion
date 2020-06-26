@@ -7,18 +7,35 @@ import * as ast from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes from "./getSortedTypedNodes";
 
-const ops = {
+const binaryOps = {
+    "|": (a, b) => a || b,
+    "&": (a, b) => a && b,
     "+": (a, b) => a + b,
     "-": (a, b) => a - b,
     "*": (a, b) => a * b,
     "/": (a, b) => a / b,
+    "^": (a, b) => a ** b,
+}
+
+const unaryOps = {
+    "not": (a) => !a,
+    "+": (a) => +a,
+    "-": (a) => -a,
 }
 
 // that is some typescript kung fu right there.
 export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
-    BinaryExpression(node) {
-        if (Literal.is(node.left) && Literal.is(node.right)) {
-            let value = ops[node.operator](node.left.value, node.right.value)
+    BinaryExpression(node, resolved) {
+        let left = resolved.get(node.left)
+        let right = resolved.get(node.right)
+        if (Literal.is(left) && Literal.is(right)) {
+            let value = binaryOps[node.operator](left.value, right.value)
+            return new Literal({ location: node.location, value })
+        }
+    },
+    UnaryExpression(node) {
+        if (Literal.is(node.argument)) {
+            let value = unaryOps[node.operator](node.argument)
             return new Literal({ location: node.location, value })
         }
     },
@@ -40,8 +57,6 @@ export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typ
     },
     CallExpression(node) {
     },
-    UnaryExpression(node) {
-    }
 }
 
 export default function simplify(node: Expression, resolved: Map<ast.Node,ast.Node>, scopes: ScopeMaps) {

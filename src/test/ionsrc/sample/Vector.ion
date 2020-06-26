@@ -2,16 +2,19 @@ import
     ion.*
 
 export
-    # type Foo = Number | String
-    class Vector
-        var a: Integer & . >= 0
-        var x: Number | String = 0
-    #     var y: Number = 0
-    #     let length: Number = (x ^ 2 + y ^ 2) ^ 0.5
-    #     let constant: Number = 10
-
-    let foo = (value: String | Number) =>
-        if value is String & value.length > 10
-            "String"
-        else
-            "Number"
+    let pi = 1 + 4 / 2
+    # type Whole = Integer & . >= 0
+    # type Positive = Whole & . > 1
+    # type Negative = Integer & < 0
+    # class Vector
+    #     var x: Whole
+    #     var y: Positive
+    #     var z: Negative
+    #     let dx = x * pi
+    # let double = (value: Whole) => value * 2
+    # let bar = (value: Positive) => double(value)
+    # let foo = (value: String | Number) =>
+    #     if value is String & value.length > 10
+    #         "String"
+    #     else
+    #         "Number"

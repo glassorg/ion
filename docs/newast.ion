@@ -42,10 +42,11 @@ let PositiveVector =
 
 no bitwise operators means we can use the shorter versions for logical operators
 
-not     logical not
-or      logical or
-and     logical and
-xor     logical xor
+
+|       logical or
+&       logical and
+not     logical not # could be a function
+xor     logical xor # could be done with juxtaposition operator: foo xor bar
 
 +       addition, unary plus
 -       subtraction, unary minus

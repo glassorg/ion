@@ -14,7 +14,7 @@ function mergeDeclarations(base: Declaration, sub: Declaration) {
 }
 
 // cannot extend from ion.Object until we provide ability to change reserved names.
-const rootClassReference = new Reference({ name: getAbsoluteName("ion.Object", "Object")})
+// const rootClassReference = new Reference({ name: getAbsoluteName("ion.Object", "Object")})
 
 export default function inheritBaseClasses(root: Analysis, options: Options) {
 
@@ -28,7 +28,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             }
             inprogress.add(classDeclaration)
             let baseDeclarations = new Map<string, Declaration>()
-            let baseClasses = new Map<string,Reference>([rootClassReference, ...classDeclaration.baseClasses].map(r => [r.name, r]))
+            let baseClasses = new Map<string,Reference>([...classDeclaration.baseClasses].map(r => [r.name, r]))
             function addDeclarations(declarations: readonly Declaration[]) {
                 for (let declaration of declarations) {
                     let current = baseDeclarations.get(declaration.id.name)

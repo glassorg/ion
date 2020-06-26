@@ -21,43 +21,44 @@ const literalTypes = {
 }
 
 // that is some typescript kung fu right there.
-export const inferType: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
-    BinaryExpression(node, resolved) {
+export const inferType: { [P in keyof typeof ast]?: (originalNode: InstanceType<typeof ast[P]>, currentNode: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
+    BinaryExpression(originalNode, currentNode, resolved) {
         // for now just use the left type
-        return resolved.get(node.left).type
+        return resolved.get(originalNode.left).type
     },
-    Literal(node) {
-        let type = literalTypes[typeof node.value]
+    Literal(originalNode, currentNode) {
+        let jstypeof = typeof currentNode.value
+        let type = literalTypes[jstypeof]
         if (type == null) {
-            throw SemanticError(`Cannot find type`, type)
+            throw SemanticError(`Cannot find type ${jstypeof}`, type)
         }
         return type
     },
-    ClassDeclaration(node) {
+    ClassDeclaration(originalNode) {
     },
-    Parameter(node) {
+    Parameter(originalNode) {
     },
-    VariableDeclaration(node, resolved) {
-        if (node.value) {
-            let value = resolved.get(node.value)
+    VariableDeclaration(originalNode, currentNode, resolved) {
+        if (originalNode.value) {
+            let value = resolved.get(originalNode.value)
             return value.type
         }
     },
-    FunctionExpression(node) {
+    FunctionExpression(originalNode) {
     },
-    Reference(node, resolved, scopes) {
-        let scope = scopes.get(node)
-        let declaration = resolved.get(scope[node.name])
+    Reference(originalNode, currentNode, resolved, scopes) {
+        let scope = scopes.get(originalNode)
+        let declaration = resolved.get(scope[originalNode.name])
         return declaration.type
     },
-    MemberExpression(node) {
+    MemberExpression(originalNode) {
     },
-    ArrayExpression(node) {
+    ArrayExpression(originalNode) {
     },
-    CallExpression(node) {
+    CallExpression(originalNode) {
     },
-    UnaryExpression(node) {
-        return node.argument.type
+    UnaryExpression(originalNode) {
+        return originalNode.argument.type
     }
 }
 
@@ -65,22 +66,23 @@ export default function inferTypes(root: Analysis) {
     let scopes = createScopeMaps(root)
     let resolved = new Map<ast.Typed,ast.Node>()
     let sorted = getSortedTypedNodes(root, scopes)
-    for (let node of sorted) {
+    for (let originalNode of sorted) {
         // first try to simplify
-        let result = simplify(node, resolved, scopes) ?? node
-        resolved.set(node, result)
+        let currentNode = simplify(originalNode, resolved, scopes) ?? originalNode
+        resolved.set(originalNode, currentNode)
         // then try to infer types
-        if (result.type == null) {
-            let func = inferType[result.constructor.name]
+        if (currentNode.type == null) {
+            let func = inferType[currentNode.constructor.name]
             let type = func?.(
-                node,   // Must be original node else scopes won't work
+                originalNode,   // Must be original node else scopes won't work
+                currentNode,
                 resolved,
                 scopes
             )
             if (type != null) {
-                result = node.patch({ type })
-                resolved.set(node, result)
+                currentNode = currentNode.patch({ type })
             }
+            resolved.set(originalNode, currentNode)
         }
     }
 
