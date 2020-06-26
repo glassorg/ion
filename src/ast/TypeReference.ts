@@ -11,12 +11,13 @@ import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
+import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
 export class TypeReference implements _Object.Object , Reference.Reference , TypeExpression.TypeExpression , Id.Id , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
     readonly type: Expression.Expression | Null.Null;
-    readonly original: TypeExpression.TypeExpression | Null.Null;
+    readonly arguments: _Array.Array<TypeExpression.TypeExpression> | Null.Null;
     static readonly id = 'TypeReference';
     static readonly implements = new Set([
         'TypeReference',
@@ -28,11 +29,16 @@ export class TypeReference implements _Object.Object , Reference.Reference , Typ
         'Node',
         'Typed'
     ]);
-    constructor({location = null, name, type = null, original = null}: {
+    constructor({
+        location = null,
+        name,
+        type = null,
+        arguments: _arguments = null
+    }: {
         location?: Location.Location | Null.Null,
         name: String.String,
         type?: Expression.Expression | Null.Null,
-        original?: TypeExpression.TypeExpression | Null.Null
+        arguments?: _Array.Array<TypeExpression.TypeExpression> | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -40,19 +46,19 @@ export class TypeReference implements _Object.Object , Reference.Reference , Typ
             throw new Error('name is not a String: ' + Class.toString(name));
         if (!(Expression.isExpression(type) || Null.isNull(type)))
             throw new Error('type is not a Expression | Null: ' + Class.toString(type));
-        if (!(TypeExpression.isTypeExpression(original) || Null.isNull(original)))
-            throw new Error('original is not a TypeExpression | Null: ' + Class.toString(original));
+        if (!(_Array.isArray(_arguments) || Null.isNull(_arguments)))
+            throw new Error('arguments is not a Array | Null: ' + Class.toString(_arguments));
         this.location = location;
         this.name = name;
         this.type = type;
-        this.original = original;
+        this.arguments = _arguments;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
         name?: String.String,
         type?: Expression.Expression | Null.Null,
-        original?: TypeExpression.TypeExpression | Null.Null
+        arguments?: _Array.Array<TypeExpression.TypeExpression> | Null.Null
     }) {
         return new TypeReference({
             ...this,

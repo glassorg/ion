@@ -3,7 +3,6 @@ import { traverse, skip } from "../Traversal";
 import Analysis from "../ast/Analysis";
 import Expression from "../ast/Expression";
 import Literal from "../ast/Literal";
-import LiteralType from "../ast/LiteralType";
 import * as ast from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes from "./getSortedTypedNodes";
@@ -23,8 +22,6 @@ export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typ
             return new Literal({ location: node.location, value })
         }
     },
-    UnionType(node) {
-    },
     Literal(node) {
     },
     ClassDeclaration(node) {
@@ -42,10 +39,6 @@ export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typ
     ArrayExpression(node) {
     },
     CallExpression(node) {
-    },
-    TemplateReference(node) {
-    },
-    ConstrainedType(node) {
     },
     UnaryExpression(node) {
     }

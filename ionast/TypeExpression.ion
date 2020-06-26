@@ -2,5 +2,12 @@ import
     ion.*
     .*
 
+# TypeDeclaration
+#   
+# TypeExpression ->
+#   - TemplateReference -> merge with TypeReference.
+#   + TypeReference
+#   + TypeDefinition
+#       => FunctionType -> must be hosted within TypeDefinition
 export
     class TypeExpression extends Expression

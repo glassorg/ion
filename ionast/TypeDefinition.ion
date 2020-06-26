@@ -1,0 +1,7 @@
+import
+    .*
+    ion.*
+
+export
+    class TypeDefinition extends TypeExpression
+        var expression: Expression

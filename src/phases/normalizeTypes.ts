@@ -8,10 +8,8 @@ import Reference from "../ast/Reference";
 import TypeExpression from "../ast/TypeExpression";
 import BinaryExpression from "../ast/BinaryExpression";
 import ClassDeclaration from "../ast/ClassDeclaration";
-import ConstrainedType from "../ast/ConstrainedType";
 import Expression from "../ast/Expression";
 import Literal from "../ast/Literal";
-import LiteralType from "../ast/LiteralType";
 import MemberExpression from "../ast/MemberExpression";
 import Id from "../ast/Id";
 import FunctionType from "../ast/FunctionType";
@@ -22,7 +20,6 @@ import { type } from "os";
 import Node from "../ast/Node";
 import IdGenerator from "../IdGenerator";
 import TypeReference from "../ast/TypeReference";
-import { Constraint } from "../ast";
 
 const opMap = {
     "|": "or",
@@ -47,9 +44,6 @@ export function getName(node) {
     if (Literal.is(node)) {
         return JSON.stringify(node.value)
     }
-    if (LiteralType.is(node)) {
-        return getName(node.literal)
-    }
     if (BinaryExpression.is(node)) {
         return `${getName(node.left)} ${opMap[node.operator] ?? node.operator} ${getName(node.right)}`
     }
@@ -58,12 +52,6 @@ export function getName(node) {
     }
     if (MemberExpression.is(node)) {
         return `${getName(node.object)}.${getName(node.property)}`
-    }
-    if (Constraint.is(node)) {
-        return `${node.left.map(id => id.name).join(',')} ${node.operator} ${getName(node.right)}`
-    }
-    if (ConstrainedType.is(node)) {
-        return node.constraints.map(getName).join(' & ')
     }
     if (Parameter.is(node)) {
         return `${getName(node.id)}: ${getName(node.type)}`
@@ -103,7 +91,7 @@ export default function normalizeTypes(root: Analysis) {
             })
             newTypeDeclarations.set(name, declaration)
         }
-        return new TypeReference({ location: node.location, name: absoluteName, original: node })
+        return new TypeReference({ location: node.location, name: absoluteName })
     }
     root = traverse(root, {
         merge(node, changes, helper, ancestors, path) {

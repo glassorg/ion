@@ -227,22 +227,27 @@ Extends
 ////////////////////////////////////////////////////////////////////////////////
 
 Type
-    = UnionType
+    = type:UnionType
+    {
+        let isReference = ast.BinaryExpression.is(type) && type.operator === "is" && ast.Reference.is(type.right)
+        return isReference ? type.right : node("TypeDefinition", { expression: type })
+    }
 
 UnionType
-    = types:( head:ConstrainedType+ tail:(_ "|" _ @ConstrainedType)* { return [...head, ...tail] } )
-    { return node('UnionType', { types }) }
+    = left:ConstrainedType right:(_ "|" _ @UnionType)?
+    { return right ? node('BinaryExpression', { left, operator: "|", right }) : left }
 
 ConstrainedType
-    = head:Constraint tail:(_ "&" _ @Constraint)* { return node('ConstrainedType', { constraints: [head, ...tail] }) }
+    = left:Constraint right:(_ "&" _ @ConstrainedType)?
+    { return right ? node('BinaryExpression', { left, operator: "&", right }) : left }
 
 Constraint
     = right:Literal
-    { return node('Constraint', {left:[], operator: '==', right}) }
-    / left:Id* _ operator:(">=" / "<=" / ">" / "<" / "==" / "!=" / "is") _ right:(Literal / Reference)
-    { return node('Constraint', {left, operator, right}) }
+    { return node('BinaryExpression', { left: node('DotExpression'), operator: '==', right }) }
+    / left:MemberExpression? _ operator:(">=" / "<=" / ">" / "<" / "==" / "!=" / "is") _ right:MemberExpression
+    { return node('BinaryExpression', { left: left || node('DotExpression'), operator, right }) }
     / right:(FunctionType / Reference /* Regex */)
-    { return node('Constraint', {left:[], operator: 'is', right}) }
+    { return node('BinaryExpression', { left:node('DotExpression'), operator: 'is', right }) }
 
 FunctionType
     = parameters:FunctionParameters _ "=>" _ returnType:Type
@@ -258,11 +263,11 @@ TemplateArguments
     { return [head, ...tail] }
 
 TypeReference
-    = ref:Reference { return node("TypeReference", { name: ref.name }) }
+    = Reference
 
 TemplateReference
     = baseType:TypeReference args:(_ @TemplateArguments)?
-    { return args ? node("TemplateReference", {baseType,arguments:args}) : baseType }
+    { return args ? baseType.patch({ arguments: args }) : baseType }
 
 Quantifier
     = "?" { return [0,1] }
@@ -334,14 +339,14 @@ EqualityExpression
     { return buildBinaryExpression(head, tail) }
 
 LogicalAndOperator
-    = AndToken
+    = "&"
 
 LogicalAndExpression
     = head:EqualityExpression tail:(_ LogicalAndOperator _ EqualityExpression)*
     { return buildBinaryExpression(head, tail) }
 
 LogicalOrOperator
-    = OrToken / XorToken
+    = "|" / XorToken
 
 LogicalOrExpression
     = head:LogicalAndExpression tail:(_ LogicalOrOperator _ LogicalAndExpression)*
@@ -556,7 +561,10 @@ Id
     = name:IdName { return node('Id', { name }) }
 
 Reference
-    = name:IdName { return node("Reference", { name }) }
+    = name:IdName {
+        let isUpperCase = name[0] === name[0].toUpperCase()
+        return node( isUpperCase ? "TypeReference" : "Reference", { name })
+    }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Tokens and Keywords

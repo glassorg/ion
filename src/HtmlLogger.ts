@@ -14,7 +14,7 @@ function ignore(property) {
     if (property == null) {
         debugger
     }
-    return ignoreProperties[property] || property.startsWith("_") || /\bion\b/.test(property)
+    return ignoreProperties[property] || property.startsWith("_") //|| /\bion\b/.test(property)
 }
 
 export function stringify(object, indent = 2) {

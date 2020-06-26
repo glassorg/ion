@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class LiteralType extends TypeExpression
-        var literal: Literal

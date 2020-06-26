@@ -4,6 +4,7 @@ import
 
 export
     class TypeReference extends Reference, TypeExpression
+        var arguments: Array<TypeExpression> | Null = null
         # for analysis we normalize types to references
         # but we retain the original expression for the final typescript
-        let original: TypeExpression | Null = null
+        # let original: TypeExpression | Null = null

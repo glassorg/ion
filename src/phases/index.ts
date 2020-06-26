@@ -1,7 +1,7 @@
 import parsing from "./parsing";
 import semanticValidation from "./semanticValidation";
 import importResolution from "./importResolution";
-import addIsTypeFunctions from "./addIsTypeFunctions";
+// import addIsTypeFunctions from "./addIsTypeFunctions";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
@@ -16,15 +16,16 @@ export default [
     parsing,
     semanticValidation,
     importResolution,
+    // <- here, prior to adding implicit returns, we could convert expressions first
     addImplicitReturns,
-    addIsTypeFunctions,
-    // analysis stage
+    // addIsTypeFunctions,
+    // // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,
     inheritBaseClasses,
     // post most analysis
-    createClassTypeChecks,
-    // normalizeTypes,
-    inferTypes,
-    checkReferences,
+    // createClassTypeChecks,
+    // // normalizeTypes,
+    // inferTypes,
+    // checkReferences,
 ]

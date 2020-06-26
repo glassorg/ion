@@ -4,8 +4,11 @@ class Id
 
 class Reference extends Id
 
-class Variable
+class Declaration
     var id: Id
+    var export: Boolean = false
+
+class Variable extends Declaration
     var value: Expression | Null = null
     var kind: "var" | "let" | "type" | "assignment" | "parameter"
 
@@ -14,8 +17,48 @@ class Call
     var arguments: Array<Expression>
 
 class Block
-    var body: Array<Statement | Expression>
+    var body: Array<Statement>
 
 class Function extends Block
     var id: Id
     var parameters: Array<Variable>
+
+# CompileTime TypeAST
+# TypeDeclaration....
+
+let PositiveVector =
+    Vector & x > 0 & y > 0 | Point & x == 0
+    Vector && x > 0 && y > 0 || Point && x == 0
+    . is Vector && .x > 0 && .y > 0
+
+    if . is Vector
+        if .x > 0
+            if .y > 0
+                true
+    if . is Point
+        if .x == 0
+            true
+    false
+
+no bitwise operators means we can use the shorter versions for logical operators
+
+not     logical not
+or      logical or
+and     logical and
+xor     logical xor
+
++       addition, unary plus
+-       subtraction, unary minus
+*       multiplication
+/       division
+%       modulus
+^       exponentiation
+
+==      equals
+!=      not equals
+<       less than
+>       greater than
+<=      less than or equal
+>=      greater than or equal
+
+=       assignment

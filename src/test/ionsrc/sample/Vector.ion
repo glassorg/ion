@@ -4,13 +4,14 @@ import
 export
     # type Foo = Number | String
     class Vector
+        var a: Integer & . >= 0
         var x: Number | String = 0
-        # var y: Number = 0
+    #     var y: Number = 0
     #     let length: Number = (x ^ 2 + y ^ 2) ^ 0.5
     #     let constant: Number = 10
 
-    # let toString = (value: String | Number) =>
-    #     if value is String
-    #         "String"
-    #     else
-    #         "Number"
+    let foo = (value: String | Number) =>
+        if value is String & value.length > 10
+            "String"
+        else
+            "Number"

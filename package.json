@@ -29,6 +29,7 @@
         "deploy": "yarn build && yarn publish --patch"
     },
     "dependencies": {
+        "@glas/test": "^1.0.3",
         "escodegen": "^1.14.1",
         "jsondiffpatch": "0.2.5",
         "pegs": "^0.1.1"

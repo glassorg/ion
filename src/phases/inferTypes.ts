@@ -3,7 +3,6 @@ import { traverse, skip } from "../Traversal";
 import Analysis from "../ast/Analysis";
 import Expression from "../ast/Expression";
 import Literal from "../ast/Literal";
-import LiteralType from "../ast/LiteralType";
 import * as ast from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes from "./getSortedTypedNodes";
@@ -26,8 +25,6 @@ export const inferType: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[
     BinaryExpression(node, resolved) {
         // for now just use the left type
         return resolved.get(node.left).type
-    },
-    UnionType(node) {
     },
     Literal(node) {
         let type = literalTypes[typeof node.value]
@@ -58,10 +55,6 @@ export const inferType: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[
     ArrayExpression(node) {
     },
     CallExpression(node) {
-    },
-    TemplateReference(node) {
-    },
-    ConstrainedType(node) {
     },
     UnaryExpression(node) {
         return node.argument.type

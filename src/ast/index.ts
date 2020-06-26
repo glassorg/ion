@@ -32,12 +32,6 @@ export {
     default as ConditionalExpression
 } from './ConditionalExpression';
 export {
-    default as ConstrainedType
-} from './ConstrainedType';
-export {
-    default as Constraint
-} from './Constraint';
-export {
     default as Declaration
 } from './Declaration';
 export {
@@ -74,9 +68,6 @@ export {
     default as Literal
 } from './Literal';
 export {
-    default as LiteralType
-} from './LiteralType';
-export {
     default as Location
 } from './Location';
 export {
@@ -110,14 +101,14 @@ export {
     default as Statement
 } from './Statement';
 export {
-    default as TemplateReference
-} from './TemplateReference';
-export {
     default as ThisExpression
 } from './ThisExpression';
 export {
     default as TypeDeclaration
 } from './TypeDeclaration';
+export {
+    default as TypeDefinition
+} from './TypeDefinition';
 export {
     default as TypeExpression
 } from './TypeExpression';
@@ -130,9 +121,6 @@ export {
 export {
     default as UnaryExpression
 } from './UnaryExpression';
-export {
-    default as UnionType
-} from './UnionType';
 export {
     default as Variable
 } from './Variable';

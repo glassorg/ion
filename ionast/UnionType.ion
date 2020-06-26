@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class UnionType extends TypeExpression
-        var types: Array<ConstrainedType>

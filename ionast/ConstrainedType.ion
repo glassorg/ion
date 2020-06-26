@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class ConstrainedType extends TypeExpression
-        var constraints: Array<Constraint>

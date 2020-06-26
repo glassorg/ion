@@ -28,9 +28,6 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         yield node.left
         yield node.right
     },
-    *UnionType(node) {
-        yield* node.types
-    },
     *Literal(node) {
     },
     *ClassDeclaration(node) {
@@ -61,6 +58,12 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     *Reference(node, scopes) {
         yield scopes.get(node)[node.name]
     },
+    *TypeReference(node, scopes) {
+        yield scopes.get(node)[node.name]
+        if (node.arguments) {
+            yield* node.arguments
+        }
+    },
     *MemberExpression(node) {
         yield node.object
         if (Expression.is(node.property)) {
@@ -75,12 +78,6 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         for (let arg of node.arguments) {
             yield arg.value
         }
-    },
-    *TemplateReference(node) {
-        yield node.baseType
-        yield* node.arguments
-    },
-    *ConstrainedType(node) {
     },
     *UnaryExpression(node) {
         yield node.argument

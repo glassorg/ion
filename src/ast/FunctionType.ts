@@ -2,7 +2,6 @@
 This file was generated from ion source. Do not edit.
 */
 import * as _Object from './ion/Object';
-import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Typed from './Typed';
 import * as Node from './Node';
@@ -11,7 +10,7 @@ import * as Null from './ion/Null';
 import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
-export class FunctionType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Typed.Typed , Node.Node {
+export class FunctionType implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: Expression.Expression | Null.Null;
     readonly parameters: _Array.Array<Parameter.Parameter>;
@@ -20,7 +19,6 @@ export class FunctionType implements _Object.Object , TypeExpression.TypeExpress
     static readonly implements = new Set([
         'FunctionType',
         'ion_Object',
-        'TypeExpression',
         'Expression',
         'Typed',
         'Node'

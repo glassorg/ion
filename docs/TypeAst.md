@@ -1,15 +1,4 @@
 
-class UnionType
-    var types: Array<ConstrainedType>
-
-class ConstrainedType
-    var constraints: Array<Constraint>
-
-class Constraint
-    var left: Array<Id>
-    var operator: ">=" | "<=" | ">" | "<" | "==" | "!=" | "is"
-    var right: Literal | Reference | Null
-
 let string: /[a-zA-Z\.]+@[a-zA-Z\.]+/
 
 What, conceptually, is a "Type"?
