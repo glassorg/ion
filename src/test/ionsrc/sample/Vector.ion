@@ -3,18 +3,18 @@ import
 
 export
     let pi = 1 + 4 / 2
-    # type Whole = Integer & . >= 0
-    # type Positive = Whole & . > 1
-    # type Negative = Integer & < 0
-    # class Vector
-    #     var x: Whole
-    #     var y: Positive
-    #     var z: Negative
-    #     let dx = x * pi
-    # let double = (value: Whole) => value * 2
-    # let bar = (value: Positive) => double(value)
-    # let foo = (value: String | Number) =>
-    #     if value is String & value.length > 10
-    #         "String"
-    #     else
-    #         "Number"
+    type Whole = Integer & . >= 0
+    type Positive = Whole & . > 1
+    type Negative = Integer & < 0
+    class Vector
+        var x: Whole
+        var y: Positive
+        var z: Negative
+        let dx = x * pi
+    let double = (value: Whole) => value * 2
+    let bar = (value: Positive) => double(value)
+    let foo = (value: String | Number) =>
+        if value is String & value.length > 10
+            "String"
+        else
+            "Number"

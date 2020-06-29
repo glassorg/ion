@@ -55,7 +55,7 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Add Implicit ReturnStatement within functions.
     - Do we allow numeric style operations on other classes like Vectors etc?
       Perform Basic Type Inference.
-      Finalize Initial Type System Design.
+    X Finalize Initial Type System Design.
     X Generate 'this' in class variable functions that reference it.
       Handle 'this' in exported functions.
     X Add implicit 'this.' values for references to instance variables.
@@ -65,6 +65,7 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Migrate Runtime checks to use above format.
     -   Next step is to add a way to define static variables... on classes?
     X   Or else just remove the _implements and leave the id value and use that.
-
-      Remove old types
-      Use new types
+    X Remove old types
+    X Use new types
+      Infer Types, Keep it going, infer them all.
+      toCodeString function memoize

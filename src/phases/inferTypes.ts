@@ -36,7 +36,8 @@ export const inferType: { [P in keyof typeof ast]?: (originalNode: InstanceType<
     },
     ClassDeclaration(originalNode) {
     },
-    Parameter(originalNode) {
+    Parameter(originalNode, currentNode, resolved, scope) {
+        return inferType.VariableDeclaration?.apply(this, arguments as any)
     },
     VariableDeclaration(originalNode, currentNode, resolved) {
         if (originalNode.value) {

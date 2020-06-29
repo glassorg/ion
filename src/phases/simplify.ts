@@ -15,12 +15,14 @@ const binaryOps = {
     "*": (a, b) => a * b,
     "/": (a, b) => a / b,
     "^": (a, b) => a ** b,
+    "xor": (a, b) => a ^ b,
 }
 
 const unaryOps = {
     "not": (a) => !a,
     "+": (a) => +a,
     "-": (a) => -a,
+    "~": (a) => ~a,
 }
 
 // that is some typescript kung fu right there.
