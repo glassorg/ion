@@ -18,14 +18,14 @@ export function isTypeReference(node): node is Reference {
     return first === first.toUpperCase()
 }
 
-export function memoize<A extends (arg: B) => C, B, C>(fn: A, cache: Map<B, C> = new Map()): A {
-    return (function(this, arg) {
+export function memoize<A extends object, B>(fn: (a: A) => B, cache: WeakMap<A, B> = new WeakMap()): (a: A) => B {
+    return function(this, arg) {
         let result = cache.get(arg)
         if (result === undefined) {
             cache.set(arg, result = fn.apply(this, arguments as any))
         }
         return result
-    } as any as A)
+    }
 }
 
 export function getLastName(absoluteName: string) {
