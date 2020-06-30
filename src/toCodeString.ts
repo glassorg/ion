@@ -16,6 +16,9 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
         }
         return `${s(node.value)}`
     },
+    Literal(node) {
+        return JSON.stringify(node.value)
+    },
     BinaryExpression(node) {
         return `(${s(node.left)} ${node.operator} ${s(node.right)})`
     },
