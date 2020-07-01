@@ -151,19 +151,19 @@ export default function isConsequent(a: Expression, b: Expression): true | false
                     }
                 }
             }
-            if (a.operator === "|") {
-                return same(isConsequent(a.left, b), isConsequent(a.right, b))
-            }
-            if (b.operator === "&") {
-                return min(isConsequent(a, b.left), isConsequent(a, b.right))
-            }
-            if (b.operator === "|") {
-                return max(isConsequent(a, b.left), isConsequent(a, b.right))
-            }
-            if (a.operator === "&") {
-                return max(isConsequent(a.left, b), isConsequent(a.right, b))
-            }
         }
     }
-    return null
+    if (BinaryExpression.is(a) && a.operator === "|") {
+        return same(isConsequent(a.left, b), isConsequent(a.right, b))
+    }
+    if (BinaryExpression.is(b) && b.operator === "&") {
+        return min(isConsequent(a, b.left), isConsequent(a, b.right))
+    }
+    if (BinaryExpression.is(b) && b.operator === "|") {
+        return max(isConsequent(a, b.left), isConsequent(a, b.right))
+    }
+    if (BinaryExpression.is(a) && a.operator === "&") {
+        return max(isConsequent(a.left, b), isConsequent(a.right, b))
+    }
+return null
 }

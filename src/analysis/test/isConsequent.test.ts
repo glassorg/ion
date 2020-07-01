@@ -3,14 +3,22 @@ import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, Cal
 import toCodeString from "../../toCodeString"
 import isConsequent from "../isConsequent"
 
+function toExpression(e: string | number | Expression) {
+    if (!Expression.is(e)) {
+        e = typeof e === 'string' ? new Reference({ name: e }) : new Literal({ value: e })
+    }
+    return e
+}
 function b(left: string | Expression, operator: string, right: string | number | Expression) {
-    if (!Expression.is(left)) {
-        left = new Reference({ name: left })
-    }
-    if (!Expression.is(right)) {
-        right = typeof right === 'string' ? new Reference({ name: right }) : new Literal({ value: right })
-    }
+    left = toExpression(left)
+    right = toExpression(right)
     return new BinaryExpression({ left, operator, right })
+}
+function c(callee, ...args: Array<string | number | Expression>) {
+    return new CallExpression({
+        callee: toExpression(callee),
+        arguments: args.map(toExpression).map(value => new Argument({ value }))
+    })
 }
 function test(a: Expression, b: Expression, ab_expected: true | false | null, ba_expected: true | false | null) {
     const ab_actual = isConsequent(a, b)
@@ -85,5 +93,10 @@ test(
     null,
     true
 )
-
+test(
+    b(c("foo", 1, 2), "&", c("bar", 3, 4)),
+    c("foo", 1, 2),
+    true,
+    null
+)
 
