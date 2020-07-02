@@ -2,20 +2,23 @@ import
     ion.*
 
 export
-    let pi = 1 + 4 / 2
-    type Whole = Integer & . >= 0
-    type Positive = Whole & . > 1
-    type Negative = Integer & < 0
-    class BaseClass
-        var x: Whole
-    class Vector extends BaseClass
-        var y: Positive
-        var z: Negative
-        let dx = x * pi
-    let double = (value: Whole) => value * 2
-    let bar = (value: Positive) => double(value)
-    let foo = (value: String | Number) =>
-        if value is String & value.length > 10
-            "String"
-        else
-            "Number"
+    class Person
+        var name: String
+    let toString = (person: Person) => person.name
+    # let pi = 1 + 4 / 2
+    # type Whole = Integer & . >= 0
+    # type Positive = Whole & . > 1
+    # type Negative = Integer & < 0
+    # class BaseClass
+    #     var x: Whole
+    # class Vector extends BaseClass
+    #     var y: Positive
+    #     var z: Negative
+    #     let dx = x * pi
+    # let double = (value: Whole) => value * 2
+    # let bar = (value: Positive) => double(value)
+    # let foo = (value: String | Number) =>
+    #     if value is String & value.length > 10
+    #         "String"
+    #     else
+    #         "Number"

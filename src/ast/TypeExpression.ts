@@ -7,10 +7,11 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
+import * as Reference from './Reference';
 import * as Class from './ion/Class';
 export class TypeExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: Expression.Expression | Null.Null;
+    readonly type: TypeExpression | (Reference.Reference | Null.Null);
     readonly value: Expression.Expression;
     static readonly id = 'TypeExpression';
     static readonly implements = new Set([
@@ -22,13 +23,13 @@ export class TypeExpression implements _Object.Object , Expression.Expression , 
     ]);
     constructor({location = null, type = null, value}: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
+        type?: TypeExpression | (Reference.Reference | Null.Null),
         value: Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
+        if (!(isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
         if (!Expression.isExpression(value))
             throw new Error('value is not a Expression: ' + Class.toString(value));
         this.location = location;
@@ -38,7 +39,7 @@ export class TypeExpression implements _Object.Object , Expression.Expression , 
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
+        type?: TypeExpression | (Reference.Reference | Null.Null),
         value?: Expression.Expression
     }) {
         return new TypeExpression({

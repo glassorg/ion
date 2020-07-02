@@ -9,6 +9,7 @@ import { Node } from "./ast"
 
 export type NodeMap<T> = {
     get(node: Node): T
+    set(node: Node, t: T)
 }
 
 export type ScopeMap = { [id: string]: Declaration }

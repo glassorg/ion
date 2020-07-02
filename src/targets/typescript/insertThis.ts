@@ -11,7 +11,7 @@ export default function insertThis(root: Assembly) {
         },
         leave(node) {
             if (ClassDeclaration.is(node)) {
-                let localVariables = new Set(node.declarations.filter(VariableDeclaration.is).map(node => node.id.name))
+                let localVariables = new Set(Array.from(node.declarations.values()).filter(VariableDeclaration.is).map(node => node.id.name))
                 return traverse(node, {
                     leave(node) {
                         // do we allow overridding values? Not yet, so any reference an be safely replaced.

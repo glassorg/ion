@@ -2,5 +2,6 @@ import
     .*
 
 export
+    let foo: Any = null
     class Array<T>
         let length: Integer & >= 0

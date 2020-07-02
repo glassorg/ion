@@ -67,6 +67,6 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X   Or else just remove the _implements and leave the id value and use that.
     X Remove old types
     X Use new types
-      Convert class variables to use a named Map.
+    X Convert class variables to use a named Map.
       Infer Types, Keep it going, infer them all.
       toCodeString function memoize

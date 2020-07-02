@@ -8,6 +8,7 @@ import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes from "./getSortedTypedNodes";
 import simplify from "./simplify";
 import { getAbsoluteName, SemanticError } from "../common";
+import toCodeString from "../toCodeString";
 
 function getTypeReference(name: string) {
     return new ast.Reference({ name: getAbsoluteName(`ion.${name}`, name)})
@@ -20,46 +21,98 @@ const literalTypes = {
     string: getTypeReference("String"),
 }
 
+function getMemberType(node: ast.MemberExpression, objectType: ast.TypeExpression | ast.ClassDeclaration, member: String | ast.TypeExpression): ast.Reference | ast.TypeExpression {
+    if (ast.ClassDeclaration.is(objectType) && typeof member === "string") {
+        let declaration = objectType.declarations.get(member)
+        if (declaration == null) {
+            throw SemanticError(`Member '${member}' not found on ${objectType.id.name}`, node)
+        }
+        if (declaration.type == null) {
+            throw SemanticError(`Declaration not typed`, declaration)
+        }
+        return declaration.type
+    }
+    throw new Error("Not Implemented: getMemberType for " + objectType.constructor.name)
+}
+
+function getTypeExpressionOrClassDeclaration(node: Expression, resolved: Resolved, scopes: ScopeMaps): ast.TypeExpression | ast.ClassDeclaration {
+    if (ast.TypeDeclaration.is(node)) {
+        return getTypeExpressionOrClassDeclaration(node.value, resolved, scopes)
+    }
+    if (ast.ClassDeclaration.is(node) || ast.TypeExpression.is(node)) {
+        return node
+    }
+    if (ast.Parameter.is(node)) {
+        if (node.type == null) {
+            throw SemanticError(`Parameter type not resolved`, node)
+        }
+        return getTypeExpressionOrClassDeclaration(node.type, resolved, scopes)
+    }
+    if (ast.Reference.is(node)) {
+        let scope = scopes.get(node)
+        let referencedNode = scope[node.name]
+        return getTypeExpressionOrClassDeclaration(referencedNode, resolved, scopes)
+    }
+    throw new Error(`Cannot find TypeExpression or ClassDeclaration: ${toCodeString(node)}`)
+}
+
+type Resolved = { get<T>(t: T): T }
+
 // that is some typescript kung fu right there.
-export const inferType: { [P in keyof typeof ast]?: (originalNode: InstanceType<typeof ast[P]>, currentNode: InstanceType<typeof ast[P]>, resolved: { get<T>(t: T): T }, scope: ScopeMaps) => any} = {
-    BinaryExpression(originalNode, currentNode, resolved) {
+export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P]>, resolved: Resolved, scope: ScopeMaps) => any} = {
+    BinaryExpression(node, resolved) {
         // for now just use the left type
-        return resolved.get(originalNode.left).type
+        return resolved.get(node.left).type
     },
-    Literal(originalNode, currentNode) {
-        let jstypeof = typeof currentNode.value
+    Literal(node) {
+        let jstypeof = typeof node.value
         let type = literalTypes[jstypeof]
         if (type == null) {
             throw SemanticError(`Cannot find type ${jstypeof}`, type)
         }
         return type
     },
-    ClassDeclaration(originalNode) {
+    ClassDeclaration(node) {
     },
-    Parameter(originalNode, currentNode, resolved, scope) {
+    Parameter(node, resolved, scopes) {
         return inferType.VariableDeclaration?.apply(this, arguments as any)
     },
-    VariableDeclaration(originalNode, currentNode, resolved) {
-        if (originalNode.value) {
-            let value = resolved.get(originalNode.value)
+    VariableDeclaration(node, resolved) {
+        if (node.value) {
+            let value = resolved.get(node.value)
             return value.type
         }
     },
-    FunctionExpression(originalNode) {
+    FunctionExpression(node) {
     },
-    Reference(originalNode, currentNode, resolved, scopes) {
-        let scope = scopes.get(originalNode)
-        let declaration = resolved.get(scope[originalNode.name])
+    Reference(node, resolved, scopes) {
+        let scope = scopes.get(node)
+        let declaration = resolved.get(scope[node.name])
         return declaration.type
     },
-    MemberExpression(originalNode) {
+    MemberExpression(node, resolved, scopes) {
+        // this node should now have a type
+        let objectType = getTypeExpressionOrClassDeclaration(node.object, resolved, scopes)
+        let property = node.property
+        // now we need to get a thing
+        if (ast.ClassDeclaration.is(objectType) && ast.Id.is(property)) {
+            let declaration = objectType.declarations.get(property.name)
+            if (declaration == null) {
+                throw SemanticError(`Member '${property.name}' not found on ${objectType.id.name}`, node)
+            }
+            if (declaration.type == null) {
+                throw SemanticError(`Declaration not typed`, declaration)
+            }
+            return declaration.type
+        }
+        throw new Error("Not Implemented: getMemberType for " + objectType.constructor.name)
     },
-    ArrayExpression(originalNode) {
+    ArrayExpression(node) {
     },
-    CallExpression(originalNode) {
+    CallExpression(node) {
     },
-    UnaryExpression(originalNode) {
-        return originalNode.argument.type
+    UnaryExpression(node) {
+        return node.argument.type
     }
 }
 
@@ -67,23 +120,24 @@ export default function inferTypes(root: Analysis) {
     let scopes = createScopeMaps(root)
     let resolved = new Map<ast.Typed,ast.Node>()
     let sorted = getSortedTypedNodes(root, scopes)
+    function setResolved(originalNode, currentNode) {
+        resolved.set(originalNode, currentNode)
+        // make sure that you can still get the correct scope for the new node
+        scopes.set(currentNode, scopes.get(originalNode))
+    }
     for (let originalNode of sorted) {
         // first try to simplify
-        let currentNode = simplify(originalNode, resolved, scopes) ?? originalNode
-        resolved.set(originalNode, currentNode)
+        let currentNode = resolved.get(originalNode) as Expression ?? originalNode
+        currentNode = simplify(currentNode, resolved, scopes)
+        setResolved(originalNode, currentNode)
         // then try to infer types
         if (currentNode.type == null) {
             let func = inferType[currentNode.constructor.name]
-            let type = func?.(
-                originalNode,   // Must be original node else scopes won't work
-                currentNode,
-                resolved,
-                scopes
-            )
+            let type = func?.(currentNode, resolved, scopes)
             if (type != null) {
                 currentNode = currentNode.patch({ type })
             }
-            resolved.set(originalNode, currentNode)
+            setResolved(originalNode, currentNode)
         }
     }
 

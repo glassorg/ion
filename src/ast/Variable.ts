@@ -6,13 +6,15 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as Expression from './Expression';
+import * as TypeExpression from './TypeExpression';
+import * as Reference from './Reference';
 import * as Id from './Id';
+import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
 export class Variable implements _Object.Object , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: Expression.Expression | Null.Null;
+    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
     readonly value: Expression.Expression | Null.Null;
     readonly assignable: Boolean.Boolean;
@@ -25,15 +27,15 @@ export class Variable implements _Object.Object , Typed.Typed , Node.Node {
     ]);
     constructor({location = null, type = null, id, value = null, assignable = false}: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
+        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
         id: Id.Id,
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(Expression.isExpression(type) || Null.isNull(type)))
-            throw new Error('type is not a Expression | Null: ' + Class.toString(type));
+        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
         if (!Id.isId(id))
             throw new Error('id is not a Id: ' + Class.toString(id));
         if (!(Expression.isExpression(value) || Null.isNull(value)))
@@ -49,7 +51,7 @@ export class Variable implements _Object.Object , Typed.Typed , Node.Node {
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: Expression.Expression | Null.Null,
+        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
         id?: Id.Id,
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean
