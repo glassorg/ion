@@ -62,7 +62,7 @@ type Resolved = { get<T>(t: T): T }
 export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P]>, resolved: Resolved, scope: ScopeMaps) => any} = {
     BinaryExpression(node, resolved) {
         // for now just use the left type
-        return resolved.get(node.left).type
+        return { type: resolved.get(node.left).type }
     },
     Literal(node) {
         let jstypeof = typeof node.value
@@ -70,7 +70,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         if (type == null) {
             throw SemanticError(`Cannot find type ${jstypeof}`, type)
         }
-        return type
+        return { type }
     },
     ClassDeclaration(node) {
     },
@@ -80,15 +80,38 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
     VariableDeclaration(node, resolved) {
         if (node.value) {
             let value = resolved.get(node.value)
-            return value.type
+            return { type: value.type }
         }
     },
-    FunctionExpression(node) {
+    FunctionExpression(func, resolved) {
+        // traverse and find all return types
+        let returnTypes: Array<ast.TypeExpression | ast.Reference> = []
+        traverse(func.body, {
+            enter(node) {
+                if (ast.ReturnStatement.is(node)) {
+                    let resolvedValue = resolved.get(node.value)
+                    if (resolvedValue.type == null) {
+                        throw SemanticError(`Return Value type not resolved`, node)
+                    }
+                    if (resolvedValue.type != null) {
+                        returnTypes.push(resolvedValue.type)
+                    }
+                    return skip
+                }
+            }
+        })
+        if (returnTypes.length > 1) {
+            throw new Error(`TODO: Implement multiple return types`)
+        }
+        if (returnTypes.length === 0) {
+            throw SemanticError(`Function returns no value`, func)
+        }
+        return { returnType: returnTypes[0] }
     },
     Reference(node, resolved, scopes) {
         let scope = scopes.get(node)
         let declaration = resolved.get(scope[node.name])
-        return declaration.type
+        return { type: declaration.type }
     },
     MemberExpression(node, resolved, scopes) {
         // this node should now have a type
@@ -103,7 +126,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
             if (declaration.type == null) {
                 throw SemanticError(`Declaration not typed`, declaration)
             }
-            return declaration.type
+            return { type: declaration.type }
         }
         throw new Error("Not Implemented: getMemberType for " + objectType.constructor.name)
     },
@@ -112,7 +135,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
     CallExpression(node) {
     },
     UnaryExpression(node) {
-        return node.argument.type
+        return { type: node.argument.type }
     }
 }
 
@@ -133,9 +156,9 @@ export default function inferTypes(root: Analysis) {
         // then try to infer types
         if (currentNode.type == null) {
             let func = inferType[currentNode.constructor.name]
-            let type = func?.(currentNode, resolved, scopes)
-            if (type != null) {
-                currentNode = currentNode.patch({ type })
+            let changes = func?.(currentNode, resolved, scopes)
+            if (changes != null) {
+                currentNode = currentNode.patch(changes)
             }
             setResolved(originalNode, currentNode)
         }
