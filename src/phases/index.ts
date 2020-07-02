@@ -23,9 +23,9 @@ export default [
     convertRefsToAbsolute,
     assemblyToAnalysis,
     inheritBaseClasses,
-    // post most analysis
-    // createClassTypeChecks,
-    // // normalizeTypes,
-    inferTypes,
-    // checkReferences,
+    // // post most analysis
+    // // createClassTypeChecks,
+    // // // normalizeTypes,
+    // inferTypes,
+    // // checkReferences,
 ]

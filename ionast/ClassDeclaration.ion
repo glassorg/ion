@@ -7,7 +7,7 @@ export
         var isStructure: Boolean = false
         var parameters: Array<Parameter> = []
         var baseClasses: Array<Reference> = []
-        var declarations: Array<Declaration>
+        var declarations: Map<String, Declaration>
         var meta: Array<KeyValuePair> = []
         # used for runtime type checking in javascript
         # var _implements: Array<String> = []

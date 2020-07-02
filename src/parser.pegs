@@ -37,6 +37,10 @@
         )
     }
 
+    function toMap(nodes, getKey = node => node.id.name) {
+        return new Map(nodes.map(node => [getKey(node), node]))
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -213,7 +217,7 @@ ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
         _ id:Id parameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations }) }
+        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations: toMap(declarations) }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }

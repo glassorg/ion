@@ -29,7 +29,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
             inprogress.add(classDeclaration)
             let baseDeclarations = new Map<string, Declaration>()
             let baseClasses = new Map<string,Reference>([...classDeclaration.baseClasses].map(r => [r.name, r]))
-            function addDeclarations(declarations: readonly Declaration[]) {
+            function addDeclarations(declarations: Iterable<Declaration>) {
                 for (let declaration of declarations) {
                     let current = baseDeclarations.get(declaration.id.name)
                     if (current) {
@@ -51,14 +51,14 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                 for (let ref of baseDeclaration.baseClasses) {
                     baseClasses.set(ref.name, ref)
                 }
-                addDeclarations(baseDeclaration.declarations)
+                addDeclarations(baseDeclaration.declarations.values())
             }
             // now insert the current class declarations
-            addDeclarations(classDeclaration.declarations)
+            addDeclarations(classDeclaration.declarations.values())
             // override properties with the same name
             result = classDeclaration.patch({
                 baseClasses: Array.from(baseClasses.values()),
-                declarations: Array.from(baseDeclarations.values())
+                declarations: baseDeclarations
             })
             finished.set(classDeclaration, result)
         }
@@ -82,8 +82,8 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                 })
                 return declaration.patch({
                     // _implements: names,
-                    declarations: [
-                        ...declaration.declarations,
+                    declarations: new Map([
+                        ...declaration.declarations.values(),
                         ...typeNameDeclarations,
                         new VariableDeclaration({
                             location: node.location,
@@ -91,7 +91,7 @@ export default function inheritBaseClasses(root: Analysis, options: Options) {
                             assignable: false,
                             value: new Literal({ value: getUniqueClientName(node.id.name) })
                         })
-                    ],
+                    ].map(d => [d.id.name, d])),
                 })
             }
         }

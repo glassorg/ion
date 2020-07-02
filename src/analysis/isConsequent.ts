@@ -165,5 +165,5 @@ export default function isConsequent(a: Expression, b: Expression): true | false
     if (BinaryExpression.is(a) && a.operator === "&") {
         return max(isConsequent(a.left, b), isConsequent(a.right, b))
     }
-return null
+    return null
 }

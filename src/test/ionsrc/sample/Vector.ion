@@ -6,8 +6,9 @@ export
     type Whole = Integer & . >= 0
     type Positive = Whole & . > 1
     type Negative = Integer & < 0
-    class Vector
+    class BaseClass
         var x: Whole
+    class Vector extends BaseClass
         var y: Positive
         var z: Negative
         let dx = x * pi

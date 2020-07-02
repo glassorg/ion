@@ -13,6 +13,8 @@ import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Reference from './Reference';
+import * as Map from './ion/Map';
+import * as String from './ion/String';
 import * as KeyValuePair from './KeyValuePair';
 import * as Class from './ion/Class';
 export class ClassDeclaration implements _Object.Object , Declaration.Declaration , Typed.Typed , Node.Node {
@@ -23,7 +25,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     readonly isStructure: Boolean.Boolean;
     readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly baseClasses: _Array.Array<Reference.Reference>;
-    readonly declarations: _Array.Array<Declaration.Declaration>;
+    readonly declarations: Map.Map<String.String, Declaration.Declaration>;
     readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
     static readonly id = 'ClassDeclaration';
     static readonly implements = new Set([
@@ -51,7 +53,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         isStructure?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
-        declarations: _Array.Array<Declaration.Declaration>,
+        declarations: Map.Map<String.String, Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
@@ -68,8 +70,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
             throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!_Array.isArray(baseClasses))
             throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
-        if (!_Array.isArray(declarations))
-            throw new Error('declarations is not a Array: ' + Class.toString(declarations));
+        if (!Map.isMap(declarations))
+            throw new Error('declarations is not a Map: ' + Class.toString(declarations));
         if (!_Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
         this.location = location;
@@ -91,7 +93,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         isStructure?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
-        declarations?: _Array.Array<Declaration.Declaration>,
+        declarations?: Map.Map<String.String, Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>
     }) {
         return new ClassDeclaration({
