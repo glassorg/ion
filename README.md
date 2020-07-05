@@ -71,5 +71,8 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Insert ConditionalDeclarations
       Infer Types, Keep it going, infer them all.
       We need to infer chained conditional reference types by hand... if a is Point & a.x > 0
+      Insert Negations of ConditionalDeclarations into alternate branches of IfStatement
+        Implement function to convert Expressions to Negative expressions.
+          For instance not(foo < 0) => foo >= 0
       Move Larger Types to Shared References to new temporary TypeDeclarations.
       toCodeString function memoize.
