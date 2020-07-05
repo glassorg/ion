@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as np from "path";
 import Assembly from "./ast/Assembly";
 import Reference from "./ast/Reference";
+import { traverse } from "./Traversal";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Import/Export Functions
@@ -9,6 +10,39 @@ import Reference from "./ast/Reference";
 
 export const PATH_SEPARATOR = "."
 export const EXPORT_DELIMITER = ":"
+
+export function isUpperCase(char: string) {
+    return char === char.toUpperCase()
+}
+
+export function isLowerCase(char: string) {
+    return char === char.toLowerCase()
+}
+
+export function getFirst<T>(array: Array<any>, predicate: (node) => node is T): T | undefined {
+    return array.find(predicate)
+}
+
+export function getLast<T>(array: Array<any>, predicate: (node) => node is T): T | undefined {
+    for (let i = array.length - 1; i >= 0; i--) {
+        let item = array[i]
+        if (predicate(item)) {
+            return item
+        }
+    }
+}
+
+export function getNodesOfType<T>(root, predicate: (node) => node is T) {
+    let nodes = new Array<T>()
+    traverse(root, {
+        enter(node) {
+            if (predicate(node)) {
+                nodes.push(node)
+            }
+        }
+    })
+    return nodes
+}
 
 export function isTypeReference(node): node is Reference {
     if (!Reference.is(node)) {

@@ -1,11 +1,6 @@
 import { traverse, remove, skip, Enter, Leave, Visitor } from "./Traversal"
 import { SemanticError } from "./common"
-import Declaration from "./ast/Declaration"
-import Id from "./ast/Id"
-import Scope from "./ast/Scope"
-import Reference from "./ast/Reference"
-import FunctionExpression from "./ast/FunctionExpression"
-import { Node } from "./ast"
+import { Node, FunctionExpression, Scope, Id, Reference, Declaration, VariableDeclaration } from "./ast"
 
 export type NodeMap<T> = {
     get(node: Node): T
@@ -37,7 +32,10 @@ export default function createScopeMaps(
     } = options
 
     let map = new Map()
-    let global = {}
+    let global = {
+        // always add "." to the global namespace so TypeExpressions don't complain
+        ".": new VariableDeclaration({ id: new Id({ name: "." }), assignable: false })
+    }
     let scopes: object[] = [global]
     map.set(null, global)
 
@@ -62,7 +60,7 @@ export default function createScopeMaps(
             //  if this node is a scope then we push a new scope
             if (Scope.is(node)) {
                 // console.log('++++')
-                scopes.push(scope = { __proto__: scope })
+                scopes.push(scope = { __proto__: scope, __source: node.constructor.name + " => " + JSON.stringify(node.location ?? "NULL") })
             }
 
             //  let's check that referenced identifiers are in scope

@@ -2,9 +2,18 @@ import
     ion.*
 
 export
+    # type Long = String & .length > 10
     class Person
         var name: String
-    let toString = (person: Person) => person.name
+    let toString = (person: Person) =>
+        let name = person.name
+        # while traversing into if expression test, 
+        if name.length > 0 & name.length < 10
+            # we need placeholder to
+            # virtual name: typeof name & .length > 0
+            name
+        else
+            "anonymous"
     # let pi = 1 + 4 / 2
     # type Whole = Integer & . >= 0
     # type Positive = Whole & . > 1

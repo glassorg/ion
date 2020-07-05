@@ -68,5 +68,8 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Remove old types
     X Use new types
     X Convert class variables to use a named Map.
+    X Insert ConditionalDeclarations
       Infer Types, Keep it going, infer them all.
-      toCodeString function memoize
+      We need to infer chained conditional reference types by hand... if a is Point & a.x > 0
+      Move Larger Types to Shared References to new temporary TypeDeclarations.
+      toCodeString function memoize.

@@ -1,18 +1,10 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
-import { SemanticError } from "../common";
+import { SemanticError, isUpperCase, isLowerCase } from "../common";
 import TypeDeclaration from "../ast/TypeDeclaration";
 import ClassDeclaration from "../ast/ClassDeclaration";
 import VariableDeclaration from "../ast/VariableDeclaration";
 import { Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, DotExpression, ExpressionStatement, TypeExpression } from "../ast";
-
-function isUpperCase(char: string) {
-    return char === char.toUpperCase()
-}
-
-function isLowerCase(char: string) {
-    return char === char.toLowerCase()
-}
 
 // const typeCheckTemplate = new TypeFunction({
 //     parameters: [new Parameter({ id: new Id({ name: "." })})],

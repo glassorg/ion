@@ -10,20 +10,22 @@ import checkReferences from "./checkReferences";
 import normalizeTypes from "./normalizeTypes";
 import addImplicitReturns from "./addImplicitReturns";
 import inferTypes from "./inferTypes";
+import createConditionalDeclarations from "./createConditionalDeclarations";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
     importResolution,
-    // <- here, prior to adding implicit returns, we could convert expressions first
     addImplicitReturns,
     // addIsTypeFunctions,
-    // // analysis stage
+    // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,
+    // createConditionalChains,
+    createConditionalDeclarations,
+    // insertVirtualDeclarations,
     inheritBaseClasses,
-    // post most analysis
     // createClassTypeChecks,
     // // normalizeTypes,
     inferTypes,

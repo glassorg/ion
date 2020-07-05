@@ -61,7 +61,7 @@ export const simplifyFunctions: { [P in keyof typeof ast]?: (e: InstanceType<typ
     },
 }
 
-export default function simplify(node: Expression, resolved: Map<ast.Node,ast.Node>, scopes: ScopeMaps) {
+export default function evaluate(node: Expression, resolved: Map<ast.Node,ast.Node>, scopes: ScopeMaps) {
     let func = simplifyFunctions[node.constructor.name]
     return func?.(node, resolved, scopes) ?? node
 }

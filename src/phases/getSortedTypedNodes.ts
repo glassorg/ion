@@ -3,6 +3,7 @@ import { ScopeMaps } from "../createScopeMaps";
 import toposort from "../toposort";
 import { Typed, FunctionExpression, ReturnStatement, CallExpression, Expression } from "../ast";
 import * as ast from "../ast";
+import { getLast } from "../common";
 
 
 function getReturnStatements(node: FunctionExpression): ReturnStatement[] {
@@ -22,8 +23,21 @@ function getReturnStatements(node: FunctionExpression): ReturnStatement[] {
     return statements
 }
 
+export function getAncestorDeclaration(node, scopeMap: ScopeMaps, ancestorMap: Map<ast.Node, Array<any>>, type: (node) => boolean) {
+    let ancestors = ancestorMap.get(node)!
+    let containingIf = getLast(ancestors, ast.IfStatement.is)!
+    let containingIfScope = scopeMap.get(containingIf)
+    let containingVarDeclaration = containingIfScope[node.id.name]
+    return containingVarDeclaration
+}
+
 // that is some typescript kung fu right there.
-export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, scope: ScopeMaps) => Iterator<Typed>} = {
+export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, scopeMap: ScopeMaps, ancestorMap: Map<ast.Node, Array<any>>) => Iterator<Typed>} = {
+    *ConditionalDeclaration(node, scopeMap, ancestorMap) {
+        // the conditional declaration will add it's own local conditional assertion to the variable type
+        // from the containing scope, so we are dependent on that variable being resolved first.
+        yield getAncestorDeclaration(node, scopeMap, ancestorMap, ast.IfStatement.is)
+    },
     *BinaryExpression(node) {
         yield node.left
         yield node.right
@@ -82,7 +96,7 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     }
 }
 
-export default function getSortedTypedNodes(root, scopeMap: ScopeMaps) {
+export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestorsMap: Map<ast.Node, Array<any>>) {
     let sentinel = {};
     let edges: any[] = [];
     traverse(root, {
@@ -91,7 +105,7 @@ export default function getSortedTypedNodes(root, scopeMap: ScopeMaps) {
                 let func = getPredecessors[node.constructor.name];
                 let count = 0;
                 if (func) {
-                    for (let pred of func(node, scopeMap)) {
+                    for (let pred of func(node, scopeMap, ancestorsMap)) {
                         count++;
                         edges.push([pred, node]);
                     }
