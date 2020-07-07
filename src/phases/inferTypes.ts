@@ -42,23 +42,32 @@ function getMemberType(node: ast.MemberExpression, objectType: ast.TypeExpressio
 function getTypeExpressionOrClassDeclaration(node: Expression, resolved: Resolved, scopes: ScopeMaps): ast.TypeExpression | ast.ClassDeclaration {
     // always make sure we're using the latest node information
     node = resolved.get(node) ?? node
+    if (node.type != null) {
+        node = node.type
+    }
+    if (ast.TypeExpression.is(node)) {
+        return node
+    }
     if (ast.TypeDeclaration.is(node)) {
         return getTypeExpressionOrClassDeclaration(node.value, resolved, scopes)
     }
     if (ast.ClassDeclaration.is(node) || ast.TypeExpression.is(node)) {
         return node
     }
-    if (ast.Variable.is(node)) {
-        if (node.type == null) {
-            // console.log("....", node)
-            throw SemanticError(`Parameter type not resolved`, node)
+    if (ast.Typed.is(node)) {
+        if (ast.Reference.is(node)) {
+            let scope = scopes.get(node)
+            let referencedNode = scope[node.name]
+            // get the type of what's referenced.
+            return getTypeExpressionOrClassDeclaration(referencedNode, resolved, scopes)
         }
-        return getTypeExpressionOrClassDeclaration(node.type, resolved, scopes)
-    }
-    if (ast.Reference.is(node)) {
-        let scope = scopes.get(node)
-        let referencedNode = scope[node.name]
-        return getTypeExpressionOrClassDeclaration(referencedNode, resolved, scopes)
+        if (ast.Variable.is(node)) {
+            if (node.type == null) {
+                // console.log("....", node)
+                throw SemanticError(`Parameter type not resolved`, node)
+            }
+            return getTypeExpressionOrClassDeclaration(node.type, resolved, scopes)
+        }
     }
     throw new Error(`Cannot find TypeExpression or ClassDeclaration: ${toCodeString(node)}`)
 }
@@ -198,11 +207,11 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
                     // OK, now we just have to check the left side and find a reference with same name.
                     // we can then definitely assert that the left expression is true
                     let result  = createCombinedTypeExpression(type, node.name, parent.left, node.location!)
-                    console.log({
-                        type: toCodeString(type),
-                        parentLeft: toCodeString(parent.left),
-                        result: toCodeString(result)
-                    })
+                    // console.log({
+                    //     type: toCodeString(type),
+                    //     parentLeft: toCodeString(parent.left),
+                    //     result: toCodeString(result)
+                    // })
                     type = result
                 }
             }
@@ -212,7 +221,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
     MemberExpression(node, resolved, scopes) {
         // this node should now have a type
         let objectType = getTypeExpressionOrClassDeclaration(node.object, resolved, scopes)
-        let property = node.property
+        let property = resolved.get(node.property) ?? node.property
         // now we need to get a thing
         if (ast.ClassDeclaration.is(objectType) && ast.Id.is(property)) {
             let declaration = objectType.declarations.get(property.name)
@@ -237,7 +246,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
     }
 }
 
-const typesFile = "foo.types"
+const typesFile = "ion.types"
 const typeProperties = ["type", "returnType"]
 
 export default function inferTypes(root: Analysis) {
@@ -281,16 +290,15 @@ export default function inferTypes(root: Analysis) {
         // then try to infer types
         if (currentNode.type == null) {
             let func = inferType[currentNode.constructor.name]
-            let changes = func?.(currentNode, resolved, scopes, ancestorsMap)
-            if (changes != null) {
-                //  convert TypeExpressions to shared references.
-                for (let name in changes) {
-                    let value = changes[name]
-                    if (ast.TypeExpression.is(value)) {
-                        // changes[name] = getSharedTypeReference(value)
-                    }
+            try {
+                let changes = func?.(currentNode, resolved, scopes, ancestorsMap)
+                if (changes != null) {
+                    currentNode = currentNode.patch(changes)
                 }
-                currentNode = currentNode.patch(changes)
+            }
+            catch (e) {
+                debugger
+                func?.(currentNode, resolved, scopes, ancestorsMap)
             }
             setResolved(originalNode, currentNode)
         }

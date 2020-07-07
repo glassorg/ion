@@ -16,7 +16,7 @@ export
     #         "anonymous"
     let foo = (a: String | Number) =>
         # so, how do we look at the previous ref to determine current type.
-        if a is String & a != null
+        if a is String & a.length > 0
             return 2
         10
 
