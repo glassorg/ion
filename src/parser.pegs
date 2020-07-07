@@ -104,7 +104,7 @@ Statement
     // / OutlineExpression
     / IfStatement
     / ForInStatement
-    // / ReturnStatement
+    / ReturnStatement
     / WhileStatement
     / ExpressionStatement
 
@@ -173,9 +173,9 @@ IfStatement
         alternate:(Dent ElseToken _ @(BlockStatement / IfStatement))?
     { return node("IfStatement", { test, consequent, alternate }) }
 
-// ReturnStatement
-//     = ReturnToken _ value:InlineExpression? EOL
-//     { return node("ReturnStatement", { value }) }
+ReturnStatement
+    = ReturnToken _ value:InlineExpression? EOL
+    { return node("ReturnStatement", { value }) }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Patterns

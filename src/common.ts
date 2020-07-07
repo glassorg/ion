@@ -24,12 +24,17 @@ export function getFirst<T>(array: Array<any>, predicate: (node) => node is T): 
 }
 
 export function getLast<T>(array: Array<any>, predicate: (node) => node is T): T | undefined {
-    for (let i = array.length - 1; i >= 0; i--) {
+    return array[getLastIndex(array, predicate)]
+}
+
+export function getLastIndex(array: Array<any>, predicate: (node) => boolean, startIndex = array.length - 1): number {
+    for (let i = startIndex; i >= 0; i--) {
         let item = array[i]
         if (predicate(item)) {
-            return item
+            return i
         }
     }
+    return -1
 }
 
 export function getNodesOfType<T>(root, predicate: (node) => node is T) {
@@ -89,8 +94,12 @@ export function getUniqueClientName(absoluteName: string) {
     return moduleName + (lastName === declarationName ? "" : "." + declarationName)
 }
 
+export function isAbsoluteName(name: string) {
+    return name.indexOf(EXPORT_DELIMITER) >= 0
+}
+
 export function getAbsoluteName(moduleName: string, declarationName: string) {
-    let lastName = getLastName(moduleName)
+    // let lastName = getLastName(moduleName)
     return moduleName + EXPORT_DELIMITER + declarationName
 }
 

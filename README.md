@@ -54,7 +54,6 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Then actually extend Object for .toString
     X Add Implicit ReturnStatement within functions.
     - Do we allow numeric style operations on other classes like Vectors etc?
-      Perform Basic Type Inference.
     X Finalize Initial Type System Design.
     X Generate 'this' in class variable functions that reference it.
       Handle 'this' in exported functions.
@@ -69,10 +68,14 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Use new types
     X Convert class variables to use a named Map.
     X Insert ConditionalDeclarations
+    X   Make binary expression rights dependent on binary expression lefts
       Infer Types, Keep it going, infer them all.
       We need to infer chained conditional reference types by hand... if a is Point & a.x > 0
+      toCodeString function memoize.
       Insert Negations of ConditionalDeclarations into alternate branches of IfStatement
         Implement function to convert Expressions to Negative expressions.
           For instance not(foo < 0) => foo >= 0
-      Move Larger Types to Shared References to new temporary TypeDeclarations.
-      toCodeString function memoize.
+->    Move Larger Types to Shared References to new temporary TypeDeclarations.
+        Where should we put the types... apparently in ion.types["name here"]
+
+  type Prime = Integer & isPrime(.)

@@ -32,6 +32,9 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
         }
         return `${value}`
     },
+    FunctionType(node) {
+        return `function(${node.parameters.map(s).join(', ')}) => ${s(node.returnType!)}`
+    },
     Literal(node) {
         return JSON.stringify(node.value)
     },
@@ -75,7 +78,6 @@ const s = memoize(
     function (node: Node) {
         let fn = codeToString[node.constructor.name]
         if (fn == null) {
-            debugger
             throw new Error(`codeToString function not found for type: ${node.constructor.name}`)
         }
         return fn(node)
@@ -83,5 +85,8 @@ const s = memoize(
 )
 
 export default function toCodeString(node: Node) {
+    if (node == null) {
+        return "NULL"
+    }
     return s(node)
 }

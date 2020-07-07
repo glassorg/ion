@@ -1,7 +1,7 @@
 import { traverse, skip } from "../Traversal";
 import { ScopeMaps } from "../createScopeMaps";
 import toposort from "../toposort";
-import { Typed, FunctionExpression, ReturnStatement, CallExpression, Expression } from "../ast";
+import { Typed, FunctionExpression, ReturnStatement, CallExpression, BinaryExpression, Expression } from "../ast";
 import * as ast from "../ast";
 import { getLast } from "../common";
 
@@ -102,6 +102,9 @@ export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestors
     traverse(root, {
         leave(node) {
             if (Typed.is(node)) {
+                if (BinaryExpression.is(node)) {
+                    edges.push([node.left, node.right])
+                }
                 let func = getPredecessors[node.constructor.name];
                 let count = 0;
                 if (func) {
