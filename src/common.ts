@@ -23,8 +23,8 @@ export function getFirst<T>(array: Array<any>, predicate: (node) => node is T): 
     return array.find(predicate)
 }
 
-export function getLast<T>(array: Array<any>, predicate: (node) => node is T): T | undefined {
-    return array[getLastIndex(array, predicate)]
+export function getLast<T>(array: Array<any>, predicate: (node) => node is T, startIndex?): T | undefined {
+    return array[getLastIndex(array, predicate, startIndex)]
 }
 
 export function getLastIndex(array: Array<any>, predicate: (node) => boolean, startIndex = array.length - 1): number {
@@ -57,11 +57,14 @@ export function isTypeReference(node): node is Reference {
     return first === first.toUpperCase()
 }
 
-export function memoize<A extends object, B>(fn: (a: A) => B, cache: WeakMap<A, B> = new WeakMap()): (a: A) => B {
+export function memoize<A extends object, B>(fn: (a: A) => B, cacheResultAsKey = false, cache: WeakMap<A, B> = new WeakMap()): (a: A) => B {
     return function(this, arg) {
         let result = cache.get(arg)
         if (result === undefined) {
             cache.set(arg, result = fn.apply(this, arguments as any))
+            if (cacheResultAsKey) {
+                cache.set(result as any as A, result)
+            }
         }
         return result
     }

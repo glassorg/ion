@@ -13,6 +13,7 @@ import toCodeString from "../toCodeString";
 import simplifyTypeExpression from "../analysis/simplifyTypeExpression";
 import combineTypeExpression from "../analysis/combineTypeExpression";
 import IdGenerator from "../IdGenerator";
+import negateExpression from "../analysis/negateExpression";
 
 function getTypeReference(name: string) {
     return new ast.Reference({ name: getAbsoluteName(`ion.${name}`, name)})
@@ -137,7 +138,11 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         let ancestors = ancestorsMap.get(node)!
         let containingIf = getLast(ancestors, ast.IfStatement.is)!
         let ancestorDeclaration = resolved.get(getAncestorDeclaration(node, scopeMap, ancestorsMap, ast.IfStatement.is))
-        return { type: createCombinedTypeExpression(ancestorDeclaration.type!, name, containingIf.test, node.location!) }
+        let assertion = containingIf.test
+        if (node.negate) {
+            assertion = negateExpression(assertion)
+        }
+        return { type: createCombinedTypeExpression(ancestorDeclaration.type!, name, assertion, node.location!) }
     },
     ClassDeclaration(node) {
     },
@@ -194,28 +199,12 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         let scope = scopeMap.get(node)
         let declaration = resolved.get(scope[node.name]) ?? scope[node.name]
         let type = declaration.type!
-        // TODO: Infer in chained conditionals here.
+        // Infer in chained conditionals here.
         let ancestors = ancestorsMap.get(node)!
-        let binaryExpressionIndex = getLastIndex(ancestors, node => ast.BinaryExpression.is(node) && node.operator === "&", ancestors.length - 1)
-        if (binaryExpressionIndex >= 0) {
-            let parent = ancestors[binaryExpressionIndex] as ast.BinaryExpression
-            parent = resolved.get(parent) ?? parent
-            if (parent.operator === "&") {
-                //  check if we are the right side.
-                //  the parent expression cannot have been resolved yet so we don't have to use resolved.
-                if (parent.right === ancestors[binaryExpressionIndex + 1]) {
-                    // OK, now we just have to check the left side and find a reference with same name.
-                    // we can then definitely assert that the left expression is true
-                    let result  = createCombinedTypeExpression(type, node.name, parent.left, node.location!)
-                    // console.log({
-                    //     type: toCodeString(type),
-                    //     parentLeft: toCodeString(parent.left),
-                    //     result: toCodeString(result)
-                    // })
-                    type = result
-                }
-            }
-        }
+        // if we are the right side of a A & B conditional then that implies A
+        type = getChainedConditionalTypeAssertion(ancestors, resolved, type, node, "&", false);
+        // if we are the right side of a A | B optional then that implies not A
+        type = getChainedConditionalTypeAssertion(ancestors, resolved, type, node, "|", true);
         return { type }
     },
     MemberExpression(node, resolved, scopes) {
@@ -248,6 +237,34 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
 
 const typesFile = "ion.types"
 const typeProperties = ["type", "returnType"]
+
+function getChainedConditionalTypeAssertion(ancestors: any[], resolved: Resolved, type: ast.TypeExpression | ast.Reference, node: ast.Reference, operator: string, negate: boolean) {
+    let binaryExpressionIndex = getLastIndex(ancestors, node => ast.BinaryExpression.is(node) && node.operator === operator);
+    if (binaryExpressionIndex >= 0) {
+        let parent = ancestors[binaryExpressionIndex] as ast.BinaryExpression;
+        parent = resolved.get(parent) ?? parent;
+        if (parent.operator === operator) {
+            //  check if we are the right side.
+            //  the parent expression cannot have been resolved yet so we don't have to use resolved.
+            if (parent.right === (ancestors[binaryExpressionIndex + 1] ?? node)) {
+                // OK, now we just have to check the left side and find a reference with same name.
+                // we can then definitely assert that the left expression is true
+                let assertion = parent.left
+                if (negate) {
+                    assertion = negateExpression(assertion)
+                }
+                let result = createCombinedTypeExpression(type, node.name, assertion, node.location!);
+                // console.log({
+                //     type: toCodeString(type),
+                //     parentLeft: toCodeString(parent.left),
+                //     result: toCodeString(result)
+                // })
+                type = result;
+            }
+        }
+    }
+    return type;
+}
 
 export default function inferTypes(root: Analysis) {
     let identifiers = new Set<string>()

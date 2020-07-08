@@ -23,6 +23,7 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
     readonly virtual: Boolean.Boolean;
+    readonly negate: Boolean.Boolean;
     static readonly id = 'ConditionalDeclaration';
     static readonly implements = new Set([
         'ConditionalDeclaration',
@@ -40,7 +41,8 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
         value = null,
         assignable = false,
         export: _export = false,
-        virtual = false
+        virtual = false,
+        negate = false
     }: {
         location?: Location.Location | Null.Null,
         type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
@@ -48,7 +50,8 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
-        virtual?: Boolean.Boolean
+        virtual?: Boolean.Boolean,
+        negate?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -64,6 +67,8 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
         if (!Boolean.isBoolean(virtual))
             throw new Error('virtual is not a Boolean: ' + Class.toString(virtual));
+        if (!Boolean.isBoolean(negate))
+            throw new Error('negate is not a Boolean: ' + Class.toString(negate));
         this.location = location;
         this.type = type;
         this.id = id;
@@ -71,6 +76,7 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
         this.assignable = assignable;
         this.export = _export;
         this.virtual = virtual;
+        this.negate = negate;
         Object.freeze(this);
     }
     patch(properties: {
@@ -80,7 +86,8 @@ export class ConditionalDeclaration implements _Object.Object , VariableDeclarat
         value?: Expression.Expression | Null.Null,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
-        virtual?: Boolean.Boolean
+        virtual?: Boolean.Boolean,
+        negate?: Boolean.Boolean
     }) {
         return new ConditionalDeclaration({
             ...this,

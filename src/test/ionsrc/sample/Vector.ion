@@ -16,9 +16,13 @@ export
     #         "anonymous"
     let foo = (a: String | Number) =>
         # so, how do we look at the previous ref to determine current type.
-        if a is String & a.length > 0
-            return 2
-        10
+        # if a is String & a.length > 0
+        #     return 2
+        if a is String | a
+            return 3
+        else if a != null
+            return a
+        # 10
 
     # let pi = 1 + 4 / 2
     # type Whole = Integer & . >= 0

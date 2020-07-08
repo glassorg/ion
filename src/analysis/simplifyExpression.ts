@@ -1,5 +1,7 @@
-import { Expression, BinaryExpression, ExpressionStatement } from "../ast";
+import { Expression, BinaryExpression, ExpressionStatement, UnaryExpression } from "../ast";
 import toCodeString from "../toCodeString";
+import { memoize } from "../common";
+import { traverse } from "../Traversal";
 
 function find<T>(items: Iterable<T>, predicate: (value: T) => boolean): T | null {
     for (let item of items) {
@@ -52,29 +54,12 @@ function normalize(e: Expression): Expression {
     return e
 }
 
-// let normalizedCache = new WeakMap<Expression,Expression>()
-// export function normalizeExpression(e: Expression) {
-//     if (e == null) {
-//         return e
-//     }
-//     let result = cached.get(e)
-//     if (result == null) {
-//         result = normalizeInternal(e)
-//         cached.set(e, result)
-//         if (e !== result) {
-//             // make sure we don't try to simplify an already simplified result
-//             cached.set(result, result)
-//         }
-//     }
-//     return result
-// }
-
 // A & B | A => A
 function simplifyInternal(e: Expression): Expression {
     e = normalize(e)
     if (BinaryExpression.is(e)) {
-        let left = simplifyExpression(e.left)
-        let right = simplifyExpression(e.right)
+        const left = simplifyExpression(e.left)
+        const right = simplifyExpression(e.right)
         if (equals(left, right)) {
             if (e.operator === "&" || e.operator == "|") {
                 //  A & A => A
@@ -101,13 +86,34 @@ function simplifyInternal(e: Expression): Expression {
             }
         }
         else if (e.operator === "&") {
-            if (find(binaryExpressionComponents(left, "|"), c => equals(c, right))) {
-                // (A | B) & A => A
-                return right
+            for (let c of binaryExpressionComponents(left, "|")) {
+                if (equals(c, right)) {
+                    // (A | B) & A => A
+                    return right
+                }
+                if (UnaryExpression.is(right) && right.operator === "not" && equals(c, right.argument)) {
+                    //  (A | B) & !A => B
+                    //  (A | B | C) & !A => B | C
+                    return traverse(left, {
+                        // find and remove the impossible clause
+                        leave(node) {
+                            if (BinaryExpression.is(node) && node.operator === "|") {
+                                if (equals(node.left, right.argument)) {
+                                    return node.right
+                                }
+                                if (equals(node.right, right.argument)) {
+                                    return node.left
+                                }
+                            }
+                        }
+                    })
+                }
             }
-            if (find(binaryExpressionComponents(right, "|"), c => equals(c, left))) {
-                // A & (A | B) => A
-                return left
+            for (let c of binaryExpressionComponents(right, "|")) {
+                if (equals(c, left)) {
+                    // A & (A | B) => A
+                    return left
+                }
             }
         }
         // should be normalized
@@ -117,19 +123,6 @@ function simplifyInternal(e: Expression): Expression {
     }
     return e
 }
-let cached = new WeakMap<Expression,Expression>()
-export default function simplifyExpression(e: Expression) {
-    if (e == null) {
-        return e
-    }
-    let result = cached.get(e)
-    if (result == null) {
-        result = simplifyInternal(e)
-        cached.set(e, result)
-        if (e !== result) {
-            // make sure we don't try to simplify an already simplified result
-            cached.set(result, result)
-        }
-    }
-    return result
-}
+
+const simplifyExpression = memoize(simplifyInternal, true)
+export default simplifyInternal

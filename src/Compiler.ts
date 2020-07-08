@@ -11,7 +11,7 @@ export class Options {
 
     inputs: string[]
     output: string
-    target: "typescript" = "typescript"
+    target: "typescript" | "analysis" = "typescript"
     parser!: ReturnType<typeof Parser>
 
     constructor(inputs: string[], output: string) {
@@ -29,11 +29,13 @@ export default class Compiler {
         this.logger = logger
     }
 
-    compile(options: Options) {
+    compile(options: Options, files?: { [path: string]: string }) {
         options.parser = Parser()
-        let files = common.getInputFilesRecursive(options.inputs)
+        if (files == null) {
+            files = common.getInputFilesRecursive(options.inputs)
+        }
         let root: any = files
-        let backPhases = targets[options.target]
+        let backPhases = targets[options.target] ?? []
         let phases = [...frontPhases, ...backPhases]
         this.logger("Input", root)
         try {
@@ -56,6 +58,7 @@ export default class Compiler {
             let error = options.parser.getError(e.message, location, source, filename)
             console.log(error.message)
         }
+        return root
     }
 
 }

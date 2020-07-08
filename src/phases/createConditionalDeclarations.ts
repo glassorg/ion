@@ -15,24 +15,38 @@ export default function createConditionalDeclarations(root: Analysis) {
                 // find all variable declaration references
                 let refs = new Set(getNodesOfType(node.test, Reference.is).map(n => n.name).filter(isLowerCase))
                 // now we have to redeclare more strongly typed stuff.
-                let newDeclarations = new Array<ConditionalDeclaration>()
+                let newConsequents = new Array<ConditionalDeclaration>()
+                let newAlternates = node.alternate != null ? new Array<ConditionalDeclaration>() : null
                 for (let name of refs) {
-                    // let assert = node.test
-                    // removed because this causes recursive insertions and forces false declarations of '.'
-                    // let assert = name === "." ? node.test : traverse(node.test, {
-                    //     leave(node) {
-                    //         if (Reference.is(node) && node.name === name) {
-                    //             return new DotExpression({})
-                    //         }
-                    //     }
-                    // })
-                    // if (ConditionalChain.is(assert)) {
-                    //     assert = conditionalChainToBinaryExpression(assert)
-                    // }
-                    newDeclarations.push(new ConditionalDeclaration({ location: node.test.location, id: new Id({ name }) }))
+                    newConsequents.push(new ConditionalDeclaration({
+                        location: node.test.location,
+                        id: new Id({ name })
+                    }))
+                    if (newAlternates) {
+                        newAlternates.push(new ConditionalDeclaration({
+                            negate: true,
+                            location: node.test.location,
+                            id: new Id({ name })
+                        }))
+                    }
+                }
+                let consequent = new BlockStatement({ statements: [...newConsequents, ...node.consequent.statements] })
+                let alternate = node.alternate
+                if (IfStatement.is(alternate)) {
+                    // we must convert ifs to block statements so our scoped variable
+                    // won't interfere with it scoping the same named variable.
+                    alternate = new BlockStatement({
+                        statements: [alternate]
+                    })
+                }
+                if (BlockStatement.is(alternate)) {
+                    alternate = alternate.patch({
+                        statements: [...newAlternates!, ...alternate.statements]
+                    })
                 }
                 return node.patch({
-                    consequent: new BlockStatement({ statements: [...newDeclarations, ...node.consequent.statements] })
+                    consequent,
+                    alternate,
                 })
             }
         }

@@ -11,13 +11,14 @@ import normalizeTypes from "./normalizeTypes";
 import addImplicitReturns from "./addImplicitReturns";
 import inferTypes from "./inferTypes";
 import createConditionalDeclarations from "./createConditionalDeclarations";
+import removeConditionalDeclarations from "./removeConditionalDeclarations";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
     importResolution,
-    addImplicitReturns,
+    // addImplicitReturns,
     // addIsTypeFunctions,
     // analysis stage
     convertRefsToAbsolute,
@@ -29,5 +30,6 @@ export default [
     // createClassTypeChecks,
     // // normalizeTypes,
     inferTypes,
+    removeConditionalDeclarations,
     // checkReferences,
 ]

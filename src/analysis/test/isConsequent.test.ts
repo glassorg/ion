@@ -1,8 +1,9 @@
 import { strict as assert } from "assert"
-import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, CallExpression, Argument, Literal, Expression } from "../../ast"
+import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, CallExpression, Argument, Literal, Expression, ExpressionStatement } from "../../ast"
 import toCodeString from "../../toCodeString"
 import isConsequent from "../isConsequent"
 import simplifyExpression from "../simplifyExpression"
+import negateExpression from "../negateExpression"
 
 function e(expr: string | number | Expression) {
     if (!Expression.is(expr)) {
@@ -20,6 +21,15 @@ function c(callee, ...args: Array<string | number | Expression>) {
         callee: e(callee),
         arguments: args.map(e).map(value => new Argument({ value }))
     })
+}
+function not(a: Expression) {
+    return negateExpression(a)
+}
+function and(A: Expression, B: Expression) {
+    return b(A, "&", B)
+}
+function or(A: Expression, B: Expression) {
+    return b(A, "|", B)
 }
 function testConsequent(a: Expression, b: Expression, ab_expected: true | false | null, ba_expected: true | false | null) {
     const ab_actual = isConsequent(a, b)
@@ -112,16 +122,21 @@ function testSimplify(input: Expression, expected: Expression) {
 
 const A = e("A")
 const B = e("B")
+const C = e("C")
 
-testSimplify(b(b(A, "&", B), "|", B), B)
-testSimplify(b(b(A, "&", A), "|", A), A)
-testSimplify(b(B, "|", b(A, "&", B)), B)
-testSimplify(b(A, "|", b(A, "&", B)), A)
+testSimplify(or(and(A, B), B), B)
+testSimplify(or(and(A, A), A), A)
+testSimplify(or(B, and(A, B)), B)
+testSimplify(or(A, and(A, B)), A)
 
-testSimplify(b(b(A, "|", B), "|", B), b(A, "|", B))
-testSimplify(b(A, "|", b(B, "|", A)), b(A, "|", B))
+testSimplify(or(or(A, B), B), or(A, B))
+testSimplify(or(A, or(B, A)), or(A, B))
 
-testSimplify(b(b(A, "|", B), "&", A), A)
-testSimplify(b(A, "&", b(A, "|", B)), A)
+testSimplify(and(or(A, B), A), A)
+testSimplify(and(A, or(A, B)), A)
 
-testSimplify(b(b(A, "|", B), "&", B), B)
+testSimplify(and(or(A, B), B), B)
+
+testSimplify(and(or(A, B), not(A)), B)
+testSimplify(and(or(or(A, B), C), not(B)), or(A, C))
+testSimplify(and(or(A, or(B, C)), not(B)), or(A, C))

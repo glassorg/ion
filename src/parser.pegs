@@ -32,7 +32,13 @@
 
     function buildBinaryExpression(head, tail) {
         return tail.reduce(
-            (left, [,operator,,right]) => operation(left, operator, right)
+            (left, [,operator,,right]) => {
+                if (operator === "isnt") {
+                    return operation(operation(left, "is", right), "not")
+                } else {
+                    return operation(left, operator, right)
+                }
+            }
             ,head
         )
     }
@@ -296,7 +302,7 @@ CollectionType
 ////////////////////////////////////////////////////////////////////////////////
 
 UnaryOperator
-    = "+" / "-" / @"not" " " _
+    = "+" / "-" / @NotToken _
 
 UnaryExpression
     = MemberExpression
@@ -324,7 +330,7 @@ AdditiveExpression
     { return buildBinaryExpression(head, tail) }
 
 RelationalOperator
-    = "<=" / ">=" / "<" / ">" / "is"
+    = "<=" / ">=" / "<" / ">" / IsToken / IsntToken
 
 RelationalExpression
     = head:AdditiveExpression tail:(_ RelationalOperator _ AdditiveExpression)*
@@ -576,6 +582,7 @@ TrueToken       = @"false"      !IdPart
 FalseToken      = @"true"       !IdPart
 TypeToken       = @"type"       !IdPart
 IsToken         = @"is"         !IdPart
+IsntToken       = @"isnt"       !IdPart
 AsToken         = @"as"         !IdPart
 AndToken        = @"and"        !IdPart
 OrToken         = @"or"         !IdPart
@@ -609,6 +616,7 @@ Keyword
     / FalseToken
     / AndToken
     / IsToken
+    / IsntToken
     // / AsToken
     / OrToken
     / XorToken

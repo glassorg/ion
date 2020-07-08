@@ -69,13 +69,17 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Convert class variables to use a named Map.
     X Insert ConditionalDeclarations
     X   Make binary expression rights dependent on binary expression lefts
-      Infer Types, Keep it going, infer them all.
-      We need to infer chained conditional reference types by hand... if a is Point & a.x > 0
-      toCodeString function memoize.
-      Insert Negations of ConditionalDeclarations into alternate branches of IfStatement
-        Implement function to convert Expressions to Negative expressions.
-          For instance not(foo < 0) => foo >= 0
-->    Move Larger Types to Shared References to new temporary TypeDeclarations.
-        Where should we put the types... apparently in ion.types["name here"]
+    X We need to infer chained conditional reference types by hand... if a is Point & a.x > 0
+    X toCodeString function memoize.
+    X Move Larger Types to Shared References to new temporary TypeDeclarations
+    X Unit Testing for parsing evaluation.
+-   X Implement function to convert Expressions to Negative expressions
+-   X   For instance not(foo < 0) => foo >= 0
+-   X Insert Negations of ConditionalDeclarations into alternate branches of IfStatement
+-   X   Also handle negations in chained conditionals
+      Infer Types, Keep it going, infer them all
+      Create Member Lookup Functionality based on a TypeExpression
+        Also, verify that we can do efficient Typed member accessor so we can model things like
+          type MyMap = Map & [String] is String & [Number] is Vector
 
   type Prime = Integer & isPrime(.)
