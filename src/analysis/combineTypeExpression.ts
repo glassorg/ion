@@ -1,5 +1,5 @@
 import { Expression, Reference, BinaryExpression, DotExpression, TypeExpression } from "../ast";
-import simplifyExpression from "./simplifyExpression";
+import simplify from "./simplify";
 
 export function normalizeExpressions(node: Expression) {
     if (TypeExpression.is(node)) {
@@ -17,13 +17,13 @@ export function normalizeExpressions(node: Expression) {
 }
 
 export default function combineTypeExpression(left: Expression, right: Expression): Expression | null {
-    left = simplifyExpression(normalizeExpressions(left))
-    right = simplifyExpression(normalizeExpressions(right))
+    left = simplify(normalizeExpressions(left))
+    right = simplify(normalizeExpressions(right))
     if (left == null) {
         return right
     }
     if (right == null) {
         return left
     }
-    return simplifyExpression(new BinaryExpression({ left, operator: "&", right }))
+    return simplify(new BinaryExpression({ left, operator: "&", right }))
 }

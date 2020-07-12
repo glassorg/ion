@@ -10,10 +10,11 @@ import getSortedTypedNodes, { getAncestorDeclaration } from "./getSortedTypedNod
 import evaluate from "./evaluate";
 import { getAbsoluteName, SemanticError, getLast, getLastIndex, isAbsoluteName } from "../common";
 import toCodeString from "../toCodeString";
-import simplifyTypeExpression from "../analysis/simplifyTypeExpression";
+// import simplifyTypeExpression from "../analysis/simplifyType";
 import combineTypeExpression from "../analysis/combineTypeExpression";
 import IdGenerator from "../IdGenerator";
-import negateExpression from "../analysis/negateExpression";
+import negateExpression from "../analysis/negate";
+import simplify from "../analysis/simplify";
 
 function getTypeReference(name: string) {
     return new ast.Reference({ name: getAbsoluteName(`ion.${name}`, name)})
@@ -90,7 +91,7 @@ function createCombinedTypeExpression(type: ast.TypeExpression | ast.Reference, 
         return type
     }
     let combinedType = combineTypeExpression(type, assertType)!
-    return simplifyTypeExpression(new ast.TypeExpression({ location, value: combinedType }))
+    return simplify(new ast.TypeExpression({ location, value: combinedType }))
 
 }
 
@@ -182,7 +183,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
                     : new ast.BinaryExpression({ left: new ast.DotExpression({}), operator: "is", right: type, location: type.location})
                 value = value != null ? new ast.BinaryExpression({ left: newNode, operator: "|", right: value }) : newNode
             }
-            returnType = simplifyTypeExpression(new ast.TypeExpression({ location: func.body.location, value: value! }))
+            returnType = simplify(new ast.TypeExpression({ location: func.body.location, value: value! })) as any
         }
         else if (returnTypes.length === 0) {
             throw SemanticError(`Function returns no value`, func)
@@ -253,13 +254,13 @@ function getChainedConditionalTypeAssertion(ancestors: any[], resolved: Resolved
                 if (negate) {
                     assertion = negateExpression(assertion)
                 }
-                let result = createCombinedTypeExpression(type, node.name, assertion, node.location!);
+                let result = createCombinedTypeExpression(type, node.name, assertion, node.location!) as any;
                 // console.log({
                 //     type: toCodeString(type),
                 //     parentLeft: toCodeString(parent.left),
                 //     result: toCodeString(result)
                 // })
-                type = result;
+                type = result
             }
         }
     }

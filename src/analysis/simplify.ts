@@ -1,7 +1,8 @@
-import { Expression, BinaryExpression, ExpressionStatement, UnaryExpression } from "../ast";
+import { Expression, BinaryExpression, ExpressionStatement, UnaryExpression, TypeExpression, DotExpression, Reference } from "../ast";
 import toCodeString from "../toCodeString";
 import { memoize } from "../common";
 import { traverse } from "../Traversal";
+import normalize from "./normalize";
 
 function find<T>(items: Iterable<T>, predicate: (value: T) => boolean): T | null {
     for (let item of items) {
@@ -26,40 +27,21 @@ function equals(a: Expression, b: Expression) {
     return toCodeString(a) === toCodeString(b)
 }
 
-const reassociateLeft = {
-    "|": true,
-    "&": true,
-    "+": true,
-    "*": true,
-}
-
-function normalize(e: Expression): Expression {
-    if (BinaryExpression.is(e)) {
-        if (reassociateLeft[e.operator]) {
-            if (BinaryExpression.is(e.right) && e.right.operator === e.operator) {
-                return new BinaryExpression({
-                    location: e.location,
-                    left: new BinaryExpression({
-                        location: e.right.location,
-                        left: e.left,
-                        operator: e.operator,
-                        right: e.right.left
-                    }),
-                    operator: e.operator,
-                    right: e.right.right
-                })
-            }
+// A & B | A => A
+const simplify = memoize(function(e: Expression): Expression {
+    e = normalize(e)
+    if (TypeExpression.is(e)) {
+        let value = simplify(e.value)
+        if (BinaryExpression.is(value) && DotExpression.is(value.left) && value.operator === "is" && Reference.is(value.right)) {
+            return value.right
+        }
+        if (e.value !== value) {
+            e = e.patch({ value })
         }
     }
-    return e
-}
-
-// A & B | A => A
-function simplifyInternal(e: Expression): Expression {
-    e = normalize(e)
-    if (BinaryExpression.is(e)) {
-        const left = simplifyExpression(e.left)
-        const right = simplifyExpression(e.right)
+    else if (BinaryExpression.is(e)) {
+        const left = simplify(e.left)
+        const right = simplify(e.right)
         if (equals(left, right)) {
             if (e.operator === "&" || e.operator == "|") {
                 //  A & A => A
@@ -121,8 +103,14 @@ function simplifyInternal(e: Expression): Expression {
             e = e.patch({ left, right })
         }
     }
+    else if (UnaryExpression.is(e)) {
+        let argument = simplify(e.argument)
+        if (e.operator === "not")
+        if (e.argument !== argument) {
+            e = e.patch({ argument })
+        }
+    }
     return e
-}
+}, true)
 
-const simplifyExpression = memoize(simplifyInternal, true)
-export default simplifyInternal
+export default simplify

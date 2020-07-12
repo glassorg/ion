@@ -2,8 +2,8 @@ import { strict as assert } from "assert"
 import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, CallExpression, Argument, Literal, Expression, ExpressionStatement } from "../../ast"
 import toCodeString from "../../toCodeString"
 import isConsequent from "../isConsequent"
-import simplifyExpression from "../simplifyExpression"
-import negateExpression from "../negateExpression"
+import simplify from "../simplify"
+import negateExpression from "../negate"
 
 function e(expr: string | number | Expression) {
     if (!Expression.is(expr)) {
@@ -11,7 +11,7 @@ function e(expr: string | number | Expression) {
     }
     return expr
 }
-function b(left: string | Expression, operator: string, right: string | number | Expression) {
+function b(left: string | number | Expression, operator: string, right: string | number | Expression) {
     left = e(left)
     right = e(right)
     return new BinaryExpression({ left, operator, right })
@@ -25,11 +25,33 @@ function c(callee, ...args: Array<string | number | Expression>) {
 function not(a: Expression) {
     return negateExpression(a)
 }
-function and(A: Expression, B: Expression) {
+type E = string | number | Expression
+function and(A: E, B: E) {
     return b(A, "&", B)
 }
-function or(A: Expression, B: Expression) {
+function or(A: E, B: E) {
     return b(A, "|", B)
+}
+function lt(A: E, B: E) {
+    return b(A, "<", B)
+}
+function gt(A: E, B: E) {
+    return b(A, ">", B)
+}
+function lte(A: E, B: E) {
+    return b(A, ">=", B)
+}
+function gte(A: E, B: E) {
+    return b(A, "<=", B)
+}
+function ne(A: E, B: E) {
+    return b(A, "!=", B)
+}
+function eq(A: E, B: E) {
+    return b(A, "==", B)
+}
+function is(A: E, B: E) {
+    return b(A, "is", B)
 }
 function testConsequent(a: Expression, b: Expression, ab_expected: true | false | null, ba_expected: true | false | null) {
     const ab_actual = isConsequent(a, b)
@@ -114,7 +136,7 @@ testConsequent(
 // simplify Expressions test
 
 function testSimplify(input: Expression, expected: Expression) {
-    let actual = simplifyExpression(input)
+    let actual = simplify(input)
     let as = toCodeString(actual)
     let es = toCodeString(expected)
     assert(as === es, `simplify(${toCodeString(input)}), expected: ${es}, actual: ${as}`)
@@ -140,3 +162,7 @@ testSimplify(and(or(A, B), B), B)
 testSimplify(and(or(A, B), not(A)), B)
 testSimplify(and(or(or(A, B), C), not(B)), or(A, C))
 testSimplify(and(or(A, or(B, C)), not(B)), or(A, C))
+
+// test simplify 
+testSimplify(eq(10, A), eq(A, 10))
+testSimplify(is(10, A), is(10, A))// make sure 'is' operator is not sorted

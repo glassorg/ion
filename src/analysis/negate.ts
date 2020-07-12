@@ -29,10 +29,10 @@ const negateOperators = {
 //     return a !== b && (primitiveTypes[a] === true || primitiveTypes[b] === true)
 // }
 
-function negateInternal(e: Expression): Expression {
+const negate = memoize(function (e: Expression): Expression {
     if (UnaryExpression.is(e)) {
         //  !!A => A
-        if (e.operator === "!") {
+        if (e.operator === "not") {
             return e.argument
         }
     }
@@ -53,9 +53,9 @@ function negateInternal(e: Expression): Expression {
             //  !(A & B) => !A | !B
             //  !(A | B) => !A & !B
             return e.patch({
-                left: negateExpression(e.left),
+                left: negate(e.left),
                 operator: e.operator === "&" ? "|" : "&",
-                right: negateExpression(e.right),
+                right: negate(e.right),
             })
         }
     }
@@ -65,7 +65,6 @@ function negateInternal(e: Expression): Expression {
         operator: "not",
         argument: e,
     })
-}
+}, true)
 
-const negateExpression = memoize(negateInternal, true)
-export default negateExpression
+export default negate

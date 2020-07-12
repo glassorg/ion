@@ -84,7 +84,7 @@ const s = memoize(
     }
 )
 
-export default function toCodeString(node: Node) {
+export default function toCodeString(node: Node): string {
     if (node == null) {
         return "NULL"
     }

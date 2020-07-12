@@ -7,7 +7,7 @@ import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
 import createClassTypeChecks from "./createClassTypeChecks";
 import checkReferences from "./checkReferences";
-import normalizeTypes from "./normalizeTypes";
+// import normalizeTypes from "./normalizeTypes";
 import addImplicitReturns from "./addImplicitReturns";
 import inferTypes from "./inferTypes";
 import createConditionalDeclarations from "./createConditionalDeclarations";

@@ -2,7 +2,7 @@ import
     ion.*
 
 export
-    # # type Long = String & .length > 10
+    # type Long = String & .length > 10
     # class Person
     #     var name: String
     # let toString = (person: Person) =>
@@ -22,7 +22,6 @@ export
             return 3
         else if a != null
             return a
-        # 10
 
     # let pi = 1 + 4 / 2
     # type Whole = Integer & . >= 0
