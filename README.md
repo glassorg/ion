@@ -77,9 +77,29 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
 -   X   For instance not(foo < 0) => foo >= 0
 -   X Insert Negations of ConditionalDeclarations into alternate branches of IfStatement
 -   X   Also handle negations in chained conditionals
-      Infer Types, Keep it going, infer them all
+    X Create Type Expression for Class Instances
+    X Infer Types, Keep it going, infer them all
+    X Infer CallExpressions
+      Uniform Function Call Syntax
+        May Need Soft Import Names, scoped to each file. Think this through.
+      Infer ArrayExpressions
+      CallExpressions? Infer as well
       Create Member Lookup Functionality based on a TypeExpression
         Also, verify that we can do efficient Typed member accessor so we can model things like
           type MyMap = Map & [String] is String & [Number] is Vector
+          Can model child of type property as
+            BinaryExpression
+              left: MemberExpression
+                object: DotExpression
+                property: TypeExpression
+                  value: BinaryExpression
+                  left: DotExpression
+                  operator: "is"
+                  right: Reference
+                    name: "ion.String:String"
+              operator: "is"
+              right: Reference
+                name: "ion.String:String"
+            ..[. is String]
 
   type Prime = Integer & isPrime(.)

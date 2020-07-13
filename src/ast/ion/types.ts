@@ -24,6 +24,7 @@ export type ___TemplateReference___ = Map.Map<String.String, Declaration.Declara
 export type ion_String_String_or_ion_Null_Null = String.String | Null.Null;
 export type Reference_Reference_or_ion_Null_Null = Reference.Reference | Null.Null;
 export type TypeExpression_TypeExpression_or_ion_types_Reference_Reference_or_ion_Null_Null = TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+export type TypeExpression_TypeExpression_or_ion_Null_Null = TypeExpression.TypeExpression | Null.Null;
 export type Expression_Expression_or_ion_Null_Null = Expression.Expression | Null.Null;
 export type Id_Id_or_ion_Null_Null = Id.Id | Null.Null;
 export type IfStatement_IfStatement_or_ion_Null_Null = IfStatement.IfStatement | Null.Null;

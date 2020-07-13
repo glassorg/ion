@@ -390,7 +390,7 @@ FunctionHead
 
 InlineFunction
     = head:FunctionHead _ value:InlineExpression
-    { return node("FunctionExpression", { ...head, body: node("BlockStatement", { statements: [node("ExpressionStatement", { value } )] } ) } ) }
+    { return node("FunctionExpression", { ...head, body: node("BlockStatement", { statements: [node("ReturnStatement", { value } )] } ) } ) }
 
 OutlineFunction
     = head:FunctionHead _ body:BlockStatement

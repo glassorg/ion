@@ -1,6 +1,5 @@
 import { memoize } from "../common"
 import { Expression, BinaryExpression, Literal } from "../ast"
-import { traverse } from "../Traversal"
 import toCodeString from "../toCodeString"
 
 const reassociateLeft = {

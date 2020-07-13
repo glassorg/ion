@@ -27,6 +27,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     readonly baseClasses: _Array.Array<Reference.Reference>;
     readonly declarations: Map.Map<String.String, Declaration.Declaration>;
     readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
+    readonly instanceType: TypeExpression.TypeExpression | Null.Null;
     static readonly id = 'ClassDeclaration';
     static readonly implements = new Set([
         'ClassDeclaration',
@@ -44,7 +45,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters = [],
         baseClasses = [],
         declarations,
-        meta = []
+        meta = [],
+        instanceType = null
     }: {
         location?: Location.Location | Null.Null,
         type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
@@ -54,7 +56,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations: Map.Map<String.String, Declaration.Declaration>,
-        meta?: _Array.Array<KeyValuePair.KeyValuePair>
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
+        instanceType?: TypeExpression.TypeExpression | Null.Null
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -74,6 +77,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
             throw new Error('declarations is not a Map: ' + Class.toString(declarations));
         if (!_Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
+        if (!(TypeExpression.isTypeExpression(instanceType) || Null.isNull(instanceType)))
+            throw new Error('instanceType is not a TypeExpression | Null: ' + Class.toString(instanceType));
         this.location = location;
         this.type = type;
         this.id = id;
@@ -83,6 +88,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         this.baseClasses = baseClasses;
         this.declarations = declarations;
         this.meta = meta;
+        this.instanceType = instanceType;
         Object.freeze(this);
     }
     patch(properties: {
@@ -94,7 +100,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations?: Map.Map<String.String, Declaration.Declaration>,
-        meta?: _Array.Array<KeyValuePair.KeyValuePair>
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
+        instanceType?: TypeExpression.TypeExpression | Null.Null
     }) {
         return new ClassDeclaration({
             ...this,

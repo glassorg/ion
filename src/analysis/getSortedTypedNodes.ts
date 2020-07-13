@@ -46,6 +46,7 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     },
     *ClassDeclaration(node) {
         yield* node.baseClasses
+        yield* node.declarations.values()
     },
     *Parameter(node) {
         if (node.type) {

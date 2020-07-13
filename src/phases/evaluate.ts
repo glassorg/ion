@@ -5,7 +5,7 @@ import Expression from "../ast/Expression";
 import Literal from "../ast/Literal";
 import * as ast from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
-import getSortedTypedNodes from "./getSortedTypedNodes";
+import getSortedTypedNodes from "../analysis/getSortedTypedNodes";
 
 const binaryOps = {
     "|": (a, b) => a || b,

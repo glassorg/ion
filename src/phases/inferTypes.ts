@@ -6,7 +6,7 @@ import Literal from "../ast/Literal";
 import * as ast from "../ast";
 import { Node } from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
-import getSortedTypedNodes, { getAncestorDeclaration } from "./getSortedTypedNodes";
+import getSortedTypedNodes, { getAncestorDeclaration } from "../analysis/getSortedTypedNodes";
 import evaluate from "./evaluate";
 import { getAbsoluteName, SemanticError, getLast, getLastIndex, isAbsoluteName } from "../common";
 import toCodeString from "../toCodeString";
@@ -19,6 +19,8 @@ import simplify from "../analysis/simplify";
 function getTypeReference(name: string) {
     return new ast.Reference({ name: getAbsoluteName(`ion.${name}`, name)})
 }
+
+const classType = getTypeReference("Class")
 
 const literalTypes = {
     boolean: getTypeReference("Boolean"),
@@ -97,7 +99,7 @@ function createCombinedTypeExpression(type: ast.TypeExpression | ast.Reference, 
 
 type Resolved = { get<T>(t: T): T }
 const Boolean = new ast.Reference({ name: "ion.Boolean:Boolean" })
-const Number = new ast.Reference({ name: "ion.Boolean:Number" })
+const Number = new ast.Reference({ name: "ion.Number:Number" })
 const binaryOperationsType = {
     "<": Boolean,
     ">": Boolean,
@@ -114,6 +116,15 @@ const binaryOperationsType = {
     "*": Number,
     "/": Number,
     "%": Number,
+}
+
+function is(type: ast.Reference | ast.TypeExpression, left: Expression = new ast.DotExpression({})) {
+    return new ast.BinaryExpression({
+        location: type.location,
+        left,
+        operator: "is",
+        right: type
+    })
 }
 
 // that is some typescript kung fu right there.
@@ -146,6 +157,22 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         return { type: createCombinedTypeExpression(ancestorDeclaration.type!, name, assertion, node.location!) }
     },
     ClassDeclaration(node) {
+        // calculate a TypeExpression that can be used to compare these instances
+        let value: Expression = is(new ast.Reference(node.id))
+        for (let base of node.baseClasses) {
+            value = new ast.BinaryExpression({ left: value, operator: "&", right: is(base) })
+        }
+        for (let d of node.declarations.values()) {
+            if (ast.VariableDeclaration.is(d) && d.assignable) {
+                value = new ast.BinaryExpression({
+                    left: value,
+                    operator: "&",
+                    right: is(d.type!, new ast.MemberExpression({ object: new ast.DotExpression({}), property: d.id }))
+                })
+            }
+        }
+        let instanceType = new ast.TypeExpression({ location: node.location, value })
+        return { type: classType, instanceType }
     },
     Parameter(node, resolved, scopes) {
         return inferType.VariableDeclaration?.apply(this, arguments as any)
@@ -228,8 +255,27 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         throw SemanticError("Not Implemented: getMemberType for " + objectType.constructor.name, node)
     },
     ArrayExpression(node) {
+        // Type of ArrayExpression
+        // For now... just Array reference?
+        // we would need to find the common base type of multiple type expressions or references.
     },
-    CallExpression(node) {
+    CallExpression(node, resolved, scopeMap) {
+        // IF the callee references a ClassDeclaration,
+        if (ast.Reference.is(node.callee)) {
+            let scope = scopeMap.get(node)
+            let declaration = scope[node.callee.name]
+            if (ast.ClassDeclaration.is(declaration)) {
+                return { type: node.callee }
+            }
+            if (ast.VariableDeclaration.is(declaration) && ast.FunctionExpression.is(declaration.value)) {
+                let func = resolved.get(declaration.value) ?? declaration.value
+                return { type: func.returnType }
+            }
+            else {
+                throw SemanticError("Function or Class expected", node.callee)
+            }
+        }
+        throw SemanticError("Non-Reference CallExpression.callee Not Implemented yet", node)
     },
     UnaryExpression(node) {
         return { type: node.argument.type }

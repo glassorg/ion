@@ -9,14 +9,12 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as TypeExpression from './TypeExpression';
 import * as Reference from './Reference';
-import * as Boolean from './ion/Boolean';
 import * as _Array from './ion/Array';
 import * as Argument from './Argument';
 import * as Class from './ion/Class';
 export class CallExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
-    readonly new: Boolean.Boolean;
     readonly callee: Expression.Expression;
     readonly arguments: _Array.Array<Argument.Argument>;
     static readonly id = 'CallExpression';
@@ -30,13 +28,11 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
     constructor({
         location = null,
         type = null,
-        new: _new = false,
         callee,
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
         type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
-        new?: Boolean.Boolean,
         callee: Expression.Expression,
         arguments: _Array.Array<Argument.Argument>
     }) {
@@ -44,15 +40,12 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
             throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
-        if (!Boolean.isBoolean(_new))
-            throw new Error('new is not a Boolean: ' + Class.toString(_new));
         if (!Expression.isExpression(callee))
             throw new Error('callee is not a Expression: ' + Class.toString(callee));
         if (!_Array.isArray(_arguments))
             throw new Error('arguments is not a Array: ' + Class.toString(_arguments));
         this.location = location;
         this.type = type;
-        this.new = _new;
         this.callee = callee;
         this.arguments = _arguments;
         Object.freeze(this);
@@ -60,7 +53,6 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
     patch(properties: {
         location?: Location.Location | Null.Null,
         type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
-        new?: Boolean.Boolean,
         callee?: Expression.Expression,
         arguments?: _Array.Array<Argument.Argument>
     }) {

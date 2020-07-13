@@ -10,9 +10,12 @@ const ignoreProperties: {[name:string]:boolean} = {
     location: true
 }
 
-function ignore(property) {
+function ignore(property, value) {
     if (property == null) {
         debugger
+    }
+    if (value == null) {
+        return true
     }
     return ignoreProperties[property] || property.startsWith("_") || /^ion\b/.test(property)
 }
@@ -32,10 +35,11 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     let clone: any = Array.isArray(object) ? [] : className === "Object" ? {} : {"": className}
     if (object instanceof Map) {
         for (let key of object.keys()) {
-            if (ignore(key)) {
+            let value = object.get(key)
+            if (ignore(key, value)) {
                 continue
             }
-            clone[key] = cloneWithJsonReferences(object.get(key), path)
+            clone[key] = cloneWithJsonReferences(value, path)
         }
     }
     if (object instanceof Set) {
@@ -46,16 +50,26 @@ function cloneWithJsonReferences(object: any, path: string[] = []) {
     }
     else {
         for (let property in object) {
-            if (ignore(property)) {
+            let value = object[property]
+            if (ignore(property, value)) {
                 continue
             }
     
             path.push(property)
-            clone[property] = cloneWithJsonReferences(object[property], path)
+            clone[property] = cloneWithJsonReferences(value, path)
             path.pop()
         }
     }
     return clone
+}
+
+function format(html: string) {
+    //  replace { "": "TypeName" ... } with TypeName { ... }
+    return html.replace(/{\s+&quot;&quot;:\s+&quot;(\w+)&quot;,/gi, "$1 {")
+        //  replace multiline object with a single value as a single line
+        .replace(/{\s+([^\n]+)\s+}/gi, "{ $1 }")
+        //  replace line ends with breaks
+        .replace(/\\n/g, '<br>')
 }
 
 export function create(outputPath: string) {
@@ -143,7 +157,7 @@ export function create(outputPath: string) {
     return `
         <article>
             <header><span>${names.join(', </span><span>')}</span></header>
-            <p>${html.replace(/\\n/g, '<br>')}</p>
+            <p>${format(html)}</p>
         </article>
     `
 }),
