@@ -3,6 +3,7 @@ import Compiler, { Options } from "../../Compiler"
 import { getInputFilesRecursive, getLocalName, getAbsoluteName, EXPORT_DELIMITER } from "../../common"
 import path from "path"
 import { Reference } from "../../ast"
+import toCodeString from "../../toCodeString"
 
 let compiler = new Compiler(() => {})
 let nullOptions = new Options([], "NULL")
@@ -49,6 +50,10 @@ export
         #           4
         if a == 4 | a > 10
             return true
+    class Base
+        var x: Boolean
+    class Baz extends Base
+        var y: Integer & >= 0 & <= 10
 `
 }, [
     ["ion.types:((. is ion.String:String) | (. is ion.Number:Number))", (result) => result.declarations.get("foo:foo").value.body.statements[0].test.left.left.type.name],
@@ -56,5 +61,11 @@ export
     ["ion.Number:Number", (result) => result.declarations.get("foo:foo").value.body.statements[1].alternate.test.left.type.name],
     ["ion.types:((. is ion.Number:Number) & (. < 5))", (result) => result.declarations.get("foo:bar").value.body.statements[0].alternate.statements[0].value.type.name ],
     ["ion.types:((. is ion.Number:Number) & (. != 4))", (result) => result.declarations.get("foo:bar").value.body.statements[1].test.right.left.type.name],
+    //  returnType of bar
+    ['ion.types:((. is ion.Boolean:Boolean) | ((. is ion.Number:Number) & (. < 5)))', (result) => result.declarations.get("foo:bar").value.returnType.name],
+    //  returnType of foo
+    ['ion.Boolean:Boolean', (result) => result.declarations.get("foo:foo").value.returnType.name],
+    //  instanceType of Baz
+    ['((((. is foo:Baz) & (. is foo:Base)) & (..x is ion.Boolean:Boolean)) & (..y is ((. is ion.Integer:Integer) & ((. >= 0) & (. <= 10)))))', (result) => toCodeString(result.declarations.get("foo:Baz").instanceType) ],
 ]
 )
