@@ -57,7 +57,7 @@ export function isTypeReference(node): node is Reference {
     return first === first.toUpperCase()
 }
 
-export function memoize<A extends object, B>(fn: (a: A) => B, cacheResultAsKey = false, cache: WeakMap<A, B> = new WeakMap()): (a: A) => B {
+export function memoize<A extends object, B>(fn: (a: A, ...rest) => B, cacheResultAsKey = false, cache: WeakMap<A, B> = new WeakMap()): (a: A) => B {
     return function(this, arg) {
         let result = cache.get(arg)
         if (result === undefined) {
@@ -71,7 +71,7 @@ export function memoize<A extends object, B>(fn: (a: A) => B, cacheResultAsKey =
 }
 
 export function getLastName(absoluteName: string) {
-    return absoluteName.slice(absoluteName.lastIndexOf(PATH_SEPARATOR) + 1)
+    return absoluteName.slice(absoluteName.lastIndexOf(EXPORT_DELIMITER) + 1)
 }
 
 const validIdRegex = /^[a-z_][a-z0-9_]*$/i

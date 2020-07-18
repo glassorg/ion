@@ -1,4 +1,4 @@
-import { Expression, BinaryExpression, ExpressionStatement, UnaryExpression, TypeExpression, DotExpression, Reference } from "../ast";
+import { Expression, BinaryExpression, ExpressionStatement, UnaryExpression, TypeExpression, DotExpression, Reference, FunctionType } from "../ast";
 import toCodeString from "../toCodeString";
 import { memoize } from "../common";
 import { traverse } from "../Traversal";
@@ -32,14 +32,15 @@ const simplify = memoize(function(e: Expression): Expression {
     e = normalize(e)
     if (TypeExpression.is(e)) {
         let value = simplify(e.value)
-        if (BinaryExpression.is(value) && DotExpression.is(value.left) && value.operator === "is" && Reference.is(value.right)) {
+        if (BinaryExpression.is(value) && DotExpression.is(value.left) && value.operator === "is" && (Reference.is(value.right) || FunctionType.is(value.right))) {
             return value.right
         }
         if (e.value !== value) {
             e = e.patch({ value })
         }
     }
-    else if (BinaryExpression.is(e)) {
+
+    if (BinaryExpression.is(e)) {
         const left = simplify(e.left)
         const right = simplify(e.right)
         if (equals(left, right)) {

@@ -80,6 +80,10 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Create Type Expression for Class Instances
     X Infer Types, Keep it going, infer them all
     X Infer CallExpressions
+    X Library import resolution
+    X Libraries export an Object with all named declarations
+    X ObjectExpression Type definition
+    X getMemberType for TypeExpression
       Uniform Function Call Syntax
         May Need Soft Import Names, scoped to each file. Think this through.
       Infer ArrayExpressions

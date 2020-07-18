@@ -2,9 +2,6 @@ export {
     default as Analysis
 } from './Analysis';
 export {
-    default as Argument
-} from './Argument';
-export {
     default as ArrayExpression
 } from './ArrayExpression';
 export {
@@ -83,6 +80,9 @@ export {
     default as Node
 } from './Node';
 export {
+    default as ObjectExpression
+} from './ObjectExpression';
+export {
     default as Output
 } from './Output';
 export {
@@ -91,6 +91,9 @@ export {
 export {
     default as Position
 } from './Position';
+export {
+    default as Property
+} from './Property';
 export {
     default as Reference
 } from './Reference';
@@ -112,6 +115,9 @@ export {
 export {
     default as TypeDeclaration
 } from './TypeDeclaration';
+export {
+    default as TypeDefinition
+} from './TypeDefinition';
 export {
     default as TypeExpression
 } from './TypeExpression';

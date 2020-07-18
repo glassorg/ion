@@ -31,6 +31,7 @@ testOutput({
 `
 import
     ion.*
+    .*
 export
     let foo = (a: String | Number) =>
         #  0             1
@@ -54,6 +55,16 @@ export
         var x: Boolean
     class Baz extends Base
         var y: Integer & >= 0 & <= 10
+    let instance = Baz(x: true, y: 2)
+    let doubled = funcs.double(10)
+    let doubleFunc = funcs.double
+`,
+    funcs:
+`
+import
+    ion.*
+export
+    let double = (a: Number) => a * 2
 `
 }, [
     ["ion.types:((. is ion.String:String) | (. is ion.Number:Number))", (result) => result.declarations.get("foo:foo").value.body.statements[0].test.left.left.type.name],
@@ -67,5 +78,11 @@ export
     ['ion.Boolean:Boolean', (result) => result.declarations.get("foo:foo").value.returnType.name],
     //  instanceType of Baz
     ['((((. is foo:Baz) & (. is foo:Base)) & (..x is ion.Boolean:Boolean)) & (..y is ((. is ion.Integer:Integer) & ((. >= 0) & (. <= 10)))))', (result) => toCodeString(result.declarations.get("foo:Baz").instanceType) ],
+    //  type of instance
+    ['foo:Baz', (result) => result.declarations.get("foo:instance").type.name],
+    //  type of doubled
+    ['ion.Number:Number', (result) => result.declarations.get("foo:doubled").type.name ],
+    //  type of doubleFunc
+    ['ion.types:function(a: ion.Number:Number) => ion.Number:Number', (result) => result.declarations.get("foo:doubleFunc").type.name]
 ]
 )

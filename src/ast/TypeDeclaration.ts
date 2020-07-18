@@ -8,7 +8,7 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
@@ -17,9 +17,9 @@ import * as Parameter from './Parameter';
 import * as Class from './ion/Class';
 export class TypeDeclaration implements _Object.Object , Variable.Variable , Declaration.Declaration , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
-    readonly value: Reference.Reference | TypeExpression.TypeExpression;
+    readonly value: TypeDefinition.TypeDefinition | Reference.Reference;
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
     readonly parameters: _Array.Array<Parameter.Parameter>;
@@ -42,21 +42,21 @@ export class TypeDeclaration implements _Object.Object , Variable.Variable , Dec
         parameters = []
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id: Id.Id,
-        value: Reference.Reference | TypeExpression.TypeExpression,
+        value: TypeDefinition.TypeDefinition | Reference.Reference,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!Id.isId(id))
             throw new Error('id is not a Id: ' + Class.toString(id));
-        if (!(Reference.isReference(value) || TypeExpression.isTypeExpression(value)))
-            throw new Error('value is not a Reference | TypeExpression: ' + Class.toString(value));
+        if (!(TypeDefinition.isTypeDefinition(value) || Reference.isReference(value)))
+            throw new Error('value is not a TypeDefinition | Reference: ' + Class.toString(value));
         if (!Boolean.isBoolean(assignable))
             throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(_export))
@@ -74,9 +74,9 @@ export class TypeDeclaration implements _Object.Object , Variable.Variable , Dec
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id,
-        value?: Reference.Reference | TypeExpression.TypeExpression,
+        value?: TypeDefinition.TypeDefinition | Reference.Reference,
         assignable?: Boolean.Boolean,
         export?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>

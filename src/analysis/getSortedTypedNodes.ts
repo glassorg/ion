@@ -3,7 +3,7 @@ import { ScopeMaps } from "../createScopeMaps";
 import toposort from "../toposort";
 import { Typed, FunctionExpression, ReturnStatement, CallExpression, BinaryExpression, Expression } from "../ast";
 import * as ast from "../ast";
-import { getLast } from "../common";
+import { getLast, SemanticError } from "../common";
 
 
 function getReturnStatements(node: FunctionExpression): ReturnStatement[] {
@@ -44,6 +44,14 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     },
     *Literal(node) {
     },
+    *ObjectExpression(node) {
+        for (let property of node.properties) {
+            if (Typed.is(property.key)) {
+                yield property.key
+            }
+            yield property.value
+        }
+    },
     *ClassDeclaration(node) {
         yield* node.baseClasses
         yield* node.declarations.values()
@@ -71,7 +79,11 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         }
     },
     *Reference(node, scopes) {
-        yield scopes.get(node)[node.name]
+        let referencedNode = scopes.get(node)[node.name]
+        if (referencedNode == null) {
+            throw SemanticError("Referenced value not found", node)
+        }
+        yield referencedNode
     },
     *TemplateReference(node) {
         yield node.reference
@@ -100,22 +112,28 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
 export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestorsMap: Map<ast.Node, Array<any>>) {
     let sentinel = {};
     let edges: any[] = [];
+    function push(from, to) {
+        if (from == null || to == null) {
+            throw new Error("Edge nodes not be null")
+        }
+        edges.push([from, to])
+    }
     traverse(root, {
         leave(node) {
             if (Typed.is(node)) {
                 if (BinaryExpression.is(node)) {
-                    edges.push([node.left, node.right])
+                    push(node.left, node.right)
                 }
                 let func = getPredecessors[node.constructor.name];
                 let count = 0;
                 if (func) {
                     for (let pred of func(node, scopeMap, ancestorsMap)) {
                         count++;
-                        edges.push([pred, node]);
+                        push(pred, node);
                     }
                 }
                 if (count === 0) {
-                    edges.push([sentinel, node]);
+                    push(sentinel, node);
                 }
             }
         }

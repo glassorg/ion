@@ -7,16 +7,16 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as _Array from './ion/Array';
-import * as Argument from './Argument';
+import * as Property from './Property';
 import * as Class from './ion/Class';
 export class CallExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly callee: Expression.Expression;
-    readonly arguments: _Array.Array<Argument.Argument>;
+    readonly arguments: _Array.Array<Property.Property>;
     static readonly id = 'CallExpression';
     static readonly implements = new Set([
         'CallExpression',
@@ -32,14 +32,14 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         callee: Expression.Expression,
-        arguments: _Array.Array<Argument.Argument>
+        arguments: _Array.Array<Property.Property>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!Expression.isExpression(callee))
             throw new Error('callee is not a Expression: ' + Class.toString(callee));
         if (!_Array.isArray(_arguments))
@@ -52,9 +52,9 @@ export class CallExpression implements _Object.Object , Expression.Expression , 
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         callee?: Expression.Expression,
-        arguments?: _Array.Array<Argument.Argument>
+        arguments?: _Array.Array<Property.Property>
     }) {
         return new CallExpression({
             ...this,

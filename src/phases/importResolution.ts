@@ -42,7 +42,8 @@ export default function importResolution(root: Assembly) {
                 }
             }
         })
-    
+
+   
         let scopes = createScopeMaps(module)
         // now let's traverse and find unreferenced modules
         let unresolvedReferences = new Map<string,Reference[]>()
@@ -63,6 +64,8 @@ export default function importResolution(root: Assembly) {
             }
         })
 
+        let debug = importPaths.includes("sample")
+
         function resolveReferences(oldName, newName) {
             for (let ref of unresolvedReferences.get(oldName)!) {
                 //  patch function would be cool as it would construct
@@ -79,6 +82,9 @@ export default function importResolution(root: Assembly) {
                     path + EXPORT_DELIMITER + name,
                     path + (path.length ? PATH_SEPARATOR : "") + name + EXPORT_DELIMITER + name
                 ]
+                if (debug) {
+                    // console.log({ importPaths, unresolvedReferences, checkPaths, exports })
+                }
                 for (let checkPath of checkPaths) {
                     // let newName = path + name
                     if (exports.has(checkPath)) {

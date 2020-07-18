@@ -8,7 +8,7 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as Id from './Id';
 import * as _Array from './ion/Array';
@@ -17,7 +17,7 @@ import * as BlockStatement from './BlockStatement';
 import * as Class from './ion/Class';
 export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id | Null.Null;
     readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;
@@ -34,7 +34,7 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
     ]);
     constructor({location = null, type = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id | Null.Null,
         parameters: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
@@ -43,8 +43,8 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!(Id.isId(id) || Null.isNull(id)))
             throw new Error('id is not a Id | Null: ' + Class.toString(id));
         if (!_Array.isArray(parameters))
@@ -66,7 +66,7 @@ export class FunctionExpression implements _Object.Object , Expression.Expressio
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id | Null.Null,
         parameters?: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,

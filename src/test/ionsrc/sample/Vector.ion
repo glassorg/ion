@@ -1,5 +1,6 @@
 import
     ion.*
+    .*
 
 export
     struct Vector
@@ -7,47 +8,10 @@ export
         var y: Number
         var z: Number
 
-    let origin = Vector(0, 0, 0)
+        # obviously this is more concise and readable
+        # let length = x + y + z
 
-    let double = (a: Number) => a * 2
+    # TODO: Object Literals as StringMap?
+    # let literal = { x: 1, y: 2 }
+    let doubled = VectorFunctions.double(Vector(1, 2, 3))
 
-    let quadruple = (a: Number) => double(double(a))
-    # type Long = String & .length > 10
-    # class Person
-    #     var name: String
-    # let toString = (person: Person) =>
-    #     let name = person.name
-    #     # while traversing into if expression test
-    #     if name.length > 0 & name.length < 10
-    #         # we need placeholder to
-    #         # virtual name: typeof name & .length > 0
-    #         name
-    #     else
-    #         "anonymous"
-    # let foo = (a: String | Number) =>
-    #     # so, how do we look at the previous ref to determine current type.
-    #     # if a is String & a.length > 0
-    #     #     return 2
-    #     if a is String | a
-    #         return 3
-    #     else if a != null
-    #         return a
-
-    # let pi = 1 + 4 / 2
-    # type Whole = Integer & . >= 0
-    # # type Positive = Whole & . > 1
-    # # type Negative = Integer & < 0
-    # class BaseClass
-    #     var x: Whole
-    # class BaseClass2 extends BaseClass
-    #     var y: Whole
-    # class Vector extends BaseClass2
-    #     var z: Whole
-    #     let dx = x * pi
-    # let double = (value: Whole) => value * 2
-    # let bar = (value: Positive) => double(value)
-    # let foo = (value: String | Number) =>
-    #     if value is String & value.length > 10
-    #         "String"
-    #     else
-    #         "Number"

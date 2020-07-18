@@ -7,13 +7,13 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as _Array from './ion/Array';
 import * as Class from './ion/Class';
 export class TemplateReference implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly reference: Reference.Reference;
     readonly arguments: _Array.Array<Expression.Expression>;
     static readonly id = 'TemplateReference';
@@ -31,14 +31,14 @@ export class TemplateReference implements _Object.Object , Expression.Expression
         arguments: _arguments
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         reference: Reference.Reference,
         arguments: _Array.Array<Expression.Expression>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!Reference.isReference(reference))
             throw new Error('reference is not a Reference: ' + Class.toString(reference));
         if (!_Array.isArray(_arguments))
@@ -51,7 +51,7 @@ export class TemplateReference implements _Object.Object , Expression.Expression
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         reference?: Reference.Reference,
         arguments?: _Array.Array<Expression.Expression>
     }) {

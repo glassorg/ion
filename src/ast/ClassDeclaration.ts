@@ -7,7 +7,7 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
@@ -16,10 +16,11 @@ import * as Parameter from './Parameter';
 import * as Map from './ion/Map';
 import * as String from './ion/String';
 import * as KeyValuePair from './KeyValuePair';
+import * as TypeExpression from './TypeExpression';
 import * as Class from './ion/Class';
 export class ClassDeclaration implements _Object.Object , Declaration.Declaration , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
     readonly isStructure: Boolean.Boolean;
@@ -49,7 +50,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         instanceType = null
     }: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id: Id.Id,
         export?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,
@@ -61,8 +62,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!Id.isId(id))
             throw new Error('id is not a Id: ' + Class.toString(id));
         if (!Boolean.isBoolean(_export))
@@ -93,7 +94,7 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id,
         export?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,

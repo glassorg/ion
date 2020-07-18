@@ -425,6 +425,7 @@ PrimaryExpression
     / DotExpression
     / GroupExpression
     / ArrayExpression
+    / ObjectExpression
 
 GroupExpression
     = "(" _ @InlineExpression _ ")"
@@ -440,17 +441,18 @@ DotExpression
     / "."
     { return node('DotExpression') }
 
-Argument
-    = key:(@Id _ ":")? _ value:InlineExpression
-    { return node("Argument", {key,value}) }
+Property
+    = "[" _ key:InlineExpression _ "]" _ ":" _ value: InlineExpression
+    / key:(@Id _ ":")? _ value:InlineExpression
+    { return node("Property", {key,value}) }
 
-ArgumentList
-    = head:Argument tail:(_ "," _ @Argument)* { return [head, ...tail] }
+PropertyList
+    = head:Property tail:(_ "," _ @Property)* { return [head, ...tail] }
 
 InlineArguments
     = "()" { return [] }
-    / "(" _ @ArgumentList _ ")"
-    // / " " _ @ArgumentList
+    / "(" _ @PropertyList _ ")"
+    // / " " _ @PropertyList
 
 MemberExpression =
     head: PrimaryExpression
@@ -481,20 +483,25 @@ MemberExpression =
 ArrayExpression
     = InlineArrayExpression
 
-Elements
+ArrayElements
     = head:InlineExpression tail:(_ "," _ @InlineExpression)*
     { return [head, ...tail] }
 
 InlineArrayExpression
-    = "[" _ elements:Elements? _ "]"
+    = "[" _ elements:ArrayElements? _ "]"
     {
         return node("ArrayExpression", {elements:elements || []})
     }
 
+ObjectExpression
+    = InlineObjectExpression
 
-////////////////////////////////////////////////////////////////////////////////
-//  Literals
-////////////////////////////////////////////////////////////////////////////////
+InlineObjectExpression
+    = "{" _ properties:PropertyList? _ "}"
+    {
+        return node("ObjectExpression", {properties: properties || []})
+    }
+
 
 Literal
     = NumericLiteral

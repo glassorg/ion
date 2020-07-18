@@ -13,12 +13,18 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
     DotExpression(node) {
         return "."
     },
+    ClassDeclaration(node) {
+        return `class ${node.id.name} {}`
+    },
     Reference(node) {
         return node.name
     },
-    Argument(node) {
-        if (node.name != null) {
-            return `${node.name}:${s(node.value)}`
+    Property(node) {
+        if (node.key != null) {
+            if (ast.Expression.is(node.key)) {
+                return `[${s(node.key)}]:${s(node.value)}`
+            }
+            return `${node.key.name}:${s(node.value)}`
         }
         return `${s(node.value)}`
     },

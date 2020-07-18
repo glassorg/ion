@@ -6,5 +6,5 @@ export
     # type Pair<K,V> = [K,V]
     class TypeDeclaration extends Variable, Declaration
         var parameters: Array<Parameter> = []
-        var value: Reference | TypeExpression
+        var value: TypeDefinition | Reference
 

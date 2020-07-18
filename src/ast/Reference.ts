@@ -9,12 +9,12 @@ import * as Typed from './Typed';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Class from './ion/Class';
 export class Reference implements _Object.Object , Id.Id , Expression.Expression , Node.Node , Typed.Typed {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
-    readonly type: TypeExpression.TypeExpression | (Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference | Null.Null);
     static readonly id = 'Reference';
     static readonly implements = new Set([
         'Reference',
@@ -27,14 +27,14 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
     constructor({location = null, name, type = null}: {
         location?: Location.Location | Null.Null,
         name: String.String,
-        type?: TypeExpression.TypeExpression | (Reference | Null.Null)
+        type?: TypeDefinition.TypeDefinition | (Reference | Null.Null)
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!String.isString(name))
             throw new Error('name is not a String: ' + Class.toString(name));
-        if (!(TypeExpression.isTypeExpression(type) || (isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         this.location = location;
         this.name = name;
         this.type = type;
@@ -43,7 +43,7 @@ export class Reference implements _Object.Object , Id.Id , Expression.Expression
     patch(properties: {
         location?: Location.Location | Null.Null,
         name?: String.String,
-        type?: TypeExpression.TypeExpression | (Reference | Null.Null)
+        type?: TypeDefinition.TypeDefinition | (Reference | Null.Null)
     }) {
         return new Reference({
             ...this,

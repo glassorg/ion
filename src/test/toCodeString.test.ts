@@ -1,5 +1,5 @@
 import { strict as assert } from "assert"
-import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, CallExpression, Argument } from "../ast"
+import { BinaryExpression, Reference, Id, MemberExpression, UnaryExpression, CallExpression, Property } from "../ast"
 import toCodeString from "../toCodeString"
 
 assert.deepEqual(
@@ -13,14 +13,14 @@ assert.deepEqual(
             right: new CallExpression({
                 callee: new Reference({ name: 'bar' }),
                 arguments: [
-                    new Argument({
+                    new Property({
                         value: new UnaryExpression({
                             operator: '-',
                             argument: new Reference({ name: 'b' })
                         })
                     }),
-                    new Argument({
-                        name: 'alpha',
+                    new Property({
+                        key: new Id({ name: 'alpha' }),
                         value: new Reference({ name: 'c' })
                     })
                 ]

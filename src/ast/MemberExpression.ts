@@ -7,13 +7,13 @@ import * as Typed from './Typed';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
-import * as TypeExpression from './TypeExpression';
+import * as TypeDefinition from './TypeDefinition';
 import * as Reference from './Reference';
 import * as Id from './Id';
 import * as Class from './ion/Class';
 export class MemberExpression implements _Object.Object , Expression.Expression , Typed.Typed , Node.Node {
     readonly location: Location.Location | Null.Null;
-    readonly type: TypeExpression.TypeExpression | (Reference.Reference | Null.Null);
+    readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly object: Expression.Expression;
     readonly property: Id.Id | Expression.Expression;
     static readonly id = 'MemberExpression';
@@ -26,14 +26,14 @@ export class MemberExpression implements _Object.Object , Expression.Expression 
     ]);
     constructor({location = null, type = null, object, property}: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         object: Expression.Expression,
         property: Id.Id | Expression.Expression
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
-        if (!(TypeExpression.isTypeExpression(type) || (Reference.isReference(type) || Null.isNull(type))))
-            throw new Error('type is not a TypeExpression | Reference | Null: ' + Class.toString(type));
+        if (!(TypeDefinition.isTypeDefinition(type) || (Reference.isReference(type) || Null.isNull(type))))
+            throw new Error('type is not a TypeDefinition | Reference | Null: ' + Class.toString(type));
         if (!Expression.isExpression(object))
             throw new Error('object is not a Expression: ' + Class.toString(object));
         if (!(Id.isId(property) || Expression.isExpression(property)))
@@ -46,7 +46,7 @@ export class MemberExpression implements _Object.Object , Expression.Expression 
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
-        type?: TypeExpression.TypeExpression | (Reference.Reference | Null.Null),
+        type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         object?: Expression.Expression,
         property?: Id.Id | Expression.Expression
     }) {

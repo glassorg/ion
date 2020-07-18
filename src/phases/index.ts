@@ -12,11 +12,13 @@ import addImplicitReturns from "./addImplicitReturns";
 import inferTypes from "./inferTypes";
 import createConditionalDeclarations from "./createConditionalDeclarations";
 import removeConditionalDeclarations from "./removeConditionalDeclarations";
+import addLibraryDefaultExport from "./addLibraryDefaultExport";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
+    addLibraryDefaultExport,
     importResolution,
     // addImplicitReturns,
     // addIsTypeFunctions,
