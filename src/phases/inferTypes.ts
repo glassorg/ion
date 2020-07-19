@@ -173,6 +173,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
             }
             let pkey = resolved.get(p.key) ?? p.key
             let pvalue = resolved.get(p.value) ?? p.value
+            console.log({ pkey, pvalue })
             value = new ast.BinaryExpression({
                 left: value,
                 operator: "&",
@@ -279,6 +280,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         return { type }
     },
     MemberExpression(node, resolved, scopes) {
+        //  TODO: ClassDeclarations need a proper type, which includes static variables or we fix member ref
         // this node should now have a type
         let objectType = getTypeExpressionOrClassDeclaration(node.object, resolved, scopes)
         let property = resolved.get(node.property) ?? node.property
@@ -286,6 +288,7 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         if (ast.ClassDeclaration.is(objectType) && ast.Id.is(property)) {
             let declaration = objectType.declarations.get(property.name)
             if (declaration == null) {
+                // console.log("11111 ObjectType", objectType, { property: property.name })
                 throw SemanticError(`Member '${property.name}' not found on ${objectType.id.name}`, node)
             }
             if (declaration.type == null) {

@@ -1,4 +1,5 @@
 import Reference from "./ast/Reference";
+import { Position, Location } from "./ast";
 
 export const Boolean = new Reference({ name: "ion.Boolean:Boolean" })
 export const String = new Reference({ name: "ion.String:String" })
@@ -11,6 +12,8 @@ export const Object = new Reference({ name: "ion.Object:Object" })
 export const Null = new Reference({ name: "ion.Null:Null" })
 export const Any = new Reference({ name: "ion.Any:Any" })
 export const Never = new Reference({ name: "ion.Never:Never" })
+
+export const EmptyLocation = new Location({ start: new Position(0, 0), end: new Position(0, 0), filename: "inferType.empty" })
 
 function equals(a, b: Reference) {
     return a === b || Reference.is(a) && a.name === b.name

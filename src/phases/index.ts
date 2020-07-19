@@ -13,11 +13,13 @@ import inferTypes from "./inferTypes";
 import createConditionalDeclarations from "./createConditionalDeclarations";
 import removeConditionalDeclarations from "./removeConditionalDeclarations";
 import addLibraryDefaultExport from "./addLibraryDefaultExport";
+import addIndexModules from "./addIndexModules";
 
 export default [
     // input stage
     parsing,
     semanticValidation,
+    addIndexModules,
     addLibraryDefaultExport,
     importResolution,
     // addImplicitReturns,

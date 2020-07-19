@@ -84,6 +84,7 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Libraries export an Object with all named declarations
     X ObjectExpression Type definition
     X getMemberType for TypeExpression
+      Insert Index File Export Objects
       Uniform Function Call Syntax
         May Need Soft Import Names, scoped to each file. Think this through.
       Infer ArrayExpressions

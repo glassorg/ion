@@ -13,5 +13,5 @@ export
 
     # TODO: Object Literals as StringMap?
     # let literal = { x: 1, y: 2 }
-    let doubled = VectorFunctions.double(Vector(1, 2, 3))
+    let doubled = functions.double(Vector(1, 2, 3))
 

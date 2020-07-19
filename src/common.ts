@@ -11,6 +11,16 @@ import { traverse } from "./Traversal";
 export const PATH_SEPARATOR = "."
 export const EXPORT_DELIMITER = ":"
 
+export function joinPath(left: string | null, right: string | null) {
+    if (left == null || left.length === 0) {
+        return right ?? ""
+    }
+    if (right == null || right.length === 0) {
+        return left ?? ""
+    }
+    return left + PATH_SEPARATOR + right
+}
+
 export function isUpperCase(char: string) {
     return char === char.toUpperCase()
 }
@@ -70,8 +80,9 @@ export function memoize<A extends object, B>(fn: (a: A, ...rest) => B, cacheResu
     }
 }
 
-export function getLastName(absoluteName: string) {
-    return absoluteName.slice(absoluteName.lastIndexOf(EXPORT_DELIMITER) + 1)
+export function getLastName(name: string) {
+    let index = Math.max(name.lastIndexOf(EXPORT_DELIMITER), name.lastIndexOf(PATH_SEPARATOR))
+    return name.slice(index + 1)
 }
 
 const validIdRegex = /^[a-z_][a-z0-9_]*$/i
@@ -102,7 +113,6 @@ export function isAbsoluteName(name: string) {
 }
 
 export function getAbsoluteName(moduleName: string, declarationName: string) {
-    // let lastName = getLastName(moduleName)
     return moduleName + EXPORT_DELIMITER + declarationName
 }
 
