@@ -23,10 +23,12 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
     readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
+    readonly assignable: Boolean.Boolean;
     readonly isStructure: Boolean.Boolean;
     readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly baseClasses: _Array.Array<Reference.Reference>;
     readonly declarations: Map.Map<String.String, Declaration.Declaration>;
+    readonly static: Map.Map<String.String, Declaration.Declaration>;
     readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
     readonly instanceType: TypeExpression.TypeExpression | Null.Null;
     static readonly id = 'ClassDeclaration';
@@ -42,10 +44,12 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         type = null,
         id,
         export: _export = false,
+        assignable = false,
         isStructure = false,
         parameters = [],
         baseClasses = [],
         declarations,
+        static: _static,
         meta = [],
         instanceType = null
     }: {
@@ -53,10 +57,12 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id: Id.Id,
         export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations: Map.Map<String.String, Declaration.Declaration>,
+        static: Map.Map<String.String, Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>,
         instanceType?: TypeExpression.TypeExpression | Null.Null
     }) {
@@ -68,6 +74,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
             throw new Error('id is not a Id: ' + Class.toString(id));
         if (!Boolean.isBoolean(_export))
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
+        if (!Boolean.isBoolean(assignable))
+            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!Boolean.isBoolean(isStructure))
             throw new Error('isStructure is not a Boolean: ' + Class.toString(isStructure));
         if (!_Array.isArray(parameters))
@@ -76,6 +84,8 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
             throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
         if (!Map.isMap(declarations))
             throw new Error('declarations is not a Map: ' + Class.toString(declarations));
+        if (!Map.isMap(_static))
+            throw new Error('static is not a Map: ' + Class.toString(_static));
         if (!_Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
         if (!(TypeExpression.isTypeExpression(instanceType) || Null.isNull(instanceType)))
@@ -84,10 +94,12 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         this.type = type;
         this.id = id;
         this.export = _export;
+        this.assignable = assignable;
         this.isStructure = isStructure;
         this.parameters = parameters;
         this.baseClasses = baseClasses;
         this.declarations = declarations;
+        this.static = _static;
         this.meta = meta;
         this.instanceType = instanceType;
         Object.freeze(this);
@@ -97,10 +109,12 @@ export class ClassDeclaration implements _Object.Object , Declaration.Declaratio
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id,
         export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,
         parameters?: _Array.Array<Parameter.Parameter>,
         baseClasses?: _Array.Array<Reference.Reference>,
         declarations?: Map.Map<String.String, Declaration.Declaration>,
+        static?: Map.Map<String.String, Declaration.Declaration>,
         meta?: _Array.Array<KeyValuePair.KeyValuePair>,
         instanceType?: TypeExpression.TypeExpression | Null.Null
     }) {

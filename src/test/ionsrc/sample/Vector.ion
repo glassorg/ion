@@ -3,15 +3,17 @@ import
     .*
 
 export
-    struct Vector
-        var x: Number 
-        var y: Number
-        var z: Number
+    # struct Vector
+    #     var x: Number
+    #     var y: Number
+    #     var z: Number
 
-        # obviously this is more concise and readable
-        # let length = x + y + z
+    # #     # obviously this is more concise and readable
+    # #     # let length = x + y + z
 
-    # TODO: Object Literals as StringMap?
-    # let literal = { x: 1, y: 2 }
-    let doubled = functions.double(Vector(1, 2, 3))
+    # # TODO: Object Literals as StringMap?
+    # # let literal = { x: 1, y: 2 }
+    # let doubled = functions.double(Vector(1, 2, 3))
 
+    let doubled = functions.double(10)
+    let doubleFunc = functions.double

@@ -5,7 +5,6 @@ import importResolution from "./importResolution";
 import convertRefsToAbsolute from "./convertRefsToAbsolute";
 import assemblyToAnalysis from "./assemblyToAnalysis";
 import inheritBaseClasses from "./inheritBaseClasses";
-import createClassTypeChecks from "./createClassTypeChecks";
 import checkReferences from "./checkReferences";
 // import normalizeTypes from "./normalizeTypes";
 import addImplicitReturns from "./addImplicitReturns";
@@ -22,18 +21,15 @@ export default [
     addIndexModules,
     addLibraryDefaultExport,
     importResolution,
-    // addImplicitReturns,
-    // addIsTypeFunctions,
+    // // addImplicitReturns,
+    // // addIsTypeFunctions,
     // analysis stage
     convertRefsToAbsolute,
     assemblyToAnalysis,
-    // createConditionalChains,
     createConditionalDeclarations,
-    // insertVirtualDeclarations,
     inheritBaseClasses,
-    // createClassTypeChecks,
     // // normalizeTypes,
     inferTypes,
-    removeConditionalDeclarations,
-    // checkReferences,
+    // removeConditionalDeclarations,
+    // // checkReferences,
 ]

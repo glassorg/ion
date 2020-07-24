@@ -3,10 +3,13 @@ import * as np from "path";
 import Assembly from "./ast/Assembly";
 import Reference from "./ast/Reference";
 import { traverse } from "./Traversal";
+import { absolute } from "./pathFunctions";
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Import/Export Functions
 ////////////////////////////////////////////////////////////////////////////////
+
+// New Export Functions
 
 export const PATH_SEPARATOR = "."
 export const EXPORT_DELIMITER = ":"
@@ -102,11 +105,11 @@ export function getTypeCheckFunctionName(name: string) {
     }
 }
 
-export function getUniqueClientName(absoluteName: string) {
-    let [ moduleName, declarationName ] = getExternalModuleNameAndExportName(absoluteName)!
-    let lastName = getLastName(moduleName)
-    return moduleName + (lastName === declarationName ? "" : "." + declarationName)
-}
+// export function getUniqueClientName(absoluteName: string) {
+//     let [ moduleName, declarationName ] = getExternalModuleNameAndExportName(absoluteName)!
+//     let lastName = getLastName(moduleName)
+//     return moduleName + (lastName === declarationName ? "" : "." + declarationName)
+// }
 
 export function isAbsoluteName(name: string) {
     return name.indexOf(EXPORT_DELIMITER) >= 0
@@ -142,7 +145,8 @@ export function getAllExports(root: Assembly) {
         let module = root.modules.get(moduleName)!
         for (let declaration of module.declarations) {
             let declarationName = declaration.id.name
-            names.add(getAbsoluteName(moduleName, declarationName))
+            let name = absolute(moduleName, declarationName)
+            names.add(name)
         }
     }
     return names
@@ -250,7 +254,8 @@ export function read(file: any) {
 }
 
 export function getPathFromFilename(filename: string) {
-    return filename.substring(0, filename.length - '.ion'.length).replace(/[\/\\]/g, '.')
+    let path = filename.substring(0, filename.length - '.ion'.length).split(/[\/\\]+/g)
+    return absolute(...path)
 }
 
 export function getInputFilesRecursive(directory: string | string[], rootDirectory : string | null = null, allFiles: {[path: string]: string} = {}): {[path: string]: string} {

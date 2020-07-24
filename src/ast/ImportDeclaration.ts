@@ -18,6 +18,7 @@ export class ImportDeclaration implements _Object.Object , Declaration.Declarati
     readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
+    readonly assignable: Boolean.Boolean;
     readonly from: String.String;
     static readonly id = 'ImportDeclaration';
     static readonly implements = new Set([
@@ -32,12 +33,14 @@ export class ImportDeclaration implements _Object.Object , Declaration.Declarati
         type = null,
         id,
         export: _export = false,
+        assignable = false,
         from
     }: {
         location?: Location.Location | Null.Null,
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id: Id.Id,
         export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean,
         from: String.String
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
@@ -48,12 +51,15 @@ export class ImportDeclaration implements _Object.Object , Declaration.Declarati
             throw new Error('id is not a Id: ' + Class.toString(id));
         if (!Boolean.isBoolean(_export))
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
+        if (!Boolean.isBoolean(assignable))
+            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         if (!String.isString(from))
             throw new Error('from is not a String: ' + Class.toString(from));
         this.location = location;
         this.type = type;
         this.id = id;
         this.export = _export;
+        this.assignable = assignable;
         this.from = from;
         Object.freeze(this);
     }
@@ -62,6 +68,7 @@ export class ImportDeclaration implements _Object.Object , Declaration.Declarati
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id,
         export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean,
         from?: String.String
     }) {
         return new ImportDeclaration({

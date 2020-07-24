@@ -107,4 +107,6 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
                 name: "ion.String:String"
             ..[. is String]
 
+      TODO: All sub is Types should be named and reused with a simple name if possible.
+
   type Prime = Integer & isPrime(.)

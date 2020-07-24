@@ -8,7 +8,7 @@ import { Node } from "../ast";
 import createScopeMaps, { ScopeMap, ScopeMaps } from "../createScopeMaps";
 import getSortedTypedNodes, { getAncestorDeclaration } from "../analysis/getSortedTypedNodes";
 import evaluate from "./evaluate";
-import { getAbsoluteName, SemanticError, getLast, getLastIndex, isAbsoluteName, isTypeReference } from "../common";
+import { getAbsoluteName, SemanticError, getLast, getLastIndex, PATH_SEPARATOR } from "../common";
 import toCodeString from "../toCodeString";
 // import simplifyTypeExpression from "../analysis/simplifyType";
 import combineTypeExpression from "../analysis/combineTypeExpression";
@@ -18,6 +18,7 @@ import simplify from "../analysis/simplify";
 import { isTypeExpression } from "../ast/TypeExpression";
 import * as types from "../types"
 import getMemberTypeExpression from "../analysis/getMemberTypeExpression";
+import { isAbsolute, absolute, join, sanitize } from "../pathFunctions";
 
 const literalTypes = {
     boolean: types.Boolean,
@@ -48,7 +49,7 @@ const literalTypes = {
 function getDeclaration(node: ast.Reference, resolved: Resolved, scopes: ScopeMaps): ast.Declaration {
     node = resolved.get(node) ?? node
     let scope = scopes.get(node)
-    let referencedNode = scope[node.name]
+    let referencedNode = resolved.get(scope[node.name]) ?? scope[node.name]
     if (ast.Declaration.is(referencedNode)) {
         return referencedNode
     }
@@ -64,9 +65,6 @@ function getDeclaration(node: ast.Reference, resolved: Resolved, scopes: ScopeMa
 function getTypeExpressionOrClassDeclaration(node: Expression, resolved: Resolved, scopes: ScopeMaps): ast.TypeDefinition | ast.ClassDeclaration {
     node = resolved.get(node) ?? node
     // always make sure we're using the latest node information
-    if (node.type != null) {
-        node = node.type
-    }
     if (ast.TypeExpression.is(node)) {
         return node
     }
@@ -173,7 +171,9 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
             }
             let pkey = resolved.get(p.key) ?? p.key
             let pvalue = resolved.get(p.value) ?? p.value
-            console.log({ pkey, pvalue })
+            // if (pvalue.type == null) {
+            //     console.log({ pkey, pvalue })
+            // }
             value = new ast.BinaryExpression({
                 left: value,
                 operator: "&",
@@ -198,23 +198,37 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         }
         return { type: createCombinedTypeExpression(ancestorDeclaration.type!, name, assertion, node.location!) }
     },
-    ClassDeclaration(node) {
+    ClassDeclaration(node, resolved) {
         // calculate a TypeExpression that can be used to compare these instances
         let value: Expression = is(new ast.Reference(node.id))
         for (let base of node.baseClasses) {
             value = new ast.BinaryExpression({ left: value, operator: "&", right: is(base) })
         }
         for (let d of node.declarations.values()) {
+            d = resolved.get(d) ?? d
             if (ast.VariableDeclaration.is(d) && d.assignable) {
                 value = new ast.BinaryExpression({
                     left: value,
                     operator: "&",
                     right: is(d.type!, new ast.MemberExpression({ object: new ast.DotExpression({}), property: d.id }))
                 })
+                // if (!d.assignable && d.value != null) {
+                //     // constant => we can add a specifier that 
+                //     value = new ast.BinaryExpression({
+                //         left: value,
+                //         operator: "==",
+                //         right: new ast.BinaryExpression({
+                //             left: new ast.MemberExpression({ object: new ast.DotExpression({}), property: d.id }),
+                //             operator: "==",
+                //             right: d.value!
+                //         })
+                //     })
+                // }
             }
         }
         let instanceType = new ast.TypeExpression({ location: node.location, value })
-        return { instanceType }
+        // TODO: Add static properties as well to type
+        return { instanceType, type: types.Class }
     },
     Parameter(node, resolved, scopes) {
         return inferType.VariableDeclaration?.apply(this, arguments as any)
@@ -264,12 +278,14 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         let type = func.type != null ? func.type : new ast.FunctionType({ parameters: func.parameters, returnType })
         return { returnType, type }
     },
+    TypeDeclaration(node) {
+        return { type: types.Type }
+    },
     Reference(node, resolved, scopeMap, ancestorsMap) {
-        if (isAbsoluteName(node.name) && isTypeReference(node)) {
-            return null
-        }
-        let scope = scopeMap.get(node)
-        let declaration = resolved.get(scope[node.name]) ?? scope[node.name]
+        // if (isAbsoluteName(node.name) && isTypeReference(node)) {
+        //     return null
+        // }
+        let declaration = getDeclaration(node, resolved, scopeMap)
         let type = declaration.type!
         // Infer in chained conditionals here.
         let ancestors = ancestorsMap.get(node)!
@@ -277,6 +293,10 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
         type = getChainedConditionalTypeAssertion(ancestors, resolved, type, node, "&", false);
         // if we are the right side of a A | B optional then that implies not A
         type = getChainedConditionalTypeAssertion(ancestors, resolved, type, node, "|", true);
+        if (type == null) {
+            console.error("Reference type not resolved", { declaration })
+            throw new Error("Reference type not resolved")
+        }
         return { type }
     },
     MemberExpression(node, resolved, scopes) {
@@ -329,13 +349,20 @@ export const inferType: { [P in keyof typeof ast]?: (node: InstanceType<typeof a
             return { type: calleeType.returnType }
         }
     },
-    UnaryExpression(node) {
-        return { type: node.argument.type }
+    UnaryExpression(node, resolved, scopeMap) {
+        if (node.operator === "typeof") {
+            if (ast.Reference.is(node.argument) && isAbsolute(node.argument.name)) {
+                let declaration = getDeclaration(node.argument, resolved, scopeMap)
+                // typeof just gets the type of a referenced value?
+                return { type: declaration.type }
+            }
+            return { type: types.Type }
+        }
+        else {
+            return { type: node.argument.type }
+        }
     }
 }
-
-const typesFile = "ion.types"
-const typeProperties = ["type", "returnType"]
 
 function getChainedConditionalTypeAssertion(ancestors: any[], resolved: Resolved, type: ast.TypeDefinition | ast.Reference, node: ast.Reference, operator: string, negate: boolean) {
     let binaryExpressionIndex = getLastIndex(ancestors, node => ast.BinaryExpression.is(node) && node.operator === operator);
@@ -366,6 +393,8 @@ function getChainedConditionalTypeAssertion(ancestors: any[], resolved: Resolved
 }
 
 const emptyLocation = new ast.Location({ start: new ast.Position(0, 0), end: new ast.Position(0, 0), filename: "inferType.empty" })
+const typesFile = join("ion", "types")
+const typeProperties = ["type", "returnType"]
 
 export default function inferTypes(root: Analysis) {
     let identifiers = new Set<string>()
@@ -373,20 +402,31 @@ export default function inferTypes(root: Analysis) {
     let scopes = createScopeMaps(root, { ancestorsMap, identifiers })
     let resolved = new Map<ast.Typed,ast.Node>()
     let sorted = getSortedTypedNodes(root, scopes, ancestorsMap)
-    let idGenerator = new IdGenerator(identifiers)
+    // let idGenerator = new IdGenerator(identifiers)
     let newTypeDeclarations = new Map<string, ast.TypeDeclaration>()
     let typeNameToIdentifierName = new Map<string,string>()
     function getSharedTypeReference(node: ast.TypeDefinition) {
         let name = toCodeString(node)
         let absoluteName = typeNameToIdentifierName.get(name)
         if (absoluteName == null) {
-            let localName = name // idGenerator.createNewIdName(name)
-            absoluteName = getAbsoluteName(typesFile, localName)
+            let localName = preferredTypeNameToIdentifierName.get(name) ?? sanitize(name) // idGenerator.createNewIdName(name)
+            absoluteName = absolute(typesFile, localName)
             typeNameToIdentifierName.set(name, absoluteName)
+            // see if we can find sub-nodes within this thingy
             let declaration = new ast.TypeDeclaration({
                 location: emptyLocation.patch({ filename: typesFile }),
                 id: new ast.Id({ location: node.location, name: absoluteName }),
-                value: node,
+                value: traverse(node, {
+                    leave(child) {
+                        if (child !== node) {
+                            let code = toCodeString(child)
+                            let foundSubexpression = preferredTypeNameToIdentifierName.get(code)
+                            if (foundSubexpression) {
+                                return new ast.Reference({ name: foundSubexpression })
+                            }
+                        }
+                    }
+                }),
                 export: true,
             })
             newTypeDeclarations.set(absoluteName, declaration)
@@ -400,6 +440,9 @@ export default function inferTypes(root: Analysis) {
         // same for ancestors map
         ancestorsMap.set(currentNode, ancestorsMap.get(originalNode)!)
     }
+    let preferredTypeNameToIdentifierName = new Map<string,string>()
+    // in order of preference: absolute path declaration... that's it.
+    // we iterate all of the typed nodes in dependency order and resolve their actual types
     for (let originalNode of sorted) {
         // first try to simplify
         let currentNode = resolved.get(originalNode) as Expression ?? originalNode
@@ -408,19 +451,21 @@ export default function inferTypes(root: Analysis) {
         // then try to infer types
         if (currentNode.type == null) {
             let func = inferType[currentNode.constructor.name]
-            try {
-                let changes = func?.(currentNode, resolved, scopes, ancestorsMap)
-                if (changes != null) {
-                    currentNode = currentNode.patch(changes)
-                }
-            }
-            catch (e) {
-                debugger
-                func?.(currentNode, resolved, scopes, ancestorsMap)
+            let changes = func?.(currentNode, resolved, scopes, ancestorsMap)
+            if (changes != null) {
+                currentNode = currentNode.patch(changes)
             }
             setResolved(originalNode, currentNode)
         }
+        if (ast.Declaration.is(currentNode) && isAbsolute(currentNode.id.name)) {
+            let name = currentNode.id.name
+            let code = toCodeString(currentNode.type!)
+            if (name.length < code.length) {
+                preferredTypeNameToIdentifierName.set(code, `typeof ${sanitize(name)}`)
+            }
+        }
     }
+    // console.log(preferredTypeNameToIdentifierName)
 
     root = traverse(root, {
         merge(node, changes, helper) {
@@ -440,7 +485,7 @@ export default function inferTypes(root: Analysis) {
         }
     })
 
-    console.log(Array.from(newTypeDeclarations.keys()))
+    // console.log(Array.from(newTypeDeclarations.keys()))
 
     // now return a new root with merged in new type declarations.
     return new Analysis({

@@ -19,14 +19,20 @@ export default function(edges){
       , visited = {}
       , i = cursor
   
-    while (i--) {
-      if (!visited[i]) visit(nodes[i], i, [])
-    }
+      // try {
+        while (i--) {
+          if (!visited[i]) visit(nodes[i], i, [])
+        }
+      // }
+      // catch (e) {
+      //   console.log({ nodes, edges, visited })
+      // }
   
     return sorted
   
     function visit(node, i, predecessors) {
-      if(predecessors.indexOf(node) >= 0) {
+      if (predecessors.indexOf(node) >= 0) {
+        console.log({ predecessors, node })
         throw new Error('Cyclic dependency: '+JSON.stringify(node))
       }
   

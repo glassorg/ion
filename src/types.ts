@@ -1,17 +1,23 @@
 import Reference from "./ast/Reference";
 import { Position, Location } from "./ast";
+import * as pathFunctions from "./pathFunctions";
 
-export const Boolean = new Reference({ name: "ion.Boolean:Boolean" })
-export const String = new Reference({ name: "ion.String:String" })
-export const Number = new Reference({ name: "ion.Number:Number" })
-export const Array = new Reference({ name: "ion.Array:Array" })
-export const Map = new Reference({ name: "ion.Map:Map" })
-export const Set = new Reference({ name: "ion.Set:Set" })
-export const Class = new Reference({ name: "ion.Class:Class" })
-export const Object = new Reference({ name: "ion.Object:Object" })
-export const Null = new Reference({ name: "ion.Null:Null" })
-export const Any = new Reference({ name: "ion.Any:Any" })
-export const Never = new Reference({ name: "ion.Never:Never" })
+function ref(name: string) {
+    return new Reference({ name: pathFunctions.absolute(...name.split('.')) })
+}
+
+export const Boolean = ref("ion.Boolean")
+export const String = ref("ion.String")
+export const Number = ref("ion.Number")
+export const Array = ref("ion.Array")
+export const Map = ref("ion.Map")
+export const Set = ref("ion.Set")
+export const Class = ref("ion.Class")
+export const Type = ref("ion.Type")
+export const Object = ref("ion.Object")
+export const Null = ref("ion.Null")
+export const Any = ref("ion.Any")
+export const Never = ref("ion.Never")
 
 export const EmptyLocation = new Location({ start: new Position(0, 0), end: new Position(0, 0), filename: "inferType.empty" })
 

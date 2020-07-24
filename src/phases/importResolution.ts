@@ -2,17 +2,18 @@ import createScopeMaps from "../createScopeMaps";
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
 // import { Module, Node, Reference, Id, ImportStep, Declaration, Location } from "../ast";
-import { SemanticError, getAllExports, PATH_SEPARATOR, EXPORT_DELIMITER, joinPath, isAbsoluteName } from "../common";
+import { SemanticError, getAllExports } from "../common";
 import ImportStep from "../ast/ImportStep";
 import Reference from "../ast/Reference";
 import Module from "../ast/Module";
+import { isAbsolute, join, getRelative, absolute } from "../pathFunctions";
 
 export default function importResolution(root: Assembly) {
     let asReferences = new Map<string, string>()
 
     // let's first find ALL valid external names
     let exports = getAllExports(root)
-    console.log({ exports })
+    // console.log({ exports })
 
     // we store intended reference replacements
     // and then replace them in a final traversal
@@ -28,26 +29,25 @@ export default function importResolution(root: Assembly) {
                 if (ImportStep.is(node)) {
                     if (node.as || node.children === true) {
                         let steps = ancestors.filter(a => ImportStep.is(a)).concat([node]) as ImportStep[]
-                        let path = steps.map(step => step.id?.name ?? "").filter(n => n.length).join(".")
+                        let path = join(...steps.map(step => step.id?.name ?? "").filter(n => n.length))
                         if (steps[0].relative) {
-                            let lastIndex = name.lastIndexOf(PATH_SEPARATOR)
-                            let relativePath = lastIndex >= 0 ? name.slice(0, lastIndex) : name
-                            path = joinPath(relativePath, path)
+                            path = getRelative(name, path)
                         }
                         if (node.as) {
                             // We MUST find these AS references and convert them to direct external references.
-                            console.log(">>>>>>>>>>", { as: node.as.name, path, lastId: node.id?.name })
-                            asReferences.set(node.as.name, path + EXPORT_DELIMITER + node.id?.name)
+                            // console.log(">>>>>>>>>>", { as: node.as.name, path, lastId: node.id?.name })
+                            asReferences.set(node.as.name, absolute(path, node.id?.name))
                         }
                         if (node.children === true) {
-                            importPaths.push(path)
+                            importPaths.push(absolute(path))
                         }
                     }
                 }
             }
         })
 
-   
+        // console.log({ name, importPaths})
+
         let scopes = createScopeMaps(module)
         // now let's traverse and find unreferenced modules
         let unresolvedReferences = new Map<string,Reference[]>()
@@ -55,7 +55,7 @@ export default function importResolution(root: Assembly) {
         traverse(module, {
             enter(node: Node) {
                 if (Reference.is(node)) {
-                    if (!isAbsoluteName(node.name)) {
+                    if (!isAbsolute(node.name)) {
                         // we are NOT checking absolute names right now.
                         let scope = scopes.get(node)
                         let declaration = scope[node.name]
@@ -71,6 +71,8 @@ export default function importResolution(root: Assembly) {
             }
         })
 
+        // console.log(unresolvedReferences)
+
         // let debug = importPaths.includes("sample")
 
         function resolveReferences(oldName, newName) {
@@ -84,17 +86,16 @@ export default function importResolution(root: Assembly) {
             let found = false
             for (let path of importPaths) {
                 let checkPaths = [
-                    path + EXPORT_DELIMITER + name,
-                    joinPath(path, name) + EXPORT_DELIMITER + name
+                    join(path, name)
                 ]
                 // if (debug) {
                     // console.log({ importPaths, unresolvedReferences, checkPaths, exports })
                 // }
+                // console.log("check", { name, checkPaths })
                 for (let checkPath of checkPaths) {
                     // let newName = path + name
                     if (exports.has(checkPath)) {
                         found = true
-                        console.log("???????", { name, checkPath })
                         resolveReferences(name, checkPath)
                     }
                 }

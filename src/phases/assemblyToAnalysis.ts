@@ -2,8 +2,8 @@ import Assembly from "../ast/Assembly";
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
 import { getAbsoluteName } from "../common";
-import { traverse } from "../Traversal";
 import Declaration from "../ast/Declaration";
+import * as pathFunctions from "../pathFunctions";
 
 export default function assemblyToAnalysis(root: Assembly, options: Options): Analysis {
 
@@ -13,7 +13,7 @@ export default function assemblyToAnalysis(root: Assembly, options: Options): An
         let module = root.modules.get(moduleName)!
         // move all declarations into the assembly declarations
         for (let declaration of module.declarations) {
-            let exportName = getAbsoluteName(moduleName, declaration.id.name)
+            let exportName = pathFunctions.absolute(moduleName, declaration.id.name)
             declarations.set(
                 exportName,
                 declaration.patch({

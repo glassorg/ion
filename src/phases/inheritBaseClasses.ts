@@ -1,12 +1,13 @@
 import { Options } from "../Compiler";
 import Analysis from "../ast/Analysis";
-import { SemanticError, getUniqueClientName, getAbsoluteName } from "../common";
+import { SemanticError } from "../common";
 import ClassDeclaration from "../ast/ClassDeclaration";
 import Declaration from "../ast/Declaration";
 import Reference from "../ast/Reference";
 import Node from "../ast/Node";
 import { traverse } from "../Traversal";
 import { VariableDeclaration, Id, Literal } from "../ast";
+import { getUniqueClientName } from "../pathFunctions";
 
 function mergeDeclarations(base: Declaration, sub: Declaration) {
     // this should actually check that the types can be merged.

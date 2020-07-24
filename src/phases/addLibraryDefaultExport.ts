@@ -1,7 +1,7 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
 import { Module, Property, Reference, ObjectExpression, VariableDeclaration, Id } from "../ast";
-import { PATH_SEPARATOR } from "../common";
+import { getLast } from "../pathFunctions";
 
 export default function addLibraryDefaultExports(root: Assembly) {
     return traverse(root, {
@@ -14,7 +14,7 @@ export default function addLibraryDefaultExports(root: Assembly) {
             // add default export object for libraries
             if (Module.is(node)) {
                 let name = path[path.length - 1]
-                let localName = name.slice(name.lastIndexOf(PATH_SEPARATOR) + 1)
+                let localName = getLast(name)
                 let isTypeModule = node.declarations.find(d => d.id.name === localName)
                 let isLibrary = !isTypeModule
                 if (isLibrary) {

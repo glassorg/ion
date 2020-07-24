@@ -16,6 +16,7 @@ export class Declaration implements _Object.Object , Typed.Typed , Node.Node {
     readonly type: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null);
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
+    readonly assignable: Boolean.Boolean;
     static readonly id = 'Declaration';
     static readonly implements = new Set([
         'Declaration',
@@ -27,12 +28,14 @@ export class Declaration implements _Object.Object , Typed.Typed , Node.Node {
         location = null,
         type = null,
         id,
-        export: _export = false
+        export: _export = false,
+        assignable = false
     }: {
         location?: Location.Location | Null.Null,
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id: Id.Id,
-        export?: Boolean.Boolean
+        export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -42,17 +45,21 @@ export class Declaration implements _Object.Object , Typed.Typed , Node.Node {
             throw new Error('id is not a Id: ' + Class.toString(id));
         if (!Boolean.isBoolean(_export))
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
+        if (!Boolean.isBoolean(assignable))
+            throw new Error('assignable is not a Boolean: ' + Class.toString(assignable));
         this.location = location;
         this.type = type;
         this.id = id;
         this.export = _export;
+        this.assignable = assignable;
         Object.freeze(this);
     }
     patch(properties: {
         location?: Location.Location | Null.Null,
         type?: TypeDefinition.TypeDefinition | (Reference.Reference | Null.Null),
         id?: Id.Id,
-        export?: Boolean.Boolean
+        export?: Boolean.Boolean,
+        assignable?: Boolean.Boolean
     }) {
         return new Declaration({
             ...this,

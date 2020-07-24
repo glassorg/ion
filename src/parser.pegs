@@ -223,7 +223,7 @@ ClassDeclaration
     = meta:MetaProperties isStructure:(ClassToken { return false } / StructToken { return true })
         _ id:Id parameters:TemplateParameters? _ baseClasses:Extends? EOL
         Indent declarations:(Dent @Declaration)* Outdent
-        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations: toMap(declarations) }) }
+        { return node("ClassDeclaration", { id, isStructure, parameters: parameters || [], meta, baseClasses: baseClasses || [], declarations: toMap(declarations), static: new Map() }) }
 
 TemplateParameters
     = "<" _ head:Parameter tail:(_ ',' _ @Parameter)* _ ">" { return [head, ...tail] }
@@ -258,6 +258,8 @@ Constraint
     { return node('BinaryExpression', { left: left || node('DotExpression'), operator, right }) }
     / right:(FunctionType / Reference /* Regex */)
     { return node('BinaryExpression', { left:node('DotExpression'), operator: 'is', right }) }
+    // / TypeofToken _ argument:Reference
+    // { return node('UnaryExpression', { operator: "typeof", argument })}
 
 FunctionType
     = parameters:FunctionParameters _ "=>" _ returnType:Type
@@ -266,7 +268,7 @@ FunctionType
 
 TemplateArgument
     = Type
-    / InlineExpression
+    // / InlineExpression
 
 TemplateArguments
     = "<" _ head:TemplateArgument tail:(_ "," _ @TemplateArgument)*  _ ">"
@@ -276,37 +278,37 @@ TemplateReference
     = reference:Reference args:(_ @TemplateArguments)?
     { return args ? node("TemplateReference", { reference, arguments: args }) : reference }
 
-Quantifier
-    = "?" { return [0,1] }
-    / "*" { return [0, null] }
-    / "+" { return [1, null] }
-    / Range
+// Quantifier
+//     = "?" { return [0,1] }
+//     / "*" { return [0, null] }
+//     / "+" { return [1, null] }
+//     / Range
 
-Range
-    = from:DecimalInteger _ ".." _ to:DecimalInteger? { return [from, to || null] }
-    / ".." _ to:DecimalInteger { return [null, to] }
-    / value:DecimalInteger { return [value, value] }
+// Range
+//     = from:DecimalInteger _ ".." _ to:DecimalInteger? { return [from, to || null] }
+//     / ".." _ to:DecimalInteger { return [null, to] }
+//     / value:DecimalInteger { return [value, value] }
 
-KeyValue
-    = key:Type value:(_ ':' _ @Type)? _ quantifier:Quantifier?
-        { return node('KeyValue', {key, value, quantifier} ) }
+// KeyValue
+//     = key:Type value:(_ ':' _ @Type)? _ quantifier:Quantifier?
+//         { return node('KeyValue', {key, value, quantifier} ) }
 
-CollectionType
-    = '[' _ ']'
-        { return node('CollectionType', {elements:[]}) }
-    / '[' _ head:KeyValue tail:(_ ',' _ @KeyValue)* _ ']'
-        { return node('CollectionType', {elements:[head, ...tail]}) }
+// CollectionType
+//     = '[' _ ']'
+//         { return node('CollectionType', {elements:[]}) }
+//     / '[' _ head:KeyValue tail:(_ ',' _ @KeyValue)* _ ']'
+//         { return node('CollectionType', {elements:[head, ...tail]}) }
 
 ////////////////////////////////////////////////////////////////////////////////
 //  Operations
 ////////////////////////////////////////////////////////////////////////////////
 
 UnaryOperator
-    = "+" / "-" / @NotToken _
+    = "+" / "-" / NotToken / TypeofToken
 
 UnaryExpression
     = MemberExpression
-    / operator:UnaryOperator argument:MemberExpression { return operation(argument, operator) }
+    / operator:UnaryOperator _ argument:MemberExpression { return operation(argument, operator) }
 
 ExponentiationOperator "operator"
     = "^" / "<<" / ">>"
@@ -595,6 +597,7 @@ AndToken        = @"and"        !IdPart
 OrToken         = @"or"         !IdPart
 XorToken        = @"xor"        !IdPart
 NotToken        = @"not"        !IdPart
+TypeofToken     = @"typeof"     !IdPart
 // NewToken        = @"new"        !IdPart
 WhereToken      = @"where"      !IdPart
 ImportToken     = @"import"     !IdPart
@@ -628,6 +631,7 @@ Keyword
     / OrToken
     / XorToken
     / NotToken
+    / TypeofToken
     // / NewToken
     / WhereToken
     / ClassToken

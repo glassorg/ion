@@ -8,6 +8,7 @@ export
         var parameters: Array<Parameter> = []
         var baseClasses: Array<Reference> = []
         var declarations: Map<String, Declaration>
+        var static: Map<String, Declaration>
         var meta: Array<KeyValuePair> = []
         var instanceType: TypeExpression | Null = null
         # used for runtime type checking in javascript

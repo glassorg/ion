@@ -1,11 +1,9 @@
 import Assembly from "../ast/Assembly";
 import { Options } from "../Compiler";
-import Analysis from "../ast/Analysis";
-import { getAbsoluteName } from "../common";
-import createScopeMaps from "../createScopeMaps";
 import { traverse, skip } from "../Traversal";
 import Reference from "../ast/Reference";
 import Module from "../ast/Module";
+import { absolute } from "../pathFunctions";
 
 export default function convertRefsToAbsolute(root: Assembly, options: Options) {
     //  First we convert any refences to other declarations within the same module
@@ -28,7 +26,7 @@ export default function convertRefsToAbsolute(root: Assembly, options: Options) 
                             // let isInternal = scope[node.name] != null
                             // ONLY if this is a reference to root identifiers..
                             if (rootModuleNames.has(node.name)) {
-                                let newName = getAbsoluteName(moduleName, node.name)
+                                let newName = absolute(moduleName, node.name)
                                 // console.log("CHANGE NAME TO ABSOLUTE::::: ", { moduleName: moduleName, nodeName: node.name, newName })
                                 return node.patch({ name: newName })
                             }

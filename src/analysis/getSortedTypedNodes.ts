@@ -4,6 +4,7 @@ import toposort from "../toposort";
 import { Typed, FunctionExpression, ReturnStatement, CallExpression, BinaryExpression, Expression } from "../ast";
 import * as ast from "../ast";
 import { getLast, SemanticError } from "../common";
+import toCodeString from "../toCodeString";
 
 
 function getReturnStatements(node: FunctionExpression): ReturnStatement[] {
@@ -42,6 +43,9 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         yield node.left
         yield node.right
     },
+    *UnaryExpression(node) {
+        yield node.argument
+    },
     *Literal(node) {
     },
     *ObjectExpression(node) {
@@ -71,6 +75,8 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         if (node.type) {
             yield node.type
         }
+    },
+    *TypeDeclaration(node) {
     },
     *FunctionExpression(node) {
         yield* node.parameters
@@ -104,9 +110,6 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
             yield arg.value
         }
     },
-    *UnaryExpression(node) {
-        yield node.argument
-    }
 }
 
 export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestorsMap: Map<ast.Node, Array<any>>) {
@@ -115,6 +118,10 @@ export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestors
     function push(from, to) {
         if (from == null || to == null) {
             throw new Error("Edge nodes not be null")
+        }
+        if (from === to) {
+            console.error(from)
+            throw new Error("Attempt to add same node as dependency of itself")
         }
         edges.push([from, to])
     }

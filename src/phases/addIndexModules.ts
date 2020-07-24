@@ -1,11 +1,13 @@
 import Assembly from "../ast/Assembly";
 import { traverse, skip } from "../Traversal";
-import { Module, VariableDeclaration, Id, Reference, ImportStep, MemberExpression } from "../ast";
-import { PATH_SEPARATOR, EXPORT_DELIMITER, getAbsoluteName, getLastName, getLast } from "../common";
+import { Module, VariableDeclaration, Id, Reference, MemberExpression, Property, ObjectExpression } from "../ast";
+import {  } from "../common";
 import { EmptyLocation } from "../types";
+import * as pathFunctions from "../pathFunctions";
 
 export default function addIndexModules(root: Assembly) {
-    let moduleNames = new Set<string>([""])
+    let rootModuleName = pathFunctions.absolute()
+    let moduleNames = new Set<string>([rootModuleName])
     return traverse(root, {
         enter(node) {
             if (Module.is(node)) {
@@ -16,38 +18,48 @@ export default function addIndexModules(root: Assembly) {
             // add default export object for libraries
             if (Module.is(node)) {
                 let name = path[path.length - 1]
-                let steps = name.split(PATH_SEPARATOR)
+                let steps = pathFunctions.split(name)
                 for (let i = 1; i <= steps.length; i++) {
-                    moduleNames.add(steps.slice(0, i).join(PATH_SEPARATOR))
+                    moduleNames.add(pathFunctions.absolute(...steps.slice(0, i)))
                 }
             }
             //  add implicit libraries for indexes
             if (Assembly.is(node)) {
+                // console.log({ moduleNames })
                 let newIndexModules = new Map<string,Module>()
                 for (let name of moduleNames) {
                     if (!node.modules.has(name)) {
-                        let children = Array.from(moduleNames.keys()).filter(function isChild(child) {
-                            if (child === name || !child.startsWith(name)) {
-                                return false
-                            }
-                            let remainder = name.length > 0 ? child.slice(name.length + 1) : child
-                            return remainder.indexOf(PATH_SEPARATOR) < 0
-                        }).map(name => getAbsoluteName(name, getLastName(name)))
-                        let declarations = children.map(child => {
-                            return new VariableDeclaration({
-                                id: new Id({ name: getLastName(child) }),
+                        // instead of variable declarations that get bound up into library export later ... =>
+                        //  just create the default export object expression.
+                        let children = Array.from(moduleNames.keys()).filter(child => pathFunctions.isParent(name, child)).map(name => pathFunctions.absolute(name))
+                        // let declarations = children.map(child => {
+                        //     return new VariableDeclaration({
+                        //         id: new Id({ name: pathFunctions.getLast(child) }),
+                        //         value: new Reference({ name: child })
+                        //     }) as VariableDeclaration & { value: MemberExpression & { object: Reference } }
+                        // })
+                        // // console.log(">>>>>>>>>> " + name + " => " + children.join(", "))
+                        // newIndexModules.set(name, new Module({
+                        //     location: EmptyLocation.patch({ filename: name }),
+                        //     imports: [],
+                        //     declarations
+                        // }))
+
+                        let properties = children.map(
+                            child => new Property({
+                                key: new Id({ name: pathFunctions.getLast(child)! }),
                                 value: new Reference({ name: child })
-                                //  new MemberExpression({
-                                //     object: new Reference({ name: "_" + name }),
-                                //     property: new Id({ name })
-                                // })
-                            }) as VariableDeclaration & { value: MemberExpression & { object: Reference } }
+                            })
+                        )
+                        let libraryObject = new ObjectExpression({ properties })
+                        let libraryDeclaration = new VariableDeclaration({
+                            id: new Id({ name: pathFunctions.getLast(name) }),
+                            value: libraryObject
                         })
-                        console.log(">>>>>>>>>> " + name + " => " + children.join(", "))
                         newIndexModules.set(name, new Module({
                             location: EmptyLocation.patch({ filename: name }),
-                            imports: [], // declarations.map(d => new ImportStep({ id: d.id, as: new Id(d.value.object), relative: true, children: false })),
-                            declarations
+                            imports: [],
+                            declarations: [libraryDeclaration]
                         }))
                     }
                 }

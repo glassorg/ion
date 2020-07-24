@@ -1,6 +1,6 @@
 
 import
-    ion.*
+    .*
 
 export
     type Integer = Number # & fraction == 0
