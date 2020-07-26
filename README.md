@@ -84,29 +84,14 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Libraries export an Object with all named declarations
     X ObjectExpression Type definition
     X getMemberType for TypeExpression
-      Insert Index File Export Objects
-      Uniform Function Call Syntax
-        May Need Soft Import Names, scoped to each file. Think this through.
+    X Insert Index File Export Objects
+    X Create Member Lookup Functionality based on a TypeExpression
+    X All sub is Types should be named and reused with a simple name if possible.
+    X Infer CallExpression type
+    X Uniform Function Call Syntax
+    -   May Need Soft Import Names, scoped to each file. Think this through.
+    X   For now make a list of all compatible signatures from every declaration.
       Infer ArrayExpressions
-      CallExpressions? Infer as well
-      Create Member Lookup Functionality based on a TypeExpression
-        Also, verify that we can do efficient Typed member accessor so we can model things like
-          type MyMap = Map & [String] is String & [Number] is Vector
-          Can model child of type property as
-            BinaryExpression
-              left: MemberExpression
-                object: DotExpression
-                property: TypeExpression
-                  value: BinaryExpression
-                  left: DotExpression
-                  operator: "is"
-                  right: Reference
-                    name: "ion.String:String"
-              operator: "is"
-              right: Reference
-                name: "ion.String:String"
-            ..[. is String]
-
-      TODO: All sub is Types should be named and reused with a simple name if possible.
 
   type Prime = Integer & isPrime(.)
+

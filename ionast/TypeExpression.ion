@@ -3,5 +3,5 @@ import
     .*
 
 export
-    class TypeExpression extends TypeDefinition
+    class TypeExpression extends TypeDefinition, Expression
         var value: Expression

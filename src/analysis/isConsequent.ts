@@ -1,4 +1,4 @@
-import { Expression, BinaryExpression, Literal } from "../ast";
+import { Expression, BinaryExpression, Literal, TypeExpression } from "../ast";
 import toCodeString from "../toCodeString";
 
 type Maybe = true | false | null
@@ -42,6 +42,12 @@ function same(a: Maybe, b: Maybe): Maybe {
  * null if we cannot determine
  */
 export default function isConsequent(a: Expression, b: Expression): true | false | null {
+    if (TypeExpression.is(a)) {
+        a = a.value
+    }
+    if (TypeExpression.is(b)) {
+        b = b.value
+    }
     if (toCodeString(a) === toCodeString(b)) {
         return true
     }

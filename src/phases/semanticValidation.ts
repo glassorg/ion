@@ -4,7 +4,7 @@ import { SemanticError, isUpperCase, isLowerCase } from "../common";
 import TypeDeclaration from "../ast/TypeDeclaration";
 import ClassDeclaration from "../ast/ClassDeclaration";
 import VariableDeclaration from "../ast/VariableDeclaration";
-import { Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, DotExpression, ExpressionStatement, TypeExpression } from "../ast";
+import { Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, DotExpression, ExpressionStatement, TypeExpression, FunctionExpression } from "../ast";
 
 // const typeCheckTemplate = new TypeFunction({
 //     parameters: [new Parameter({ id: new Id({ name: "." })})],
@@ -34,6 +34,11 @@ import { Expression, Reference, Id, BlockStatement, Parameter, ReturnStatement, 
 export default function semanticValidation(root: Assembly) {
     return traverse(root, {
         enter(node) {
+            if (FunctionExpression.is(node)) {
+                if (node.parameters.length === 0) {
+                    throw SemanticError("Functions must have parameters", node.id ?? node)
+                }
+            }
             if (TypeDeclaration.is(node)) {
                 if (!isUpperCase(node.id.name[0])) {
                     throw SemanticError("Types must be uppercase", node.id)

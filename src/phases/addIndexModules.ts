@@ -47,13 +47,13 @@ export default function addIndexModules(root: Assembly) {
 
                         let properties = children.map(
                             child => new Property({
-                                key: new Id({ name: pathFunctions.getLast(child)! }),
+                                key: new Id({ name: pathFunctions.getLastName(child)! }),
                                 value: new Reference({ name: child })
                             })
                         )
                         let libraryObject = new ObjectExpression({ properties })
                         let libraryDeclaration = new VariableDeclaration({
-                            id: new Id({ name: pathFunctions.getLast(name) }),
+                            id: new Id({ name: pathFunctions.getLastName(name) }),
                             value: libraryObject
                         })
                         newIndexModules.set(name, new Module({

@@ -17,7 +17,7 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
         return `{ ${node.properties.map(toCodeString).join(',')} }`
     },
     ClassDeclaration(node) {
-        return `class ${node.id.name} {}`
+        return `class ${node.id.name}`
     },
     Reference(node) {
         return node.name
@@ -93,9 +93,9 @@ const s = memoize(
     }
 )
 
-export default function toCodeString(node: Node): string {
+export default function toCodeString(node: Node | null): string {
     if (node == null) {
-        return "NULL"
+        return "null"
     }
     return s(node)
 }

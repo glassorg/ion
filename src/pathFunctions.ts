@@ -43,7 +43,7 @@ export function getParent(path: string): string | null {
     if (path.length === 1) {
         return null
     }
-    let lastName = getLast(path)
+    let lastName = getLastName(path)
     let remainder = path.slice(0, path.length - lastName.length)
     if (remainder.length > 1 && remainder[remainder.length - 1] === PATH_SEPARATOR) {
         remainder = remainder.slice(0, -1)
@@ -70,7 +70,7 @@ export function absolute(...steps: Array<string | null | undefined>) {
     }
     // a Type export with same name as module also shares the same path (the Type export IS the module)
     let parent = getParent(path)
-    if (parent && getLast(parent) === getLast(path)) {
+    if (parent && getLastName(parent) === getLastName(path)) {
         return parent
     }
     return path
@@ -80,7 +80,7 @@ export function isAbsolute(path: string) {
     return path != null && path[0] === ROOT_CHARACTER
 }
 
-export function getLast(path: string) {
+export function getLastName(path: string) {
     let name = path.slice(path.lastIndexOf(PATH_SEPARATOR) + 1)
     if (isAbsolute(name)) {
         name = name.slice(1)

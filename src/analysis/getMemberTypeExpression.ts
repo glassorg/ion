@@ -39,7 +39,7 @@ export default function getMemberTypeExpression(t: TypeExpression, member: Id | 
     let e = t.value
     let value = getMemberExpression(e, member)
     if (value == null) {
-        return Any
+        return null
     }
     value = Reference.is(value) ? value : new TypeExpression({ value })
     return simplify(value)

@@ -17,7 +17,7 @@ function ignore(property, value) {
     if (value == null) {
         return true
     }
-    return ignoreProperties[property] || property.startsWith("_") //|| /^\/ion\b/.test(property)
+    return ignoreProperties[property] || property.startsWith("_") || /^\/ion\b/.test(property)
 }
 
 export function stringify(object, indent = 2) {
