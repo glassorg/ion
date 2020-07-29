@@ -1,6 +1,7 @@
 {
 
     const ast = require("./ast")
+    const types = require("./types")
 
     function getLocation() {
         let { start, end, filename } = location()
@@ -518,32 +519,32 @@ NumericLiteral
     / DecimalIntegerLiteral
 
 NullLiteral
-    = NullToken { return node('Literal', { value: null }) }
+    = NullToken { return node('Literal', { value: null, type: types.Null.valueOf() }) }
 
 BooleanLiteral
-    = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? true : false } ) }
+    = value: (TrueToken / FalseToken) { return node('Literal', { value: JSON.parse(value) ? true : false, type: types.Boolean.valueOf() } ) }
 
 ExponentPart
     = 'e' [+-]? [0-9]+ !IdPart
 
 DecimalLiteral
     = (DecimalInteger? '.' [0-9]+ ExponentPart? / DecimalInteger ExponentPart) !IdPart
-    { return node('Literal', { value: parseFloat(text()) })}
+    { return node('Literal', { value: parseFloat(text()), type: types.Number.valueOf() })}
 
 HexDigit
     = [0-9A-F]
 
 HexIntegerLiteral
-    = '0x' HexDigit+ !IdPart { return node('Literal', {value: parseInt(text(), 16) }) }
+    = '0x' HexDigit+ !IdPart { return node('Literal', {value: parseInt(text(), 16), type: types.Number.valueOf() }) }
 
 DecimalIntegerLiteral
-    = DecimalInteger { return node('Literal', { value: parseInt(text()) }) }
+    = DecimalInteger { return node('Literal', { value: parseInt(text()), type: types.Number.valueOf() }) }
 
 DecimalInteger
     = '0' / [+-]? [1-9] [0-9]* !IdPart { return parseInt(text()) }
 
 StringLiteral
-    = '"' DoubleStringChar* '"' { return node('Literal', { value: eval(text()) }); }
+    = '"' DoubleStringChar* '"' { return node('Literal', { value: eval(text()), type: types.String.valueOf() }); }
 
 DoubleStringChar
     = [^\r\n\t\b\f"] / "\\" ([rn"] / "u" HexDigit<4>)

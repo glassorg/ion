@@ -92,6 +92,13 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     -   May Need Soft Import Names, scoped to each file. Think this through.
     X   For now make a list of all compatible signatures from every declaration.
       Infer ArrayExpressions
+      Need solution to chained UFCS called functions.
+        2.double.double
+        The problem is double function was not necessarily resolved before 2 expression because we didn't know it was dependent.
+        Possible solution is to return after sorting nodes a map of nodes dependencies.
+          Then, when we get a late breaking dependency we can early force them to resolve before.
+          This will include checking for circular reference first
+          And then also tracking which nodes have already been resolved so they don't get resolved more than once.
 
   type Prime = Integer & isPrime(.)
 

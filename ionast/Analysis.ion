@@ -3,5 +3,5 @@ import
     .*
 
 export
-    class Analysis extends Scope
+    class Analysis extends Node # Not a Scope, it places everything into the global scope
         var declarations: Map<String,Declaration>

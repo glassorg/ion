@@ -3,6 +3,7 @@ import { SemanticError } from "./common"
 import { Node, FunctionExpression, Scope, Id, Reference, Declaration, VariableDeclaration } from "./ast"
 
 export type NodeMap<T> = {
+    get(global: null): T
     get(node: Node): T
     set(node: Node, t: T)
 }

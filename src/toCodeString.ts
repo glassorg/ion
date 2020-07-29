@@ -16,6 +16,9 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
     ObjectExpression(node) {
         return `{ ${node.properties.map(toCodeString).join(',')} }`
     },
+    FunctionExpression(node) {
+        return `function ${node.id?.name ?? ''}(${node.parameters.map(toCodeString).join(',')})`
+    },
     ClassDeclaration(node) {
         return `class ${node.id.name}`
     },

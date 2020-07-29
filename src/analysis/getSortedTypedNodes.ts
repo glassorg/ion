@@ -32,8 +32,12 @@ export function getAncestorDeclaration(node, scopeMap: ScopeMaps, ancestorMap: M
     return containingVarDeclaration
 }
 
+export function getPredecessors(node, scopeMap: ScopeMaps, ancestorMap: Map<ast.Node, Array<any>>): Iterable<Typed> {
+    return predecessors[node.constructor.name](node, scopeMap, ancestorMap);
+}
+
 // that is some typescript kung fu right there.
-export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, scopeMap: ScopeMaps, ancestorMap: Map<ast.Node, Array<any>>) => Iterator<Typed>} = {
+const predecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeof ast[P]>, scopeMap: ScopeMaps, ancestorMap: Map<ast.Node, Array<any>>) => Iterator<Typed>} = {
     *ConditionalDeclaration(node, scopeMap, ancestorMap) {
         // the conditional declaration will add it's own local conditional assertion to the variable type
         // from the containing scope, so we are dependent on that variable being resolved first.
@@ -46,7 +50,11 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
     *UnaryExpression(node) {
         yield node.argument
     },
-    *Literal(node) {
+    *Literal(node, scopeMap, ancestorMap) {
+        if (node.type) {
+            // we need to know the type for these friggin literals right away.
+            yield node.type
+        }
     },
     *ObjectExpression(node) {
         for (let property of node.properties) {
@@ -64,24 +72,31 @@ export const getPredecessors: { [P in keyof typeof ast]?: (e: InstanceType<typeo
         if (node.type) {
             yield node.type
         }
-        if (node.value) {
-            yield node.value
+        else {
+            if (node.value) {
+                yield node.value
+            }
         }
     },
     *VariableDeclaration(node) {
-        if (node.value) {
-            yield node.value
+        if (node.type == null) {
+            if (node.value) {
+                yield node.value
+            }
         }
-        if (node.type) {
+        else {
             yield node.type
         }
     },
     *TypeDeclaration(node) {
     },
     *FunctionExpression(node) {
+        // a function depends on it's parameters which means it depends on it's parameter types
         yield* node.parameters
-        for (let returnStatement of getReturnStatements(node)) {
-            yield returnStatement.value   
+        if (node.returnType === null) {
+            for (let returnStatement of getReturnStatements(node)) {
+                yield returnStatement.value   
+            }
         }
     },
     *Reference(node, scopes) {
@@ -125,26 +140,44 @@ export default function getSortedTypedNodes(root, scopeMap: ScopeMaps, ancestors
         }
         edges.push([from, to])
     }
+    let nodes = new Array<ast.Typed>()
     traverse(root, {
         leave(node) {
             if (Typed.is(node)) {
-                if (BinaryExpression.is(node)) {
-                    push(node.left, node.right)
-                }
-                let func = getPredecessors[node.constructor.name];
-                let count = 0;
-                if (func) {
-                    for (let pred of func(node, scopeMap, ancestorsMap)) {
-                        count++;
-                        push(pred, node);
-                    }
-                }
-                if (count === 0) {
-                    push(sentinel, node);
-                }
+                nodes.push(node)
             }
         }
     });
+    // now... we can try to sort the nodes based on what order we think they should be in.
+    // the reason for this is that we neeed UFCS functions to be defined before they are called.
+    // FunctionExpression depends on parameter types => Classes
+    nodes.sort((a, b) => {
+        const afunc = FunctionExpression.is(a)
+        const bfunc = FunctionExpression.is(b)
+        if (afunc && !bfunc) {
+            return -1
+        }
+        if (bfunc && !afunc) {
+            return +1
+        }
+        return 0
+    })
+    for (let node of nodes) {
+        if (BinaryExpression.is(node)) {
+            push(node.left, node.right)
+        }
+        let func = predecessors[node.constructor.name];
+        let count = 0;
+        if (func) {
+            for (let pred of func(node, scopeMap, ancestorsMap)) {
+                count++;
+                push(pred, node);
+            }
+        }
+        if (count === 0) {
+            push(sentinel, node);
+        }
+    }
     let sorted = toposort(edges);
     //  remove sentinel
     sorted.shift();

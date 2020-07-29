@@ -2,7 +2,6 @@ import { strict as assert } from "assert"
 import Compiler, { Options } from "../../Compiler"
 import { getInputFilesRecursive } from "../../common"
 import path from "path"
-import { Reference } from "../../ast"
 import toCodeString from "../../toCodeString"
 import { absolute } from "../../pathFunctions"
 
@@ -72,6 +71,8 @@ export
     let doubled = funcs.double(10)
     #   9
     let doubleFunc = funcs.double
+    #   10
+    let sixteen = 2.double.double.double
 `,
     funcs:
 `
@@ -101,5 +102,6 @@ export
     ["/ion/types/typeof .fo.doubleFunc", (result) => result.declarations.get(absolute("fo", "doubleFunc")).type.name],
     //  type of double function
     ["function(a: /ion/Number) => /ion/Number", (result) => toCodeString(result.declarations.get("/ion/types/typeof .fo.doubleFunc").value)],
-]
-)
+    //  type of sixteen
+    ["/ion/Number", (result) => toCodeString(result.declarations.get(absolute("fo", "sixteen")).value.type)],
+])
