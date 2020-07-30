@@ -1,5 +1,3 @@
-import
-    .*
 
 export
     class Map<Key,Value>

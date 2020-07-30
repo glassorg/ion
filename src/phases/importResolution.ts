@@ -6,7 +6,7 @@ import { SemanticError, getAllExports } from "../common";
 import ImportStep from "../ast/ImportStep";
 import Reference from "../ast/Reference";
 import Module from "../ast/Module";
-import { isAbsolute, join, getRelative, absolute } from "../pathFunctions";
+import { isAbsolute, join, getRelative, absolute, split } from "../pathFunctions";
 
 export default function importResolution(root: Assembly) {
     let asReferences = new Map<string, string>()
@@ -46,7 +46,15 @@ export default function importResolution(root: Assembly) {
             }
         })
 
-        // console.log({ name, importPaths})
+        // add implicit import .* for same namespace and all ancestors.
+        let relative = split(name)
+        while (relative.length > 1) {
+            relative.pop()
+            let path = absolute(...relative)
+            if (!importPaths.includes(path)) {
+                importPaths.push(path)
+            }
+        }
 
         let scopes = createScopeMaps(module)
         // now let's traverse and find unreferenced modules

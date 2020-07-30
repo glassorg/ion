@@ -1,5 +1,3 @@
-import
-    .*
 
 export
     let isInstance: (_class: Class, instance) => Boolean
