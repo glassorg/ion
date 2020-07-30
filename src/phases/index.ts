@@ -13,6 +13,7 @@ import createConditionalDeclarations from "./createConditionalDeclarations";
 import removeConditionalDeclarations from "./removeConditionalDeclarations";
 import addLibraryDefaultExport from "./addLibraryDefaultExport";
 import addIndexModules from "./addIndexModules";
+import classLetsToStatic from "./classLetsToStatic";
 
 export default [
     // input stage
@@ -21,6 +22,7 @@ export default [
     addIndexModules,
     addLibraryDefaultExport,
     importResolution,
+    classLetsToStatic,
     // // addImplicitReturns,
     // // addIsTypeFunctions,
     // analysis stage

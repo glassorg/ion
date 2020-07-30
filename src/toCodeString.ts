@@ -13,6 +13,9 @@ const codeToString: { [P in keyof typeof ast]?: (node: InstanceType<typeof ast[P
     DotExpression(node) {
         return "."
     },
+    ThisExpression(node) {
+        return "this"
+    },
     ObjectExpression(node) {
         return `{ ${node.properties.map(toCodeString).join(',')} }`
     },

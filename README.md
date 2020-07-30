@@ -91,6 +91,7 @@ Multiplatform Data Modeling Language featuring dependent types, immutability, va
     X Uniform Function Call Syntax
     -   May Need Soft Import Names, scoped to each file. Think this through.
     X   For now make a list of all compatible signatures from every declaration.
+    X Move class let declarations to static location.
       Infer ArrayExpressions
       Need solution to chained UFCS called functions.
         2.double.double

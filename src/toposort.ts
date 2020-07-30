@@ -1,3 +1,4 @@
+import toCodeString from "./toCodeString"
 
 // copied from https://github.com/marcelklehr/toposort/blob/master/index.js
 /**
@@ -32,8 +33,8 @@ export default function(edges){
   
     function visit(node, i, predecessors) {
       if (predecessors.indexOf(node) >= 0) {
-        console.log({ predecessors, node })
-        throw new Error('Cyclic dependency: '+JSON.stringify(node))
+        console.log({ predecessors: predecessors.map(toCodeString) })
+        throw new Error('Cyclic dependency: ' + toCodeString(node))
       }
   
       if (visited[i]) return;
