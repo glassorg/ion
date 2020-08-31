@@ -76,14 +76,16 @@ export default function classLetsToStatic(root: Assembly) {
                         }
                     },
                     leave(node) {
-                        if (ClassDeclaration.is(node)) {
-                            return node.patch({
-                                declarations: new Map(
-                                    Array.from(node.declarations.entries()).filter(
-                                        ([name, value]) => !convertToStatic(value)
+                        if (Declaration.is(node)) {
+                            if (ClassDeclaration.is(node)) {
+                                return node.patch({
+                                    declarations: new Map(
+                                        Array.from(node.declarations.entries()).filter(
+                                            ([name, value]) => !convertToStatic(value)
+                                        )
                                     )
-                                )
-                            })
+                                })
+                            }
                         }
                     }
                 })
