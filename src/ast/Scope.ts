@@ -1,12 +1,19 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class Scope implements Node.Node {
+export class Scope implements _Object.Object , Node.Node {
     readonly location: Location.Location | Null.Null;
+    static readonly id = 'Scope';
+    static readonly implements = new Set([
+        'Scope',
+        'ion_Object',
+        'Node'
+    ]);
     constructor({
         location = null
     }: { location?: Location.Location | Null.Null }) {
@@ -25,12 +32,7 @@ export class Scope implements Node.Node {
         return isScope(value);
     }
 }
-Scope['id'] = 'Scope';
-Scope['implements'] = new Set([
-    'Scope',
-    'Node'
-]);
-export const isScope = function (value): value is Scope {
+export function isScope(value): value is Scope {
     return Class.isInstance(Scope, value);
-};
+}
 export default Scope;

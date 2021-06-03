@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as BinaryExpression from './BinaryExpression';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
@@ -9,11 +10,20 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class IntersectionType implements BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node , Expression.Expression {
+export class IntersectionType implements _Object.Object , BinaryExpression.BinaryExpression , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly left: Expression.Expression;
     readonly operator: String.String;
     readonly right: Expression.Expression;
+    static readonly id = 'IntersectionType';
+    static readonly implements = new Set([
+        'IntersectionType',
+        'ion_Object',
+        'BinaryExpression',
+        'TypeExpression',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, left, operator = '&', right}: {
         location?: Location.Location | Null.Null,
         left: Expression.Expression,
@@ -49,16 +59,7 @@ export class IntersectionType implements BinaryExpression.BinaryExpression , Typ
         return isIntersectionType(value);
     }
 }
-IntersectionType['id'] = 'IntersectionType';
-IntersectionType['implements'] = new Set([
-    'IntersectionType',
-    'BinaryExpression',
-    'TypeExpression',
-    'Expression',
-    'Node',
-    'Expression'
-]);
-export const isIntersectionType = function (value): value is IntersectionType {
+export function isIntersectionType(value): value is IntersectionType {
     return Class.isInstance(IntersectionType, value);
-};
+}
 export default IntersectionType;

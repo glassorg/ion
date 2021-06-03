@@ -1,13 +1,21 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class ThisExpression implements Expression.Expression , Node.Node {
+export class ThisExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
+    static readonly id = 'ThisExpression';
+    static readonly implements = new Set([
+        'ThisExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({
         location = null
     }: { location?: Location.Location | Null.Null }) {
@@ -26,13 +34,7 @@ export class ThisExpression implements Expression.Expression , Node.Node {
         return isThisExpression(value);
     }
 }
-ThisExpression['id'] = 'ThisExpression';
-ThisExpression['implements'] = new Set([
-    'ThisExpression',
-    'Expression',
-    'Node'
-]);
-export const isThisExpression = function (value): value is ThisExpression {
+export function isThisExpression(value): value is ThisExpression {
     return Class.isInstance(ThisExpression, value);
-};
+}
 export default ThisExpression;

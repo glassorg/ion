@@ -1,13 +1,19 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Position from './Position';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Location {
+export class Location implements _Object.Object {
     readonly start: Position.Position;
     readonly end: Position.Position;
     readonly filename: String.String;
+    static readonly id = 'Location';
+    static readonly implements = new Set([
+        'Location',
+        'ion_Object'
+    ]);
     constructor({start, end, filename}: {
         start: Position.Position,
         end: Position.Position,
@@ -38,9 +44,7 @@ export class Location {
         return isLocation(value);
     }
 }
-Location['id'] = 'Location';
-Location['implements'] = new Set(['Location']);
-export const isLocation = function (value): value is Location {
+export function isLocation(value): value is Location {
     return Class.isInstance(Location, value);
-};
+}
 export default Location;

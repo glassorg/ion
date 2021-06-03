@@ -1,16 +1,25 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class ConstrainedType implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
+export class ConstrainedType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly baseType: Expression.Expression;
     readonly constraint: Expression.Expression;
+    static readonly id = 'ConstrainedType';
+    static readonly implements = new Set([
+        'ConstrainedType',
+        'ion_Object',
+        'TypeExpression',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, baseType, constraint}: {
         location?: Location.Location | Null.Null,
         baseType: Expression.Expression,
@@ -41,14 +50,7 @@ export class ConstrainedType implements TypeExpression.TypeExpression , Expressi
         return isConstrainedType(value);
     }
 }
-ConstrainedType['id'] = 'ConstrainedType';
-ConstrainedType['implements'] = new Set([
-    'ConstrainedType',
-    'TypeExpression',
-    'Expression',
-    'Node'
-]);
-export const isConstrainedType = function (value): value is ConstrainedType {
+export function isConstrainedType(value): value is ConstrainedType {
     return Class.isInstance(ConstrainedType, value);
-};
+}
 export default ConstrainedType;

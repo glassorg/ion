@@ -1,15 +1,23 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Statement from './Statement';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Expression from './Expression';
 import * as Class from './ion/Class';
-export class ReturnStatement implements Statement.Statement , Node.Node {
+export class ReturnStatement implements _Object.Object , Statement.Statement , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly value: Expression.Expression;
+    static readonly id = 'ReturnStatement';
+    static readonly implements = new Set([
+        'ReturnStatement',
+        'ion_Object',
+        'Statement',
+        'Node'
+    ]);
     constructor({location = null, value}: {
         location?: Location.Location | Null.Null,
         value: Expression.Expression
@@ -35,13 +43,7 @@ export class ReturnStatement implements Statement.Statement , Node.Node {
         return isReturnStatement(value);
     }
 }
-ReturnStatement['id'] = 'ReturnStatement';
-ReturnStatement['implements'] = new Set([
-    'ReturnStatement',
-    'Statement',
-    'Node'
-]);
-export const isReturnStatement = function (value): value is ReturnStatement {
+export function isReturnStatement(value): value is ReturnStatement {
     return Class.isInstance(ReturnStatement, value);
-};
+}
 export default ReturnStatement;

@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Variable from './Variable';
 import * as Declaration from './Declaration';
 import * as Node from './Node';
@@ -10,13 +11,21 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class VariableDeclaration implements Variable.Variable , Declaration.Declaration , Node.Node , Node.Node {
+export class VariableDeclaration implements _Object.Object , Variable.Variable , Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;
     readonly value: Expression.Expression | Null.Null;
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
+    static readonly id = 'VariableDeclaration';
+    static readonly implements = new Set([
+        'VariableDeclaration',
+        'ion_Object',
+        'Variable',
+        'Declaration',
+        'Node'
+    ]);
     constructor({
         location = null,
         id,
@@ -69,15 +78,7 @@ export class VariableDeclaration implements Variable.Variable , Declaration.Decl
         return isVariableDeclaration(value);
     }
 }
-VariableDeclaration['id'] = 'VariableDeclaration';
-VariableDeclaration['implements'] = new Set([
-    'VariableDeclaration',
-    'Variable',
-    'Declaration',
-    'Node',
-    'Node'
-]);
-export const isVariableDeclaration = function (value): value is VariableDeclaration {
+export function isVariableDeclaration(value): value is VariableDeclaration {
     return Class.isInstance(VariableDeclaration, value);
-};
+}
 export default VariableDeclaration;

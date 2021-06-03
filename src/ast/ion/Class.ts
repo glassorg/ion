@@ -56,3 +56,5 @@ export function toString(value, b?: string[]) {
     }
     return join ? b.join('') : null
 }
+
+export default Class

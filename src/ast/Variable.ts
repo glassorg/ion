@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
@@ -8,12 +9,18 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Variable implements Node.Node {
+export class Variable implements _Object.Object , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;
     readonly value: Expression.Expression | Null.Null;
     readonly assignable: Boolean.Boolean;
+    static readonly id = 'Variable';
+    static readonly implements = new Set([
+        'Variable',
+        'ion_Object',
+        'Node'
+    ]);
     constructor({location = null, id, type = null, value = null, assignable = false}: {
         location?: Location.Location | Null.Null,
         id: Id.Id,
@@ -54,12 +61,7 @@ export class Variable implements Node.Node {
         return isVariable(value);
     }
 }
-Variable['id'] = 'Variable';
-Variable['implements'] = new Set([
-    'Variable',
-    'Node'
-]);
-export const isVariable = function (value): value is Variable {
+export function isVariable(value): value is Variable {
     return Class.isInstance(Variable, value);
-};
+}
 export default Variable;

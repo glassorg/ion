@@ -1,16 +1,23 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Declaration implements Node.Node {
+export class Declaration implements _Object.Object , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
+    static readonly id = 'Declaration';
+    static readonly implements = new Set([
+        'Declaration',
+        'ion_Object',
+        'Node'
+    ]);
     constructor({
         location = null,
         id,
@@ -45,12 +52,7 @@ export class Declaration implements Node.Node {
         return isDeclaration(value);
     }
 }
-Declaration['id'] = 'Declaration';
-Declaration['implements'] = new Set([
-    'Declaration',
-    'Node'
-]);
-export const isDeclaration = function (value): value is Declaration {
+export function isDeclaration(value): value is Declaration {
     return Class.isInstance(Declaration, value);
-};
+}
 export default Declaration;

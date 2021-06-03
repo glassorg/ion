@@ -12,7 +12,7 @@
         "setup": "yarn install",
         "build": "guild build && yarn run buildGrammar",
         "watch": "./watch.sh",
-        "test": "gtest lib # echo should be just guild test, todo: fix this",
+        "test": "gtest lib",
         "watchGrammar": "nodemon -w src/parser.pegs -x yarn run buildGrammar",
         "buildGrammar": "pegs src/parser.pegs lib/parser.js",
         "bootAst": "./bin/ionc.js src/ast ionast",

@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as VariableDeclaration from './VariableDeclaration';
 import * as Variable from './Variable';
 import * as Declaration from './Declaration';
@@ -11,13 +12,22 @@ import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class TypeDeclaration implements VariableDeclaration.VariableDeclaration , Variable.Variable , Declaration.Declaration , Node.Node , Node.Node {
+export class TypeDeclaration implements _Object.Object , VariableDeclaration.VariableDeclaration , Variable.Variable , Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly type: Expression.Expression | Null.Null;
     readonly value: Expression.Expression | Null.Null;
     readonly assignable: Boolean.Boolean;
     readonly export: Boolean.Boolean;
+    static readonly id = 'TypeDeclaration';
+    static readonly implements = new Set([
+        'TypeDeclaration',
+        'ion_Object',
+        'VariableDeclaration',
+        'Variable',
+        'Declaration',
+        'Node'
+    ]);
     constructor({
         location = null,
         id,
@@ -70,16 +80,7 @@ export class TypeDeclaration implements VariableDeclaration.VariableDeclaration 
         return isTypeDeclaration(value);
     }
 }
-TypeDeclaration['id'] = 'TypeDeclaration';
-TypeDeclaration['implements'] = new Set([
-    'TypeDeclaration',
-    'VariableDeclaration',
-    'Variable',
-    'Declaration',
-    'Node',
-    'Node'
-]);
-export const isTypeDeclaration = function (value): value is TypeDeclaration {
+export function isTypeDeclaration(value): value is TypeDeclaration {
     return Class.isInstance(TypeDeclaration, value);
-};
+}
 export default TypeDeclaration;

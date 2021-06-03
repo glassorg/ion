@@ -1,28 +1,37 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Scope from './Scope';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Id from './Id';
-import * as Array from './ion/Array';
+import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as BlockStatement from './BlockStatement';
 import * as Reference from './Reference';
 import * as Class from './ion/Class';
-export class FunctionExpression implements Expression.Expression , Scope.Scope , Node.Node , Node.Node {
+export class FunctionExpression implements _Object.Object , Expression.Expression , Scope.Scope , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id | Null.Null;
-    readonly parameters: Array.Array<Parameter.Parameter>;
+    readonly parameters: _Array.Array<Parameter.Parameter>;
     readonly returnType: Expression.Expression | Null.Null;
     readonly body: BlockStatement.BlockStatement;
     readonly typeGuard: Reference.Reference | Null.Null;
+    static readonly id = 'FunctionExpression';
+    static readonly implements = new Set([
+        'FunctionExpression',
+        'ion_Object',
+        'Expression',
+        'Scope',
+        'Node'
+    ]);
     constructor({location = null, id = null, parameters, returnType = null, body, typeGuard = null}: {
         location?: Location.Location | Null.Null,
         id?: Id.Id | Null.Null,
-        parameters: Array.Array<Parameter.Parameter>,
+        parameters: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body: BlockStatement.BlockStatement,
         typeGuard?: Reference.Reference | Null.Null
@@ -31,7 +40,7 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
         if (!(Id.isId(id) || Null.isNull(id)))
             throw new Error('id is not a Id | Null: ' + Class.toString(id));
-        if (!Array.isArray(parameters))
+        if (!_Array.isArray(parameters))
             throw new Error('parameters is not a Array: ' + Class.toString(parameters));
         if (!(Expression.isExpression(returnType) || Null.isNull(returnType)))
             throw new Error('returnType is not a Expression | Null: ' + Class.toString(returnType));
@@ -50,7 +59,7 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
     patch(properties: {
         location?: Location.Location | Null.Null,
         id?: Id.Id | Null.Null,
-        parameters?: Array.Array<Parameter.Parameter>,
+        parameters?: _Array.Array<Parameter.Parameter>,
         returnType?: Expression.Expression | Null.Null,
         body?: BlockStatement.BlockStatement,
         typeGuard?: Reference.Reference | Null.Null
@@ -64,15 +73,7 @@ export class FunctionExpression implements Expression.Expression , Scope.Scope ,
         return isFunctionExpression(value);
     }
 }
-FunctionExpression['id'] = 'FunctionExpression';
-FunctionExpression['implements'] = new Set([
-    'FunctionExpression',
-    'Expression',
-    'Scope',
-    'Node',
-    'Node'
-]);
-export const isFunctionExpression = function (value): value is FunctionExpression {
+export function isFunctionExpression(value): value is FunctionExpression {
     return Class.isInstance(FunctionExpression, value);
-};
+}
 export default FunctionExpression;

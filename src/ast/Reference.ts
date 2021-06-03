@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Id from './Id';
 import * as Expression from './Expression';
 import * as Node from './Node';
@@ -8,9 +9,17 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Reference implements Id.Id , Expression.Expression , Node.Node {
+export class Reference implements _Object.Object , Id.Id , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
+    static readonly id = 'Reference';
+    static readonly implements = new Set([
+        'Reference',
+        'ion_Object',
+        'Id',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, name}: {
         location?: Location.Location | Null.Null,
         name: String.String
@@ -36,14 +45,7 @@ export class Reference implements Id.Id , Expression.Expression , Node.Node {
         return isReference(value);
     }
 }
-Reference['id'] = 'Reference';
-Reference['implements'] = new Set([
-    'Reference',
-    'Id',
-    'Expression',
-    'Node'
-]);
-export const isReference = function (value): value is Reference {
+export function isReference(value): value is Reference {
     return Class.isInstance(Reference, value);
-};
+}
 export default Reference;

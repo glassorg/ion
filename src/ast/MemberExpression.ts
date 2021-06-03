@@ -1,15 +1,23 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class MemberExpression implements Expression.Expression , Node.Node {
+export class MemberExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly object: Expression.Expression;
     readonly property: Expression.Expression;
+    static readonly id = 'MemberExpression';
+    static readonly implements = new Set([
+        'MemberExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, object, property}: {
         location?: Location.Location | Null.Null,
         object: Expression.Expression,
@@ -40,13 +48,7 @@ export class MemberExpression implements Expression.Expression , Node.Node {
         return isMemberExpression(value);
     }
 }
-MemberExpression['id'] = 'MemberExpression';
-MemberExpression['implements'] = new Set([
-    'MemberExpression',
-    'Expression',
-    'Node'
-]);
-export const isMemberExpression = function (value): value is MemberExpression {
+export function isMemberExpression(value): value is MemberExpression {
     return Class.isInstance(MemberExpression, value);
-};
+}
 export default MemberExpression;

@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Declaration from './Declaration';
 import * as Node from './Node';
 import * as Location from './Location';
@@ -9,11 +10,18 @@ import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class ImportDeclaration implements Declaration.Declaration , Node.Node {
+export class ImportDeclaration implements _Object.Object , Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
     readonly from: String.String;
+    static readonly id = 'ImportDeclaration';
+    static readonly implements = new Set([
+        'ImportDeclaration',
+        'ion_Object',
+        'Declaration',
+        'Node'
+    ]);
     constructor({
         location = null,
         id,
@@ -54,13 +62,7 @@ export class ImportDeclaration implements Declaration.Declaration , Node.Node {
         return isImportDeclaration(value);
     }
 }
-ImportDeclaration['id'] = 'ImportDeclaration';
-ImportDeclaration['implements'] = new Set([
-    'ImportDeclaration',
-    'Declaration',
-    'Node'
-]);
-export const isImportDeclaration = function (value): value is ImportDeclaration {
+export function isImportDeclaration(value): value is ImportDeclaration {
     return Class.isInstance(ImportDeclaration, value);
-};
+}
 export default ImportDeclaration;

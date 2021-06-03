@@ -1,28 +1,36 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Declaration from './Declaration';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Id from './Id';
 import * as Boolean from './ion/Boolean';
-import * as Array from './ion/Array';
+import * as _Array from './ion/Array';
 import * as Parameter from './Parameter';
 import * as Reference from './Reference';
 import * as KeyValuePair from './KeyValuePair';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class ClassDeclaration implements Declaration.Declaration , Node.Node {
+export class ClassDeclaration implements _Object.Object , Declaration.Declaration , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly id: Id.Id;
     readonly export: Boolean.Boolean;
     readonly isStructure: Boolean.Boolean;
-    readonly parameters: Array.Array<Parameter.Parameter>;
-    readonly baseClasses: Array.Array<Reference.Reference>;
-    readonly declarations: Array.Array<Declaration.Declaration>;
-    readonly meta: Array.Array<KeyValuePair.KeyValuePair>;
-    readonly _implements: Array.Array<String.String>;
+    readonly parameters: _Array.Array<Parameter.Parameter>;
+    readonly baseClasses: _Array.Array<Reference.Reference>;
+    readonly declarations: _Array.Array<Declaration.Declaration>;
+    readonly meta: _Array.Array<KeyValuePair.KeyValuePair>;
+    readonly _implements: _Array.Array<String.String>;
+    static readonly id = 'ClassDeclaration';
+    static readonly implements = new Set([
+        'ClassDeclaration',
+        'ion_Object',
+        'Declaration',
+        'Node'
+    ]);
     constructor({
         location = null,
         id,
@@ -38,11 +46,11 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         id: Id.Id,
         export?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,
-        parameters?: Array.Array<Parameter.Parameter>,
-        baseClasses?: Array.Array<Reference.Reference>,
-        declarations: Array.Array<Declaration.Declaration>,
-        meta?: Array.Array<KeyValuePair.KeyValuePair>,
-        _implements?: Array.Array<String.String>
+        parameters?: _Array.Array<Parameter.Parameter>,
+        baseClasses?: _Array.Array<Reference.Reference>,
+        declarations: _Array.Array<Declaration.Declaration>,
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
+        _implements?: _Array.Array<String.String>
     }) {
         if (!(Location.isLocation(location) || Null.isNull(location)))
             throw new Error('location is not a Location | Null: ' + Class.toString(location));
@@ -52,15 +60,15 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
             throw new Error('export is not a Boolean: ' + Class.toString(_export));
         if (!Boolean.isBoolean(isStructure))
             throw new Error('isStructure is not a Boolean: ' + Class.toString(isStructure));
-        if (!Array.isArray(parameters))
+        if (!_Array.isArray(parameters))
             throw new Error('parameters is not a Array: ' + Class.toString(parameters));
-        if (!Array.isArray(baseClasses))
+        if (!_Array.isArray(baseClasses))
             throw new Error('baseClasses is not a Array: ' + Class.toString(baseClasses));
-        if (!Array.isArray(declarations))
+        if (!_Array.isArray(declarations))
             throw new Error('declarations is not a Array: ' + Class.toString(declarations));
-        if (!Array.isArray(meta))
+        if (!_Array.isArray(meta))
             throw new Error('meta is not a Array: ' + Class.toString(meta));
-        if (!Array.isArray(_implements))
+        if (!_Array.isArray(_implements))
             throw new Error('_implements is not a Array: ' + Class.toString(_implements));
         this.location = location;
         this.id = id;
@@ -78,11 +86,11 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         id?: Id.Id,
         export?: Boolean.Boolean,
         isStructure?: Boolean.Boolean,
-        parameters?: Array.Array<Parameter.Parameter>,
-        baseClasses?: Array.Array<Reference.Reference>,
-        declarations?: Array.Array<Declaration.Declaration>,
-        meta?: Array.Array<KeyValuePair.KeyValuePair>,
-        _implements?: Array.Array<String.String>
+        parameters?: _Array.Array<Parameter.Parameter>,
+        baseClasses?: _Array.Array<Reference.Reference>,
+        declarations?: _Array.Array<Declaration.Declaration>,
+        meta?: _Array.Array<KeyValuePair.KeyValuePair>,
+        _implements?: _Array.Array<String.String>
     }) {
         return new ClassDeclaration({
             ...this,
@@ -93,13 +101,7 @@ export class ClassDeclaration implements Declaration.Declaration , Node.Node {
         return isClassDeclaration(value);
     }
 }
-ClassDeclaration['id'] = 'ClassDeclaration';
-ClassDeclaration['implements'] = new Set([
-    'ClassDeclaration',
-    'Declaration',
-    'Node'
-]);
-export const isClassDeclaration = function (value): value is ClassDeclaration {
+export function isClassDeclaration(value): value is ClassDeclaration {
     return Class.isInstance(ClassDeclaration, value);
-};
+}
 export default ClassDeclaration;

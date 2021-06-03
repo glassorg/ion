@@ -1,13 +1,21 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class DotExpression implements Expression.Expression , Node.Node {
+export class DotExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
+    static readonly id = 'DotExpression';
+    static readonly implements = new Set([
+        'DotExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({
         location = null
     }: { location?: Location.Location | Null.Null }) {
@@ -26,13 +34,7 @@ export class DotExpression implements Expression.Expression , Node.Node {
         return isDotExpression(value);
     }
 }
-DotExpression['id'] = 'DotExpression';
-DotExpression['implements'] = new Set([
-    'DotExpression',
-    'Expression',
-    'Node'
-]);
-export const isDotExpression = function (value): value is DotExpression {
+export function isDotExpression(value): value is DotExpression {
     return Class.isInstance(DotExpression, value);
-};
+}
 export default DotExpression;

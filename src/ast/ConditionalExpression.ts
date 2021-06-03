@@ -1,16 +1,24 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class ConditionalExpression implements Expression.Expression , Node.Node {
+export class ConditionalExpression implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly test: Expression.Expression;
     readonly consequent: Expression.Expression;
     readonly alternate: Expression.Expression;
+    static readonly id = 'ConditionalExpression';
+    static readonly implements = new Set([
+        'ConditionalExpression',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, test, consequent, alternate}: {
         location?: Location.Location | Null.Null,
         test: Expression.Expression,
@@ -46,13 +54,7 @@ export class ConditionalExpression implements Expression.Expression , Node.Node 
         return isConditionalExpression(value);
     }
 }
-ConditionalExpression['id'] = 'ConditionalExpression';
-ConditionalExpression['implements'] = new Set([
-    'ConditionalExpression',
-    'Expression',
-    'Node'
-]);
-export const isConditionalExpression = function (value): value is ConditionalExpression {
+export function isConditionalExpression(value): value is ConditionalExpression {
     return Class.isInstance(ConditionalExpression, value);
-};
+}
 export default ConditionalExpression;

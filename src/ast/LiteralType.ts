@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as TypeExpression from './TypeExpression';
 import * as Expression from './Expression';
 import * as Node from './Node';
@@ -8,9 +9,17 @@ import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Literal from './Literal';
 import * as Class from './ion/Class';
-export class LiteralType implements TypeExpression.TypeExpression , Expression.Expression , Node.Node {
+export class LiteralType implements _Object.Object , TypeExpression.TypeExpression , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly literal: Literal.Literal;
+    static readonly id = 'LiteralType';
+    static readonly implements = new Set([
+        'LiteralType',
+        'ion_Object',
+        'TypeExpression',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, literal}: {
         location?: Location.Location | Null.Null,
         literal: Literal.Literal
@@ -36,14 +45,7 @@ export class LiteralType implements TypeExpression.TypeExpression , Expression.E
         return isLiteralType(value);
     }
 }
-LiteralType['id'] = 'LiteralType';
-LiteralType['implements'] = new Set([
-    'LiteralType',
-    'TypeExpression',
-    'Expression',
-    'Node'
-]);
-export const isLiteralType = function (value): value is LiteralType {
+export function isLiteralType(value): value is LiteralType {
     return Class.isInstance(LiteralType, value);
-};
+}
 export default LiteralType;

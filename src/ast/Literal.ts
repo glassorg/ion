@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
@@ -9,9 +10,16 @@ import * as String from './ion/String';
 import * as Number from './ion/Number';
 import * as Boolean from './ion/Boolean';
 import * as Class from './ion/Class';
-export class Literal implements Expression.Expression , Node.Node {
+export class Literal implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly value: String.String | (Number.Number | (Boolean.Boolean | Null.Null));
+    static readonly id = 'Literal';
+    static readonly implements = new Set([
+        'Literal',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, value}: {
         location?: Location.Location | Null.Null,
         value: String.String | (Number.Number | (Boolean.Boolean | Null.Null))
@@ -37,13 +45,7 @@ export class Literal implements Expression.Expression , Node.Node {
         return isLiteral(value);
     }
 }
-Literal['id'] = 'Literal';
-Literal['implements'] = new Set([
-    'Literal',
-    'Expression',
-    'Node'
-]);
-export const isLiteral = function (value): value is Literal {
+export function isLiteral(value): value is Literal {
     return Class.isInstance(Literal, value);
-};
+}
 export default Literal;

@@ -1,6 +1,7 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Reference from './Reference';
 import * as Id from './Id';
 import * as Expression from './Expression';
@@ -10,10 +11,19 @@ import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as TypeExpression from './TypeExpression';
 import * as Class from './ion/Class';
-export class TypeReference implements Reference.Reference , Id.Id , Expression.Expression , Node.Node {
+export class TypeReference implements _Object.Object , Reference.Reference , Id.Id , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
     readonly original: TypeExpression.TypeExpression;
+    static readonly id = 'TypeReference';
+    static readonly implements = new Set([
+        'TypeReference',
+        'ion_Object',
+        'Reference',
+        'Id',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, name, original}: {
         location?: Location.Location | Null.Null,
         name: String.String,
@@ -44,15 +54,7 @@ export class TypeReference implements Reference.Reference , Id.Id , Expression.E
         return isTypeReference(value);
     }
 }
-TypeReference['id'] = 'TypeReference';
-TypeReference['implements'] = new Set([
-    'TypeReference',
-    'Reference',
-    'Id',
-    'Expression',
-    'Node'
-]);
-export const isTypeReference = function (value): value is TypeReference {
+export function isTypeReference(value): value is TypeReference {
     return Class.isInstance(TypeReference, value);
-};
+}
 export default TypeReference;

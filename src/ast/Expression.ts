@@ -1,12 +1,19 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as Class from './ion/Class';
-export class Expression implements Node.Node {
+export class Expression implements _Object.Object , Node.Node {
     readonly location: Location.Location | Null.Null;
+    static readonly id = 'Expression';
+    static readonly implements = new Set([
+        'Expression',
+        'ion_Object',
+        'Node'
+    ]);
     constructor({
         location = null
     }: { location?: Location.Location | Null.Null }) {
@@ -25,12 +32,7 @@ export class Expression implements Node.Node {
         return isExpression(value);
     }
 }
-Expression['id'] = 'Expression';
-Expression['implements'] = new Set([
-    'Expression',
-    'Node'
-]);
-export const isExpression = function (value): value is Expression {
+export function isExpression(value): value is Expression {
     return Class.isInstance(Expression, value);
-};
+}
 export default Expression;

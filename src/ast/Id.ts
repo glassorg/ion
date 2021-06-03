@@ -1,15 +1,23 @@
 /*
 This file was generated from ion source. Do not edit.
 */
+import * as _Object from './ion/Object';
 import * as Expression from './Expression';
 import * as Node from './Node';
 import * as Location from './Location';
 import * as Null from './ion/Null';
 import * as String from './ion/String';
 import * as Class from './ion/Class';
-export class Id implements Expression.Expression , Node.Node {
+export class Id implements _Object.Object , Expression.Expression , Node.Node {
     readonly location: Location.Location | Null.Null;
     readonly name: String.String;
+    static readonly id = 'Id';
+    static readonly implements = new Set([
+        'Id',
+        'ion_Object',
+        'Expression',
+        'Node'
+    ]);
     constructor({location = null, name}: {
         location?: Location.Location | Null.Null,
         name: String.String
@@ -35,13 +43,7 @@ export class Id implements Expression.Expression , Node.Node {
         return isId(value);
     }
 }
-Id['id'] = 'Id';
-Id['implements'] = new Set([
-    'Id',
-    'Expression',
-    'Node'
-]);
-export const isId = function (value): value is Id {
+export function isId(value): value is Id {
     return Class.isInstance(Id, value);
-};
+}
 export default Id;
