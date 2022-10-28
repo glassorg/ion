@@ -1,9 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class TypeReference extends Reference
-        # for analysis we normalize types to references
-        # but we retain the original expression for the final typescript
-        let original: TypeExpression

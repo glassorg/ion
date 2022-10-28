@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class Analysis extends Scope
-        var declarations: Map<String,Declaration>

@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class Expression extends Node
-        var type: TypeExpression | Null = null

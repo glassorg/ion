@@ -1,6 +1,0 @@
-import
-    .*
-
-export
-    class Type
-        let id: String

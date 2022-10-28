@@ -1,8 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class TemplateReference extends TypeExpression
-        var baseType: Expression
-        var arguments: Array<TypeExpression | Reference>

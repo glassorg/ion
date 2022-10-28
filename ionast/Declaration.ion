@@ -1,8 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class Declaration extends Node
-        var id: Id
-        var export: Boolean = false

@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class BlockStatement extends Statement, Scope
-        var statements: Array<Statement>

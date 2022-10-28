@@ -1,7 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class UnionType extends BinaryExpression, TypeExpression
-        var operator: String = "|"

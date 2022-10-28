@@ -1,5 +1,0 @@
-import
-    .*
-
-export
-    struct Number

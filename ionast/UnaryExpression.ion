@@ -1,8 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class UnaryExpression
-        var operator: String
-        var argument: Expression

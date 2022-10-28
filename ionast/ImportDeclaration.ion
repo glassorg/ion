@@ -1,8 +1,0 @@
-import
-    ion.*
-    .*
-
-export
-    class ImportDeclaration extends Declaration
-        var id: Id
-        var from: String
