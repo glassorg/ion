@@ -1,14 +1,13 @@
-// import { infixAllowOutline } from "../parser/operators";
 import { Token } from "../ast/Token";
-import { infixAllowOutline } from "../operators";
-import { tokenTypes } from "./tokenTypes";
+import { InfixOperators, isInfixOperator } from "../Operators";
+import { TokenNames } from "./TokenTypes";
 
 function splitIntoLines(tokens: Token[]): Token[][] {
     let lines = new Array<Array<Token>>();
     let line = new Array<Token>();
     for (let token of tokens) {
         line.push(token);
-        if (token.type === tokenTypes.Eol.name) {
+        if (token.type === TokenNames.Eol) {
             lines.push(line);
             line = [];
         }
@@ -20,7 +19,7 @@ function splitIntoLines(tokens: Token[]): Token[][] {
 }
 
 function isDent(token?: Token) {
-    return token != null && token.type === tokenTypes.Dent.name;
+    return token != null && token.type === TokenNames.Dent;
 }
 
 function calculateDentation(lines: Token[][]): Token[] {
@@ -41,7 +40,7 @@ function calculateDentation(lines: Token[][]): Token[] {
             // insert Indents
             for (let i = 0; i < (dents - depth); i++) {
                 let dent = line[depth + i];
-                tokens.push(dent.patch({ type: tokenTypes.Indent.name }));
+                tokens.push(dent.patch({ type: TokenNames.Indent }));
             }
         }
         else if (dents < depth) {
@@ -49,7 +48,7 @@ function calculateDentation(lines: Token[][]): Token[] {
             for (let i = 0; i < (depth - dents); i++) {
                 let dent = line[dents];
                 tokens.push(new Token(
-                    tokenTypes.Outdent.name,
+                    TokenNames.Outdent,
                     "",
                     dent.position
                 ));
@@ -63,7 +62,7 @@ function calculateDentation(lines: Token[][]): Token[] {
         let last = tokens[tokens.length - 1];
         for (let i = 0; i < depth; i++) {
             tokens.push(new Token(
-                tokenTypes.Outdent.name,
+                TokenNames.Outdent,
                 "",
                 last.position
             ));
@@ -80,7 +79,7 @@ function pushOutdentsToBeforeEOLs(tokens: Token[]): void {
     for (let i = 0; i < tokens.length - 1; i++) {
         let a = tokens[i + 0];
         let b = tokens[i + 1];
-        if (a.type === tokenTypes.Eol.name && b.type === tokenTypes.Outdent.name) {
+        if (a.type === TokenNames.Eol && b.type === TokenNames.Outdent) {
             tokens[i + 0] = b;
             tokens[i + 1] = a;
         }
@@ -91,7 +90,7 @@ function removeEOLsBeforeOutlineInfixOperators(tokens: Token[]): void {
     for (let i = tokens.length - 2; i >= 0; i--) {
         let a = tokens[i + 0];
         let b = tokens[i + 1];
-        if (a.type === tokenTypes.Eol.name && infixAllowOutline[b.value]) {
+        if (a.type === TokenNames.Eol && isInfixOperator(b.value) && InfixOperators[b.value].allowOutline) {
             tokens.splice(i, 1);
         }
     }

@@ -5,6 +5,7 @@ export class Token extends AstNode {
 
     constructor(
         public readonly type: string,
+        // public readonly source: string,
         public readonly value: string,
         position: number = -1,
     ) {

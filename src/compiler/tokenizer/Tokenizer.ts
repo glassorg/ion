@@ -1,8 +1,7 @@
 import { Token } from "../ast/Token";
 import { PositionFactory } from "../PositionFactory";
 import { indentation } from "./indentation";
-import { TokenType } from "./TokenType";
-import { tokenTypes } from "./tokenTypes";
+import { TokenType, TokenNames } from "./TokenTypes";
 
 export class Tokenizer {
 
@@ -22,7 +21,9 @@ export class Tokenizer {
                 let tokenType = this.types[type];
                 let matchLength = tokenType.match(remainingSource);
                 if (matchLength > 0) {
-                    if (tokenType.previousPredicate && !tokenType.previousPredicate(tokens[tokens.length - 1])) {
+                    const previousToken = tokens[tokens.length - 1];
+                    const previousTokenType = this.types[previousToken?.type];
+                    if (tokenType.previousPredicate && !tokenType.previousPredicate(previousTokenType)) {
                         continue;
                     }
                     let value = remainingSource.slice(0, matchLength);
@@ -36,7 +37,7 @@ export class Tokenizer {
                     }
                     else {
                         tokens.push(newToken);
-                        if (newToken.type === tokenTypes.Eol.name) {
+                        if (newToken.type === TokenNames.Eol) {
                             lineIndex++;
                             columnIndex = 0;
                         }

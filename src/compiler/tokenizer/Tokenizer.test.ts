@@ -1,9 +1,9 @@
 import { strict as assert } from "assert";
 import { PositionFactory } from "../PositionFactory";
 import { Tokenizer } from "./Tokenizer";
-import { tokenTypes } from "./tokenTypes";
+import { TokenTypes } from "./TokenTypes";
 
-const tokenizer = new Tokenizer(tokenTypes, new PositionFactory());
+const tokenizer = new Tokenizer(TokenTypes, new PositionFactory());
 
 const tokens = tokenizer.tokenize(
     "test", `

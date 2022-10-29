@@ -1,98 +1,103 @@
 
-export const prefixPrecedence: { [op: string]: number | undefined } = {
-    "(": 19,
-    "+": 14,
-    "-": 14,
-    "!": 14,
-    "~": 14,
-    "<": 14,    //  used for numeric types: < 10
-    "<=": 14,   //  used for numeric types: <= 10
-    ">": 14,    //  used for numeric types: > 10
-    ">=": 14,   //  used for numeric types: >= 10
-    "!=": 14,   //  used for numeric types: != 10
-    "void": 2,
-    "typeof": 2,
+export class Operator {
+
+    public readonly precedence: number;
+    public readonly allowOutline: boolean;
+    public readonly overridable: boolean;
+    public readonly rightAssociative: boolean;
+    public readonly prefixAmbiguous: boolean;
+
+    constructor(
+        precedence: number,
+        options?: {
+            allowOutline?: boolean,
+            overridable?: boolean,
+            rightAssociative?: boolean,
+            prefixAmbiguous?: boolean,
+        }
+    ){
+        this.precedence = precedence;
+        this.allowOutline = options?.allowOutline ?? false;
+        this.overridable = options?.overridable ?? false;
+        this.rightAssociative = options?.rightAssociative ?? false;
+        this.prefixAmbiguous = options?.prefixAmbiguous ?? false;
+    }
+}
+
+export const PrefixOperators = {
+    "(": new Operator(19),
+    "+": new Operator(14),
+    "-": new Operator(14, { prefixAmbiguous: true }),
+    "!": new Operator(14),
+    "~": new Operator(14),
+    "<": new Operator(14),    //  used for numeric types: < 10
+    "<=": new Operator(14),   //  used for numeric types: <= 10
+    ">": new Operator(14),    //  used for numeric types: > 10
+    ">=": new Operator(14),   //  used for numeric types: >= 10
+    "!=": new Operator(14),   //  used for numeric types: != 10
+    "void": new Operator(2),
+    "typeof": new Operator(2),
 } as const;
 
-export const prefixAmbiguous: { [op: string]: boolean | undefined } = {
-    "-": true,
-};
+export type PrefixOperator = keyof typeof PrefixOperators;
 
-export function getInfixPrecedence(op: string) {
-    let precedence = infixPrecedence[op];
-    return precedence != null ? precedence : op.endsWith("=") ? 3 : 15;
-}
-
-export const infixAllowOutline: { [op: string]: true | undefined } = {
-    "=>": true,
-}
-
-export const overridable = {
-    "**": true,
-    "*": true,
-    "/": true,
-    "%": true,
-    "+": true,
-    "-": true,
-    "<<": true,
-    ">>": true,
-    "&": true,
-    "^": true,
-    "|": true,
-}
-
-export const infixPrecedence: { [op: string]: number | undefined } = {
-    "[": 19,    //  ]
-    ".": 19,
-    "(": 19,    //  )
-    "**": 17,
-    "*": 16,
-    "/": 16,
-    "%": 16,
-    "<<": 15,
-    ">>": 15,
+export const InfixOperators = {
+    "[": new Operator(19),    //  ]
+    ".": new Operator(19),
+    "(": new Operator(19),    //  )
+    "**": new Operator(17, { overridable: true, rightAssociative: true }),
+    "*": new Operator(16, { overridable: true }),
+    "/": new Operator(16, { overridable: true }),
+    "%": new Operator(16, { overridable: true }),
+    "<<": new Operator(15, { overridable: true }),
+    ">>": new Operator(15, { overridable: true }),
     //  default unknown operator precedence
-    "+": 14,
-    "-": 14,
-    "&": 12,
-    "^": 11,
-    "|": 10,
-    "<": 9,    //  not overridable
-    "<=": 9,   //  not overridable
-    ">": 9,    //  not overridable
-    ">=": 9,   //  not overridable
-    "is": 9,    //  not overridable
-    "==": 8,   //  not overridable
-    "!=": 8,   //  not overridable
-    "..": 8,   //  not overridable
-    "&&": 7,    //  not overridable
-    "||": 6,    //  not overridable
-    ":": 5,     //  not overridable
-    "=>": 4,    //  not overridable
-    "=": 3,     //  not overridable
-    ":=": 3,
-    "+=": 3,
-    "-=": 3,
-    "**=": 3,
-    "*=": 3,
-    "/=": 3,
-    "%=": 3,
-    "<<=": 3,
-    ">>=": 3,
-    "^=": 3,
-    "&=": 3,
-    "|=": 3,
-    "&&=": 3,
-    "||=": 3,
-    ",": 1,
-    ";": 1,
+    "+": new Operator(14, { overridable: true }),
+    "-": new Operator(14, { overridable: true }),
+    "&": new Operator(12, { overridable: true }),
+    "^": new Operator(11, { overridable: true }),
+    "|": new Operator(10, { overridable: true }),
+    "<": new Operator(9),    //  not overridable
+    "<=": new Operator(9),   //  not overridable
+    ">": new Operator(9),    //  not overridable
+    ">=": new Operator(9),   //  not overridable
+    "is": new Operator(9),    //  not overridable
+    "==": new Operator(8),   //  not overridable
+    "!=": new Operator(8),   //  not overridable
+    "..": new Operator(8),   //  not overridable
+    "&&": new Operator(7),    //  not overridable
+    "||": new Operator(6),    //  not overridable
+    ":": new Operator(5),     //  not overridable
+    "=>": new Operator(4, { allowOutline: true }),    //  not overridable
+    "=": new Operator(3, { rightAssociative: true }),     //  not overridable
+    ":=": new Operator(3),
+    "+=": new Operator(3, { rightAssociative: true }),
+    "-=": new Operator(3, { rightAssociative: true }),
+    "**=": new Operator(3, { rightAssociative: true }),
+    "*=": new Operator(3, { rightAssociative: true }),
+    "/=": new Operator(3, { rightAssociative: true }),
+    "%=": new Operator(3, { rightAssociative: true }),
+    "<<=": new Operator(3, { rightAssociative: true }),
+    ">>=": new Operator(3, { rightAssociative: true }),
+    "^=": new Operator(3, { rightAssociative: true }),
+    "&=": new Operator(3, { rightAssociative: true }),
+    "|=": new Operator(3, { rightAssociative: true }),
+    "&&=": new Operator(3, { rightAssociative: true }),
+    "||=": new Operator(3, { rightAssociative: true }),
+    ",": new Operator(1),
+    ";": new Operator(1),
 } as const;
 
-export const infixRightAssociative: { [op: string]: boolean | undefined } = {
-    "=": true,
-    "**": true,
-} as const;
+export type InfixOperator = keyof typeof InfixOperators;
 
-export function isOperator(name: string) {
-    return prefixPrecedence[name] != null || infixPrecedence[name] != null;
+export function isPrefixOperator(operator: string): operator is PrefixOperator {
+    return PrefixOperators[operator as PrefixOperator] != null;
+}
+
+export function isInfixOperator(operator: string): operator is InfixOperator {
+    return InfixOperators[operator as InfixOperator] != null;
+}
+
+export function isOperator(operator: string): operator is (PrefixOperator | InfixOperator) {
+    return isPrefixOperator(operator) || isInfixOperator(operator);
 }
