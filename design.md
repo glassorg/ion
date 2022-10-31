@@ -1,17 +1,78 @@
 
-    let position = new Vector(3, 4, 5)
+-   AstNode
+-       Expression
+-           BinaryExpression            x * y
+-               LogicalExpression       x || y      x && y
+-               AssignmentExpression    x = 12      x += 20
+-           CallExpression              foo(1, 2)
+-           MemberExpression            foo.bar     foo[bar]
+-           SequenceExpression          x = 10, y = 20
+-       Statement
+-           BlockStatement              (indented four spaces)
+-           ExpressionStatement         (only valid with AssignmentExpression)
+-           ForStatement                for x in array
+-           IfStatement                 if test
+-           Declaration
+-               VariableDeclaration         var x: Number = 12
+-                   ParameterDeclaration    x: Number = 12
+-                   ConstantDeclaration     let x = 20
+-                       TypeDeclaration     type Foo = Bar | Baz
+-               FunctionDeclaration         function double(a: Float) => a * 2
+-               ClassDeclaration            class MetaClass
+-                   StructDeclaration       struct Vector
+
+    //  VariableDeclaration( writable: true ) : Declaration
+    var x = 12
+    //  VariableDeclaration( writable: false ) : Declaration
+    let x = 12
+    //  TypeDeclaration : Declaration
+    type Foo = 10 .. 20
+
+    //  AssignmentExpression : Expression
+    x = 12
+
+    //  only meta class for now.
+    @Meta()
+    //  ClassDeclaration : Declaration
+    class Vector
+        x: Number
+        y: Number
+        operator(x: Number, y: Number) => Vector(this.x + x, this.y + y)
+
+    //  FunctionDeclaration
+    function foo(a: Type, b: Type) =>
+        if a is Bar
+            return 12
+        else
+            //  ForStatement : Statement
+            for i in 0 .. 20
+                //  ReturnStatement: Statement
+                return 20
+
+    @Meta()
+    @Bar()
+    function fooWithMeta(
+        @Meta(12)
+        a: Type
+        @Meta()
+        b: Type
+    ) =>
+        return callOutline(
+            12
+            20
+            30
+        )
+
     let position = Vector(3, 4, 5)
-    let position = 3, 4, 5
-    let position: Vector = 3, 4, 5
 
     let normal = Vector(1, 2, 3)
     let direction = Vector(4, 5, 6)
     let value = normal.dot(direction)
 
     class Vector3
-        var x: Number
-        var y: Number
-        var z: Number
+        x: Number
+        y: Number
+        z: Number
 
         # let function defined on class is shorthand for separate function
         add(v: Vector) => Vector(this.x + v.x, this.y + v.y, this.z + v.z)

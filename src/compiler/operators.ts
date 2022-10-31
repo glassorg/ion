@@ -89,6 +89,8 @@ export const InfixOperators = {
 } as const;
 
 export type InfixOperator = keyof typeof InfixOperators;
+export type LogicalOperator = "||" | "&&";
+export type AssignmentOperator = "=" | "+=" | "-=" | "**=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "^=" | "&=" | "|=" | "&&=" | "||=";
 
 export function isPrefixOperator(operator: string): operator is PrefixOperator {
     return PrefixOperators[operator as PrefixOperator] != null;
@@ -100,4 +102,12 @@ export function isInfixOperator(operator: string): operator is InfixOperator {
 
 export function isOperator(operator: string): operator is (PrefixOperator | InfixOperator) {
     return isPrefixOperator(operator) || isInfixOperator(operator);
+}
+
+export function isLogicalOperator(operator: string): operator is LogicalOperator {
+    return operator === "||" || operator === "&&";
+}
+
+export function isAssignmentOperator(operator: string): operator is AssignmentOperator {
+    return InfixOperators[operator as InfixOperator] != null && operator.endsWith("=");
 }

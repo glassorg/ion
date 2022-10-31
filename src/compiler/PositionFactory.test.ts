@@ -15,4 +15,3 @@ testPositionRoundtrip(PositionFactory.setColumn, PositionFactory.getColumn, 12);
 testPositionRoundtrip(PositionFactory.setFileId, PositionFactory.getFileId, 7);
 testPositionRoundtrip(PositionFactory.setLine, PositionFactory.getLine, 1023);
 testPositionRoundtrip(PositionFactory.setLength, PositionFactory.getLength, 1);
-

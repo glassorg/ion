@@ -10,8 +10,9 @@ export class AstNode extends Immutable {
     }
 
     toJSON() {
-        let { position, ...rest } = this;
-        return { ...rest, position: PositionFactory.toObject(position) };
+        let { position, ...rest } = super.toJSON();
+        return rest;
+        // return { ...rest, position: PositionFactory.toDotString(position) };
     }
 
 }

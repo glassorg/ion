@@ -27,13 +27,22 @@ export class PositionFactory {
     private idToFile = new Map<Position, string>();
 
     create(file: string, line: number, column: number, length: number) {
+        let fileId = this.getFileId(file);
+        return PositionFactory.create(fileId, line, column, length);
+    }
+
+    getFilename(fileId: number) {
+        return this.idToFile.get(fileId);
+    }
+
+    getFileId(file: string) {
         let fileId = this.filesToId.get(file);
         if (fileId === undefined) {
             fileId = this.filesToId.size;
             this.filesToId.set(file, fileId);
             this.idToFile.set(fileId, file);
         }
-        return PositionFactory.create(fileId, line, column, length);
+        return fileId;
     }
 
     static create(fileId: number, line: number, column: number, length: number) {
@@ -49,6 +58,10 @@ export class PositionFactory {
                 fileId
             )
         )
+    }
+
+    static toDotString(a: Position) {
+        return `${this.getFileId(a)}.${this.getLine(a)}.${this.getColumn(a)}.${this.getLength(a)}`;
     }
 
     static toObject(a: Position) {

@@ -31,7 +31,7 @@ export class Tokenizer {
                     columnIndex += matchLength;
 
                     let lastToken = tokens[tokens.length - 1];
-                    let newToken = new Token(type, value, position);
+                    let newToken = new Token(position, type, value);
                     if (tokenType.mergeAdjacent && lastToken?.type === newToken.type) {
                         tokens[tokens.length - 1] = Token.merge(lastToken, newToken);
                     }

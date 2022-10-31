@@ -5,4 +5,8 @@ export class Immutable {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), { ...this, props });
     }
 
+    toJSON(): any {
+        return { "": this.constructor.name, ...this }
+    }
+
 }

@@ -48,9 +48,9 @@ function calculateDentation(lines: Token[][]): Token[] {
             for (let i = 0; i < (depth - dents); i++) {
                 let dent = line[dents];
                 tokens.push(new Token(
+                    dent.position,
                     TokenNames.Outdent,
                     "",
-                    dent.position
                 ));
             }
         }
@@ -62,9 +62,9 @@ function calculateDentation(lines: Token[][]): Token[] {
         let last = tokens[tokens.length - 1];
         for (let i = 0; i < depth; i++) {
             tokens.push(new Token(
+                last.position,
                 TokenNames.Outdent,
                 "",
-                last.position
             ));
         }
     }
