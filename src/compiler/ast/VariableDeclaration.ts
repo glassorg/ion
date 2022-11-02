@@ -8,7 +8,8 @@ export class VariableDeclaration extends Declaration {
     constructor(
         position: Position,
         id: Declarator,
-        public readonly value?: Expression,
+        public readonly type: Expression | null,
+        public readonly value: Expression | null,
     ){
         super(position, id);
     }

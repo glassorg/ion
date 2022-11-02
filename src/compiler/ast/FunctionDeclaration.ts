@@ -1,5 +1,5 @@
 import { Position } from "../PositionFactory";
-import { BlockStatement } from "./Block";
+import { BlockStatement } from "./BlockStatement";
 import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
 import { ParameterDeclaration } from "./ParameterDeclaration";

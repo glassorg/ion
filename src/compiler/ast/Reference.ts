@@ -1,7 +1,7 @@
 import { Position } from "../PositionFactory";
-import { AstNode } from "./AstNode";
+import { Expression } from "./Expression";
 
-export class Identifier extends AstNode {
+export class Reference extends Expression {
 
     constructor(
         position: Position,

@@ -1,11 +1,11 @@
 import { Parser } from "../Parser";
 import { BinaryExpressionParselet } from "./BinaryExpressionParselet";
-import { MemberExpression } from "../../ast/MemberExpression";
 import { Expression } from "../../ast/Expression";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
 import { TokenName } from "../../tokenizer/TokenTypes";
 import { PositionFactory } from "../../PositionFactory";
+import { IndexExpression } from "../../ast/IndexExpression";
 
 export class MemberParselet extends BinaryExpressionParselet {
 
@@ -20,11 +20,10 @@ export class MemberParselet extends BinaryExpressionParselet {
         p.whitespace();
         let property = p.parseExpression(0);
         let close = p.consume(this.closeTokenType);
-        return new MemberExpression(
+        return new IndexExpression(
             PositionFactory.merge(object.position, close.position),
             object,
-            property as Expression,
-            true
+            property,
         );
     }
 

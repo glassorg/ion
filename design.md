@@ -1,25 +1,25 @@
 
--   AstNode
--       Expression
--           BinaryExpression            x * y
--               LogicalExpression       x || y      x && y
--               AssignmentExpression    x = 12      x += 20
--           CallExpression              foo(1, 2)
--           MemberExpression            foo.bar     foo[bar]
--           SequenceExpression          x = 10, y = 20
--       Statement
--           BlockStatement              (indented four spaces)
--           ExpressionStatement         (only valid with AssignmentExpression)
--           ForStatement                for x in array
--           IfStatement                 if test
--           Declaration
--               VariableDeclaration         var x: Number = 12
--                   ParameterDeclaration    x: Number = 12
--                   ConstantDeclaration     let x = 20
--                       TypeDeclaration     type Foo = Bar | Baz
--               FunctionDeclaration         function double(a: Float) => a * 2
--               ClassDeclaration            class MetaClass
--                   StructDeclaration       struct Vector
+[-]   AstNode
+[-]       Expression
+[x]           BinaryExpression            x * y
+[x]               LogicalExpression       x || y      x && y
+[x]               AssignmentExpression    x = 12      x += 20
+[x]           CallExpression              foo(1, 2)
+[x]           MemberExpression            foo.bar
+[x]           IndexExpression             foo[bar]
+[-]       Statement
+[x]           BlockStatement              (indented four spaces)
+[x]           ExpressionStatement         (only valid with AssignmentExpression)
+[-]           ForStatement                for x in array
+[x]           IfStatement                 if test
+[-]           Declaration
+[x]               VariableDeclaration         var x: Number = 12
+[-]                   ParameterDeclaration    x: Number = 12
+[x]                   ConstantDeclaration     let x = 20
+[x]                       TypeDeclaration     type Foo = Bar | Baz
+[-]               FunctionDeclaration         function double(a: Float) => a * 2
+[-]               ClassDeclaration            class MetaClass
+[-]                   StructDeclaration       struct Vector
 
     //  VariableDeclaration( writable: true ) : Declaration
     var x = 12

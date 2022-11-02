@@ -12,7 +12,7 @@ export class ConstantDeclaration extends VariableDeclaration {
         id: Declarator,
         value: Expression,
     ){
-        super(position, id, value);
+        super(position, id, null, value);
     }
 
     get writable() {

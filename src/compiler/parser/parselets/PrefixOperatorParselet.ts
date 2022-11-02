@@ -1,5 +1,6 @@
 import { AstNode } from "../../ast/AstNode";
 import { BinaryExpression } from "../../ast/BinaryExpression";
+import { Expression } from "../../ast/Expression";
 import { Token } from "../../ast/Token";
 import { UnaryExpression } from "../../ast/UnaryExpression";
 import { InfixOperators, PrefixOperator, PrefixOperators } from "../../Operators";
@@ -19,7 +20,7 @@ export class PrefixOperatorParselet extends PrefixParselet {
         return PrefixOperators[token.value as PrefixOperator].precedence;
     }
 
-    protected parseArgument(p: Parser, token: Token, precedence = this.getPrecedence(token)): AstNode {
+    protected parseArgument(p: Parser, token: Token, precedence = this.getPrecedence(token)): Expression {
         if (precedence == null) {
             let { value, position } = token;
             throw new SemanticError(`Prefix operator not found: ${value}`, position);

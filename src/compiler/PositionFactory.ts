@@ -73,7 +73,15 @@ export class PositionFactory {
         }
     }
 
-    static merge(a: Position, b: Position): Position {
+    static merge(a: Position | undefined, b: Position): Position
+    static merge(a: Position, b: Position | undefined): Position
+    static merge(a?: Position, b?: Position): Position {
+        if (a == null) {
+            return b!;
+        }
+        if (b == null) {
+            return a;
+        }
         return PositionFactory.setLength(a, this.getLength(a) + this.getLength(b));
     }
 

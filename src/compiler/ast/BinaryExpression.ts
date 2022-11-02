@@ -1,4 +1,4 @@
-import { InfixOperator, InfixOperators } from "../Operators";
+import { InfixOperator } from "../Operators";
 import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
 
@@ -11,6 +11,13 @@ export class BinaryExpression extends Expression {
         public readonly right: Expression
     ){
         super(position);
+    }
+
+    *splitInternal(operator: InfixOperator): Generator<Expression> {
+        if (this instanceof BinaryExpression && this.operator === operator) {
+            yield* this.left.splitInternal(operator);
+            yield* this.right.splitInternal(operator);
+        }
     }
 
 }

@@ -1,5 +1,4 @@
 import { Immutable } from "../Immutable";
-import { PositionFactory } from "../PositionFactory";
 
 export class AstNode extends Immutable {
 
@@ -12,7 +11,6 @@ export class AstNode extends Immutable {
     toJSON() {
         let { position, ...rest } = super.toJSON();
         return rest;
-        // return { ...rest, position: PositionFactory.toDotString(position) };
     }
 
 }

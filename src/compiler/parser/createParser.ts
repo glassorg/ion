@@ -4,7 +4,7 @@ import { StringLiteral } from "../ast/StringLiteral";
 import { BinaryExpressionParselet } from "./parselets/BinaryExpressionParselet";
 import { MemberParselet } from "./parselets/MemberParselet";
 import { TerminalParselet } from "./parselets/TerminalParselet";
-import { Identifier } from "../ast/Identifier";
+import { Reference } from "../ast/Reference";
 import { GroupParselet } from "./parselets/GroupParselet";
 import { CallParselet } from "./parselets/CallParselet";
 import { IfParselet } from "./parselets/IfParselet";
@@ -17,6 +17,10 @@ import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { TokenNames } from "../tokenizer/TokenTypes";
 import { PositionFactory } from "../PositionFactory";
+import { VariableParselet } from "./parselets/VariableParselet";
+import { ConstantParselet } from "./parselets/ConstantParselet";
+import { ConstantDeclaration } from "../ast/ConstantDeclaration";
+import { TypeDeclaration } from "../ast/TypeDeclaration";
 // import { NullLiteral } from "../ast/NullLiteral";
 // import { RegExpLiteral } from "../ast/RegExpLiteral";
 
@@ -28,10 +32,13 @@ export function createParser(positionFactory?: PositionFactory) {
         // RegExp: new TerminalParselet(RegExpLiteral, "value"),
         // Null: new TerminalParselet(NullLiteral, "value"),
         Operator: new PrefixOperatorParselet(),
-        Id: new TerminalParselet(token => new Identifier(token.position, token.value)),
-        EscapedId: new TerminalParselet(token => new Identifier(token.position, token.value.slice(1, -1))),
+        Id: new TerminalParselet(token => new Reference(token.position, token.value)),
+        EscapedId: new TerminalParselet(token => new Reference(token.position, token.value.slice(1, -1))),
         If: new IfParselet(),
         For: new ForParselet(),
+        Var: new VariableParselet(),
+        Const: new ConstantParselet(ConstantDeclaration),
+        Type: new ConstantParselet(TypeDeclaration),
         // Class: new ClassParselet(),
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),

@@ -1,6 +1,6 @@
 
 import { AstNode } from "../ast/AstNode";
-import { BlockStatement } from "../ast/Block";
+import { BlockStatement } from "../ast/BlockStatement";
 import { Expression } from "../ast/Expression";
 import { PstModule } from "../ast/PstModule";
 import { Statement } from "../ast/Statement";
@@ -16,7 +16,7 @@ export class Parser {
 
     private tokens: Token[] = [];
     private parseOutline = true;
-    private tokenizer: Tokenizer;
+    public readonly tokenizer: Tokenizer;
 
     constructor(
         public readonly prefixParselets: { [key in TokenName]?: PrefixParselet },
@@ -86,15 +86,19 @@ export class Parser {
         return null;
     }
 
+    setSource(filename: string, source: string) {
+        const tokens = this.tokenizer.tokenize(filename, source);
+        this.setTokens(tokens);
+        this.eol();
+    }
+
     setTokens(tokens: Token[]): this {
         this.tokens = [...tokens].reverse();
         return this;
     }
 
     parseModule(filename: string, source: string): PstModule {
-        const tokens = this.tokenizer.tokenize(filename, source);
-        this.setTokens(tokens);
-        this.eol();
+        this.setSource(filename, source);
 
         let nodes = new Array<Expression>();
         while (!this.done()) {
@@ -174,7 +178,7 @@ export class Parser {
         return result;
     }
 
-    parseInlineExpression(precedence: number = 0): AstNode {
+    parseInlineExpression(precedence: number = 0): Expression {
         let save = this.parseOutline;
         this.parseOutline = false;
         let result = this.parseExpression(precedence);
@@ -182,7 +186,7 @@ export class Parser {
         return result;
     }
 
-    parseExpression(precedence: number = 0): AstNode {
+    parseExpression(precedence: number = 0): Expression {
         let token = this.consume();
         this.whitespace();
         let prefix = this.prefixParselets[token.type as TokenName];
@@ -204,6 +208,10 @@ export class Parser {
                 }
             }
             break;
+        }
+
+        if (!(left instanceof Expression)) {
+            throw new SemanticError(`Expected Expression`, left);
         }
 
         return left;
