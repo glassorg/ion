@@ -10,7 +10,7 @@ import { Token } from "../../ast/Token";
 export class IfParselet extends PrefixParselet {
 
     parse(p: Parser, ifToken: Token): AstNode {
-        let test = p.parseExpression();
+        let test = p.parseNode();
         let consequent = p.parseBlock();
         let alternate: AstNode | undefined;
         p.eol();

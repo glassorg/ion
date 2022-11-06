@@ -10,7 +10,7 @@ export class VariableParselet extends PrefixParselet {
 
     parse(p: Parser, varToken: Token): AstNode {
         p.whitespace();
-        let variable = p.parseExpression();
+        let variable = p.parseNode();
         if (!(variable instanceof VariableDeclaration)) {
             throw new SemanticError(`Expected Identifier : Type = Expression`, variable)
         }

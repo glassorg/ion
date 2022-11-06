@@ -10,4 +10,8 @@ export class Identifier extends AstNode {
         super(position);
     }
 
+    get isIdentifier() {
+        return true;
+    }
+
 }

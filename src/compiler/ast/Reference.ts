@@ -10,4 +10,8 @@ export class Reference extends Expression {
         super(position);
     }
 
+    get isReference() {
+        return true;
+    }
+
 }

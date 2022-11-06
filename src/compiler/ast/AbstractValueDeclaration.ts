@@ -1,19 +1,20 @@
 import { Position, PositionFactory } from "../PositionFactory";
 import { TokenNames } from "../tokenizer/TokenTypes";
+import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
-import { Expression } from "./Expression";
-import { AbstractValueDeclaration } from "./AbstractValueDeclaration";
 import { TypeExpression } from "./TypeExpression";
 
-export class VariableDeclaration extends AbstractValueDeclaration {
+/**
+ * Base class for declarations which define runtime values.
+ */
+export abstract class AbstractValueDeclaration extends Declaration {
 
     constructor(
         position: Position,
         id: Declarator,
-        valueType: TypeExpression | null,
-        public readonly defaultValue: Expression | null,
-    ){
-        super(position, id, valueType);
+        public readonly valueType: TypeExpression | null,
+    ) {
+        super(position, id);
     }
 
     getVarTokenPosition(): Position | null {

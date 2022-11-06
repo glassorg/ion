@@ -1,6 +1,7 @@
 
 [-]   AstNode
-[-]       Expression
+[ ]       Interfaces
+[x]       Expression
 [x]           BinaryExpression            x * y
 [x]               LogicalExpression       x || y      x && y
 [x]               AssignmentExpression    x = 12      x += 20
@@ -10,16 +11,32 @@
 [-]       Statement
 [x]           BlockStatement              (indented four spaces)
 [x]           ExpressionStatement         (only valid with AssignmentExpression)
-[-]           ForStatement                for x in array
+[x]           ForStatement                for x in array ForStatement extends BlockStatement
 [x]           IfStatement                 if test
 [-]           Declaration
-[x]               VariableDeclaration         var x: Number = 12
-[-]                   ParameterDeclaration    x: Number = 12
-[x]                   ConstantDeclaration     let x = 20
-[x]                       TypeDeclaration     type Foo = Bar | Baz
-[-]               FunctionDeclaration         function double(a: Float) => a * 2
-[-]               ClassDeclaration            class MetaClass
-[-]                   StructDeclaration       struct Vector
+[x]               VariableDeclaration     var x: Number = 12
+[x]               ParameterDeclaration    x: Number = 12
+[x]               ConstantDeclaration     let x = 20
+[x]               TypeDeclaration         type Foo = Bar | Baz
+[x]               ForVariantDeclaration   for x: 0 .. 10
+[x]               FieldDeclaration        x: Number = 12
+[x]               FunctionDeclaration     function double(a: Float) => a * 2
+[x]               ClassDeclaration        class MetaClass
+[-]               StructDeclaration       struct Vector
+
+                                id      value   valueType   type    defaultValue
+Declaration                     1
+  AbstractValueDeclaration      1               1
+     VariableDeclaration        1               1                   1
+        ParameterDeclaration    1               1                   1
+        FieldDeclaration        1               1                   1
+     ForVariantDeclaration      1               1
+     ConstantDeclaration        1       1       1
+     FunctionDeclaration        1       1       1
+  AbstractTypeDeclaration       1                           A
+    TypeDeclaration             1                           1
+    StructDeclaration           1                           1
+      ClassDeclaration          1                           1
 
     //  VariableDeclaration( writable: true ) : Declaration
     var x = 12

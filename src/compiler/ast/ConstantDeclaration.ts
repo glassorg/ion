@@ -1,22 +1,16 @@
 import { Position } from "../PositionFactory";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
-import { VariableDeclaration } from "./VariableDeclaration";
+import { AbstractValueDeclaration } from "./AbstractValueDeclaration";
 
-export class ConstantDeclaration extends VariableDeclaration {
-
-    declare public readonly value: Expression
+export class ConstantDeclaration extends AbstractValueDeclaration {
 
     constructor(
         position: Position,
         id: Declarator,
-        value: Expression,
-    ){
-        super(position, id, null, value);
-    }
-
-    get writable() {
-        return false;
+        public readonly value: Expression,
+    ) {
+        super(position, id, null);
     }
 
 }

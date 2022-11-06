@@ -1,15 +1,15 @@
 import { Position } from "../PositionFactory";
-import { Container } from "./Container";
-import { Expression } from "./Expression";
+import { AstNode } from "./AstNode";
+import { Declaration } from "./Declaration";
 
-export class PstModule extends Container<Expression> {
+export class PstModule extends AstNode {
 
     constructor(
         position: Position,
-        nodes: Expression[],
         public readonly name: string,
+        public readonly statements: Declaration[],
     ){
-        super(position, nodes);
+        super(position);
     }
 
 }

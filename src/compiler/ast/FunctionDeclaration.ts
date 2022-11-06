@@ -1,22 +1,16 @@
 import { Position } from "../PositionFactory";
-import { BlockStatement } from "./BlockStatement";
-import { Declaration } from "./Declaration";
+import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
-import { ParameterDeclaration } from "./ParameterDeclaration";
+import { FunctionExpression } from "./FunctionExpression";
 
-export class FunctionDeclaration extends Declaration {
+export class FunctionDeclaration extends ConstantDeclaration {
 
     constructor(
         position: Position,
         id: Declarator,
-        public readonly parameters: ParameterDeclaration[],
-        public readonly body: BlockStatement,
+        value: FunctionExpression,
     ){
-        super(position, id);
-    }
-
-    get writable() {
-        return true;
+        super(position, id, value);
     }
 
 }

@@ -1,6 +1,7 @@
 
 import { AstNode } from "../ast/AstNode";
 import { BlockStatement } from "../ast/BlockStatement";
+import { Declaration } from "../ast/Declaration";
 import { Expression } from "../ast/Expression";
 import { PstModule } from "../ast/PstModule";
 import { Statement } from "../ast/Statement";
@@ -100,10 +101,14 @@ export class Parser {
     parseModule(filename: string, source: string): PstModule {
         this.setSource(filename, source);
 
-        let nodes = new Array<Expression>();
+        let statements = new Array<Declaration>();
         while (!this.done()) {
             this.whitespace();
-            nodes.push(this.parseExpression());
+            let statement = this.parseStatement();
+            if (!(statement instanceof Declaration)) {
+                throw new SemanticError(`Only declarations are allowed within the module scope`, statement);
+            }
+            statements.push(statement);
             this.eol();
         }
 
@@ -112,11 +117,11 @@ export class Parser {
         }
 
         return new PstModule(
-            nodes.length > 0
-                ? PositionFactory.merge(nodes[0].position, nodes[nodes.length - 1].position)
+            statements.length > 0
+                ? PositionFactory.merge(statements[0].position, statements[statements.length - 1].position)
                 : this.positionFactory.create(filename, 0, 0, 0),
-            nodes as Expression[],
             filename,
+            statements,
         )
     }
 
@@ -136,7 +141,7 @@ export class Parser {
 
         while (!this.done()) {
             this.whitespace();
-            nodes.push(this.maybeParseBlock() || this.parseExpression());
+            nodes.push(this.maybeParseBlock() || this.parseNode());
             this.eol();
             if (outdent = this.maybeConsume(TokenNames.Outdent)) {
                 break;
@@ -181,12 +186,35 @@ export class Parser {
     parseInlineExpression(precedence: number = 0): Expression {
         let save = this.parseOutline;
         this.parseOutline = false;
-        let result = this.parseExpression(precedence);
+        let result = this.parseNode(precedence);
         this.parseOutline = save;
+        if (!(result instanceof Expression)) {
+            throw new SemanticError(`Expected Expression`, result);
+        }
         return result;
     }
 
     parseExpression(precedence: number = 0): Expression {
+        let node = this.parseNode(precedence);
+
+        if (!(node instanceof Expression)) {
+            throw new SemanticError(`Expected Expression`, node);
+        }
+
+        return node;
+    }
+
+    parseStatement(): Statement {
+        let node = this.parseNode();
+
+        if (!(node instanceof Statement)) {
+            throw new SemanticError(`Expected Statement`, node);
+        }
+
+        return node;
+    }
+
+    parseNode(precedence: number = 0): AstNode {
         let token = this.consume();
         this.whitespace();
         let prefix = this.prefixParselets[token.type as TokenName];
@@ -208,10 +236,6 @@ export class Parser {
                 }
             }
             break;
-        }
-
-        if (!(left instanceof Expression)) {
-            throw new SemanticError(`Expected Expression`, left);
         }
 
         return left;

@@ -6,7 +6,13 @@ export class Immutable {
     }
 
     toJSON(): any {
-        return { "": this.constructor.name, ...this }
+        let properties: any = { "": this.constructor.name }
+        for (let [name, value] of Object.entries(this)) {
+            if (value != null) {
+                properties[name] = value;
+            }
+        }
+        return properties;
     }
 
 }

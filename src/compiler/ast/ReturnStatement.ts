@@ -1,8 +1,8 @@
 import { Position } from "../PositionFactory";
-import { AstNode } from "./AstNode";
 import { Expression } from "./Expression";
+import { Statement } from "./Statement";
 
-export class ReturnStatement extends AstNode {
+export class ReturnStatement extends Statement {
 
     constructor(
         position: Position,

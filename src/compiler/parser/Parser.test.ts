@@ -1,12 +1,11 @@
 import { strict as assert } from "assert";
-import { createTokenizer } from "../tokenizer/createTokenizer";
 import { createParser } from "./createParser";
 
 const parser = createParser();
 
 function testParseExpression(source: string, expectedJSON: any) {
     parser.setSource("test", source);
-    const expression = parser.parseExpression();
+    const expression = parser.parseNode();
     const json = JSON.parse(JSON.stringify(expression));
     if (JSON.stringify(expectedJSON) !== JSON.stringify(json)) {
         console.log(JSON.stringify(json, null, 4));
@@ -41,7 +40,7 @@ testParseExpression(`a + 1`, {
 });
 
 testParseExpression(`a || 1`, {
-    "": "LogicalExpression",
+    "": "BinaryExpression",
     "left": {
         "": "Reference",
         "name": "a"
@@ -267,14 +266,14 @@ else
 testParseExpression(`var x: Number = 10`, {
     "": "VariableDeclaration",
     "id": {
-        "": "Identifier",
+        "": "Declarator",
         "name": "x"
     },
-    "type": {
+    "valueType": {
         "": "Reference",
         "name": "Number"
     },
-    "value": {
+    "defaultValue": {
         "": "IntegerLiteral",
         "value": 10
     }
@@ -286,7 +285,6 @@ testParseExpression(`const x = 20`, {
         "": "Declarator",
         "name": "x"
     },
-    "type": null,
     "value": {
         "": "IntegerLiteral",
         "value": 20
@@ -299,8 +297,7 @@ testParseExpression(`type Foo = Bar | Baz`, {
         "": "Declarator",
         "name": "Foo"
     },
-    "type": null,
-    "value": {
+    "type": {
         "": "BinaryExpression",
         "left": {
             "": "Reference",
@@ -310,6 +307,313 @@ testParseExpression(`type Foo = Bar | Baz`, {
         "right": {
             "": "Reference",
             "name": "Baz"
+        }
+    }
+});
+
+testParseExpression(
+`
+for x in foo
+    x + bar
+`, {
+    "": "ForStatement",
+    "statements": [
+        {
+            "": "ForVariantDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "x"
+            }
+        },
+        {
+            "": "BlockStatement",
+            "statements": [
+                {
+                    "": "ExpressionStatement",
+                    "expression": {
+                        "": "BinaryExpression",
+                        "left": {
+                            "": "Reference",
+                            "name": "x"
+                        },
+                        "operator": "+",
+                        "right": {
+                            "": "Reference",
+                            "name": "bar"
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "right": {
+        "": "Reference",
+        "name": "foo"
+    }
+});
+
+testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
+    "": "FunctionDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "add"
+    },
+    "value": {
+        "": "FunctionExpression",
+        "parameters": [
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "x"
+                },
+                "valueType": {
+                    "": "Reference",
+                    "name": "Number"
+                },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            },
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "y"
+                },
+                "valueType": {
+                    "": "Reference",
+                    "name": "Number"
+                },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            }
+        ],
+        "body": {
+            "": "BlockStatement",
+            "statements": [
+                {
+                    "": "ReturnStatement",
+                    "argument": {
+                        "": "Reference",
+                        "name": "x"
+                    }
+                }
+            ]
+        }
+    }
+});
+
+testParseExpression(
+`function second(x: Number = 0, y: Number = 0) =>
+    return y
+`, {
+    "": "FunctionDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "second"
+    },
+    "value": {
+        "": "FunctionExpression",
+        "parameters": [
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "x"
+                },
+                "valueType": {
+                    "": "Reference",
+                    "name": "Number"
+                },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            },
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "y"
+                },
+                "valueType": {
+                    "": "Reference",
+                    "name": "Number"
+                },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            }
+        ],
+        "body": {
+            "": "BlockStatement",
+            "statements": [
+                {
+                    "": "ReturnStatement",
+                    "argument": {
+                        "": "Reference",
+                        "name": "y"
+                    }
+                }
+            ]
+        }
+    }
+});
+
+testParseExpression(
+`class Foo`, {
+    "": "ClassDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "Foo"
+    },
+    "fields": []
+});
+
+testParseExpression(
+`
+class Foo
+`, {
+    "": "ClassDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "Foo"
+    },
+    "fields": []
+});
+
+testParseExpression(
+`
+class Vector
+    x: Number
+    y: Number
+    z: Number = 0
+`, {
+    "": "ClassDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "Vector"
+    },
+    "fields": [
+        {
+            "": "FieldDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "x"
+            },
+            "valueType": {
+                "": "Reference",
+                "name": "Number"
+            }
+        },
+        {
+            "": "FieldDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "y"
+            },
+            "valueType": {
+                "": "Reference",
+                "name": "Number"
+            }
+        },
+        {
+            "": "FieldDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "z"
+            },
+            "valueType": {
+                "": "Reference",
+                "name": "Number"
+            },
+            "defaultValue": {
+                "": "IntegerLiteral",
+                "value": 0
+            }
+        }
+    ]
+});
+
+testParseExpression(
+`
+struct Foo
+`, {
+    "": "StructDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "Foo"
+    },
+    "fields": []
+});
+
+testParseExpression(
+`
+struct Vector
+    x: Number = 0
+    y: Number = 0
+`, {
+    "": "StructDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "Vector"
+    },
+    "fields": [
+        {
+            "": "FieldDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "x"
+            },
+            "valueType": {
+                "": "Reference",
+                "name": "Number"
+            },
+            "defaultValue": {
+                "": "IntegerLiteral",
+                "value": 0
+            }
+        },
+        {
+            "": "FieldDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "y"
+            },
+            "valueType": {
+                "": "Reference",
+                "name": "Number"
+            },
+            "defaultValue": {
+                "": "IntegerLiteral",
+                "value": 0
+            }
+        }
+    ]
+});
+
+testParseExpression(`x += 10`, {
+    "": "AssignmentExpression",
+    "left": {
+        "": "Reference",
+        "name": "x"
+    },
+    "operator": "=",
+    "right": {
+        "": "BinaryExpression",
+        "left": {
+            "": "Reference",
+            "name": "x"
+        },
+        "operator": "+",
+        "right": {
+            "": "IntegerLiteral",
+            "value": 10
         }
     }
 });
