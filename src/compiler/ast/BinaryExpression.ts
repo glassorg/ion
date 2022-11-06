@@ -2,7 +2,7 @@ import { InfixOperator } from "../Operators";
 import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
 
-export class BinaryExpression extends Expression {
+export abstract class BinaryExpression extends Expression {
 
     constructor(
         position: Position,
@@ -19,5 +19,6 @@ export class BinaryExpression extends Expression {
             yield* this.right.splitInternal(operator);
         }
     }
-
+    
 }
+

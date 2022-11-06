@@ -14,6 +14,8 @@ import { Identifier } from "../../ast/Identifier";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { Declarator } from "../../ast/Declarator";
 import { TokenNames } from "../../tokenizer/TokenTypes";
+import { createBinaryExpression } from "../../ast";
+import { SequenceExpression } from "../../ast/SequenceExpression";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -32,18 +34,6 @@ export class BinaryExpressionParselet extends InfixParselet {
         let right = this.parseRight(p, operatorToken) as Expression;
         let position = PositionFactory.merge(left.position, right.position);
         let operator = operatorToken.value as InfixOperator;
-        if (isAssignmentOperator(operator)) {
-            if (left instanceof VariableDeclaration) {
-                if (operator !== "=") {
-                    throw new SemanticError(`Expected =`, operatorToken);
-                }
-                return left.patch({ defaultValue: right });
-            }
-            if (operator !== "=") {
-                right = new BinaryExpression(position, left, operator.slice(0, -1) as InfixOperator, right);
-            }
-            return new AssignmentExpression(position, left, right);
-        }
         if (operator === ":") {
             if (!(left instanceof Reference)) {
                 throw new SemanticError(`Expected Identifier`, left);
@@ -56,7 +46,18 @@ export class BinaryExpressionParselet extends InfixParselet {
             }
             return new MemberExpression(position, left, new Identifier(right.position, right.name));
         }
-        return new BinaryExpression(position, left, operator, right);
+        if (operator === ",") {
+            return new SequenceExpression(position, left, right);
+        }
+        if (isAssignmentOperator(operator)) {
+            if (left instanceof VariableDeclaration) {
+                if (operator !== "=") {
+                    throw new SemanticError(`Expected =`, operatorToken);
+                }
+                return left.patch({ defaultValue: right });
+            }
+        }
+        return createBinaryExpression(position, left, operator, right);
     }
 
     getPrecedence(token: Token) {

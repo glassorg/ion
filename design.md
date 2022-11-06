@@ -1,19 +1,19 @@
 
-[-]   AstNode
-[ ]       Interfaces
+[x]   AstNode
 [x]       Expression
 [x]           BinaryExpression            x * y
-[x]               LogicalExpression       x || y      x && y
+[ ]               LogicalExpression       x || y      x && y
 [x]               AssignmentExpression    x = 12      x += 20
+[ ]           UnaryExpression             !x
 [x]           CallExpression              foo(1, 2)
 [x]           MemberExpression            foo.bar
 [x]           IndexExpression             foo[bar]
-[-]       Statement
+[x]       Statement
 [x]           BlockStatement              (indented four spaces)
 [x]           ExpressionStatement         (only valid with AssignmentExpression)
 [x]           ForStatement                for x in array ForStatement extends BlockStatement
 [x]           IfStatement                 if test
-[-]           Declaration
+[x]           Declaration
 [x]               VariableDeclaration     var x: Number = 12
 [x]               ParameterDeclaration    x: Number = 12
 [x]               ConstantDeclaration     let x = 20
@@ -22,7 +22,7 @@
 [x]               FieldDeclaration        x: Number = 12
 [x]               FunctionDeclaration     function double(a: Float) => a * 2
 [x]               ClassDeclaration        class MetaClass
-[-]               StructDeclaration       struct Vector
+[x]               StructDeclaration       struct Vector
 
                                 id      value   valueType   type    defaultValue
 Declaration                     1

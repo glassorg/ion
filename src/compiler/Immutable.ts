@@ -7,7 +7,8 @@ export class Immutable {
 
     toJSON(): any {
         let properties: any = { "": this.constructor.name }
-        for (let [name, value] of Object.entries(this)) {
+        for (let name in this) {
+            let value = this[name];
             if (value != null) {
                 properties[name] = value;
             }
