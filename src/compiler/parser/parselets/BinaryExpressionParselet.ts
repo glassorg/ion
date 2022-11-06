@@ -3,19 +3,15 @@ import { SemanticError } from "../../SemanticError";
 import { Expression } from "../../ast/Expression";
 import { InfixParselet } from "../InfixParslet";
 import { Token } from "../../ast/Token";
-import { AssignmentOperator, InfixOperator, InfixOperators, isAssignmentOperator, isLogicalOperator, LogicalOperator } from "../../Operators";
-import { BinaryExpression } from "../../ast/BinaryExpression";
+import { InfixOperator, InfixOperators, isAssignmentOperator } from "../../Operators";
 import { AstNode } from "../../ast/AstNode";
 import { PositionFactory } from "../../PositionFactory";
-import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { MemberExpression } from "../../ast/MemberExpression";
 import { Reference } from "../../ast/Reference";
 import { Identifier } from "../../ast/Identifier";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { Declarator } from "../../ast/Declarator";
-import { TokenNames } from "../../tokenizer/TokenTypes";
 import { createBinaryExpression } from "../../ast";
-import { SequenceExpression } from "../../ast/SequenceExpression";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -45,9 +41,6 @@ export class BinaryExpressionParselet extends InfixParselet {
                 throw new SemanticError(`Expected Identifier`, right);
             }
             return new MemberExpression(position, left, new Identifier(right.position, right.name));
-        }
-        if (operator === ",") {
-            return new SequenceExpression(position, left, right);
         }
         if (isAssignmentOperator(operator)) {
             if (left instanceof VariableDeclaration) {

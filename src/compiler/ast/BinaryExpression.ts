@@ -14,9 +14,12 @@ export abstract class BinaryExpression extends Expression {
     }
 
     *splitInternal(operator: InfixOperator): Generator<Expression> {
-        if (this instanceof BinaryExpression && this.operator === operator) {
+        if (this.operator === operator) {
             yield* this.left.splitInternal(operator);
             yield* this.right.splitInternal(operator);
+        }
+        else {
+            yield this;
         }
     }
     
