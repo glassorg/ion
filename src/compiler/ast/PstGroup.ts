@@ -1,16 +1,16 @@
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 import { Token } from "./Token";
 
 export class PstGroup extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly open: Token,
         public readonly close: Token,
         public readonly value?: Expression,
     ){
-        super(position);
+        super(location);
     }
 
 }

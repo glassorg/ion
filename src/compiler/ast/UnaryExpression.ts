@@ -1,15 +1,15 @@
 import { PrefixOperator } from "../Operators";
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class UnaryExpression extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly operator: PrefixOperator,
         public readonly argument: Expression,
     ){
-        super(position);
+        super(location);
     }
 
 }

@@ -1,16 +1,16 @@
 import { InfixOperator } from "../Operators";
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
 import { Reference } from "./Reference";
+import { SourceLocation } from "./SourceLocation";
 
 export class CallExpression extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly callee: Expression,
         public readonly args: Expression[],
     ){
-        super(position);
+        super(location);
     }
 
     *splitInternal(operator: InfixOperator): Generator<Expression> {
@@ -18,6 +18,9 @@ export class CallExpression extends Expression {
             // if this is a Call representation of a binary expression we still split it.
             yield* this.args[0].splitInternal(operator);
             yield* this.args[1].splitInternal(operator);
+        }
+        else {
+            yield this;
         }
     }
 

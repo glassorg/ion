@@ -1,17 +1,21 @@
-import { Position } from "../PositionFactory";
 import { AstNode } from "./AstNode";
+import { SourceLocation } from "./SourceLocation";
 
 export class Identifier extends AstNode {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly name: string,
     ){
-        super(position);
+        super(location);
     }
 
     get isIdentifier() {
         return true;
+    }
+
+    toString() {
+        return this.name;
     }
 
 }

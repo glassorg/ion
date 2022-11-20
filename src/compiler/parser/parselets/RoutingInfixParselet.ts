@@ -22,7 +22,7 @@ export class RoutingInfixParselet extends InfixParselet {
         let { value } = token;
         let parselet = this.valueParselets[value] ?? this.defaultParselet;
         if (parselet == null) {
-            throw new SemanticError(`Unexpected token: ${value}`, token.position);
+            throw new SemanticError(`Unexpected token: ${value}`, token.location);
         }
         return parselet;
     }

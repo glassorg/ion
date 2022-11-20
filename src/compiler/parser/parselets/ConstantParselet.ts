@@ -4,16 +4,15 @@ import { Token } from "../../ast/Token";
 import { AstNode } from "../../ast/AstNode";
 import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { SemanticError } from "../../SemanticError";
-import { ConstantDeclaration } from "../../ast/ConstantDeclaration";
 import { Reference } from "../../ast/Reference";
-import { Position, PositionFactory } from "../../PositionFactory";
 import { Declarator } from "../../ast/Declarator";
 import { Expression } from "../../ast/Expression";
+import { SourceLocation } from "../../ast/SourceLocation";
 
 export class ConstantParselet extends PrefixParselet {
 
     constructor(
-        private factory: (position: Position, id: Declarator, value: Expression) => AstNode
+        private factory: (location: SourceLocation, id: Declarator, value: Expression) => AstNode
     ) {
         super();
     }
@@ -25,8 +24,8 @@ export class ConstantParselet extends PrefixParselet {
             throw new SemanticError(`Expected Identifier = Expression`, assignment)
         }
         return this.factory(
-            PositionFactory.merge(constToken.position, assignment.position),
-            new Declarator(assignment.position, assignment.left.name),
+            constToken.location.merge(assignment.location),
+            new Declarator(assignment.location, assignment.left.name),
             assignment.right
         );
     }

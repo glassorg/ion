@@ -1,17 +1,21 @@
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class Reference extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly name: string,
     ){
-        super(position);
+        super(location);
     }
 
     get isReference() {
         return true;
+    }
+
+    toString() {
+        return this.name;
     }
 
 }

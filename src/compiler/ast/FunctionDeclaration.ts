@@ -1,16 +1,20 @@
-import { Position } from "../PositionFactory";
 import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
 import { FunctionExpression } from "./FunctionExpression";
+import { SourceLocation } from "./SourceLocation";
 
 export class FunctionDeclaration extends ConstantDeclaration {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         id: Declarator,
         value: FunctionExpression,
     ){
-        super(position, id, value);
+        super(location, id, value);
+    }
+
+    toString() {
+        return `function ${this.id}${this.value}`;
     }
 
 }

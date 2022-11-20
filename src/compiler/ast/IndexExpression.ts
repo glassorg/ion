@@ -1,14 +1,14 @@
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class IndexExpression extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly object: Expression,
         public readonly index: Expression,
     ){
-        super(position);
+        super(location);
     }
 
 }

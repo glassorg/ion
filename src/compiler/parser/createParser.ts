@@ -16,7 +16,6 @@ import { OutlineStringParselet } from "./parselets/OutlineStringParselet";
 import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { TokenNames } from "../tokenizer/TokenTypes";
-import { PositionFactory } from "../PositionFactory";
 import { VariableParselet } from "./parselets/VariableParselet";
 import { ConstantParselet } from "./parselets/ConstantParselet";
 import { ConstantDeclaration } from "../ast/ConstantDeclaration";
@@ -24,23 +23,25 @@ import { TypeDeclaration } from "../ast/TypeDeclaration";
 import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
+import { toTypeExpression } from "../ast/TypeExpression";
 
-export function createParser(positionFactory?: PositionFactory) {
+export function createParser() {
     return new Parser({
-        Number: new TerminalParselet(token => new FloatLiteral(token.position, JSON.parse(token.value))),
-        Integer: new TerminalParselet(token => new IntegerLiteral(token.position, JSON.parse(token.value))),
-        String: new TerminalParselet(token => new StringLiteral(token.position, JSON.parse(token.value))),
+        Number: new TerminalParselet(token => new FloatLiteral(token.location, JSON.parse(token.value))),
+        Integer: new TerminalParselet(token => new IntegerLiteral(token.location, JSON.parse(token.value))),
+        String: new TerminalParselet(token => new StringLiteral(token.location, JSON.parse(token.value))),
         Operator: new PrefixOperatorParselet(),
-        Id: new TerminalParselet(token => new Reference(token.position, token.value)),
-        EscapedId: new TerminalParselet(token => new Reference(token.position, token.value.slice(1, -1))),
+        Id: new TerminalParselet(token => new Reference(token.location, token.value)),
+        EscapedId: new TerminalParselet(token => new Reference(token.location, token.value.slice(1, -1))),
         If: new IfParselet(),
         For: new ForParselet(),
         Var: new VariableParselet(),
+        Const: new ReservedWordParselet(),
         Extends: new ReservedWordParselet(),
         Implements: new ReservedWordParselet(),
         Function: new FunctionParselet(),
-        Const: new ConstantParselet((position, id, value) => new ConstantDeclaration(position, id, value)),
-        Type: new ConstantParselet((position, id, value) => new TypeDeclaration(position, id, value)),
+        Let: new ConstantParselet((location, id, value) => new ConstantDeclaration(location, id, value)),
+        Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toTypeExpression(value))),
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
         OpenBracket: new GroupParselet(TokenNames.CloseBracket, true),
@@ -54,5 +55,5 @@ export function createParser(positionFactory?: PositionFactory) {
         Operator: new BinaryExpressionParselet(),
         OpenParen: new CallParselet(TokenNames.CloseParen),
         OpenBracket: new MemberParselet(TokenNames.CloseBracket),
-    }, positionFactory)
+    })
 }

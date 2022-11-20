@@ -1,7 +1,6 @@
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
 import { StringLiteral } from "../../ast/StringLiteral";
-import { PositionFactory } from "../../PositionFactory";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { Token } from "../../ast/Token";
 import { AstNode } from "../../ast/AstNode";
@@ -42,7 +41,7 @@ export class OutlineStringParselet extends PrefixParselet {
         }
 
         return new StringLiteral(
-            PositionFactory.merge(outlineString.position, last.position),
+            outlineString.location.merge(last.location),
             b.join(""),
         )
     }

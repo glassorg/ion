@@ -4,7 +4,6 @@ import { Token } from "../../ast/Token";
 import { SemanticError } from "../../SemanticError";
 import { AstNode } from "../../ast/AstNode";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
-import { PositionFactory } from "../../PositionFactory";
 
 export class VariableParselet extends PrefixParselet {
 
@@ -12,9 +11,10 @@ export class VariableParselet extends PrefixParselet {
         p.whitespace();
         let variable = p.parseNode();
         if (!(variable instanceof VariableDeclaration)) {
-            throw new SemanticError(`Expected Identifier : Type = Expression`, variable)
+            throw new SemanticError(`Expected Identifier : Type = Expression`, variable);
         }
-        return variable.patch({ position: PositionFactory.merge(varToken.position, variable.position )});
+        let location = varToken.location.merge(variable.location );
+        return variable.patch({ location });
     }
 
 }

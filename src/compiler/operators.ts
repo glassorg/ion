@@ -41,6 +41,39 @@ export const PrefixOperators = {
 
 export type PrefixOperator = keyof typeof PrefixOperators;
 
+export const ComparisonOperators = {
+    "<": new Operator(9),
+    "<=": new Operator(9),
+    ">": new Operator(9),
+    ">=": new Operator(9),
+    "is": new Operator(9),
+    "isnt": new Operator(9),
+    "==": new Operator(8),
+    "!=": new Operator(8),
+};
+
+export const LogicalOperators = {
+    "&&": new Operator(7),
+    "||": new Operator(6),
+}
+
+export const AssignmentOperators = {
+    "=": new Operator(3, { rightAssociative: true }),
+    "+=": new Operator(3, { rightAssociative: true }),
+    "-=": new Operator(3, { rightAssociative: true }),
+    "**=": new Operator(3, { rightAssociative: true }),
+    "*=": new Operator(3, { rightAssociative: true }),
+    "/=": new Operator(3, { rightAssociative: true }),
+    "%=": new Operator(3, { rightAssociative: true }),
+    "<<=": new Operator(3, { rightAssociative: true }),
+    ">>=": new Operator(3, { rightAssociative: true }),
+    "^=": new Operator(3, { rightAssociative: true }),
+    "&=": new Operator(3, { rightAssociative: true }),
+    "|=": new Operator(3, { rightAssociative: true }),
+    "&&=": new Operator(3, { rightAssociative: true }),
+    "||=": new Operator(3, { rightAssociative: true }),
+}
+
 export const InfixOperators = {
     "[": new Operator(19),    //  ]
     ".": new Operator(19),
@@ -57,40 +90,20 @@ export const InfixOperators = {
     "&": new Operator(12, { overridable: true }),
     "^": new Operator(11, { overridable: true }),
     "|": new Operator(10, { overridable: true }),
-    "<": new Operator(9),    //  not overridable
-    "<=": new Operator(9),   //  not overridable
-    ">": new Operator(9),    //  not overridable
-    ">=": new Operator(9),   //  not overridable
-    "is": new Operator(9),    //  not overridable
-    "==": new Operator(8),   //  not overridable
-    "!=": new Operator(8),   //  not overridable
-    "..": new Operator(8),   //  not overridable
-    "&&": new Operator(7),    //  not overridable
-    "||": new Operator(6),    //  not overridable
-    ":": new Operator(5),     //  not overridable
-    "=>": new Operator(4, { allowOutline: true }),    //  not overridable
-    "=": new Operator(3, { rightAssociative: true }),     //  not overridable
-    ":=": new Operator(3),
-    "+=": new Operator(3, { rightAssociative: true }),
-    "-=": new Operator(3, { rightAssociative: true }),
-    "**=": new Operator(3, { rightAssociative: true }),
-    "*=": new Operator(3, { rightAssociative: true }),
-    "/=": new Operator(3, { rightAssociative: true }),
-    "%=": new Operator(3, { rightAssociative: true }),
-    "<<=": new Operator(3, { rightAssociative: true }),
-    ">>=": new Operator(3, { rightAssociative: true }),
-    "^=": new Operator(3, { rightAssociative: true }),
-    "&=": new Operator(3, { rightAssociative: true }),
-    "|=": new Operator(3, { rightAssociative: true }),
-    "&&=": new Operator(3, { rightAssociative: true }),
-    "||=": new Operator(3, { rightAssociative: true }),
+    ...ComparisonOperators,
+    "..": new Operator(8),
+    ...LogicalOperators,
+    ":": new Operator(5),
+    "=>": new Operator(4, { allowOutline: true }),
+    ...AssignmentOperators,
     ",": new Operator(1),
     ";": new Operator(1),
 } as const;
 
 export type InfixOperator = keyof typeof InfixOperators;
-export type LogicalOperator = "||" | "&&";
-export type AssignmentOperator = "=" | "+=" | "-=" | "**=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "^=" | "&=" | "|=" | "&&=" | "||=";
+export type LogicalOperator = keyof typeof LogicalOperators;
+export type AssignmentOperator = keyof typeof AssignmentOperators;
+export type ComparisonOperator = keyof typeof ComparisonOperators;
 
 export function isPrefixOperator(operator: string): operator is PrefixOperator {
     return PrefixOperators[operator as PrefixOperator] != null;
@@ -105,9 +118,13 @@ export function isOperator(operator: string): operator is (PrefixOperator | Infi
 }
 
 export function isLogicalOperator(operator: string): operator is LogicalOperator {
-    return operator === "||" || operator === "&&";
+    return LogicalOperators[operator as LogicalOperator] != null;
 }
 
 export function isAssignmentOperator(operator: string): operator is AssignmentOperator {
-    return InfixOperators[operator as InfixOperator] != null && operator.endsWith("=");
+    return AssignmentOperators[operator as AssignmentOperator] != null;
+}
+
+export function isComparisonOperator(operator: string): operator is AssignmentOperator {
+    return ComparisonOperators[operator as ComparisonOperator] != null;
 }

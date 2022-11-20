@@ -1,14 +1,14 @@
-import { Position } from "../PositionFactory";
 import { Declarator } from "./Declarator";
+import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
 
 export abstract class Declaration extends Statement {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly id: Declarator
     ){
-        super(position);
+        super(location);
     }
 
 }

@@ -1,21 +1,21 @@
-import { PositionFactory } from "../PositionFactory";
 import { AstNode } from "./AstNode";
+import { SourceLocation } from "./SourceLocation";
 
 export class Token extends AstNode {
 
     constructor(
-        position: number,
+        location: SourceLocation,
         public readonly type: string,
         // public readonly source: string,
         public readonly value: string,
     ) {
-        super(position);
+        super(location);
     }
 
     static merge(left: Token, right: Token) {
         return left.patch({
             value: left.value + right.value,
-            position: PositionFactory.merge(left.position, right.position)
+            location: SourceLocation.merge(left.location, right.location)
         });
     }
 

@@ -1,16 +1,16 @@
 import { InfixOperator } from "../Operators";
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export abstract class BinaryExpression extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly left: Expression,
         public readonly operator: InfixOperator,
         public readonly right: Expression
     ){
-        super(position);
+        super(location);
     }
 
     *splitInternal(operator: InfixOperator): Generator<Expression> {
@@ -21,6 +21,10 @@ export abstract class BinaryExpression extends Expression {
         else {
             yield this;
         }
+    }
+
+    toString() {
+        return `(${this.left} ${this.operator} ${this.right})`;
     }
     
 }

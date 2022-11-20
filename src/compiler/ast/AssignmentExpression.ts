@@ -1,15 +1,15 @@
-import { Position } from "../PositionFactory";
 import { BinaryExpression } from "./BinaryExpression";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class AssignmentExpression extends BinaryExpression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         left: Expression,
         right: Expression,
     ){
-        super(position, left, "=", right);
+        super(location, left, "=", right);
     }
 
 }

@@ -2,7 +2,6 @@ import { AstNode } from "../../ast/AstNode";
 import { CallExpression } from "../../ast/CallExpression";
 import { Expression } from "../../ast/Expression";
 import { Token } from "../../ast/Token";
-import { PositionFactory } from "../../PositionFactory";
 import { TokenName, TokenNames } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { BinaryExpressionParselet } from "./BinaryExpressionParselet";
@@ -24,7 +23,7 @@ export class CallParselet extends BinaryExpressionParselet {
         let args = value?.split(`,`) ?? [];
 
         return new CallExpression(
-            PositionFactory.merge(callee.position, group.position),
+            callee.location.merge(group.location),
             callee,
             args
         );

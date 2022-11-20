@@ -1,10 +1,8 @@
 import { AstNode } from "../../ast/AstNode";
 import { Declarator } from "../../ast/Declarator";
 import { ForStatement } from "../../ast/ForStatement";
-import { ForVariantDeclaration } from "../../ast/ForVariantDeclaration";
 import { Reference } from "../../ast/Reference";
 import { Token } from "../../ast/Token";
-import { PositionFactory } from "../../PositionFactory";
 import { SemanticError } from "../../SemanticError";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
@@ -24,8 +22,8 @@ export class ForParselet extends PrefixParselet {
         p.whitespace();
         let body = p.parseBlock();
         return new ForStatement(
-            PositionFactory.merge(forToken.position, value.position),
-            new Declarator(id.position, id.name),
+            forToken.location.merge(value.location),
+            new Declarator(id.location, id.name),
             value,
             body,
         );

@@ -3,7 +3,6 @@ import { PrefixParselet } from "../PrefixParselet";
 import { IfStatement } from "../../ast/IfStatement";
 import { Expression } from "../../ast/Expression";
 import { TokenNames } from "../../tokenizer/TokenTypes";
-import { PositionFactory } from "../../PositionFactory";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
 
@@ -27,7 +26,7 @@ export class IfParselet extends PrefixParselet {
             }
         }
         return new IfStatement(
-            PositionFactory.merge(ifToken.position, alternate?.position ?? test.position),
+            ifToken.location.merge(alternate?.location ?? test.location),
             test as Expression,
             consequent,
             alternate as Expression,

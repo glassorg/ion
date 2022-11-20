@@ -4,9 +4,9 @@ import { BlockStatement } from "../ast/BlockStatement";
 import { Declaration } from "../ast/Declaration";
 import { Expression } from "../ast/Expression";
 import { PstModule } from "../ast/PstModule";
+import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
 import { Token } from "../ast/Token";
-import { PositionFactory } from "../PositionFactory";
 import { SemanticError } from "../SemanticError";
 import { Tokenizer } from "../tokenizer/Tokenizer";
 import { TokenName, TokenNames, TokenTypes } from "../tokenizer/TokenTypes";
@@ -22,11 +22,10 @@ export class Parser {
     constructor(
         public readonly prefixParselets: { [key in TokenName]?: PrefixParselet },
         public readonly infixParselets: { [key in TokenName]?: InfixParselet },
-        public readonly positionFactory: PositionFactory = new PositionFactory(),
     ) {
         this.prefixParselets = prefixParselets;
         this.infixParselets = infixParselets;
-        this.tokenizer = new Tokenizer(TokenTypes, positionFactory);
+        this.tokenizer = new Tokenizer(TokenTypes);
     }
 
     maybeConsume(tokenType?: string, value?: any): Token | undefined
@@ -65,7 +64,7 @@ export class Parser {
         }
         if (value !== undefined && token.value !== value) {
             if (required) {
-                throw new SemanticError(`Expected: ${value}`, token.position);
+                throw new SemanticError(`Expected: ${value}`, token.location);
             }
             else {
                 return null;
@@ -113,13 +112,13 @@ export class Parser {
         }
 
         if (!this.done()) {
-            throw new SemanticError(`Expected EOL or EOF`, this.peek()?.position);
+            throw new SemanticError(`Expected EOL or EOF`, this.peek()?.location);
         }
 
         return new PstModule(
             statements.length > 0
-                ? PositionFactory.merge(statements[0].position, statements[statements.length - 1].position)
-                : this.positionFactory.create(filename, 0, 0, 0),
+                ? SourceLocation.merge(statements[0].location, statements[statements.length - 1].location)
+                : new SourceLocation(filename, 0, 0, 0, 0, 0, 0),
             filename,
             statements,
         )
@@ -149,7 +148,7 @@ export class Parser {
         }
 
         return new BlockStatement(
-            PositionFactory.merge(indent.position, outdent!.position),
+            indent.location.merge(outdent?.location),
             nodes as Statement[],
         )
     }
@@ -164,7 +163,7 @@ export class Parser {
             this.maybeConsume(TokenNames.Comment);
         }
         if (count < min) {
-            throw new SemanticError(`Expected EOL`, this.peek()!.position);
+            throw new SemanticError(`Expected EOL`, this.peek()!.location);
         }
         return count;
     }

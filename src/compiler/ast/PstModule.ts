@@ -1,15 +1,15 @@
-import { Position } from "../PositionFactory";
 import { AstNode } from "./AstNode";
 import { Declaration } from "./Declaration";
+import { SourceLocation } from "./SourceLocation";
 
 export class PstModule extends AstNode {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly name: string,
-        public readonly statements: Declaration[],
+        public readonly declarations: Declaration[],
     ){
-        super(position);
+        super(location);
     }
 
 }

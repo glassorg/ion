@@ -1,17 +1,17 @@
-import { Position } from "../PositionFactory";
 import { AbstractTypeDeclaration } from "./AbstractTypeDeclaration";
 import { Declarator } from "./Declarator";
 import { FieldDeclaration } from "./FieldDeclaration";
+import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
 
 export class StructDeclaration extends AbstractTypeDeclaration {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         id: Declarator,
         public readonly fields: FieldDeclaration[]
     ){
-        super(position, id);
+        super(location, id);
     }
 
     get type(): TypeExpression {

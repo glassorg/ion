@@ -1,13 +1,17 @@
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class Literal<T> extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly value: T,
     ){
-        super(position);
+        super(location);
+    }
+
+    toString() {
+        return JSON.stringify(this.value);
     }
 
 }

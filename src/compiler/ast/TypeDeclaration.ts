@@ -1,16 +1,16 @@
-import { Position } from "../PositionFactory";
 import { AbstractTypeDeclaration } from "./AbstractTypeDeclaration";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class TypeDeclaration extends AbstractTypeDeclaration {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         id: Declarator,
         public readonly type: Expression
     ) {
-        super(position, id);
+        super(location, id);
     }
 
 }

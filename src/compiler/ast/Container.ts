@@ -1,13 +1,13 @@
-import { Position } from "../PositionFactory";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class Container<T extends Expression> extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly nodes: T[],
     ){
-        super(position);
+        super(location);
     }
 
 }

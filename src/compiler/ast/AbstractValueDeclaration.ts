@@ -1,7 +1,6 @@
-import { Position, PositionFactory } from "../PositionFactory";
-import { TokenNames } from "../tokenizer/TokenTypes";
 import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
+import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
 
 /**
@@ -10,20 +9,11 @@ import { TypeExpression } from "./TypeExpression";
 export abstract class AbstractValueDeclaration extends Declaration {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         id: Declarator,
         public readonly valueType: TypeExpression | null,
     ) {
-        super(position, id);
-    }
-
-    getVarTokenPosition(): Position | null {
-        let ths = PositionFactory.toObject(this.position);
-        let id = PositionFactory.toObject(this.id.position);
-        if (ths.line == id.line && ths.column == id.column) {
-            return null;
-        }
-        return PositionFactory.create(ths.fileId, ths.line, ths.column, TokenNames.Var.length);
+        super(location, id);
     }
 
 }

@@ -1,16 +1,20 @@
-import { Position } from "../PositionFactory";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
 import { ParameterDeclaration } from "./ParameterDeclaration";
+import { SourceLocation } from "./SourceLocation";
 
 export class FunctionExpression extends Expression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
     ) {
-        super(position);
+        super(location);
+    }
+
+    toString() {
+        return `(${this.parameters.join(", ")}) => ${this.body}`;
     }
 
 }

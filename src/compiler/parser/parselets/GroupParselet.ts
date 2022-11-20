@@ -1,7 +1,6 @@
 import { Expression } from "../../ast/Expression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Token } from "../../ast/Token";
-import { PositionFactory } from "../../PositionFactory";
 import { TokenName } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixOperatorParselet } from "./PrefixOperatorParselet";
@@ -24,9 +23,9 @@ export class GroupParselet extends PrefixOperatorParselet {
             value = this.parseArgument(p, open, 0) as Expression;
         }
         let close = p.consume(this.closeToken);
-        let last = close.position;
+        let last = close.location;
         return new PstGroup(
-            PositionFactory.merge(open.position, last),
+            open.location.merge(last),
             open,
             close,
             value,

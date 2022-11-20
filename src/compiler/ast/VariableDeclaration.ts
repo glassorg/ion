@@ -1,28 +1,31 @@
-import { Position, PositionFactory } from "../PositionFactory";
-import { TokenNames } from "../tokenizer/TokenTypes";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
 import { AbstractValueDeclaration } from "./AbstractValueDeclaration";
 import { TypeExpression } from "./TypeExpression";
+import { SourceLocation } from "./SourceLocation";
 
 export class VariableDeclaration extends AbstractValueDeclaration {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         id: Declarator,
         valueType: TypeExpression | null,
         public readonly defaultValue: Expression | null,
     ){
-        super(position, id, valueType);
+        super(location, id, valueType);
     }
 
-    getVarTokenPosition(): Position | null {
-        let ths = PositionFactory.toObject(this.position);
-        let id = PositionFactory.toObject(this.id.position);
-        if (ths.line == id.line && ths.column == id.column) {
-            return null;
+    toString() {
+        if (this.valueType) {
+            if (this.defaultValue) {
+                return `var ${this.id}: ${this.valueType} = ${this.defaultValue}`;
+            }
+            return `var ${this.id}: ${this.valueType}`;
         }
-        return PositionFactory.create(ths.fileId, ths.line, ths.column, TokenNames.Var.length);
+        else if (this.defaultValue) {
+            return `var ${this.id} := ${this.defaultValue}`;
+        }
+        return `var ${this.id}`;
     }
 
 }

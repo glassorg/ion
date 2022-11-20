@@ -1,7 +1,6 @@
 import { AstNode } from "../../ast/AstNode";
 import { Declarator } from "../../ast/Declarator";
 import { Token } from "../../ast/Token";
-import { PositionFactory } from "../../PositionFactory";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
@@ -23,11 +22,12 @@ export class FunctionParselet extends PrefixParselet {
             if (!(p instanceof VariableDeclaration)) {
                 throw new SemanticError(`Expected parameter declaration`, p);
             }
-            let varTokenPosition = p.getVarTokenPosition();
-            if (varTokenPosition){
-                throw new SemanticError(`var token not allowed`, varTokenPosition);
-            }
-            return new ParameterDeclaration(p.position, p.id, p.valueType, p.defaultValue)
+            // TODO: Check for var which shouldn't be there.
+            // let varTokenPosition = p.getVarTokenPosition();
+            // if (varTokenPosition){
+            //     throw new SemanticError(`var token not allowed`, varTokenPosition);
+            // }
+            return new ParameterDeclaration(p.location, p.id, p.valueType, p.defaultValue)
         });
         p.consume(TokenNames.CloseParen);
         p.whitespace();
@@ -36,15 +36,15 @@ export class FunctionParselet extends PrefixParselet {
         let block = p.maybeParseBlock();
         if (block == null) {
             let value = p.parseInlineExpression();
-            block = new BlockStatement(value.position, [
-                new ReturnStatement(value.position, value)
+            block = new BlockStatement(value.location, [
+                new ReturnStatement(value.location, value)
             ]);
         }
-        let position = PositionFactory.merge(functionToken.position, block.position);
+        let location = functionToken.location.merge(block.location);
         return new FunctionDeclaration(
-            position,
-            new Declarator(id.position, id.value),
-            new FunctionExpression(position, parameters, block)
+            location,
+            new Declarator(id.location, id.value),
+            new FunctionExpression(location, parameters, block)
         )
     }
 

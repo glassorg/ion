@@ -4,7 +4,6 @@ import { Expression } from "../../ast/Expression";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
 import { TokenName } from "../../tokenizer/TokenTypes";
-import { PositionFactory } from "../../PositionFactory";
 import { IndexExpression } from "../../ast/IndexExpression";
 
 export class MemberParselet extends BinaryExpressionParselet {
@@ -21,7 +20,7 @@ export class MemberParselet extends BinaryExpressionParselet {
         let property = p.parseExpression(0);
         let close = p.consume(this.closeTokenType);
         return new IndexExpression(
-            PositionFactory.merge(object.position, close.position),
+            object.location.merge(close.location),
             object,
             property,
         );

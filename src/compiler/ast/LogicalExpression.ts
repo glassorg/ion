@@ -1,17 +1,17 @@
 import { LogicalOperator } from "../Operators";
-import { Position } from "../PositionFactory";
 import { BinaryExpression } from "./BinaryExpression";
 import { Expression } from "./Expression";
+import { SourceLocation } from "./SourceLocation";
 
 export class LogicalExpression extends BinaryExpression {
 
     constructor(
-        position: Position,
+        location: SourceLocation,
         left: Expression,
         operator: LogicalOperator,
         right: Expression
     ){
-        super(position, left, operator, right);
+        super(location, left, operator, right);
     }
 
 }
