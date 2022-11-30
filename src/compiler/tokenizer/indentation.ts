@@ -46,7 +46,7 @@ function calculateDentation(lines: Token[][]): Token[] {
         else if (dents < depth) {
             //  insert Outdents
             for (let i = 0; i < (depth - dents); i++) {
-                let dent = line[dents];
+                let dent = line[dents] ?? line[line.length - 1];
                 tokens.push(new Token(
                     dent.location,
                     TokenNames.Outdent,

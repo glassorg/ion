@@ -1,70 +1,120 @@
 import { Declaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
-import { FileSystem, Path } from "./filesystem/FileSystem";
+import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
-import { getAbsolutePath } from "./common/pathFunctions";
-import { semanticAnalysisSolo } from "./phases/semanticAnalysisSolo";
 import { SemanticError } from "./SemanticError";
+import { createGraphOperation, GraphExecutor, GraphOutputType } from "@glas/graph";
+import { getAbsolutePath } from "./common/pathFunctions";
 
 type Filename = string;
 type AbsoluteName = string;
 
+export interface CompilerOptions {
+    debugPattern?: RegExp;
+}
+
+type DeclarationMap = { [name: AbsoluteName]: Declaration };
+
+type CompilerGraphFunctions = ReturnType<typeof Compiler.prototype.createGraphFunctions>;
+
 export class Compiler {
 
     private readonly parser = createParser();
-    private readonly logger = createLogger("foo.bar.y", "foo.bar.max");
-
+    private readonly filePattern = /\.ion$/;
+    private readonly graph: GraphExecutor<CompilerGraphFunctions>;
+    
     constructor(
         public readonly fileSystem: FileSystem,
-        public readonly filePattern = /\.ion$/,
+        options: CompilerOptions = {},
+        private readonly logger = createLogger(options.debugPattern)
     ) {
+        this.graph = new GraphExecutor(this.createGraphFunctions());
     }
 
-    private readonly fileToDeclarationsCache = new Map<Filename,Declaration[]>();
-    getDeclarationsFromFile(path: Path): Declaration[] {
-        if (!this.fileSystem.exists(path)) {
-            throw new Error(`File does not exist: ${path}`);
+    createGraphFunctions() {
+        const functions_0 = {
+            getAllSourceFilenames: async () => {
+                return await this.fileSystem.find(this.filePattern);
+            },
+            readFile: async (filename: string): Promise<string | null> => {
+                return await this.fileSystem.read(filename);
+            },
+            parse: async (filename: string, source: string | null): Promise<Declaration[]> => {
+                if (typeof source === "string") {
+                    const mod = this.parser.parseModule(filename, source);
+                    //         this.logger("parsed", declaration, absolutePath);
+
+                    return mod.declarations;
+                }
+                return [];
+            },
+            mergeAllDeclarations: async (...moduleDeclarations: Declaration[][]): Promise<DeclarationMap> => {
+                // maybe use the filename of the source to get the real absolute id.
+                // console.log(moduleDeclarations);
+                let result = Object.fromEntries(moduleDeclarations.flat(1).map(d => [getAbsolutePath(d.location.filename, d.id.name), d]));
+                console.log(Object.keys(result));
+                return result;
+            }
+        };
+        const functions_1 = {
+            ...functions_0,
+            getAllDeclarationsFromFilenames: async (filenames: string[]) => {
+                return createGraphOperation<typeof functions_0, "mergeAllDeclarations">(
+                    "mergeAllDeclarations",
+                    ...filenames.map(filename => {
+                        return createGraphOperation<typeof functions_0, "parse">("parse", filename, createGraphOperation<typeof functions_0, "readFile">("readFile", filename));
+                    })
+                );
+            },
         }
-        let source = this.fileSystem.read(path);
-        let cacheKey = path + source;
-        let declarations = this.fileToDeclarationsCache.get(cacheKey);
-        if (!declarations) {
-            declarations = this.parser.parseModule(path, source).declarations;
-            this.fileToDeclarationsCache.set(cacheKey, declarations);
-        }
-        return declarations;
-    }
-
-    private getAllSourceFilenames() {
-        return this.fileSystem.find(this.filePattern);
-    }
-
-    // private getAllSources(): Map<Filename, Source> {
-    //     // return this.getAllSourceFilenames().map(filename => [filename, this.fileSystem.read()])
-    // }
-
-    private readonly declarations = new Map<AbsoluteName, Declaration>();
-
-    compileAllFiles(): SemanticError[] {
-        let errors: SemanticError[] = [];
-        for (let file of this.getAllSourceFilenames()) {
-            for (let declaration of this.getDeclarationsFromFile(file)) {
-                let absolutePath = getAbsolutePath(file, declaration.id.name);
-                this.logger("parsed", declaration, absolutePath);
-                let [semanticDeclaration, semanticErrors] = semanticAnalysisSolo(declaration);
-                errors.push(...semanticErrors);
-                this.logger("semantic", semanticDeclaration, absolutePath);
-
-                //  resolve the full path to this declaration
-                //  semantically analyze this file and then find dependencies
+        return {
+            ...functions_1,
+            getAllDeclarations: async () => {
+                return createGraphOperation<typeof functions_1, "getAllDeclarationsFromFilenames">(
+                    "getAllDeclarationsFromFilenames",
+                    createGraphOperation<typeof functions_1, "getAllSourceFilenames">("getAllSourceFilenames")
+                );
+            },
+            compileAllDeclarations: async () => {
+                throw new Error("Stuff");
             }
         }
-        this.logger();
-        return errors;
     }
 
-    toConsoleMessage(error: SemanticError) {
-        return error.toString((filename) => this.fileSystem.read(filename));
+    async compileAllFiles(): Promise<SemanticError[]> {
+        this.graph.create("getAllDeclarations");
+        try {
+            await this.graph.execute();
+        }
+        catch (e) {
+            console.log("COMPILER ERROR", e);
+            return [e as SemanticError].flat();
+        }
+        finally {
+            // now traverse the graph and find all errors.
+            console.log("final logger");
+            this.logger();
+        }
+        return [];
+
+        // for (let file of this.getAllSourceFilenames()) {
+        //     for (let declaration of this.getDeclarationsFromFile(file)) {
+        //         let absolutePath = getAbsolutePath(file, declaration.id.name);
+        //         this.logger("parsed", declaration, absolutePath);
+        //         let [semanticDeclaration, semanticErrors] = semanticAnalysisSolo(declaration);
+        //         errors.push(...semanticErrors);
+        //         // this.logger("semantic", semanticDeclaration, absolutePath);
+        //         let [externals, externalErrors] = getExternalReferences(declaration);
+        //         errors.push(...externalErrors);
+        //         console.log({ absolutePath, externals });
+        //         //  now we know externals names.
+        //         //  we can determine all possible named external paths in order to make things dirty on changes.
+        //     }
+        // }
+    }
+
+    async toConsoleMessage(error: SemanticError) {
+        return error.toConsoleString(async (filename) => await this.fileSystem.read(filename) ?? "");
     }
 
     //  1. Parse Declarations from File
@@ -73,3 +123,6 @@ export class Compiler {
     //  4. All Declarations completely compiled in order of dependencies.
 
 }
+
+
+

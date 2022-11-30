@@ -1,9 +1,10 @@
 import { Expression } from "./Expression";
 import { ExpressionStatement } from "./ExpressionStatement";
+import { Scope } from "./Scope";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
 
-export class BlockStatement extends Statement {
+export class BlockStatement extends Statement implements Scope {
 
     public readonly statements: Statement[];
 
@@ -13,6 +14,10 @@ export class BlockStatement extends Statement {
     ) {
         super(location);
         this.statements = statements.map(node => node instanceof Statement ? node : new ExpressionStatement(node.location, node));
+    }
+
+    get isScope(): true {
+        return true;
     }
 
     toString() {

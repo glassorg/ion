@@ -28,6 +28,10 @@ export class AstNode extends Immutable {
         return { ...rest };
     }
 
+    toString() {
+        return super.toString();
+    }
+
     toBlockString(nodes: AstNode[], open = "{", close = "}", indent = '    ') {
         if (nodes == null || nodes.length === 0) {
             return `${open}${close}`;

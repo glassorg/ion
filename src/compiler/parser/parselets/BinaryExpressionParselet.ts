@@ -11,6 +11,7 @@ import { Identifier } from "../../ast/Identifier";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { Declarator } from "../../ast/Declarator";
 import { createBinaryExpression } from "../../ast";
+import { toTypeExpression } from "../../ast/TypeExpression";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -33,7 +34,7 @@ export class BinaryExpressionParselet extends InfixParselet {
             if (!(left instanceof Reference)) {
                 throw new SemanticError(`Expected Identifier`, left);
             }    
-            return new VariableDeclaration(location, new Declarator(left.location, left.name), right, null);
+            return new VariableDeclaration(location, new Declarator(left.location, left.name), toTypeExpression(right), null);
         }
         if (operator === ".") {
             if (!(right instanceof Reference)) {

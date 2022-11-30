@@ -3,7 +3,7 @@ import { VariableDeclaration } from "../ast/VariableDeclaration";
 import { SemanticError } from "../SemanticError";
 
 export function semanticAnalysisSolo(declaration: Declaration): [Declaration, SemanticError[]] {
-    const errors: SemanticError[] = [];
+    let errors: SemanticError[] = [];
     if (!(declaration instanceof Declaration)) {
         errors.push(new SemanticError(`Expected Declaration`, declaration));
     }

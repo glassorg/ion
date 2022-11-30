@@ -2,6 +2,7 @@ import { Content, FileSystem, Path } from "./FileSystem";
 import * as np from "path";
 import * as fileUtility from "./fileUtility";
 
+//  TODO: Make this actually use the async file functions.
 export abstract class NodeFileSystem extends FileSystem {
 
     constructor(
@@ -14,19 +15,19 @@ export abstract class NodeFileSystem extends FileSystem {
         return np.join(this.root, path);
     }
 
-    exists(path: Path): boolean {
+    async exists(path: Path): Promise<boolean> {
         return fileUtility.exists(this.toAbsolute(path));
     }
 
-    read(path: Path): Content {
+    async read(path: Path): Promise<Content> {
         return fileUtility.read(this.toAbsolute(path));
     }
 
-    write(path: Path, content: Content): void {
+    async write(path: Path, content: Content): Promise<void> {
         return fileUtility.write(this.toAbsolute(path), content);
     }
 
-    find(pattern: RegExp): Path[] {
+    async find(pattern: RegExp): Promise<Path[]> {
         return fileUtility.getFilesRecursive(this.root, pattern);
     }
 

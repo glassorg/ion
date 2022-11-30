@@ -9,15 +9,17 @@ let fs = new MemoryFileSystem({
     "bar.ion": "bar ion",
 })
 
-assert(fs.exists("foo.txt"));
-assert(!fs.exists("bar"));
+export async function test() {
+    assert(await fs.exists("foo.txt"));
+    assert(!await fs.exists("bar"));
+    assert.deepEqual(await fs.find(/\.txt$/), ["foo.txt", "bar.txt", "foo/bar/fuz.txt"]);
+    await fs.write("new/file/alpha.txt", "alpha here");
 
-assert.deepEqual(fs.find(/\.txt$/), ["foo.txt", "bar.txt", "foo/bar/fuz.txt"]);
+    assert.deepEqual(await fs.read("new/file/alpha.txt"), "alpha here");
 
-fs.write("new/file/alpha.txt", "alpha here");
-assert.deepEqual(fs.read("new/file/alpha.txt"), "alpha here");
+    assert.deepEqual(await fs.find(/\.txt$/), ["foo.txt", "bar.txt", "foo/bar/fuz.txt", "new/file/alpha.txt"]);
 
-assert.deepEqual(fs.find(/\.txt$/), ["foo.txt", "bar.txt", "foo/bar/fuz.txt", "new/file/alpha.txt"]);
+    assert.deepEqual(await fs.find(/\.ion$/), ["foo.ion", "bar.ion"]);
+}
 
-assert.deepEqual(fs.find(/\.ion$/), ["foo.ion", "bar.ion"]);
 

@@ -105,6 +105,9 @@ export class Parser {
             this.whitespace();
             let statement = this.parseStatement();
             if (!(statement instanceof Declaration)) {
+                if (statement instanceof BlockStatement) {
+                    throw new SemanticError(`BlockStatement found in module scope, did you accidentally indent?`, statement);
+                }
                 throw new SemanticError(`Only declarations are allowed within the module scope`, statement);
             }
             statements.push(statement);

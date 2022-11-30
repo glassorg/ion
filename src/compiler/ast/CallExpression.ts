@@ -24,4 +24,8 @@ export class CallExpression extends Expression {
         }
     }
 
+    toString() {
+        return `${this.callee}(${this.args.join(", ")})`;
+    }
+
 }

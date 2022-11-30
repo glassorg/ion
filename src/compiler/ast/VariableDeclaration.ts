@@ -15,17 +15,21 @@ export class VariableDeclaration extends AbstractValueDeclaration {
         super(location, id, valueType);
     }
 
+    get keyword() {
+        return `var`;
+    }
+
     toString() {
         if (this.valueType) {
             if (this.defaultValue) {
-                return `var ${this.id}: ${this.valueType} = ${this.defaultValue}`;
+                return `${this.keyword} ${this.id}: ${this.valueType} = ${this.defaultValue}`;
             }
-            return `var ${this.id}: ${this.valueType}`;
+            return `${this.keyword} ${this.id}: ${this.valueType}`;
         }
         else if (this.defaultValue) {
-            return `var ${this.id} := ${this.defaultValue}`;
+            return `${this.keyword} ${this.id} := ${this.defaultValue}`;
         }
-        return `var ${this.id}`;
+        return `${this.keyword} ${this.id}`;
     }
 
 }

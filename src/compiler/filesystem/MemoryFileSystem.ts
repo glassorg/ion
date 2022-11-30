@@ -9,19 +9,19 @@ export class MemoryFileSystem extends FileSystem {
         super();
     }
 
-    exists(path: Path): boolean {
+    async exists(path: Path): Promise<boolean> {
         return this.files[path] != null;
     }
 
-    read(path: Path): Content {
+    async read(path: Path): Promise<Content> {
         return this.files[path];
     }
 
-    write(path: Path, content: Content): void {
+    async write(path: Path, content: Content): Promise<void> {
         this.files[path] = content;
     }
 
-    find(pattern: RegExp): Path[] {
+    async find(pattern: RegExp): Promise<Path[]> {
         return Object.keys(this.files).filter(path => pattern.test(path));
     }
 
