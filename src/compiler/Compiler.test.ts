@@ -42,10 +42,10 @@ function min(a: Number | String, b: Number) =>
         return b
 `, true);
 
-await testCompile(`
-let a = 1
-let b = a + 1
-`, true);
+// await testCompile(`
+// let a = 1
+// let b = a + 1
+// `, true);
 
 }
 

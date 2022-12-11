@@ -1,21 +1,18 @@
-import { Declaration } from "./ast/Declaration";
+import { AnalyzedDeclaration, ParsedDeclaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
 import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
 import { SemanticError } from "./SemanticError";
-import { createGraphOperation, GraphExecutor, GraphOutputType } from "@glas/graph";
+import { createGraphFunctions, GraphExecutor } from "@glas/graph";
 import { getAbsolutePath } from "./common/pathFunctions";
-
-type Filename = string;
-type AbsoluteName = string;
+import * as phases from "./phases/index";
 
 export interface CompilerOptions {
     debugPattern?: RegExp;
 }
 
-type DeclarationMap = { [name: AbsoluteName]: Declaration };
-
-type CompilerGraphFunctions = ReturnType<typeof Compiler.prototype.createGraphFunctions>;
+type ObjectMap<T> = { [name: string]: T };
+type CompilerGraphFunctions = ReturnType<typeof Compiler.prototype.createCompilerGraphFunctions>;
 
 export class Compiler {
 
@@ -28,61 +25,105 @@ export class Compiler {
         options: CompilerOptions = {},
         private readonly logger = createLogger(options.debugPattern)
     ) {
-        this.graph = new GraphExecutor(this.createGraphFunctions());
+        this.graph = new GraphExecutor(this.createCompilerGraphFunctions());
     }
 
-    createGraphFunctions() {
-        const functions_0 = {
-            getAllSourceFilenames: async () => {
-                return await this.fileSystem.find(this.filePattern);
-            },
-            readFile: async (filename: string): Promise<string | null> => {
-                return await this.fileSystem.read(filename);
-            },
-            parse: async (filename: string, source: string | null): Promise<Declaration[]> => {
+    /**
+     * Returns a function signature with the same arguments but wrapped in a logger call.
+     */
+    wrapWithLogs<P extends unknown[], T>(func: (root: ParsedDeclaration, ... params: P) => Promise<T>): (root: ParsedDeclaration, ... params: P) => Promise<T>{
+        return async (root, ...args: P) => {
+            const result = await func(root, ...args);
+            this.logger(func.name, result as any, root.absolutePath);
+            return result;
+        }
+    }
+
+    createCompilerGraphFunctions() {
+        return createGraphFunctions<{
+            semanticAnalysisSolo(root: ParsedDeclaration): AnalyzedDeclaration,
+            getPossibleExternalReferences(root?: ParsedDeclaration): string[],
+            getAllSourceFilenames(): string[],
+            getValueFromMap<T>(map: ObjectMap<ParsedDeclaration>, name: string): ParsedDeclaration | undefined,
+            readFile(filename: string): string | null,
+            parse(filename: string, source: string | null): ParsedDeclaration[],
+            mergeAllDeclarations(...moduleDeclarations: ParsedDeclaration[][]): ObjectMap<ParsedDeclaration>,
+            finalizeCompilation(...declarations: (ParsedDeclaration | undefined)[]): void,
+            compileDeclaration(soloDeclaration?: ParsedDeclaration): ParsedDeclaration | undefined,
+            getAllSoloDeclarationsFromFilenames(filenames: string[]): ObjectMap<ParsedDeclaration>,
+            getAllSoloDeclarations(): ObjectMap<ParsedDeclaration>,
+            compileDeclarations(declarations: ObjectMap<ParsedDeclaration>): void,
+            getSoloDeclaration(absolutePath: string): ParsedDeclaration | undefined,
+            getCompiledDeclaration(absolutePath: string): ParsedDeclaration | undefined,
+            compileAllSoloDeclarations(): void,
+            getPossibleExternalReferencesByAbsolutePath(absolutePath: string): string[],
+            compileDeclarationWithExternalPaths(declaration: ParsedDeclaration, externalPaths: string[]): ParsedDeclaration,
+            compileDeclarationWithExternalDeclarations(declaration: ParsedDeclaration, ...externalDeclarations: (ParsedDeclaration | undefined)[]): ParsedDeclaration,
+        }>(op => ({
+            semanticAnalysisSolo: this.wrapWithLogs(phases.semanticAnalysisSolo),
+            getPossibleExternalReferences: phases.getPossibleExternalReferences,
+            getAllSourceFilenames: async () => await this.fileSystem.find(this.filePattern),
+            getValueFromMap: async (map, name) => map[name],
+            readFile: async (filename) => await this.fileSystem.read(filename),
+            parse: async (filename, source) => {
                 if (typeof source === "string") {
                     const mod = this.parser.parseModule(filename, source);
-                    //         this.logger("parsed", declaration, absolutePath);
-
-                    return mod.declarations;
+                    return mod.declarations.map(d => d.patch({ absolutePath: getAbsolutePath(d.location.filename, d.id.name) }));
                 }
                 return [];
             },
-            mergeAllDeclarations: async (...moduleDeclarations: Declaration[][]): Promise<DeclarationMap> => {
-                // maybe use the filename of the source to get the real absolute id.
-                // console.log(moduleDeclarations);
-                let result = Object.fromEntries(moduleDeclarations.flat(1).map(d => [getAbsolutePath(d.location.filename, d.id.name), d]));
-                console.log(Object.keys(result));
+            mergeAllDeclarations: async (...moduleDeclarations) => {
+                let result = Object.fromEntries(moduleDeclarations.flat(1).map(d => [d.absolutePath, d]));
+                // should likely check and throw errors if there are any collisions.
+                // console.log(Object.keys(result));
                 return result;
-            }
-        };
-        const functions_1 = {
-            ...functions_0,
-            getAllDeclarationsFromFilenames: async (filenames: string[]) => {
-                return createGraphOperation<typeof functions_0, "mergeAllDeclarations">(
+            },
+            finalizeCompilation: async (...declarations) => {
+                console.log("!!!!!!! finalizeCompilation");
+            },
+            getCompiledDeclaration: async (absolutePath: string) => {
+                return op("compileDeclaration", op("getSoloDeclaration", absolutePath))
+            },
+            getAllSoloDeclarationsFromFilenames: async (filenames: string[]) => {
+                return op(
                     "mergeAllDeclarations",
-                    ...filenames.map(filename => {
-                        return createGraphOperation<typeof functions_0, "parse">("parse", filename, createGraphOperation<typeof functions_0, "readFile">("readFile", filename));
-                    })
+                    ...filenames.map(filename => op("parse", filename, op("readFile", filename)))
                 );
             },
-        }
-        return {
-            ...functions_1,
-            getAllDeclarations: async () => {
-                return createGraphOperation<typeof functions_1, "getAllDeclarationsFromFilenames">(
-                    "getAllDeclarationsFromFilenames",
-                    createGraphOperation<typeof functions_1, "getAllSourceFilenames">("getAllSourceFilenames")
+            compileDeclaration: async (soloDeclaration) => {
+                if (!soloDeclaration) {
+                    return undefined;
+                }
+                return op("compileDeclarationWithExternalPaths", soloDeclaration, op("getPossibleExternalReferences", soloDeclaration));
+            },
+            compileDeclarationWithExternalPaths: async (declaration, externals) => {
+                return op("compileDeclarationWithExternalDeclarations",
+                    op("semanticAnalysisSolo", declaration),
+                    ...externals.map(external => op("getCompiledDeclaration", external))
                 );
             },
-            compileAllDeclarations: async () => {
-                throw new Error("Stuff");
-            }
-        }
+            compileDeclarationWithExternalDeclarations: async (declaration, ...externalDeclarations) => {
+                return declaration;
+            },
+            getAllSoloDeclarations: async () => op("getAllSoloDeclarationsFromFilenames", op("getAllSourceFilenames")),
+            compileDeclarations: async (declarations: ObjectMap<ParsedDeclaration>) => {
+                let compileOperations = Object.values(declarations).map((declaration) => {
+                    return op("compileDeclaration", declaration);
+                });
+                return op("finalizeCompilation", ...compileOperations);
+            },
+            getSoloDeclaration: async (absolutePath: string) => {
+                return op("getValueFromMap", op("getAllSoloDeclarations"), absolutePath );
+            },
+            compileAllSoloDeclarations: async () => op("compileDeclarations", op("getAllSoloDeclarations")),
+            getPossibleExternalReferencesByAbsolutePath: async (absolutePath: string) => {
+                return op("getPossibleExternalReferences", op("getSoloDeclaration", absolutePath));
+            },
+        }));
     }
 
     async compileAllFiles(): Promise<SemanticError[]> {
-        this.graph.create("getAllDeclarations");
+        this.graph.create("compileAllSoloDeclarations");
         try {
             await this.graph.execute();
         }
@@ -99,9 +140,6 @@ export class Compiler {
 
         // for (let file of this.getAllSourceFilenames()) {
         //     for (let declaration of this.getDeclarationsFromFile(file)) {
-        //         let absolutePath = getAbsolutePath(file, declaration.id.name);
-        //         this.logger("parsed", declaration, absolutePath);
-        //         let [semanticDeclaration, semanticErrors] = semanticAnalysisSolo(declaration);
         //         errors.push(...semanticErrors);
         //         // this.logger("semantic", semanticDeclaration, absolutePath);
         //         let [externals, externalErrors] = getExternalReferences(declaration);

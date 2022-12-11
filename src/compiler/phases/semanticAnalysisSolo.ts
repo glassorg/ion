@@ -1,8 +1,8 @@
-import { Declaration } from "../ast/Declaration";
+import { Declaration, DeclarationPhase, AnalyzedDeclaration, ParsedDeclaration } from "../ast/Declaration";
 import { VariableDeclaration } from "../ast/VariableDeclaration";
 import { SemanticError } from "../SemanticError";
 
-export function semanticAnalysisSolo(declaration: Declaration): [Declaration, SemanticError[]] {
+export async function semanticAnalysisSolo(declaration: ParsedDeclaration): Promise<AnalyzedDeclaration> {
     let errors: SemanticError[] = [];
     if (!(declaration instanceof Declaration)) {
         errors.push(new SemanticError(`Expected Declaration`, declaration));
@@ -10,6 +10,8 @@ export function semanticAnalysisSolo(declaration: Declaration): [Declaration, Se
     if (declaration instanceof VariableDeclaration) {
         errors.push(new SemanticError(`Cannot declare variables in the module root. Did you mean to define a constant with 'let'?`, declaration));
     }
-
-    return [declaration, errors];
+    if (errors.length > 0) {
+        throw errors;
+    }
+    return declaration.patch({ phase: DeclarationPhase.analyzed });
 }

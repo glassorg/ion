@@ -1,11 +1,11 @@
 
-const root = ":";
+// const root = ":";
 const separator = ".";
 const splitter = /[\.\/\\]/;
 
-export function isAbsolutePath(path: string) {
-    return path.startsWith(root);
-}
+// export function isAbsolutePath(path: string) {
+//     return path.startsWith(root);
+// }
 
 export function getAbsolutePath(filename: string, id: string) {
     let basePath = filename.split(splitter).slice(0, -1);
@@ -13,5 +13,13 @@ export function getAbsolutePath(filename: string, id: string) {
     if (last !== id) {
         basePath.push(id);
     }
-    return basePath.join(separator);
+    return joinPath(...basePath);
+}
+
+export function splitPath(path: string) {
+    return path.split(separator);
+}
+
+export function joinPath(...steps: string[]) {
+    return steps.join(separator);
 }
