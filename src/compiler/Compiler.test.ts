@@ -34,18 +34,18 @@ export async function test() {
 // var y: Number = 2
 // `, 1, 0, 1, 17);
 
-await testCompile(`
-function min(a: Number | String, b: Number) =>
-    if a < b
-        return a
-    else
-        return b
-`, true);
-
 // await testCompile(`
-// let a = 1
-// let b = a + 1
+// function min(a: Number | String, b: Number) =>
+//     if a < b
+//         return a
+//     else
+//         return b
 // `, true);
+
+await testCompile(`
+let a = 1
+let b = a + 1
+`, true);
 
 }
 

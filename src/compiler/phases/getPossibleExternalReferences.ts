@@ -4,12 +4,15 @@ import { joinPath, splitPath } from "../common/pathFunctions";
 import { traverse } from "../common/traverse";
 import { createScopes } from "../createScopes";
 
-export function *getPossiblePaths(fromPath: string, unresolvedName: string) {
+export function getPossiblePaths(fromPath: string, unresolvedName: string): string[] {
+    let paths: string[] = [];
     let basePath = splitPath(fromPath).slice(0, -1);
     while (basePath.length > 0) {
-        yield joinPath(...basePath, unresolvedName);
+        paths.push(joinPath(...basePath, unresolvedName));
+        basePath.pop();
     }
-    return unresolvedName;
+    paths.push(unresolvedName);
+    return paths;
 }
 
 export async function getPossibleExternalReferences(declaration?: ParsedDeclaration): Promise<string[]> {
@@ -30,7 +33,7 @@ export async function getPossibleExternalReferences(declaration?: ParsedDeclarat
             }
         }
     })
-    const result = [...externals].sort().map(external => [...getPossiblePaths(declaration.absolutePath, external)]).flat();
+    const result = [...externals].sort().map(external => getPossiblePaths(declaration.absolutePath, external)).flat();
     console.log({ path: declaration.absolutePath, result })
     return result;
 }

@@ -30,6 +30,6 @@
         "gh-diff-html": "^0.0.3",
         "nodemon": "^2.0.19",
         "npm-run-all": "^4.1.5",
-        "typescript": "^4.5.4"
+        "typescript": "^4.9.4"
     }
 }

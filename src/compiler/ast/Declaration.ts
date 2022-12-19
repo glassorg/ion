@@ -7,32 +7,19 @@ export interface ParsedDeclaration extends Declaration {
 }
 
 export interface AnalyzedDeclaration extends ParsedDeclaration {
-    phase: DeclarationPhase.analyzed;
-}
-
-export interface CompiledDeclaration extends ParsedDeclaration {
-    phase: DeclarationPhase.compiled;
+    possibleExternals: string[];
 }
 
 export function isRootDeclaration(value: unknown): value is ParsedDeclaration {
     return value instanceof Declaration && value.isRoot;
 }
 
-export enum DeclarationPhase {
-    analyzed,
-    compiled,
-}
-
 export abstract class Declaration extends Statement {
 
-    /**
-     * Only set on root module declarations.
-     */
+    //  Only set on root module declarations.
     public readonly absolutePath?: string;
-    /**
-     * Only set on root module declarations.
-     */
-     public readonly phase?: DeclarationPhase;
+    //  Only set on root module declarations.
+    public readonly possibleExternals?: string[];    
 
     constructor(
         location: SourceLocation,
