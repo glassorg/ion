@@ -7,7 +7,7 @@ import { LogicalExpression } from "./LogicalExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 
-export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression) {
+export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
     if (isAssignmentOperator(operator)) {
         if (operator !== "=") {
             right = createBinaryExpression(location, left, operator.slice(0, -1) as InfixOperator, right);
@@ -20,7 +20,7 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     if (isLogicalOperator(operator)) {
         return new LogicalExpression(location, left, operator, right);
     }
-    return new CallExpression(location, new Reference(location, operator), [left, right]);
+    return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }
 
 export function joinExpressions(operator: InfixOperator, expressions: Expression[]) {

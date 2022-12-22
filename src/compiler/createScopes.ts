@@ -15,18 +15,9 @@ export interface Scopes {
  * @param root the ast
  */
 export function createScopes(root: Declaration, externals: Declaration[] = []): Scopes {
-    let globalScope: Scope = {};
+    let globalScope: Scope = Object.fromEntries(externals.map(e => [e.absolutePath, e]));
     let map = new Map<AstNode, Scope>();
     let scopes: Scope[] = [globalScope];
-
-    let addToScope = (declaration: Declaration) => {
-        let scope = scopes[scopes.length - 1];
-        scope[declaration.id.name] = declaration;
-    }
-
-    for (let declaration of externals.values()) {
-        addToScope(declaration);
-    }
 
     traverse(root, {
         enter(node) {
@@ -36,7 +27,8 @@ export function createScopes(root: Declaration, externals: Declaration[] = []): 
             map.set(node, scope);
 
             if (node instanceof Declaration) {
-                addToScope(node);
+                let scope = scopes[scopes.length - 1];
+                scope[node.id.name] = node;
             }
 
             if (isScope(node)) {

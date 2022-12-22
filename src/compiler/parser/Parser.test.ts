@@ -275,6 +275,7 @@ testParseExpression(`var x: Number = 10`, {
         "": "Declarator",
         "name": "x"
     },
+    "meta": [],
     "valueType": {
         "": "ComparisonExpression",
         "left": {
@@ -298,6 +299,7 @@ testParseExpression(`let x = 20`, {
         "": "Declarator",
         "name": "x"
     },
+    "meta": [],
     "value": {
         "": "IntegerLiteral",
         "value": 20
@@ -310,6 +312,7 @@ testParseExpression(`type Foo = Bar | Baz & Buz`, {
         "": "Declarator",
         "name": "Foo"
     },
+    "meta": [],
     "type": {
         "": "LogicalExpression",
         "left": {
@@ -365,7 +368,8 @@ for x in foo
             "id": {
                 "": "Declarator",
                 "name": "x"
-            }
+            },
+            "meta": [],
         },
         {
             "": "BlockStatement",
@@ -405,6 +409,7 @@ testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
         "": "Declarator",
         "name": "add"
     },
+    "meta": [],
     "value": {
         "": "FunctionExpression",
         "parameters": [
@@ -414,6 +419,7 @@ testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
                     "": "Declarator",
                     "name": "x"
                 },
+                "meta": [],
                 "valueType": {
                     "": "ComparisonExpression",
                     "left": {
@@ -436,6 +442,7 @@ testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
                     "": "Declarator",
                     "name": "y"
                 },
+                "meta": [],
                 "valueType": {
                     "": "ComparisonExpression",
                     "left": {
@@ -475,6 +482,7 @@ testParseExpression(
         "": "Declarator",
         "name": "Foo"
     },
+    "meta": [],
     "fields": []
 });
 
@@ -487,6 +495,7 @@ class Foo
         "": "Declarator",
         "name": "Foo"
     },
+    "meta": [],
     "fields": []
 });
 
@@ -502,6 +511,7 @@ class Vector
         "": "Declarator",
         "name": "Vector"
     },
+    "meta": [],
     "fields": [
         {
             "": "FieldDeclaration",
@@ -509,6 +519,7 @@ class Vector
                 "": "Declarator",
                 "name": "x"
             },
+            "meta": [],
             "valueType": {
                 "": "ComparisonExpression",
                 "left": {
@@ -527,6 +538,7 @@ class Vector
                 "": "Declarator",
                 "name": "y"
             },
+            "meta": [],
             "valueType": {
                 "": "ComparisonExpression",
                 "left": {
@@ -545,6 +557,7 @@ class Vector
                 "": "Declarator",
                 "name": "z"
             },
+            "meta": [],
             "valueType": {
                 "": "ComparisonExpression",
                 "left": {
@@ -573,6 +586,7 @@ struct Foo
         "": "Declarator",
         "name": "Foo"
     },
+    "meta": [],
     "fields": []
 });
 
@@ -587,6 +601,7 @@ struct Vector
         "": "Declarator",
         "name": "Vector"
     },
+    "meta": [],
     "fields": [
         {
             "": "FieldDeclaration",
@@ -594,6 +609,7 @@ struct Vector
                 "": "Declarator",
                 "name": "x"
             },
+            "meta": [],
             "valueType": {
                 "": "ComparisonExpression",
                 "left": {
@@ -616,6 +632,7 @@ struct Vector
                 "": "Declarator",
                 "name": "y"
             },
+            "meta": [],
             "valueType": {
                 "": "ComparisonExpression",
                 "left": {

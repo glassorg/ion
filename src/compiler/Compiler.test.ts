@@ -29,22 +29,35 @@ async function testCompile(source: string | Files, debug = false) {
 }
 
 export async function test() {
-// await testCompileError(
-// `
-// var y: Number = 2
-// `, 1, 0, 1, 17);
+await testCompileError(
+`
+var y: Number = 2
+`, 1, 0, 1, 17);
 
-// await testCompile(`
-// function min(a: Number | String, b: Number) =>
-//     if a < b
-//         return a
-//     else
-//         return b
-// `, true);
+await testCompileError(`
+let a = b
+let b = a
+`, 1, 4, 1, 5);
+
+await testCompileError(`
+let a = a
+`, 1, 8, 1, 9);
+
+await testCompile(`
+type Number = 1
+type String = 1
+class @Meta
+@Meta()
+function min(a: Number | String, b: Number) =>
+    if a < b
+        return a
+    else
+        return b
+`);
 
 await testCompile(`
 let a = 1
-let b = a + 1
+let b = a
 `, true);
 
 }

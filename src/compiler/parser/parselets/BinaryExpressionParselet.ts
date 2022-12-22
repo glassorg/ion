@@ -33,7 +33,7 @@ export class BinaryExpressionParselet extends InfixParselet {
         if (operator === ":") {
             if (!(left instanceof Reference)) {
                 throw new SemanticError(`Expected Identifier`, left);
-            }    
+            }
             return new VariableDeclaration(location, new Declarator(left.location, left.name), toTypeExpression(right), null);
         }
         if (operator === ".") {
@@ -50,7 +50,7 @@ export class BinaryExpressionParselet extends InfixParselet {
                 return left.patch({ location, defaultValue: right });
             }
         }
-        return createBinaryExpression(location, left, operator, right);
+        return createBinaryExpression(location, left, operator, right, operatorToken.location);
     }
 
     getPrecedence(token: Token) {

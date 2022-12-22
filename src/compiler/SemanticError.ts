@@ -9,7 +9,7 @@ export class SemanticError extends Error {
     constructor(message: string, ...nodes: (AstNode | SourceLocation | undefined)[]) {
         super(message);
         this.name = this.constructor.name;
-        this.locations = nodes.filter(node => node != null).map(node => node instanceof AstNode ? node.location : node) as SourceLocation[];
+        this.locations = [...new Set(nodes.filter(node => node != null).map(node => node instanceof AstNode ? node.location : node) as SourceLocation[])];
     }
 
     async toConsoleString(getSource?: (filename: string) => Promise<string>) {

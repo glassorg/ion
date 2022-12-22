@@ -1,12 +1,16 @@
 
 import { AstNode } from "../ast/AstNode";
 import { BlockStatement } from "../ast/BlockStatement";
+import { CallExpression } from "../ast/CallExpression";
 import { Declaration } from "../ast/Declaration";
 import { Expression } from "../ast/Expression";
+import { ExpressionStatement } from "../ast/ExpressionStatement";
 import { PstModule } from "../ast/PstModule";
+import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
 import { Token } from "../ast/Token";
+import { isMetaId } from "../common/names";
 import { SemanticError } from "../SemanticError";
 import { Tokenizer } from "../tokenizer/Tokenizer";
 import { TokenName, TokenNames, TokenTypes } from "../tokenizer/TokenTypes";
@@ -100,18 +104,36 @@ export class Parser {
     parseModule(filename: string, source: string): PstModule {
         this.setSource(filename, source);
 
+        const isMetaCall = (value: Statement): value is ExpressionStatement & { expression: CallExpression } => {
+            return value instanceof ExpressionStatement
+                && value.expression instanceof CallExpression
+                && value.expression.callee instanceof Reference
+                && isMetaId(value.expression.callee.name);
+        }
+
+        let meta = new Array<CallExpression>();
         let statements = new Array<Declaration>();
         while (!this.done()) {
             this.whitespace();
             let statement = this.parseStatement();
+            if (isMetaCall(statement)) {
+                meta.push(statement.expression);
+                this.eol();
+                continue;
+            }
+
             if (!(statement instanceof Declaration)) {
                 if (statement instanceof BlockStatement) {
                     throw new SemanticError(`BlockStatement found in module scope, did you accidentally indent?`, statement);
                 }
                 throw new SemanticError(`Only declarations are allowed within the module scope`, statement);
             }
-            statements.push(statement);
+            statements.push(statement.patch({ meta: [...meta] }));
+            meta.length = 0;
             this.eol();
+        }
+        if (meta.length > 0) {
+            throw new SemanticError(`Expected Declaration`, meta[meta.length - 1]);
         }
 
         if (!this.done()) {
@@ -210,7 +232,12 @@ export class Parser {
         let node = this.parseNode();
 
         if (!(node instanceof Statement)) {
-            throw new SemanticError(`Expected Statement`, node);
+            if (node instanceof Expression) {
+                node = new ExpressionStatement(node.location, node);
+            }
+            else {
+                throw new SemanticError(`Expected Statement`, node);
+            }
         }
 
         return node;

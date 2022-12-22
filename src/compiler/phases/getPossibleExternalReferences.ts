@@ -15,14 +15,11 @@ export function getPossiblePaths(fromPath: string, unresolvedName: string): stri
     return paths;
 }
 
-export async function getPossibleExternalReferences(declaration?: ParsedDeclaration): Promise<string[]> {
-    if (!declaration) {
-        return [];
-    }
+export async function getPossibleExternalReferences(declaration: ParsedDeclaration): Promise<string[]> {
     let externals = new Set<string>();
     // resolve externals.
     let scopes = createScopes(declaration);
-    traverse(declaration, {
+    declaration = traverse(declaration, {
         enter(node) {
             if (node instanceof Reference) {
                 let scope = scopes.get(node);
@@ -34,6 +31,5 @@ export async function getPossibleExternalReferences(declaration?: ParsedDeclarat
         }
     })
     const result = [...externals].sort().map(external => getPossiblePaths(declaration.absolutePath, external)).flat();
-    console.log({ path: declaration.absolutePath, result })
     return result;
 }

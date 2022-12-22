@@ -5,7 +5,7 @@ export { Lookup, remove, replace, skip, Replace, Visitor } from "@glas/traverse"
 export function traverse(root: any, visitor: Visitor) {
     return glasTraverse(root, {
         skip(node: any) {
-            return !(node instanceof AstNode);
+            return !(node instanceof AstNode || Array.isArray(node));
         },
         ...visitor
     });

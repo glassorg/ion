@@ -28,6 +28,9 @@ export class Tokenizer {
                     }
                     let value = remainingSource.slice(0, matchLength);
                     let location = new SourceLocation(filename, fileIndex, lineIndex, columnIndex, fileIndex + matchLength, lineIndex, columnIndex + matchLength);
+                    // if (type === "Id") {
+                    //     console.log({ type, value, location });
+                    // }
                     columnIndex += matchLength;
                     fileIndex += matchLength;
 
