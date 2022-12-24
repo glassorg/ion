@@ -58,7 +58,26 @@ function min(a: Number | String, b: Number) =>
 await testCompile(`
 let a = 1
 let b = a
+let c = b
+`);
+
+await testCompile(`
+type Range = 0 .. 10
+`);
+
+await testCompile(`
+class @Native
+
+@Native()
+class String
+
+@Native()
+struct Integer
+
+@Native()
+function \`+\`(a: Integer, b: Integer) => a
+function add(a: Integer, b: Integer) =>
+    a + b
 `, true);
 
 }
-

@@ -1,12 +1,15 @@
-import { AnalyzedDeclaration, ParsedDeclaration, CompiledDeclaration } from "./ast/Declaration";
+import { AnalyzedDeclaration, ParsedDeclaration, ResolvedDeclaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
 import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
 import { SemanticError } from "./SemanticError";
-import { CircularReferenceError, defineGraphFunctions, GraphExecutor } from "@glas/graph";
+import { CircularReferenceError, defineGraphFunctions, equals, GraphExecutor } from "@glas/graph";
 import { getAbsolutePath } from "./common/pathFunctions";
 import * as phases from "./phases/index";
 import { resolveExternalReferences } from "./phases/resolveExternalReferences";
+import { resolveSingleStep } from "./phases/resolveSingleStep";
+import { semanticAnalysis } from "./phases/semanticAnalysis";
+import { ISONDebug } from "./ast/AstSerializers";
 
 export interface CompilerOptions {
     debugPattern?: RegExp;
@@ -53,7 +56,7 @@ export class Compiler {
     }
 
     log<T extends ParsedDeclaration>(name: string, declaration: T): T {
-        this.logger(name, declaration, declaration.absolutePath);
+        this.logger(name, ISONDebug.stringify(declaration), declaration.absolutePath);
         return declaration;
     }
 
@@ -72,12 +75,26 @@ export class Compiler {
                 const analyzed = this.log(`getPossibleExternalReferences`, declaration.patch({ externals }));
                 return analyzed;
             },
-            compile: async (declaration: AnalyzedDeclaration, ...externals: CompiledDeclaration[]): Promise<CompiledDeclaration> => {
+            resolve: async (declaration: AnalyzedDeclaration, ...externals: ResolvedDeclaration[]): Promise<ResolvedDeclaration> => {
                 // console.log(`Compile ${declaration.absolutePath}, externals: ${externals.map(e => e.absolutePath )}`);
                 declaration = resolveExternalReferences(declaration, externals);
-                //  add in N phases.
                 this.log(`resolveExternalReferences`, declaration);
-                return declaration.patch({ compiled: true } as const);
+
+                declaration = semanticAnalysis(declaration, externals);
+                this.log(`semanticAnalysis`, declaration);
+
+                //  add in N phases of resolution
+                for (let i = 0; i < 100; i++) {
+                    const before = declaration;
+                    const after = resolveSingleStep(declaration, externals);
+                    this.log(`resolve ${i}`, declaration);
+                    if (equals(before, after)) {
+                        break;
+                    }
+                    declaration = after;
+                }
+
+                return declaration.patch({ resolved: true } as const);
             }
         });
     }
@@ -104,13 +121,13 @@ export class Compiler {
         return this.analyzeExecutor.getOutputsByType("analyze");
     }
 
-    async getAllCompiledDeclarations(declarations: AnalyzedDeclaration[]): Promise<CompiledDeclaration[]> {
+    async getAllCompiledDeclarations(declarations: AnalyzedDeclaration[]): Promise<ResolvedDeclaration[]> {
         const builder = this.compileExecutor.builder();
         const lookup = new Map(declarations.map(d => [d.absolutePath, d]));
         for (const declaration of declarations) {
             const externalRefs = declaration.externals.filter(e => lookup.has(e)).map(e => ({ ref: e }));
             //  externalRefs as any because the graph doesn't know that these references are valid yet.
-            builder.append(declaration.absolutePath, "compile", declaration, ...externalRefs as any);
+            builder.append(declaration.absolutePath, "resolve", declaration, ...externalRefs as any);
         }
         try {
             this.compileExecutor.update(builder.build());
@@ -124,22 +141,25 @@ export class Compiler {
             throw e;
         }
         await this.compileExecutor.execute();
-        return this.compileExecutor.getOutputsByType("compile");
+        return this.compileExecutor.getOutputsByType("resolve");
     }
 
     async compileAllFiles(): Promise<SemanticError[]> {
         try {
             const parsedDeclarations = await this.getAllParsedDeclarations();
             const analyzedDeclarations = await this.getAllAnalyzedDeclarations(parsedDeclarations);
-            const compiledDeclarations = await this.getAllCompiledDeclarations(analyzedDeclarations);
-            console.log(compiledDeclarations.map(d => d.absolutePath));
+            const resolvedDeclarations = await this.getAllCompiledDeclarations(analyzedDeclarations);
+            console.log(resolvedDeclarations.map(d => d.absolutePath));
         }
         catch (e) {
             if (e instanceof SemanticError || Array.isArray(e)) {
+                const errors = [e as SemanticError | SemanticError[]].flat()
                 if (this.options.debugPattern) {
-                    console.log(await this.toConsoleMessage(e as SemanticError));
+                    for (const error of errors) {
+                        console.log(await this.toConsoleMessage(error));
+                    }
                 }
-                return [e as SemanticError].flat();
+                return errors;
             }
         }
         finally {

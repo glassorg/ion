@@ -15,10 +15,11 @@ import { FunctionExpression } from "../../ast/FunctionExpression";
 export class FunctionParselet extends PrefixParselet {
 
     parse(p: Parser, functionToken: Token): AstNode {
-        let id = p.consume(TokenNames.Id);
+        let id = p.consumeOne(TokenNames.Id, TokenNames.EscapedId);
         p.whitespace();
         p.consume(TokenNames.OpenParen);
-        let parameters = p.parseInlineExpression().split(",").map(p => {
+        const pnode = p.parseInlineNode();
+        let parameters = pnode.split(",").map(p => {
             if (!(p instanceof VariableDeclaration)) {
                 throw new SemanticError(`Expected parameter declaration`, p);
             }

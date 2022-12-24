@@ -67,7 +67,7 @@ assert.deepEqual(
                 "finishColumn": 5
             },
             "type": "Integer",
-            "value": "1"
+            "value": 1
         },
         {
             "location": {
@@ -109,7 +109,7 @@ assert.deepEqual(
                 "finishColumn": 8
             },
             "type": "Integer",
-            "value": "2"
+            "value": 2
         },
         {
             "location": {
@@ -179,7 +179,7 @@ assert.deepEqual(
                 "finishColumn": 17
             },
             "type": "String",
-            "value": "\"bar\""
+            "value": "bar"
         },
         {
             "location": {

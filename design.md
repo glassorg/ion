@@ -106,4 +106,7 @@ function parse(filename: string, loader): ParseResult[] {
 //  each Declaration should be semantically checked internally
 ```
 
+# Native Declarations and Pre-compilation?
 
+I could pre-resolve a bunch of files so that some declarations are effectively pre-compiled.
+Could keep them in individual files within a /obj directory.

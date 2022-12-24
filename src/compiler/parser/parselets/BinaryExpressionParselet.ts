@@ -12,6 +12,7 @@ import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { Declarator } from "../../ast/Declarator";
 import { createBinaryExpression } from "../../ast";
 import { toTypeExpression } from "../../ast/TypeExpression";
+import { RangeExpression } from "../../ast/RangeExpression";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -41,6 +42,9 @@ export class BinaryExpressionParselet extends InfixParselet {
                 throw new SemanticError(`Expected Identifier`, right);
             }
             return new MemberExpression(location, left, new Identifier(right.location, right.name));
+        }
+        if (operator === "..") {
+            return new RangeExpression(location, left, right);
         }
         if (isAssignmentOperator(operator)) {
             if (left instanceof VariableDeclaration) {

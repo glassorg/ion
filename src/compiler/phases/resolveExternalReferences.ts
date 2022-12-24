@@ -1,11 +1,11 @@
-import { AnalyzedDeclaration, CompiledDeclaration } from "../ast/Declaration";
+import { AnalyzedDeclaration, ResolvedDeclaration } from "../ast/Declaration";
 import { Reference } from "../ast/Reference";
 import { traverse } from "../common/traverse";
 import { createScopes } from "../createScopes";
 import { SemanticError } from "../SemanticError";
 import { getPossiblePaths } from "./getPossibleExternalReferences";
 
-export function resolveExternalReferences(root: AnalyzedDeclaration, externals: CompiledDeclaration[]): AnalyzedDeclaration {
+export function resolveExternalReferences(root: AnalyzedDeclaration, externals: ResolvedDeclaration[]): AnalyzedDeclaration {
     const scopes = createScopes(root, externals);
     const found = new Set<string>();
     root = traverse(root, {

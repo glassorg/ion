@@ -44,6 +44,16 @@ export class Parser {
         return undefined;
     }
 
+    consumeOne(...tokenTypes: string[]): Token {
+        for (const tokenType of tokenTypes) {
+            const token = this.maybeConsume(tokenType);
+            if (token) {
+                return token;
+            }
+        }
+        throw new SemanticError(`Expected one of ${tokenTypes.join(`, `)}`, this.peek()!);
+    }
+
     consume(tokenType?: string, value?: any): Token {
         return this.consumeInternal(tokenType, value, true)!;
     }
@@ -207,11 +217,16 @@ export class Parser {
         return result;
     }
 
-    parseInlineExpression(precedence: number = 0): Expression {
+    parseInlineNode(precedence: number = 0): AstNode {
         let save = this.parseOutline;
         this.parseOutline = false;
         let result = this.parseNode(precedence);
         this.parseOutline = save;
+        return result;
+    }
+
+    parseInlineExpression(precedence: number = 0): Expression {
+        let result = this.parseInlineNode(precedence);
         if (!(result instanceof Expression)) {
             throw new SemanticError(`Expected Expression`, result);
         }
@@ -220,17 +235,14 @@ export class Parser {
 
     parseExpression(precedence: number = 0): Expression {
         let node = this.parseNode(precedence);
-
         if (!(node instanceof Expression)) {
             throw new SemanticError(`Expected Expression`, node);
         }
-
         return node;
     }
 
     parseStatement(): Statement {
         let node = this.parseNode();
-
         if (!(node instanceof Statement)) {
             if (node instanceof Expression) {
                 node = new ExpressionStatement(node.location, node);
@@ -239,7 +251,6 @@ export class Parser {
                 throw new SemanticError(`Expected Statement`, node);
             }
         }
-
         return node;
     }
 

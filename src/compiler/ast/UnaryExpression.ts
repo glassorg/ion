@@ -12,4 +12,8 @@ export class UnaryExpression extends Expression {
         super(location);
     }
 
+    toString() {
+        return `${this.operator} ${this.argument}`;
+    }
+
 }

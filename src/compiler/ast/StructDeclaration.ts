@@ -18,4 +18,12 @@ export class StructDeclaration extends AbstractTypeDeclaration {
         throw new Error();
     }
 
+    get keyword() {
+        return "struct";
+    }
+
+    toString() {
+        return `${this.toMetaString()}${this.keyword} ${this.id}${this.toBlockString(this.fields)}`;
+    }
+
 }

@@ -36,3 +36,4 @@ export function joinExpressions(operator: InfixOperator, expressions: Expression
     }
     return right;
 }
+

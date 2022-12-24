@@ -22,14 +22,14 @@ export class VariableDeclaration extends AbstractValueDeclaration {
     toString() {
         if (this.valueType) {
             if (this.defaultValue) {
-                return `${this.keyword} ${this.id}: ${this.valueType} = ${this.defaultValue}`;
+                return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.valueType} = ${this.defaultValue}`;
             }
-            return `${this.keyword} ${this.id}: ${this.valueType}`;
+            return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.valueType}`;
         }
         else if (this.defaultValue) {
-            return `${this.keyword} ${this.id} := ${this.defaultValue}`;
+            return `${this.toMetaString()}${this.keyword} ${this.id} := ${this.defaultValue}`;
         }
-        return `${this.keyword} ${this.id}`;
+        return `${this.toMetaString()}${this.keyword} ${this.id}`;
     }
 
 }

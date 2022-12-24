@@ -1,5 +1,5 @@
 
-type Patch<T,P> = Omit<T,keyof P> & P;
+type Patch<T,P> = T & Omit<T,keyof P> & P;
 
 export class Immutable {
 

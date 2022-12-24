@@ -13,4 +13,8 @@ export class TypeDeclaration extends AbstractTypeDeclaration {
         super(location, id);
     }
 
+    toString() {
+        return `${this.toMetaString()}type ${this.id} = ${this.type}`;
+    }
+
 }

@@ -1,4 +1,5 @@
 import { strict as assert } from "assert";
+import { ISONDebug } from "../ast/AstSerializers";
 import { createParser } from "./createParser";
 
 const parser = createParser();
@@ -7,10 +8,10 @@ function testParseExpression(source: string, expectedJSON: any) {
     const filename = "test";
     parser.setSource(filename, source);
     const expression = parser.parseNode();
-    const json = JSON.parse(JSON.stringify(expression));
-    if (JSON.stringify(expectedJSON) !== JSON.stringify(json)) {
-        console.log(JSON.stringify(json, null, 4));
-    }
+    const json = JSON.parse(ISONDebug.stringify(expression));
+    // if (ISONDebug.stringify(expectedJSON) !== JSON.stringify(json)) {
+    //     console.log(ISONDebug.stringify(json));
+    // }
     assert.deepEqual(json, expectedJSON);
 }
 

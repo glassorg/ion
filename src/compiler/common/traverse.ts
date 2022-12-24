@@ -1,5 +1,8 @@
-import { traverse as glasTraverse, Visitor } from "@glas/traverse";
+import { Lookup, traverse as glasTraverse, Visitor } from "@glas/traverse";
 import { AstNode } from "../ast/AstNode";
+import { ResolvedDeclaration } from "../ast/Declaration";
+import { createScopes } from "../createScopes";
+import { EvaluationContext } from "../EvaluationContext";
 export { Lookup, remove, replace, skip, Replace, Visitor } from "@glas/traverse";
 
 export function traverse(root: any, visitor: Visitor) {
@@ -9,4 +12,11 @@ export function traverse(root: any, visitor: Visitor) {
         },
         ...visitor
     });
+}
+
+export function traverseWithContext(root: any, externals: ResolvedDeclaration[], visitor: (c: EvaluationContext) => Visitor) {
+    const lookup = new Lookup();
+    const scopes = createScopes(root, externals);
+    const context = new EvaluationContext(lookup, scopes);
+    return traverse(root, { ...visitor(context), lookup });
 }
