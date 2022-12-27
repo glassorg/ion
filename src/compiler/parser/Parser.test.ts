@@ -9,9 +9,9 @@ function testParseExpression(source: string, expectedJSON: any) {
     parser.setSource(filename, source);
     const expression = parser.parseNode();
     const json = JSON.parse(ISONDebug.stringify(expression));
-    // if (ISONDebug.stringify(expectedJSON) !== JSON.stringify(json)) {
-    //     console.log(ISONDebug.stringify(json));
-    // }
+    if (ISONDebug.stringify(expectedJSON) !== ISONDebug.stringify(json)) {
+        console.log(ISONDebug.stringify(json));
+    }
     assert.deepEqual(json, expectedJSON);
 }
 
@@ -144,7 +144,7 @@ testParseExpression(`a[b]`, {
 });
 
 testParseExpression(
-`
+    `
 if foo
     bar
 `, {
@@ -168,7 +168,7 @@ if foo
 });
 
 testParseExpression(
-`if foo
+    `if foo
     bar
 else
     baz
@@ -213,7 +213,7 @@ else
 })
 
 testParseExpression(
-`if foo
+    `if foo
     a
 else if bar
     b
@@ -358,7 +358,7 @@ testParseExpression(`type Foo = Bar | Baz & Buz`, {
 });
 
 testParseExpression(
-`
+    `
 for x in foo
     x + bar
 `, {
@@ -411,73 +411,75 @@ testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
         "name": "add"
     },
     "meta": [],
-    "value": {
-        "": "FunctionExpression",
-        "parameters": [
-            {
-                "": "ParameterDeclaration",
-                "id": {
-                    "": "Declarator",
-                    "name": "x"
-                },
-                "meta": [],
-                "valueType": {
-                    "": "ComparisonExpression",
-                    "left": {
-                        "": "DotExpression"
-                    },
-                    "operator": "is",
-                    "right": {
-                        "": "Reference",
-                        "name": "Number"
-                    }
-                },
-                "defaultValue": {
-                    "": "IntegerLiteral",
-                    "value": 0
-                }
-            },
-            {
-                "": "ParameterDeclaration",
-                "id": {
-                    "": "Declarator",
-                    "name": "y"
-                },
-                "meta": [],
-                "valueType": {
-                    "": "ComparisonExpression",
-                    "left": {
-                        "": "DotExpression"
-                    },
-                    "operator": "is",
-                    "right": {
-                        "": "Reference",
-                        "name": "Number"
-                    }
-                },
-                "defaultValue": {
-                    "": "IntegerLiteral",
-                    "value": 0
-                }
-            }
-        ],
-        "body": {
-            "": "BlockStatement",
-            "statements": [
+    "values": [
+        {
+            "": "FunctionExpression",
+            "parameters": [
                 {
-                    "": "ReturnStatement",
-                    "argument": {
-                        "": "Reference",
+                    "": "ParameterDeclaration",
+                    "id": {
+                        "": "Declarator",
                         "name": "x"
+                    },
+                    "meta": [],
+                    "valueType": {
+                        "": "ComparisonExpression",
+                        "left": {
+                            "": "DotExpression"
+                        },
+                        "operator": "is",
+                        "right": {
+                            "": "Reference",
+                            "name": "Number"
+                        }
+                    },
+                    "defaultValue": {
+                        "": "IntegerLiteral",
+                        "value": 0
+                    }
+                },
+                {
+                    "": "ParameterDeclaration",
+                    "id": {
+                        "": "Declarator",
+                        "name": "y"
+                    },
+                    "meta": [],
+                    "valueType": {
+                        "": "ComparisonExpression",
+                        "left": {
+                            "": "DotExpression"
+                        },
+                        "operator": "is",
+                        "right": {
+                            "": "Reference",
+                            "name": "Number"
+                        }
+                    },
+                    "defaultValue": {
+                        "": "IntegerLiteral",
+                        "value": 0
                     }
                 }
-            ]
+            ],
+            "body": {
+                "": "BlockStatement",
+                "statements": [
+                    {
+                        "": "ExpressionStatement",
+                        "expression": {
+                            "": "Reference",
+                            "name": "x"
+                        }
+                    }
+                ]
+            }
         }
-    }
+    ]
 });
 
 testParseExpression(
-`class Foo`, {
+    `class Foo`, {
     "": "ClassDeclaration",
     "id": {
         "": "Declarator",
@@ -488,7 +490,7 @@ testParseExpression(
 });
 
 testParseExpression(
-`
+    `
 class Foo
 `, {
     "": "ClassDeclaration",
@@ -501,7 +503,7 @@ class Foo
 });
 
 testParseExpression(
-`
+    `
 class Vector
     x: Number
     y: Number
@@ -579,7 +581,7 @@ class Vector
 });
 
 testParseExpression(
-`
+    `
 struct Foo
 `, {
     "": "StructDeclaration",
@@ -592,7 +594,7 @@ struct Foo
 });
 
 testParseExpression(
-`
+    `
 struct Vector
     x: Number = 0
     y: Number = 0
@@ -685,7 +687,7 @@ testParseExpression(`!x`, {
     "argument": {
         "": "Reference",
         "name": "x"
-    }    
+    }
 });
 
 testParseExpression("x <= y", {
@@ -700,3 +702,138 @@ testParseExpression("x <= y", {
         "name": "y"
     }
 });
+
+testParseExpression(`
+function add
+    (a: Integer) => a
+    (a: Float) => a
+`, {
+    "": "FunctionDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "add"
+    },
+    "meta": [],
+    "values": [
+        {
+            "": "FunctionExpression",
+            "parameters": [
+                {
+                    "": "ParameterDeclaration",
+                    "id": {
+                        "": "Declarator",
+                        "name": "a"
+                    },
+                    "meta": [],
+                    "valueType": {
+                        "": "ComparisonExpression",
+                        "left": {
+                            "": "DotExpression"
+                        },
+                        "operator": "is",
+                        "right": {
+                            "": "Reference",
+                            "name": "Integer"
+                        }
+                    }
+                }
+            ],
+            "body": {
+                "": "BlockStatement",
+                "statements": [
+                    {
+                        "": "ExpressionStatement",
+                        "expression": {
+                            "": "Reference",
+                            "name": "a"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "": "FunctionExpression",
+            "parameters": [
+                {
+                    "": "ParameterDeclaration",
+                    "id": {
+                        "": "Declarator",
+                        "name": "a"
+                    },
+                    "meta": [],
+                    "valueType": {
+                        "": "ComparisonExpression",
+                        "left": {
+                            "": "DotExpression"
+                        },
+                        "operator": "is",
+                        "right": {
+                            "": "Reference",
+                            "name": "Float"
+                        }
+                    }
+                }
+            ],
+            "body": {
+                "": "BlockStatement",
+                "statements": [
+                    {
+                        "": "ExpressionStatement",
+                        "expression": {
+                            "": "Reference",
+                            "name": "a"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+});
+
+testParseExpression(`(a: Integer): Integer => a`, {
+    "": "FunctionExpression",
+    "parameters": [
+        {
+            "": "ParameterDeclaration",
+            "id": {
+                "": "Declarator",
+                "name": "a"
+            },
+            "meta": [],
+            "valueType": {
+                "": "ComparisonExpression",
+                "left": {
+                    "": "DotExpression"
+                },
+                "operator": "is",
+                "right": {
+                    "": "Reference",
+                    "name": "Integer"
+                }
+            }
+        }
+    ],
+    "body": {
+        "": "BlockStatement",
+        "statements": [
+            {
+                "": "ExpressionStatement",
+                "expression": {
+                    "": "Reference",
+                    "name": "a"
+                }
+            }
+        ]
+    },
+    "declaredType": {
+        "": "ComparisonExpression",
+        "left": {
+            "": "DotExpression"
+        },
+        "operator": "is",
+        "right": {
+            "": "Reference",
+            "name": "Integer"
+        }
+    }
+})

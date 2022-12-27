@@ -20,12 +20,12 @@ export class PrefixOperatorParselet extends PrefixParselet {
         return PrefixOperators[token.value as PrefixOperator].precedence;
     }
 
-    protected parseArgument(p: Parser, token: Token, precedence = this.getPrecedence(token)): Expression {
+    protected parseArgument(p: Parser, token: Token, precedence = this.getPrecedence(token)) {
         if (precedence == null) {
             let { value, location } = token;
             throw new SemanticError(`Prefix operator not found: ${value}`, location);
         }
-        let argument = p.parseExpression(precedence);
+        let argument = p.parseInlineNode(precedence);
         return argument;
     }
 
@@ -51,7 +51,7 @@ export class PrefixOperatorParselet extends PrefixParselet {
         return new UnaryExpression(
             location,
             operator.value as PrefixOperator,
-            argument,
+            argument as Expression,
         );
     }
 

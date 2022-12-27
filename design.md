@@ -106,7 +106,27 @@ function parse(filename: string, loader): ParseResult[] {
 //  each Declaration should be semantically checked internally
 ```
 
-# Native Declarations and Pre-compilation?
+# Multiple Declarations?
 
-I could pre-resolve a bunch of files so that some declarations are effectively pre-compiled.
-Could keep them in individual files within a /obj directory.
+Functions can be overloaded with multiple declarations.
+Can only be contained within the same name.
+Let's imagine operator overloading for Vectors.
+
+```typescript
+Integer.+ = (a: Integer, b: Integer): Integer => @Native()
+Float.+ = (a: Float, b: Float): Float => @Native()
+Float.+ = (a: Float, b: Integer): Float => @Native()
+Float.+ = (a: Integer, b: Float): Float => @Native()
+
+function `+`
+    (a: Integer, b: Integer): Integer => @Native()
+    (a: Float, b: Float): Float => @Native()
+    (a: Integer, b: Float): Float => @Native()
+    (a: Float, b: Integer): Float => @Native()
+
+class Vector
+    x: Float
+    y: Float
+Vector.+ = (a: Vector2, b: Vector2): Vector2 => Vector2(a.x + b.x, a.y + b.y)
+
+```

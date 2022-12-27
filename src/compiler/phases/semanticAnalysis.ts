@@ -10,7 +10,7 @@ export function semanticAnalysis(declaration: AnalyzedDeclaration, externals: Re
     traverseWithContext(declaration, externals, c => ({
         enter(node) {
             if (node instanceof ConstantDeclaration && node.value instanceof Reference) {
-                const declaration = c.getDeclaration(node.value);
+                const declaration = c.getSingleDeclaration(node.value);
                 if (declaration instanceof VariableDeclaration) {
                     errors.push(new SemanticError(`Constant cannot be declared from a `, node.value, declaration.id));
                 }

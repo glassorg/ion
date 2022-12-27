@@ -1,10 +1,11 @@
-import { InfixOperator, isAssignmentOperator, isComparisonOperator, isLogicalOperator } from "../Operators";
+import { InfixOperator, isAssignmentOperator, isComparisonOperator, isLogicalOperator, isSequenceOperator } from "../Operators";
 import { AssignmentExpression } from "./AssignmentExpression";
 import { CallExpression } from "./CallExpression";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { Expression } from "./Expression";
 import { LogicalExpression } from "./LogicalExpression";
 import { Reference } from "./Reference";
+import { SequenceExpression } from "./SequenceExpression";
 import { SourceLocation } from "./SourceLocation";
 
 export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
@@ -19,6 +20,9 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     }
     if (isLogicalOperator(operator)) {
         return new LogicalExpression(location, left, operator, right);
+    }
+    if (isSequenceOperator(operator)) {
+        return new SequenceExpression(location, left, operator, right);
     }
     return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }

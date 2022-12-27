@@ -6,7 +6,6 @@ export class Token extends AstNode {
     constructor(
         location: SourceLocation,
         public readonly type: string,
-        // public readonly source: string,
         public readonly value: string,
     ) {
         super(location);

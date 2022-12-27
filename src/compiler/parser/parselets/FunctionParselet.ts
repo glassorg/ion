@@ -4,49 +4,35 @@ import { Token } from "../../ast/Token";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
-import { BlockStatement } from "../../ast/BlockStatement";
-import { ReturnStatement } from "../../ast/ReturnStatement";
 import { FunctionDeclaration } from "../../ast/FunctionDeclaration";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { SemanticError } from "../../SemanticError";
-import { ParameterDeclaration } from "../../ast/ParameterDeclaration";
 import { FunctionExpression } from "../../ast/FunctionExpression";
+import { ExpressionStatement } from "../../ast/ExpressionStatement";
 
 export class FunctionParselet extends PrefixParselet {
 
     parse(p: Parser, functionToken: Token): AstNode {
         let id = p.consumeOne(TokenNames.Id, TokenNames.EscapedId);
-        p.whitespace();
-        p.consume(TokenNames.OpenParen);
-        const pnode = p.parseInlineNode();
-        let parameters = pnode.split(",").map(p => {
-            if (!(p instanceof VariableDeclaration)) {
-                throw new SemanticError(`Expected parameter declaration`, p);
-            }
-            // TODO: Check for var which shouldn't be there.
-            // let varTokenPosition = p.getVarTokenPosition();
-            // if (varTokenPosition){
-            //     throw new SemanticError(`var token not allowed`, varTokenPosition);
-            // }
-            return new ParameterDeclaration(p.location, p.id, p.valueType, p.defaultValue)
-        });
-        p.consume(TokenNames.CloseParen);
-        p.whitespace();
-        p.consume(TokenNames.DoubleArrow);
-        p.whitespace();
-        let block = p.maybeParseBlock();
-        if (block == null) {
-            let value = p.parseInlineExpression();
-            block = new BlockStatement(value.location, [
-                new ReturnStatement(value.location, value)
-            ]);
+        if (id.type === TokenNames.EscapedId) {
+            // hack to fix escaped id
+            id = id.patch({ value: id.value.slice(1, -1) });
         }
-        let location = functionToken.location.merge(block.location);
-        return new FunctionDeclaration(
-            location,
-            new Declarator(id.location, id.value),
-            new FunctionExpression(location, parameters, block)
-        )
+        p.whitespace();
+        const maybeMultiFunctionBlock = p.maybeParseBlock();
+        let values = (maybeMultiFunctionBlock?.statements
+            ?? [p.parseExpression()]).map(value => {
+                if (value instanceof ExpressionStatement) {
+                    value = value.expression;
+                }
+                if (!(value instanceof FunctionExpression)) {
+                    throw new SemanticError(`Expected FunctionExpression`, value);
+                }
+                return value;
+            });
+        
+        // might be a multi function?
+        let location = functionToken.location.merge(values[values.length - 1].location);
+        return new FunctionDeclaration(location, new Declarator(id.location, id.value), ...values);
     }
 
 }

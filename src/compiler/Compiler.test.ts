@@ -1,22 +1,30 @@
 import { strict as assert } from "assert";
-import { Compiler } from "./Compiler";
+import { CompileError, Compiler } from "./Compiler";
 import { MemoryFileSystem } from "./filesystem/MemoryFileSystem";
 
 const filename = "sample.ion";
 
 async function testCompileError(source: string, startLine: number, startColumn: number, finishLine: number, finishColumn: number) {
     let compiler = new Compiler(new MemoryFileSystem({[filename]: source}));
-    let errors = await compiler.compileAllFiles();
-    let [error] = errors;
-    assert.equal(errors.length, 1, `Expected 1 error compiling: ${source}`);
-    assert(error.locations.length >= 1, `Expected at least 1 location within error: ${error}`);
-    let location = error.locations[0];
-    let expectedLocation = { startLine, startColumn, finishLine, finishColumn };
-    let actualLocation = { startLine: location.startLine, startColumn: location.startColumn, finishLine: location.finishLine, finishColumn: location.finishColumn };
-    if (JSON.stringify(actualLocation) !== JSON.stringify(expectedLocation)) {
-        console.log(errors.map(error => compiler.toConsoleMessage(error)).join("\n"));
+    try {
+        let result = await compiler.compileAllFiles();
+        assert.fail(`Expected compilation to fail: ${source}`);
     }
-    assert.deepEqual(actualLocation, expectedLocation);
+    catch (e) {
+        if (e instanceof CompileError) {
+            const errors = e.semanticErrors;
+            let [error] = errors;
+            assert.equal(errors.length, 1, `Expected 1 error compiling: ${source}`);
+            assert(error.locations.length >= 1, `Expected at least 1 location within error: ${error}`);
+            let location = error.locations[0];
+            let expectedLocation = { startLine, startColumn, finishLine, finishColumn };
+            let actualLocation = { startLine: location.startLine, startColumn: location.startColumn, finishLine: location.finishLine, finishColumn: location.finishColumn };
+            if (JSON.stringify(actualLocation) !== JSON.stringify(expectedLocation)) {
+                console.log(errors.map(error => compiler.toConsoleMessage(error)).join("\n"));
+            }
+            assert.deepEqual(actualLocation, expectedLocation);
+        }
+    }
 }
 
 type Files = { [filename: string]: string };
@@ -24,8 +32,8 @@ type Files = { [filename: string]: string };
 async function testCompile(source: string | Files, debug = false) {
     let files = typeof source === "string" ? {[filename]: source} : source;
     let compiler = new Compiler(new MemoryFileSystem(files), { debugPattern: debug ? /sample\..*/ : undefined });
-    let errors = await compiler.compileAllFiles();
-    assert.equal(errors.length, 0, `Expected this to compile without errors:\n${source}`);
+    let resolvedDeclarations = await compiler.compileAllFiles();
+    assert(resolvedDeclarations.length > 0);
 }
 
 export async function test() {
@@ -66,18 +74,30 @@ type Range = 0 .. 10
 `);
 
 await testCompile(`
-class @Native
+class @NativeClass
 
-@Native()
+@NativeClass()
 class String
 
-@Native()
+class @NativeFunction
+    javascript: String
+
+@NativeClass()
 struct Integer
 
-@Native()
+@NativeFunction("foo")
 function \`+\`(a: Integer, b: Integer) => a
+
 function add(a: Integer, b: Integer) =>
-    a + b
-`, true);
+    return a + b
+`);
+
+await testCompile(`
+type Integer = 1
+type Float = 1
+function add
+    (a: Integer) => a
+    (a: Float) => a
+`)
 
 }

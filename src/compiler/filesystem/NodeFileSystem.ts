@@ -3,7 +3,7 @@ import * as np from "path";
 import * as fileUtility from "./fileUtility";
 
 //  TODO: Make this actually use the async file functions.
-export abstract class NodeFileSystem extends FileSystem {
+export class NodeFileSystem extends FileSystem {
 
     constructor(
         private root: Path

@@ -1,4 +1,5 @@
 import { create as createDiffLogger, LogFunction } from "@glas/diff-logger";
+import { ISONDebug } from "./ast/AstSerializers";
 
 export type Logger = LogFunction;
 
@@ -12,7 +13,7 @@ export function createLogger(debugPattern?: RegExp): LogFunction {
             if (channel) {
                 diffLogger(stepName, stepState?.toString(), `${channel}!`);
             }
-            diffLogger(stepName, stepState, channel);
+            diffLogger(stepName, ISONDebug.stringify(stepState), channel);
         }
     }
 }

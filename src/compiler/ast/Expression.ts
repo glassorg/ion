@@ -11,8 +11,8 @@ export class Expression extends AstNode {
     /**
      * Returns an empty string if not resolved or else " : Type"
      */
-    toTypeString() {
-        return this.resolvedType ? ` : ${this.resolvedType}` : ``;
+    toTypeString(type = this.resolvedType, colon = ":") {
+        return type ? ` ${colon} ${type}` : ``;
     }
 
 }

@@ -9,7 +9,6 @@ import { GroupParselet } from "./parselets/GroupParselet";
 import { CallParselet } from "./parselets/CallParselet";
 import { IfParselet } from "./parselets/IfParselet";
 import { ReturnParselet } from "./parselets/ReturnParselet";
-// import { ClassParselet } from "./parselets/ClassParselet";
 import { ForParselet } from "./parselets/ForParselet";
 import { BlockParselet } from "./parselets/BlockParselet";
 import { OutlineStringParselet } from "./parselets/OutlineStringParselet";

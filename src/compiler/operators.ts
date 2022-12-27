@@ -74,6 +74,11 @@ export const AssignmentOperators = {
     "||=": new Operator(3, { rightAssociative: true }),
 }
 
+export const SequenceOperators = {
+    ",": new Operator(1),
+    ";": new Operator(1),
+}
+
 export const InfixOperators = {
     "[": new Operator(19),    //  ]
     ".": new Operator(19),
@@ -96,14 +101,14 @@ export const InfixOperators = {
     ":": new Operator(5),
     "=>": new Operator(4, { allowOutline: true }),
     ...AssignmentOperators,
-    ",": new Operator(1),
-    ";": new Operator(1),
+    ...SequenceOperators,
 } as const;
 
 export type InfixOperator = keyof typeof InfixOperators;
 export type LogicalOperator = keyof typeof LogicalOperators;
 export type AssignmentOperator = keyof typeof AssignmentOperators;
 export type ComparisonOperator = keyof typeof ComparisonOperators;
+export type SequenceOperator = keyof typeof SequenceOperators;
 
 export function isPrefixOperator(operator: string): operator is PrefixOperator {
     return PrefixOperators[operator as PrefixOperator] != null;
@@ -115,6 +120,10 @@ export function isInfixOperator(operator: string): operator is InfixOperator {
 
 export function isOperator(operator: string): operator is (PrefixOperator | InfixOperator) {
     return isPrefixOperator(operator) || isInfixOperator(operator);
+}
+
+export function isSequenceOperator(operator: string): operator is SequenceOperator {
+    return SequenceOperators[operator as SequenceOperator] != null;
 }
 
 export function isLogicalOperator(operator: string): operator is LogicalOperator {

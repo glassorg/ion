@@ -1,7 +1,5 @@
 
-type ValueFunction = (source: string) => any
 type Options = {
-    value?: ValueFunction,
     mergeAdjacent?: boolean,
     isWhitespace?: boolean,
     discard?: boolean,
@@ -9,12 +7,10 @@ type Options = {
     newLine?: boolean,
     previousPredicate?: (previous?: TokenType) => boolean
 }
-const identity = (source: any) => source;
 
 export class TokenType {
 
     public readonly match: (line: string) => number;
-    public readonly value: ValueFunction;
     public readonly mergeAdjacent: boolean;
     public readonly isWhitespace: boolean;
     public readonly discard: boolean;
@@ -33,7 +29,6 @@ export class TokenType {
             }
         }
         this.match = match;
-        this.value = options?.value ?? identity;
         this.mergeAdjacent = options?.mergeAdjacent ?? false;
         this.isWhitespace = options?.isWhitespace ?? false;
         this.discard = options?.discard ?? false;
@@ -61,12 +56,11 @@ export const TokenTypes = {
     CloseBracket: new TokenType(/^\]/),
     OpenBrace: new TokenType(/^\{/),
     CloseBrace: new TokenType(/^\}/),
-    DoubleArrow: new TokenType(/^=>/),
-    Number: new TokenType(/^[0-9]*\.[0-9]+(e[+-]?[0-9]+)?/, { value: JSON.parse }),
-    Integer: new TokenType(/^([1-9][0-9]*|0x[0-9]+|0\b)/, { value: JSON.parse }),
+    Number: new TokenType(/^[0-9]*\.[0-9]+(e[+-]?[0-9]+)?/),
+    Integer: new TokenType(/^([1-9][0-9]*|0x[0-9]+|0\b)/),
     OutlineString: new TokenType(/^""/),
-    String: new TokenType(/^"([^"\\]|\\.)*"/, { value: JSON.parse }),
-    RegExp: new TokenType(/^\/([^/]|\\.)*\//, { value: eval }),
+    String: new TokenType(/^"([^"\\]|\\.)*"/),
+    RegExp: new TokenType(/^\/([^/]|\\.)*\//),
     // Operator has to come after Number/Integer so an adjacent - or + binds to literal.
     Operator: new TokenType(/^(\bvoid\b|\btypeof\b|\bis\b|[\=\+\-\*\&\^\%\!\~\/\.\:\;\?\,\<\>\|\&:]+)/i),
     //  Id has to come after Operator because of operator 'void'
@@ -86,12 +80,13 @@ export const TokenTypes = {
     Type: new TokenType(/^type\b/),
     For: new TokenType(/^for\b/),
     Id: new TokenType(/^[_@a-z][_$@a-z0-9]*/i),
-    EscapedId: new TokenType(/^`([^`\\]|\\.)*`/, { value: source => source.slice(1, -1) }),
+    EscapedId: new TokenType(/^`([^`\\]|\\.)*`/),
     Eol: new TokenType(/^\r\n|\r|\n/, { isWhitespace: true, newLine: true }),
     Unknown: new TokenType(/^./, { mergeAdjacent: true }),
     //  anything after Unknown will never be matched against, they're manually inserted.
     Indent: new TokenType(/^[]/, { isWhitespace: true }),
     Outdent: new TokenType(/^[]/, { isWhitespace: true }),
+    DoubleArrow: new TokenType(/^=>/),  //  TODO: Remove.
 } as const;
 
 export type TokenName = keyof typeof TokenTypes;

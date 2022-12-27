@@ -26,7 +26,7 @@ export class Tokenizer {
                     if (tokenType.previousPredicate && !tokenType.previousPredicate(previousTokenType)) {
                         continue;
                     }
-                    let value = tokenType.value(remainingSource.slice(0, matchLength));
+                    let value = remainingSource.slice(0, matchLength);
                     let location = new SourceLocation(filename, fileIndex, lineIndex, columnIndex, fileIndex + matchLength, lineIndex, columnIndex + matchLength);
                     columnIndex += matchLength;
                     fileIndex += matchLength;

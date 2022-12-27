@@ -4,7 +4,7 @@ import { isScope } from "./ast/Scope";
 import { traverse } from "./common/traverse";
 
 export interface Scope {
-    [id: string]: Declaration
+    [id: string]: Declaration[]
 }
 export interface Scopes {
     get(node: AstNode): Scope
@@ -15,9 +15,18 @@ export interface Scopes {
  * @param root the ast
  */
 export function createScopes(root: Declaration, externals: Declaration[] = []): Scopes {
-    let globalScope: Scope = Object.fromEntries(externals.map(e => [e.absolutePath, e]));
+    let globalScope: Scope = {};
     let map = new Map<AstNode, Scope>();
     let scopes: Scope[] = [globalScope];
+
+    const declare = (declaration: Declaration) => {
+        let scope = scopes[scopes.length - 1];
+        (scope[declaration.id.name] ??= []).push(declaration);
+    }
+
+    for (const external of externals) {
+        declare(external);
+    }
 
     traverse(root, {
         enter(node) {
@@ -27,8 +36,7 @@ export function createScopes(root: Declaration, externals: Declaration[] = []): 
             map.set(node, scope);
 
             if (node instanceof Declaration) {
-                let scope = scopes[scopes.length - 1];
-                scope[node.id.name] = node;
+                declare(node);
             }
 
             if (isScope(node)) {

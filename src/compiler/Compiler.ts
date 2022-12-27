@@ -5,14 +5,21 @@ import { createParser } from "./parser/createParser";
 import { SemanticError } from "./SemanticError";
 import { CircularReferenceError, defineGraphFunctions, equals, GraphExecutor } from "@glas/graph";
 import { getAbsolutePath } from "./common/pathFunctions";
-import * as phases from "./phases/index";
 import { resolveExternalReferences } from "./phases/resolveExternalReferences";
 import { resolveSingleStep } from "./phases/resolveSingleStep";
 import { semanticAnalysis } from "./phases/semanticAnalysis";
-import { ISONDebug } from "./ast/AstSerializers";
+import * as phases from "./phases/index";
 
 export interface CompilerOptions {
     debugPattern?: RegExp;
+}
+
+export class CompileError extends Error {
+
+    constructor(public readonly semanticErrors: SemanticError[]) {
+        super(semanticErrors.join(`\n`));
+    }
+
 }
 
 //  you MUST omit the 'this' parameter or else it messes up the graph type checking.
@@ -56,7 +63,7 @@ export class Compiler {
     }
 
     log<T extends ParsedDeclaration>(name: string, declaration: T): T {
-        this.logger(name, ISONDebug.stringify(declaration), declaration.absolutePath);
+        this.logger(name, declaration, declaration.absolutePath);
         return declaration;
     }
 
@@ -121,7 +128,7 @@ export class Compiler {
         return this.analyzeExecutor.getOutputsByType("analyze");
     }
 
-    async getAllCompiledDeclarations(declarations: AnalyzedDeclaration[]): Promise<ResolvedDeclaration[]> {
+    async getAllResolvedDeclarations(declarations: AnalyzedDeclaration[]): Promise<ResolvedDeclaration[]> {
         const builder = this.compileExecutor.builder();
         const lookup = new Map(declarations.map(d => [d.absolutePath, d]));
         for (const declaration of declarations) {
@@ -144,12 +151,12 @@ export class Compiler {
         return this.compileExecutor.getOutputsByType("resolve");
     }
 
-    async compileAllFiles(): Promise<SemanticError[]> {
+    async compileAllFiles(): Promise<ResolvedDeclaration[]> {
         try {
             const parsedDeclarations = await this.getAllParsedDeclarations();
             const analyzedDeclarations = await this.getAllAnalyzedDeclarations(parsedDeclarations);
-            const resolvedDeclarations = await this.getAllCompiledDeclarations(analyzedDeclarations);
-            console.log(resolvedDeclarations.map(d => d.absolutePath));
+            const resolvedDeclarations = await this.getAllResolvedDeclarations(analyzedDeclarations);
+            return resolvedDeclarations;
         }
         catch (e) {
             if (e instanceof SemanticError || Array.isArray(e)) {
@@ -159,14 +166,17 @@ export class Compiler {
                         console.log(await this.toConsoleMessage(error));
                     }
                 }
-                return errors;
+                throw new CompileError(errors);
+            }
+            else {
+                console.log(e);
+                throw e;
             }
         }
         finally {
             // now traverse the graph and find all errors.
             this.logger();
         }
-        return [];
     }
 
     async toConsoleMessage(error: SemanticError) {

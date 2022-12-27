@@ -21,11 +21,15 @@ export class Reference extends Expression {
     }
 
     protected *dependencies(c: EvaluationContext): Generator<AstNode, any, unknown> {
-        yield c.getDeclaration(this);
+        yield c.getSingleDeclaration(this);
+        // for (const declaration of c.getDeclarations(this)) {
+        //     yield declaration;
+        // }
     }
 
     resolve(this: Reference, c: EvaluationContext): AstNode | void {
-        const declaration = c.getDeclaration(this);
+        // really shouldn't get a single declaration... what if the reference is to a multifunction?
+        const declaration = c.getSingleDeclaration(this);
 
         const resolvedType = declaration.declaredType instanceof UnaryExpression
             ? declaration.declaredType
