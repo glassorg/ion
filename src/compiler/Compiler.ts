@@ -1,4 +1,4 @@
-import { AnalyzedDeclaration, ParsedDeclaration, ResolvedDeclaration } from "./ast/Declaration";
+import { AnalyzedDeclaration, AnalyzedDeclarationMap, MaybeResolvedDeclaration, ParsedDeclaration, ResolvedDeclaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
 import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
@@ -82,7 +82,7 @@ export class Compiler {
                 const analyzed = this.log(`getPossibleExternalReferences`, declaration.patch({ externals }));
                 return analyzed;
             },
-            resolve: async (declaration: AnalyzedDeclaration, ...externals: ResolvedDeclaration[]): Promise<ResolvedDeclaration> => {
+            resolveSolo: async (declaration: AnalyzedDeclaration, ...externals: ResolvedDeclaration[]): Promise<MaybeResolvedDeclaration> => {
                 // console.log(`Compile ${declaration.absolutePath}, externals: ${externals.map(e => e.absolutePath )}`);
                 declaration = resolveExternalReferences(declaration, externals);
                 this.log(`resolveExternalReferences`, declaration);
@@ -90,18 +90,20 @@ export class Compiler {
                 declaration = semanticAnalysis(declaration, externals);
                 this.log(`semanticAnalysis`, declaration);
 
-                //  add in N phases of resolution
+                //  add in N phases of solo resolution
                 for (let i = 0; i < 100; i++) {
                     const before = declaration;
-                    const after = resolveSingleStep(declaration, externals);
-                    this.log(`resolve ${i}`, declaration);
+                    const after = resolveSingleStep(declaration, this.log.bind(this), externals);
+                    // this.log(`resolveSolo ${i}`, declaration);
                     if (equals(before, after)) {
+                        // console.log(`${declaration.absolutePath} EQUALS ${i}`);
                         break;
                     }
                     declaration = after;
                 }
 
-                return declaration.patch({ resolved: true } as const);
+                // don't automatically patch a declaration as resolved.
+                return declaration;
             }
         });
     }
@@ -128,13 +130,13 @@ export class Compiler {
         return this.analyzeExecutor.getOutputsByType("analyze");
     }
 
-    async getAllResolvedDeclarations(declarations: AnalyzedDeclaration[]): Promise<ResolvedDeclaration[]> {
+    async getMaybeResolvedDeclarations(declarations: AnalyzedDeclaration[]): Promise<MaybeResolvedDeclaration[]> {
         const builder = this.compileExecutor.builder();
         const lookup = new Map(declarations.map(d => [d.absolutePath, d]));
         for (const declaration of declarations) {
             const externalRefs = declaration.externals.filter(e => lookup.has(e)).map(e => ({ ref: e }));
             //  externalRefs as any because the graph doesn't know that these references are valid yet.
-            builder.append(declaration.absolutePath, "resolve", declaration, ...externalRefs as any);
+            builder.append(declaration.absolutePath, "resolveSolo", declaration, ...externalRefs as any);
         }
         try {
             this.compileExecutor.update(builder.build());
@@ -148,14 +150,14 @@ export class Compiler {
             throw e;
         }
         await this.compileExecutor.execute();
-        return this.compileExecutor.getOutputsByType("resolve");
+        return this.compileExecutor.getOutputsByType("resolveSolo");
     }
 
-    async compileAllFiles(): Promise<ResolvedDeclaration[]> {
+    async compileAllFiles(): Promise<MaybeResolvedDeclaration[]> {
         try {
             const parsedDeclarations = await this.getAllParsedDeclarations();
             const analyzedDeclarations = await this.getAllAnalyzedDeclarations(parsedDeclarations);
-            const resolvedDeclarations = await this.getAllResolvedDeclarations(analyzedDeclarations);
+            const resolvedDeclarations = await this.getMaybeResolvedDeclarations(analyzedDeclarations);
             return resolvedDeclarations;
         }
         catch (e) {

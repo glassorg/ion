@@ -1,6 +1,6 @@
 import { strict as assert } from "assert";
-import { CompileError, Compiler } from "./Compiler";
-import { MemoryFileSystem } from "./filesystem/MemoryFileSystem";
+import { CompileError, Compiler } from "../Compiler";
+import { MemoryFileSystem } from "../filesystem/MemoryFileSystem";
 
 const filename = "sample.ion";
 

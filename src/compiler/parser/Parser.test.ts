@@ -837,3 +837,44 @@ testParseExpression(`(a: Integer): Integer => a`, {
         }
     }
 })
+
+testParseExpression(`function sample() => 1 + 2
+`, {
+    "": "FunctionDeclaration",
+    "id": {
+        "": "Declarator",
+        "name": "sample"
+    },
+    "meta": [],
+    "values": [
+        {
+            "": "FunctionExpression",
+            "parameters": [],
+            "body": {
+                "": "BlockStatement",
+                "statements": [
+                    {
+                        "": "ExpressionStatement",
+                        "expression": {
+                            "": "CallExpression",
+                            "callee": {
+                                "": "Reference",
+                                "name": "+"
+                            },
+                            "args": [
+                                {
+                                    "": "IntegerLiteral",
+                                    "value": 1
+                                },
+                                {
+                                    "": "IntegerLiteral",
+                                    "value": 2
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+});

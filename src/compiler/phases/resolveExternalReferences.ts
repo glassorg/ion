@@ -10,14 +10,21 @@ export function resolveExternalReferences(root: AnalyzedDeclaration, externals: 
     const found = new Set<string>();
     root = traverse(root, {
         leave(node) {
+            const DEBUG = root.absolutePath === "Integer.sample";
+            const debug = (...messages: any[]) => {
+                if (DEBUG) {
+                    console.log(...messages);
+                }
+            }
             if (node instanceof Reference) {
                 if (node.name === root.id.name) {
                     // self reference.
                     throw new SemanticError(`Only recursive functions can self reference, but not yet`, node);
                 }
                 const scope = scopes.get(node);
-                const declaration = scope[node.name];
-                if (!declaration) {
+                const declarations = scope[node.name];
+                debug("Reference", { node, declarations });
+                if (!declarations) {
                     const possiblePaths = getPossiblePaths(root.absolutePath, node.name);
                     for (const path of possiblePaths) {
                         const external = scope[path];

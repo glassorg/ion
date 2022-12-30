@@ -1,8 +1,8 @@
 import path = require("path");
-import { Compiler } from "./Compiler";
-import { NodeFileSystem } from "./filesystem/NodeFileSystem";
+import { Compiler } from "../Compiler";
+import { NodeFileSystem } from "../filesystem/NodeFileSystem";
 
-const ionCoreFolder = path.resolve(path.join(__dirname, "../../src/ion"));
+const ionCoreFolder = path.resolve(path.join(__dirname, "../../../src/ion"));
 
 async function testCompile() {
     const debug = true;

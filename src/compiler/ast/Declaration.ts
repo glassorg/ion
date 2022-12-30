@@ -12,9 +12,13 @@ export interface AnalyzedDeclaration extends ParsedDeclaration {
     externals: string[];
 }
 
+export type AnalyzedDeclarationMap = Record<string,AnalyzedDeclaration>;
+
 export interface ResolvedDeclaration extends AnalyzedDeclaration {
     resolved: true;
 }
+
+export type MaybeResolvedDeclaration = AnalyzedDeclaration | ResolvedDeclaration;
 
 export function isRootDeclaration(value: unknown): value is ParsedDeclaration {
     return value instanceof Declaration && value.isRoot;

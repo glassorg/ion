@@ -49,7 +49,7 @@ export class FunctionExpression extends Expression implements Scope {
             declaredType = left.declaredType;
             left = left.value;
         }
-        let parameters = left!.split(",").map(FunctionExpression.parameterFromNode);
+        let parameters = left?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
         let body!: BlockStatement;
         let location!: SourceLocation;
         if (right instanceof BlockStatement) {
