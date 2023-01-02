@@ -45,8 +45,19 @@ export abstract class Declaration extends Statement {
         return typeof this.absolutePath === "string";
     }
 
+    toAstDeclarations(): ParsedDeclaration[] {
+        return [this as ParsedDeclaration];
+    }
+
     toMetaString() {
-        return this.meta.map(m => `${m}\n`).join(``);
+        let metaStrings
+            = (
+                this.isRoot ? `// absolutePath: ${this.absolutePath}\n`
+                    + `// externals: ${JSON.stringify(this.externals ?? null)}\n`
+                    : ``
+            )
+            + this.meta.map(m => `${m}\n`).join(``);
+        return metaStrings;
     }
 
 }

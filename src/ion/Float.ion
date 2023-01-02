@@ -1,8 +1,12 @@
 
-// @Native()
-// struct Float
+@Native()
+struct Float
 
-// function `+`
-//     (a: Float, b: Float): Float => @Native()
-//     (a: Integer, b: Float): Float => @Native()
-//     (a: Float, b: Integer): Float => @Native()
+function integer(a: Float): Integer => @Native()
+function fraction(a: Float): Float => @Native()
+function float(a: Integer): Float => @Native()
+
+function `+`
+     (a: Float, b: Float): Float => @Native()
+     (a: Integer, b: Float): Float => a.float + b
+     (a: Float, b: Integer): Float => a + b.float

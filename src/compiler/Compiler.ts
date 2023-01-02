@@ -1,4 +1,4 @@
-import { AnalyzedDeclaration, AnalyzedDeclarationMap, MaybeResolvedDeclaration, ParsedDeclaration, ResolvedDeclaration } from "./ast/Declaration";
+import { AnalyzedDeclaration, MaybeResolvedDeclaration, ParsedDeclaration, ResolvedDeclaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
 import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
@@ -9,6 +9,7 @@ import { resolveExternalReferences } from "./phases/resolveExternalReferences";
 import { resolveSingleStep } from "./phases/resolveSingleStep";
 import { semanticAnalysis } from "./phases/semanticAnalysis";
 import * as phases from "./phases/index";
+import { mergeAllDeclarations } from "./phases/mergeAllDeclarations";
 
 export interface CompilerOptions {
     debugPattern?: RegExp;
@@ -49,19 +50,6 @@ export class Compiler {
         return await this.fileSystem.find(this.filePattern);
     }
 
-    mergeAllDeclarations(moduleDeclarations: ParsedDeclaration[][]): ParsedDeclaration[] {
-        const map = new Map<string, ParsedDeclaration>();
-        for (const declarations of moduleDeclarations) {
-            for (const declaration of declarations) {
-                if (map.has(declaration.absolutePath)) {
-                    throw new Error(`Collision at absolute path: ${declaration.absolutePath}`);
-                }
-                map.set(declaration.absolutePath, declaration);
-            }
-        }
-        return [...map.values()];
-    }
-
     log<T extends ParsedDeclaration>(name: string, declaration: T): T {
         this.logger(name, declaration, declaration.absolutePath);
         return declaration;
@@ -71,7 +59,9 @@ export class Compiler {
         return defineGraphFunctions({
             parse: async (filename: string, source: string): Promise<ParsedDeclaration[]> => {
                 const mod = this.parser.parseModule(filename, source);
-                const declarations = mod.declarations.map(d => d.patch({ absolutePath: getAbsolutePath(d.location.filename, d.id.name) }));
+                const declarations = mod.declarations.map(d => d.patch({
+                    absolutePath: getAbsolutePath(d.location.filename, d.id.name),
+                }).toAstDeclarations()).flat();
                 return declarations;
             },
             analyze: async (declaration: ParsedDeclaration): Promise<AnalyzedDeclaration> => {
@@ -117,7 +107,7 @@ export class Compiler {
         }
         this.parseExecutor.update(builder.build());
         await this.parseExecutor.execute();
-        return this.mergeAllDeclarations(this.parseExecutor.getOutputsByType("parse"));
+        return mergeAllDeclarations(this.parseExecutor.getOutputsByType("parse"));
     }
 
     async getAllAnalyzedDeclarations(declarations: ParsedDeclaration[]): Promise<AnalyzedDeclaration[]> {
@@ -157,8 +147,9 @@ export class Compiler {
         try {
             const parsedDeclarations = await this.getAllParsedDeclarations();
             const analyzedDeclarations = await this.getAllAnalyzedDeclarations(parsedDeclarations);
-            const resolvedDeclarations = await this.getMaybeResolvedDeclarations(analyzedDeclarations);
-            return resolvedDeclarations;
+            const maybeResolvedDeclarations = await this.getMaybeResolvedDeclarations(analyzedDeclarations);
+            // next we have to do combined resolution.
+            return maybeResolvedDeclarations;
         }
         catch (e) {
             if (e instanceof SemanticError || Array.isArray(e)) {

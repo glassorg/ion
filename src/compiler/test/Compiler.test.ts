@@ -95,9 +95,8 @@ function add(a: Integer, b: Integer) =>
 await testCompile(`
 type Integer = 1
 type Float = 1
-function add
-    (a: Integer) => a
-    (a: Float) => a
+function add(a: Integer) => a
+function add(a: Float) => a
 `)
 
 }

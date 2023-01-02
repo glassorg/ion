@@ -19,7 +19,7 @@ export function resolveExternalReferences(root: AnalyzedDeclaration, externals: 
             if (node instanceof Reference) {
                 if (node.name === root.id.name) {
                     // self reference.
-                    throw new SemanticError(`Only recursive functions can self reference, but not yet`, node);
+                    // throw new SemanticError(`Only recursive functions can self reference, but not yet`, node);
                 }
                 const scope = scopes.get(node);
                 const declarations = scope[node.name];

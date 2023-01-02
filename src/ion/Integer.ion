@@ -2,6 +2,4 @@
 @Native()
 struct Integer
 
-// function `+`(a: Integer, b: Integer) => @Native()
-
-// function sample() => 1 + 2
+function `+`(a: Integer, b: Integer): Integer => @Native()

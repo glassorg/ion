@@ -13,26 +13,30 @@ export class FunctionParselet extends PrefixParselet {
 
     parse(p: Parser, functionToken: Token): AstNode {
         let id = p.consumeOne(TokenNames.Id, TokenNames.EscapedId);
-        if (id.type === TokenNames.EscapedId) {
+        let absolute = id.type === TokenNames.EscapedId; 
+        if (absolute) {
             // hack to fix escaped id
             id = id.patch({ value: id.value.slice(1, -1) });
         }
         p.whitespace();
-        const maybeMultiFunctionBlock = p.maybeParseBlock();
-        let values = (maybeMultiFunctionBlock?.statements
-            ?? [p.parseExpression()]).map(value => {
-                if (value instanceof ExpressionStatement) {
-                    value = value.expression;
-                }
-                if (!(value instanceof FunctionExpression)) {
-                    throw new SemanticError(`Expected FunctionExpression`, value);
-                }
-                return value;
-            });
-        
+        let value = p.parseExpression();
+        if (!(value instanceof FunctionExpression)) {
+            throw new SemanticError(`Expected FunctionExpression`, value);
+        }
+        // const maybeMultiFunctionBlock = p.maybeParseBlock();
+        // let values = (maybeMultiFunctionBlock?.statements
+        //     ?? [p.parseExpression()]).map(value => {
+        //         if (value instanceof ExpressionStatement) {
+        //             value = value.expression;
+        //         }
+        //         if (!(value instanceof FunctionExpression)) {
+        //             throw new SemanticError(`Expected FunctionExpression`, value);
+        //         }
+        //         return value;
+        //     });
         // might be a multi function?
-        let location = functionToken.location.merge(values[values.length - 1].location);
-        return new FunctionDeclaration(location, new Declarator(id.location, id.value), ...values);
+        let location = functionToken.location.merge(value.location);
+        return new FunctionDeclaration(location, new Declarator(id.location, id.value), value);
     }
 
 }

@@ -411,71 +411,70 @@ testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
         "name": "add"
     },
     "meta": [],
-    "values": [
-        {
-            "": "FunctionExpression",
-            "parameters": [
-                {
-                    "": "ParameterDeclaration",
-                    "id": {
-                        "": "Declarator",
-                        "name": "x"
+    "value":
+    {
+        "": "FunctionExpression",
+        "parameters": [
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "x"
+                },
+                "meta": [],
+                "valueType": {
+                    "": "ComparisonExpression",
+                    "left": {
+                        "": "DotExpression"
                     },
-                    "meta": [],
-                    "valueType": {
-                        "": "ComparisonExpression",
-                        "left": {
-                            "": "DotExpression"
-                        },
-                        "operator": "is",
-                        "right": {
-                            "": "Reference",
-                            "name": "Number"
-                        }
-                    },
-                    "defaultValue": {
-                        "": "IntegerLiteral",
-                        "value": 0
+                    "operator": "is",
+                    "right": {
+                        "": "Reference",
+                        "name": "Number"
                     }
                 },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            },
+            {
+                "": "ParameterDeclaration",
+                "id": {
+                    "": "Declarator",
+                    "name": "y"
+                },
+                "meta": [],
+                "valueType": {
+                    "": "ComparisonExpression",
+                    "left": {
+                        "": "DotExpression"
+                    },
+                    "operator": "is",
+                    "right": {
+                        "": "Reference",
+                        "name": "Number"
+                    }
+                },
+                "defaultValue": {
+                    "": "IntegerLiteral",
+                    "value": 0
+                }
+            }
+        ],
+        "body": {
+            "": "BlockStatement",
+            "statements": [
                 {
-                    "": "ParameterDeclaration",
-                    "id": {
-                        "": "Declarator",
-                        "name": "y"
-                    },
-                    "meta": [],
-                    "valueType": {
-                        "": "ComparisonExpression",
-                        "left": {
-                            "": "DotExpression"
-                        },
-                        "operator": "is",
-                        "right": {
-                            "": "Reference",
-                            "name": "Number"
-                        }
-                    },
-                    "defaultValue": {
-                        "": "IntegerLiteral",
-                        "value": 0
+                    "": "ExpressionStatement",
+                    "expression": {
+                        "": "Reference",
+                        "name": "x"
                     }
                 }
-            ],
-            "body": {
-                "": "BlockStatement",
-                "statements": [
-                    {
-                        "": "ExpressionStatement",
-                        "expression": {
-                            "": "Reference",
-                            "name": "x"
-                        }
-                    }
-                ]
-            }
+            ]
         }
-    ]
+    }
 });
 
 testParseExpression(
@@ -703,93 +702,6 @@ testParseExpression("x <= y", {
     }
 });
 
-testParseExpression(`
-function add
-    (a: Integer) => a
-    (a: Float) => a
-`, {
-    "": "FunctionDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "add"
-    },
-    "meta": [],
-    "values": [
-        {
-            "": "FunctionExpression",
-            "parameters": [
-                {
-                    "": "ParameterDeclaration",
-                    "id": {
-                        "": "Declarator",
-                        "name": "a"
-                    },
-                    "meta": [],
-                    "valueType": {
-                        "": "ComparisonExpression",
-                        "left": {
-                            "": "DotExpression"
-                        },
-                        "operator": "is",
-                        "right": {
-                            "": "Reference",
-                            "name": "Integer"
-                        }
-                    }
-                }
-            ],
-            "body": {
-                "": "BlockStatement",
-                "statements": [
-                    {
-                        "": "ExpressionStatement",
-                        "expression": {
-                            "": "Reference",
-                            "name": "a"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "": "FunctionExpression",
-            "parameters": [
-                {
-                    "": "ParameterDeclaration",
-                    "id": {
-                        "": "Declarator",
-                        "name": "a"
-                    },
-                    "meta": [],
-                    "valueType": {
-                        "": "ComparisonExpression",
-                        "left": {
-                            "": "DotExpression"
-                        },
-                        "operator": "is",
-                        "right": {
-                            "": "Reference",
-                            "name": "Float"
-                        }
-                    }
-                }
-            ],
-            "body": {
-                "": "BlockStatement",
-                "statements": [
-                    {
-                        "": "ExpressionStatement",
-                        "expression": {
-                            "": "Reference",
-                            "name": "a"
-                        }
-                    }
-                ]
-            }
-        }
-    ]
-});
-
 testParseExpression(`(a: Integer): Integer => a`, {
     "": "FunctionExpression",
     "parameters": [
@@ -846,35 +758,34 @@ testParseExpression(`function sample() => 1 + 2
         "name": "sample"
     },
     "meta": [],
-    "values": [
-        {
-            "": "FunctionExpression",
-            "parameters": [],
-            "body": {
-                "": "BlockStatement",
-                "statements": [
-                    {
-                        "": "ExpressionStatement",
-                        "expression": {
-                            "": "CallExpression",
-                            "callee": {
-                                "": "Reference",
-                                "name": "+"
+    "value":
+    {
+        "": "FunctionExpression",
+        "parameters": [],
+        "body": {
+            "": "BlockStatement",
+            "statements": [
+                {
+                    "": "ExpressionStatement",
+                    "expression": {
+                        "": "CallExpression",
+                        "callee": {
+                            "": "Reference",
+                            "name": "+"
+                        },
+                        "args": [
+                            {
+                                "": "IntegerLiteral",
+                                "value": 1
                             },
-                            "args": [
-                                {
-                                    "": "IntegerLiteral",
-                                    "value": 1
-                                },
-                                {
-                                    "": "IntegerLiteral",
-                                    "value": 2
-                                }
-                            ]
-                        }
+                            {
+                                "": "IntegerLiteral",
+                                "value": 2
+                            }
+                        ]
                     }
-                ]
-            }
+                }
+            ]
         }
-    ]
+    }
 });

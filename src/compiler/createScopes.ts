@@ -1,5 +1,5 @@
 import { AstNode } from "./ast/AstNode"
-import { Declaration } from "./ast/Declaration"
+import { Declaration, isRootDeclaration, ParsedDeclaration } from "./ast/Declaration"
 import { isScope } from "./ast/Scope";
 import { traverse } from "./common/traverse";
 
@@ -14,18 +14,21 @@ export interface Scopes {
  * Returns a Map which will contain a scope object with variable names returning Declarations.
  * @param root the ast
  */
-export function createScopes(root: Declaration, externals: Declaration[] = []): Scopes {
+export function createScopes(root: Declaration, externals: ParsedDeclaration[] = []): Scopes {
     let globalScope: Scope = {};
     let map = new Map<AstNode, Scope>();
     let scopes: Scope[] = [globalScope];
 
-    const declare = (declaration: Declaration) => {
+    const declare = (declaration: Declaration, name = declaration.id.name) => {
         let scope = scopes[scopes.length - 1];
-        (scope[declaration.id.name] ??= []).push(declaration);
+        (scope[name] ??= []).push(declaration);
     }
 
     for (const external of externals) {
         declare(external);
+        if (external.absolutePath !== external.id.name) {
+            declare(external, external.absolutePath);
+        }
     }
 
     traverse(root, {

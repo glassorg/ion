@@ -2,6 +2,7 @@ import { isValidId } from "../common/names";
 import { EvaluationContext } from "../EvaluationContext";
 import { AstNode } from "./AstNode";
 import { ConstantDeclaration } from "./ConstantDeclaration";
+import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
 import { Literal } from "./Literal";
 import { SourceLocation } from "./SourceLocation";
@@ -16,15 +17,20 @@ export class Reference extends Expression {
         super(location);
     }
 
+    get isAbsolute() {
+        return false;
+    }
+
     get isReference() {
         return true;
     }
 
+    toDeclarator() {
+        return new Declarator(this.location, this.name);
+    }
+
     protected *dependencies(c: EvaluationContext): Generator<AstNode, any, unknown> {
         yield c.getSingleDeclaration(this);
-        // for (const declaration of c.getDeclarations(this)) {
-        //     yield declaration;
-        // }
     }
 
     resolve(this: Reference, c: EvaluationContext): AstNode | void {

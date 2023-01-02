@@ -13,7 +13,12 @@ export function createLogger(debugPattern?: RegExp): LogFunction {
             if (channel) {
                 diffLogger(stepName, stepState?.toString(), `${channel}!`);
             }
-            diffLogger(stepName, ISONDebug.stringify(stepState), channel);
+            if (stepState === undefined) {
+                diffLogger(stepName, ISONDebug.stringify(stepState), channel);
+            }
+            else {
+                diffLogger(stepName, ISONDebug.stringify(stepState), channel);
+            }
         }
     }
 }

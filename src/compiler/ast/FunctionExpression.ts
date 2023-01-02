@@ -35,7 +35,7 @@ export class FunctionExpression extends Expression implements Scope {
             return node;
         }
         if (node instanceof Reference) {
-            return new ParameterDeclaration(node.location, new Declarator(node.location, node.name), null, null);
+            return new ParameterDeclaration(node.location, node.toDeclarator(), null, null);
         }
         if (node instanceof VariableDeclaration) {
             return new ParameterDeclaration(node.location, node.id, node.valueType, node.defaultValue);

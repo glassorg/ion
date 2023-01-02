@@ -25,7 +25,7 @@ export class ConstantParselet extends PrefixParselet {
         }
         return this.factory(
             constToken.location.merge(assignment.location),
-            new Declarator(assignment.left.location, assignment.left.name),
+            assignment.left.toDeclarator(),
             assignment.right
         );
     }
