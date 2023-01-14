@@ -14,6 +14,8 @@ export class SourceLocation extends Immutable {
         super();
     }
 
+    public static empty = new SourceLocation("empty", 0, 0, 0, 0, 0, 0);
+
     merge(b?: SourceLocation): SourceLocation {
         return b ? SourceLocation.merge(this, b) : this;
     }

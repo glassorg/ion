@@ -29,7 +29,7 @@ export class EvaluationContext {
         return this.getDeclarationsFromName(ref, ref.name);
     }
 
-    getDeclarationsFromName(from: AstNode, name: string): Declaration[] | undefined {
+    getDeclarationsFromName(from: AstNode, name: string): Declaration[] {
         const scope = this.scopes.get(this.lookup.getOriginal(from));
         return scope[name];
     }

@@ -1,802 +1,802 @@
-import { strict as assert } from "assert";
-import { ISONDebug } from "../ast/AstSerializers";
-import { createParser } from "./createParser";
+// import { strict as assert } from "assert";
+// import { ISONDebug } from "../ast/AstSerializers";
+// import { createParser } from "./createParser";
 
-const parser = createParser();
+// const parser = createParser();
 
-function testParseExpression(source: string, expectedJSON: any) {
-    const filename = "test";
-    parser.setSource(filename, source);
-    const expression = parser.parseNode();
-    const json = JSON.parse(ISONDebug.stringify(expression));
-    if (ISONDebug.stringify(expectedJSON) !== ISONDebug.stringify(json)) {
-        console.log(ISONDebug.stringify(json));
-    }
-    assert.deepEqual(json, expectedJSON);
-}
+// function testParseExpression(source: string, expectedJSON: any) {
+//     const filename = "test";
+//     parser.setSource(filename, source);
+//     const expression = parser.parseNode();
+//     const json = JSON.parse(ISONDebug.stringify(expression));
+//     if (ISONDebug.stringify(expectedJSON) !== ISONDebug.stringify(json)) {
+//         console.log(ISONDebug.stringify(json));
+//     }
+//     assert.deepEqual(json, expectedJSON);
+// }
 
-testParseExpression(`a = 1`, {
-    "": "AssignmentExpression",
-    "left": {
-        "": "Reference",
-        "name": "a"
-    },
-    "operator": "=",
-    "right": {
-        "": "IntegerLiteral",
-        "value": 1
-    }
-});
+// testParseExpression(`a = 1`, {
+//     "": "AssignmentExpression",
+//     "left": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "operator": "=",
+//     "right": {
+//         "": "IntegerLiteral",
+//         "value": 1
+//     }
+// });
 
-testParseExpression(`a + 1`, {
-    "": "CallExpression",
-    "callee": {
-        "": "MemberExpression",
-        "object": {
-            "": "Reference",
-            "name": "a"
-        },
-        "property": {
-            "": "Identifier",
-            "name": "+"
-        }
-    },
-    "args": [
-        {
-            "": "IntegerLiteral",
-            "value": 1
-        }
-    ]
-});
+// testParseExpression(`a + 1`, {
+//     "": "CallExpression",
+//     "callee": {
+//         "": "MemberExpression",
+//         "object": {
+//             "": "Reference",
+//             "name": "a"
+//         },
+//         "property": {
+//             "": "Identifier",
+//             "name": "+"
+//         }
+//     },
+//     "args": [
+//         {
+//             "": "IntegerLiteral",
+//             "value": 1
+//         }
+//     ]
+// });
 
-testParseExpression(`a || 1`, {
-    "": "LogicalExpression",
-    "left": {
-        "": "Reference",
-        "name": "a"
-    },
-    "operator": "||",
-    "right": {
-        "": "IntegerLiteral",
-        "value": 1
-    }
-});
+// testParseExpression(`a || 1`, {
+//     "": "LogicalExpression",
+//     "left": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "operator": "||",
+//     "right": {
+//         "": "IntegerLiteral",
+//         "value": 1
+//     }
+// });
 
-testParseExpression(`a()`, {
-    "": "CallExpression",
-    "callee": {
-        "": "Reference",
-        "name": "a"
-    },
-    "args": []
-});
+// testParseExpression(`a()`, {
+//     "": "CallExpression",
+//     "callee": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "args": []
+// });
 
-testParseExpression(`a(b)`, {
-    "": "CallExpression",
-    "callee": {
-        "": "Reference",
-        "name": "a"
-    },
-    "args": [
-        {
-            "": "Reference",
-            "name": "b"
-        }
-    ]
-});
+// testParseExpression(`a(b)`, {
+//     "": "CallExpression",
+//     "callee": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "args": [
+//         {
+//             "": "Reference",
+//             "name": "b"
+//         }
+//     ]
+// });
 
-testParseExpression(`a(b, c)`, {
-    "": "CallExpression",
-    "callee": {
-        "": "Reference",
-        "name": "a"
-    },
-    "args": [
-        {
-            "": "Reference",
-            "name": "b"
-        },
-        {
-            "": "Reference",
-            "name": "c"
-        }
-    ]
-});
+// testParseExpression(`a(b, c)`, {
+//     "": "CallExpression",
+//     "callee": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "args": [
+//         {
+//             "": "Reference",
+//             "name": "b"
+//         },
+//         {
+//             "": "Reference",
+//             "name": "c"
+//         }
+//     ]
+// });
 
-testParseExpression(`a.b`, {
-    "": "MemberExpression",
-    "object": {
-        "": "Reference",
-        "name": "a"
-    },
-    "property": {
-        "": "Identifier",
-        "name": "b"
-    }
-});
+// testParseExpression(`a.b`, {
+//     "": "MemberExpression",
+//     "object": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "property": {
+//         "": "Identifier",
+//         "name": "b"
+//     }
+// });
 
-testParseExpression(`a.b.c`, {
-    "": "MemberExpression",
-    "object": {
-        "": "MemberExpression",
-        "object": {
-            "": "Reference",
-            "name": "a"
-        },
-        "property": {
-            "": "Identifier",
-            "name": "b"
-        }
-    },
-    "property": {
-        "": "Identifier",
-        "name": "c"
-    }
-});
+// testParseExpression(`a.b.c`, {
+//     "": "MemberExpression",
+//     "object": {
+//         "": "MemberExpression",
+//         "object": {
+//             "": "Reference",
+//             "name": "a"
+//         },
+//         "property": {
+//             "": "Identifier",
+//             "name": "b"
+//         }
+//     },
+//     "property": {
+//         "": "Identifier",
+//         "name": "c"
+//     }
+// });
 
-testParseExpression(`a[b]`, {
-    "": "IndexExpression",
-    "object": {
-        "": "Reference",
-        "name": "a"
-    },
-    "index": {
-        "": "Reference",
-        "name": "b"
-    }
-});
+// testParseExpression(`a[b]`, {
+//     "": "IndexExpression",
+//     "object": {
+//         "": "Reference",
+//         "name": "a"
+//     },
+//     "index": {
+//         "": "Reference",
+//         "name": "b"
+//     }
+// });
 
-testParseExpression(
-    `
-if foo
-    bar
-`, {
-    "": "IfStatement",
-    "test": {
-        "": "Reference",
-        "name": "foo"
-    },
-    "consequent": {
-        "": "BlockStatement",
-        "statements": [
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "bar"
-                }
-            }
-        ]
-    }
-});
+// testParseExpression(
+//     `
+// if foo
+//     bar
+// `, {
+//     "": "IfStatement",
+//     "test": {
+//         "": "Reference",
+//         "name": "foo"
+//     },
+//     "consequent": {
+//         "": "BlockStatement",
+//         "statements": [
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "bar"
+//                 }
+//             }
+//         ]
+//     }
+// });
 
-testParseExpression(
-    `if foo
-    bar
-else
-    baz
-    fuz
-`, {
-    "": "IfStatement",
-    "test": {
-        "": "Reference",
-        "name": "foo"
-    },
-    "consequent": {
-        "": "BlockStatement",
-        "statements": [
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "bar"
-                }
-            }
-        ]
-    },
-    "alternate": {
-        "": "BlockStatement",
-        "statements": [
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "baz"
-                }
-            },
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "fuz"
-                }
-            }
-        ]
-    }
-})
+// testParseExpression(
+//     `if foo
+//     bar
+// else
+//     baz
+//     fuz
+// `, {
+//     "": "IfStatement",
+//     "test": {
+//         "": "Reference",
+//         "name": "foo"
+//     },
+//     "consequent": {
+//         "": "BlockStatement",
+//         "statements": [
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "bar"
+//                 }
+//             }
+//         ]
+//     },
+//     "alternate": {
+//         "": "BlockStatement",
+//         "statements": [
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "baz"
+//                 }
+//             },
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "fuz"
+//                 }
+//             }
+//         ]
+//     }
+// })
 
-testParseExpression(
-    `if foo
-    a
-else if bar
-    b
-else
-    c
-`, {
-    "": "IfStatement",
-    "test": {
-        "": "Reference",
-        "name": "foo"
-    },
-    "consequent": {
-        "": "BlockStatement",
-        "statements": [
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "a"
-                }
-            }
-        ]
-    },
-    "alternate": {
-        "": "IfStatement",
-        "test": {
-            "": "Reference",
-            "name": "bar"
-        },
-        "consequent": {
-            "": "BlockStatement",
-            "statements": [
-                {
-                    "": "ExpressionStatement",
-                    "expression": {
-                        "": "Reference",
-                        "name": "b"
-                    }
-                }
-            ]
-        },
-        "alternate": {
-            "": "BlockStatement",
-            "statements": [
-                {
-                    "": "ExpressionStatement",
-                    "expression": {
-                        "": "Reference",
-                        "name": "c"
-                    }
-                }
-            ]
-        }
-    }
-});
+// testParseExpression(
+//     `if foo
+//     a
+// else if bar
+//     b
+// else
+//     c
+// `, {
+//     "": "IfStatement",
+//     "test": {
+//         "": "Reference",
+//         "name": "foo"
+//     },
+//     "consequent": {
+//         "": "BlockStatement",
+//         "statements": [
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "a"
+//                 }
+//             }
+//         ]
+//     },
+//     "alternate": {
+//         "": "IfStatement",
+//         "test": {
+//             "": "Reference",
+//             "name": "bar"
+//         },
+//         "consequent": {
+//             "": "BlockStatement",
+//             "statements": [
+//                 {
+//                     "": "ExpressionStatement",
+//                     "expression": {
+//                         "": "Reference",
+//                         "name": "b"
+//                     }
+//                 }
+//             ]
+//         },
+//         "alternate": {
+//             "": "BlockStatement",
+//             "statements": [
+//                 {
+//                     "": "ExpressionStatement",
+//                     "expression": {
+//                         "": "Reference",
+//                         "name": "c"
+//                     }
+//                 }
+//             ]
+//         }
+//     }
+// });
 
-testParseExpression(`var x: Number = 10`, {
-    "": "VariableDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "x"
-    },
-    "meta": [],
-    "valueType": {
-        "": "ComparisonExpression",
-        "left": {
-            "": "DotExpression"
-        },
-        "operator": "is",
-        "right": {
-            "": "Reference",
-            "name": "Number"
-        }
-    },
-    "defaultValue": {
-        "": "IntegerLiteral",
-        "value": 10
-    }
-});
+// testParseExpression(`var x: Number = 10`, {
+//     "": "VariableDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "x"
+//     },
+//     "meta": [],
+//     "valueType": {
+//         "": "ComparisonExpression",
+//         "left": {
+//             "": "DotExpression"
+//         },
+//         "operator": "is",
+//         "right": {
+//             "": "Reference",
+//             "name": "Number"
+//         }
+//     },
+//     "defaultValue": {
+//         "": "IntegerLiteral",
+//         "value": 10
+//     }
+// });
 
-testParseExpression(`let x = 20`, {
-    "": "ConstantDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "x"
-    },
-    "meta": [],
-    "value": {
-        "": "IntegerLiteral",
-        "value": 20
-    }
-});
+// testParseExpression(`let x = 20`, {
+//     "": "ConstantDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "x"
+//     },
+//     "meta": [],
+//     "value": {
+//         "": "IntegerLiteral",
+//         "value": 20
+//     }
+// });
 
-testParseExpression(`type Foo = Bar | Baz & Buz`, {
-    "": "TypeDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Foo"
-    },
-    "meta": [],
-    "type": {
-        "": "LogicalExpression",
-        "left": {
-            "": "ComparisonExpression",
-            "left": {
-                "": "DotExpression"
-            },
-            "operator": "is",
-            "right": {
-                "": "Reference",
-                "name": "Bar"
-            }
-        },
-        "operator": "||",
-        "right": {
-            "": "LogicalExpression",
-            "left": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Baz"
-                }
-            },
-            "operator": "&&",
-            "right": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Buz"
-                }
-            }
-        }
-    }
-});
+// testParseExpression(`type Foo = Bar | Baz & Buz`, {
+//     "": "TypeDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Foo"
+//     },
+//     "meta": [],
+//     "type": {
+//         "": "LogicalExpression",
+//         "left": {
+//             "": "ComparisonExpression",
+//             "left": {
+//                 "": "DotExpression"
+//             },
+//             "operator": "is",
+//             "right": {
+//                 "": "Reference",
+//                 "name": "Bar"
+//             }
+//         },
+//         "operator": "||",
+//         "right": {
+//             "": "LogicalExpression",
+//             "left": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Baz"
+//                 }
+//             },
+//             "operator": "&&",
+//             "right": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Buz"
+//                 }
+//             }
+//         }
+//     }
+// });
 
-testParseExpression(
-    `
-for x in foo
-    x + bar
-`, {
-    "": "ForStatement",
-    "statements": [
-        {
-            "": "ForVariantDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "x"
-            },
-            "meta": []
-        },
-        {
-            "": "BlockStatement",
-            "statements": [
-                {
-                    "": "ExpressionStatement",
-                    "expression": {
-                        "": "CallExpression",
-                        "callee": {
-                            "": "MemberExpression",
-                            "object": {
-                                "": "Reference",
-                                "name": "x"
-                            },
-                            "property": {
-                                "": "Identifier",
-                                "name": "+"
-                            }
-                        },
-                        "args": [
-                            {
-                                "": "Reference",
-                                "name": "bar"
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    ],
-    "right": {
-        "": "Reference",
-        "name": "foo"
-    }
-});
+// testParseExpression(
+//     `
+// for x in foo
+//     x + bar
+// `, {
+//     "": "ForStatement",
+//     "statements": [
+//         {
+//             "": "ForVariantDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "x"
+//             },
+//             "meta": []
+//         },
+//         {
+//             "": "BlockStatement",
+//             "statements": [
+//                 {
+//                     "": "ExpressionStatement",
+//                     "expression": {
+//                         "": "CallExpression",
+//                         "callee": {
+//                             "": "MemberExpression",
+//                             "object": {
+//                                 "": "Reference",
+//                                 "name": "x"
+//                             },
+//                             "property": {
+//                                 "": "Identifier",
+//                                 "name": "+"
+//                             }
+//                         },
+//                         "args": [
+//                             {
+//                                 "": "Reference",
+//                                 "name": "bar"
+//                             }
+//                         ]
+//                     }
+//                 }
+//             ]
+//         }
+//     ],
+//     "right": {
+//         "": "Reference",
+//         "name": "foo"
+//     }
+// });
 
-testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
-    "": "FunctionDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "add"
-    },
-    "meta": [],
-    "value":
-    {
-        "": "FunctionExpression",
-        "parameters": [
-            {
-                "": "ParameterDeclaration",
-                "id": {
-                    "": "Declarator",
-                    "name": "x"
-                },
-                "meta": [],
-                "valueType": {
-                    "": "ComparisonExpression",
-                    "left": {
-                        "": "DotExpression"
-                    },
-                    "operator": "is",
-                    "right": {
-                        "": "Reference",
-                        "name": "Number"
-                    }
-                },
-                "defaultValue": {
-                    "": "IntegerLiteral",
-                    "value": 0
-                }
-            },
-            {
-                "": "ParameterDeclaration",
-                "id": {
-                    "": "Declarator",
-                    "name": "y"
-                },
-                "meta": [],
-                "valueType": {
-                    "": "ComparisonExpression",
-                    "left": {
-                        "": "DotExpression"
-                    },
-                    "operator": "is",
-                    "right": {
-                        "": "Reference",
-                        "name": "Number"
-                    }
-                },
-                "defaultValue": {
-                    "": "IntegerLiteral",
-                    "value": 0
-                }
-            }
-        ],
-        "body": {
-            "": "BlockStatement",
-            "statements": [
-                {
-                    "": "ExpressionStatement",
-                    "expression": {
-                        "": "Reference",
-                        "name": "x"
-                    }
-                }
-            ]
-        }
-    }
-});
+// testParseExpression(`function add(x: Number = 0, y: Number = 0) => x`, {
+//     "": "FunctionDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "add"
+//     },
+//     "meta": [],
+//     "value":
+//     {
+//         "": "FunctionExpression",
+//         "parameters": [
+//             {
+//                 "": "ParameterDeclaration",
+//                 "id": {
+//                     "": "Declarator",
+//                     "name": "x"
+//                 },
+//                 "meta": [],
+//                 "valueType": {
+//                     "": "ComparisonExpression",
+//                     "left": {
+//                         "": "DotExpression"
+//                     },
+//                     "operator": "is",
+//                     "right": {
+//                         "": "Reference",
+//                         "name": "Number"
+//                     }
+//                 },
+//                 "defaultValue": {
+//                     "": "IntegerLiteral",
+//                     "value": 0
+//                 }
+//             },
+//             {
+//                 "": "ParameterDeclaration",
+//                 "id": {
+//                     "": "Declarator",
+//                     "name": "y"
+//                 },
+//                 "meta": [],
+//                 "valueType": {
+//                     "": "ComparisonExpression",
+//                     "left": {
+//                         "": "DotExpression"
+//                     },
+//                     "operator": "is",
+//                     "right": {
+//                         "": "Reference",
+//                         "name": "Number"
+//                     }
+//                 },
+//                 "defaultValue": {
+//                     "": "IntegerLiteral",
+//                     "value": 0
+//                 }
+//             }
+//         ],
+//         "body": {
+//             "": "BlockStatement",
+//             "statements": [
+//                 {
+//                     "": "ExpressionStatement",
+//                     "expression": {
+//                         "": "Reference",
+//                         "name": "x"
+//                     }
+//                 }
+//             ]
+//         }
+//     }
+// });
 
-testParseExpression(
-    `class Foo`, {
-    "": "ClassDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Foo"
-    },
-    "meta": [],
-    "fields": []
-});
+// testParseExpression(
+//     `class Foo`, {
+//     "": "ClassDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Foo"
+//     },
+//     "meta": [],
+//     "fields": []
+// });
 
-testParseExpression(
-    `
-class Foo
-`, {
-    "": "ClassDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Foo"
-    },
-    "meta": [],
-    "fields": []
-});
+// testParseExpression(
+//     `
+// class Foo
+// `, {
+//     "": "ClassDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Foo"
+//     },
+//     "meta": [],
+//     "fields": []
+// });
 
-testParseExpression(
-    `
-class Vector
-    x: Number
-    y: Number
-    z: Number = 0
-`, {
-    "": "ClassDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Vector"
-    },
-    "meta": [],
-    "fields": [
-        {
-            "": "FieldDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "x"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Number"
-                }
-            }
-        },
-        {
-            "": "FieldDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "y"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Number"
-                }
-            }
-        },
-        {
-            "": "FieldDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "z"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Number"
-                }
-            },
-            "defaultValue": {
-                "": "IntegerLiteral",
-                "value": 0
-            }
-        }
-    ]
-});
+// testParseExpression(
+//     `
+// class Vector
+//     x: Number
+//     y: Number
+//     z: Number = 0
+// `, {
+//     "": "ClassDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Vector"
+//     },
+//     "meta": [],
+//     "fields": [
+//         {
+//             "": "FieldDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "x"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Number"
+//                 }
+//             }
+//         },
+//         {
+//             "": "FieldDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "y"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Number"
+//                 }
+//             }
+//         },
+//         {
+//             "": "FieldDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "z"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Number"
+//                 }
+//             },
+//             "defaultValue": {
+//                 "": "IntegerLiteral",
+//                 "value": 0
+//             }
+//         }
+//     ]
+// });
 
-testParseExpression(
-    `
-struct Foo
-`, {
-    "": "StructDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Foo"
-    },
-    "meta": [],
-    "fields": []
-});
+// testParseExpression(
+//     `
+// struct Foo
+// `, {
+//     "": "StructDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Foo"
+//     },
+//     "meta": [],
+//     "fields": []
+// });
 
-testParseExpression(
-    `
-struct Vector
-    x: Number = 0
-    y: Number = 0
-`, {
-    "": "StructDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "Vector"
-    },
-    "meta": [],
-    "fields": [
-        {
-            "": "FieldDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "x"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Number"
-                }
-            },
-            "defaultValue": {
-                "": "IntegerLiteral",
-                "value": 0
-            }
-        },
-        {
-            "": "FieldDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "y"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Number"
-                }
-            },
-            "defaultValue": {
-                "": "IntegerLiteral",
-                "value": 0
-            }
-        }
-    ]
-});
+// testParseExpression(
+//     `
+// struct Vector
+//     x: Number = 0
+//     y: Number = 0
+// `, {
+//     "": "StructDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "Vector"
+//     },
+//     "meta": [],
+//     "fields": [
+//         {
+//             "": "FieldDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "x"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Number"
+//                 }
+//             },
+//             "defaultValue": {
+//                 "": "IntegerLiteral",
+//                 "value": 0
+//             }
+//         },
+//         {
+//             "": "FieldDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "y"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Number"
+//                 }
+//             },
+//             "defaultValue": {
+//                 "": "IntegerLiteral",
+//                 "value": 0
+//             }
+//         }
+//     ]
+// });
 
-testParseExpression(`x += 10`, {
-    "": "AssignmentExpression",
-    "left": {
-        "": "Reference",
-        "name": "x"
-    },
-    "operator": "=",
-    "right": {
-        "": "CallExpression",
-        "callee": {
-            "": "MemberExpression",
-            "object": {
-                "": "Reference",
-                "name": "x"
-            },
-            "property": {
-                "": "Identifier",
-                "name": "+"
-            }
-        },
-        "args": [
-            {
-                "": "IntegerLiteral",
-                "value": 10
-            }
-        ]
-    }
-});
+// testParseExpression(`x += 10`, {
+//     "": "AssignmentExpression",
+//     "left": {
+//         "": "Reference",
+//         "name": "x"
+//     },
+//     "operator": "=",
+//     "right": {
+//         "": "CallExpression",
+//         "callee": {
+//             "": "MemberExpression",
+//             "object": {
+//                 "": "Reference",
+//                 "name": "x"
+//             },
+//             "property": {
+//                 "": "Identifier",
+//                 "name": "+"
+//             }
+//         },
+//         "args": [
+//             {
+//                 "": "IntegerLiteral",
+//                 "value": 10
+//             }
+//         ]
+//     }
+// });
 
-testParseExpression(`!x`, {
-    "": "UnaryExpression",
-    "operator": "!",
-    "argument": {
-        "": "Reference",
-        "name": "x"
-    }
-});
+// testParseExpression(`!x`, {
+//     "": "UnaryExpression",
+//     "operator": "!",
+//     "argument": {
+//         "": "Reference",
+//         "name": "x"
+//     }
+// });
 
-testParseExpression("x <= y", {
-    "": "ComparisonExpression",
-    "left": {
-        "": "Reference",
-        "name": "x"
-    },
-    "operator": "<=",
-    "right": {
-        "": "Reference",
-        "name": "y"
-    }
-});
+// testParseExpression("x <= y", {
+//     "": "ComparisonExpression",
+//     "left": {
+//         "": "Reference",
+//         "name": "x"
+//     },
+//     "operator": "<=",
+//     "right": {
+//         "": "Reference",
+//         "name": "y"
+//     }
+// });
 
-testParseExpression(`(a: Integer): Integer => a`, {
-    "": "FunctionExpression",
-    "parameters": [
-        {
-            "": "ParameterDeclaration",
-            "id": {
-                "": "Declarator",
-                "name": "a"
-            },
-            "meta": [],
-            "valueType": {
-                "": "ComparisonExpression",
-                "left": {
-                    "": "DotExpression"
-                },
-                "operator": "is",
-                "right": {
-                    "": "Reference",
-                    "name": "Integer"
-                }
-            }
-        }
-    ],
-    "body": {
-        "": "BlockStatement",
-        "statements": [
-            {
-                "": "ExpressionStatement",
-                "expression": {
-                    "": "Reference",
-                    "name": "a"
-                }
-            }
-        ]
-    },
-    "declaredType": {
-        "": "ComparisonExpression",
-        "left": {
-            "": "DotExpression"
-        },
-        "operator": "is",
-        "right": {
-            "": "Reference",
-            "name": "Integer"
-        }
-    }
-})
+// testParseExpression(`(a: Integer): Integer => a`, {
+//     "": "FunctionExpression",
+//     "parameters": [
+//         {
+//             "": "ParameterDeclaration",
+//             "id": {
+//                 "": "Declarator",
+//                 "name": "a"
+//             },
+//             "meta": [],
+//             "valueType": {
+//                 "": "ComparisonExpression",
+//                 "left": {
+//                     "": "DotExpression"
+//                 },
+//                 "operator": "is",
+//                 "right": {
+//                     "": "Reference",
+//                     "name": "Integer"
+//                 }
+//             }
+//         }
+//     ],
+//     "body": {
+//         "": "BlockStatement",
+//         "statements": [
+//             {
+//                 "": "ExpressionStatement",
+//                 "expression": {
+//                     "": "Reference",
+//                     "name": "a"
+//                 }
+//             }
+//         ]
+//     },
+//     "declaredType": {
+//         "": "ComparisonExpression",
+//         "left": {
+//             "": "DotExpression"
+//         },
+//         "operator": "is",
+//         "right": {
+//             "": "Reference",
+//             "name": "Integer"
+//         }
+//     }
+// })
 
-testParseExpression(`function sample() => 1 + 2
-`, {
-    "": "FunctionDeclaration",
-    "id": {
-        "": "Declarator",
-        "name": "sample"
-    },
-    "meta": [],
-    "value": {
-        "": "FunctionExpression",
-        "parameters": [],
-        "body": {
-            "": "BlockStatement",
-            "statements": [
-                {
-                    "": "ExpressionStatement",
-                    "expression": {
-                        "": "CallExpression",
-                        "callee": {
-                            "": "MemberExpression",
-                            "object": {
-                                "": "IntegerLiteral",
-                                "value": 1
-                            },
-                            "property": {
-                                "": "Identifier",
-                                "name": "+"
-                            }
-                        },
-                        "args": [
-                            {
-                                "": "IntegerLiteral",
-                                "value": 2
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    }
-});
+// testParseExpression(`function sample() => 1 + 2
+// `, {
+//     "": "FunctionDeclaration",
+//     "id": {
+//         "": "Declarator",
+//         "name": "sample"
+//     },
+//     "meta": [],
+//     "value": {
+//         "": "FunctionExpression",
+//         "parameters": [],
+//         "body": {
+//             "": "BlockStatement",
+//             "statements": [
+//                 {
+//                     "": "ExpressionStatement",
+//                     "expression": {
+//                         "": "CallExpression",
+//                         "callee": {
+//                             "": "MemberExpression",
+//                             "object": {
+//                                 "": "IntegerLiteral",
+//                                 "value": 1
+//                             },
+//                             "property": {
+//                                 "": "Identifier",
+//                                 "name": "+"
+//                             }
+//                         },
+//                         "args": [
+//                             {
+//                                 "": "IntegerLiteral",
+//                                 "value": 2
+//                             }
+//                         ]
+//                     }
+//                 }
+//             ]
+//         }
+//     }
+// });

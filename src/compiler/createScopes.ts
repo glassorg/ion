@@ -1,7 +1,6 @@
-import { debug } from "console";
+import { Assembly } from "./ast/Assembly";
 import { AstNode } from "./ast/AstNode"
-import { Declaration, ParsedDeclaration } from "./ast/Declaration"
-import { FunctionDeclaration } from "./ast/FunctionDeclaration";
+import { Declaration } from "./ast/Declaration"
 import { isScope } from "./ast/Scope";
 import { traverse } from "./common/traverse";
 
@@ -16,7 +15,7 @@ export interface Scopes {
  * Returns a Map which will contain a scope object with variable names returning Declarations.
  * @param root the ast
  */
-export function createScopes(root: Declaration, externals: ParsedDeclaration[] = []): Scopes {
+export function createScopes(root: Assembly): Scopes {
     let globalScope: Scope = {};
     let map = new Map<AstNode, Scope>();
     let scopes: Scope[] = [globalScope];
@@ -31,16 +30,6 @@ export function createScopes(root: Declaration, externals: ParsedDeclaration[] =
         else {
             currentScope[name] = value = [...(value ?? []), declaration];
             getDeclarationArraysOriginalScope.set(value, currentScope);
-        }
-    }
-
-    for (const external of externals) {
-        //  always declare the absolute path
-        declare(external, external.absolutePath);
-        //  if it's a function then we will also always declare it in the global scope as well.
-        if (external instanceof FunctionDeclaration && external.absolutePath !== external.id.name) {
-            // external functions are always declared in the global scope.
-            declare(external);
         }
     }
 

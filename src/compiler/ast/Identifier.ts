@@ -1,3 +1,4 @@
+import { isValidId } from "../common/names";
 import { AstNode } from "./AstNode";
 import { SourceLocation } from "./SourceLocation";
 
@@ -15,7 +16,7 @@ export class Identifier extends AstNode {
     }
 
     toString() {
-        return this.name;
+        return isValidId(this.name) ? this.name : "`" + this.name + "`";
     }
 
 }

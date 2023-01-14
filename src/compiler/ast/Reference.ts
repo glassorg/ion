@@ -30,29 +30,35 @@ export class Reference extends Expression {
     }
 
     protected *dependencies(c: EvaluationContext): Generator<AstNode, any, unknown> {
-        yield c.getSingleDeclaration(this);
+        const declarations = c.getDeclarations(this);
+        if (declarations) {
+            for (const declaration of declarations) {
+                yield declaration;
+            }
+        }
     }
 
     resolve(this: Reference, c: EvaluationContext): AstNode | void {
-        // really shouldn't get a single declaration... what if the reference is to a multifunction?
-        const declaration = c.getSingleDeclaration(this);
+        const declarations = c.getDeclarations(this);
+        if (declarations.length === 1) {
+            const declaration = declarations[0];
+            const resolvedType = declaration.declaredType instanceof UnaryExpression
+                ? declaration.declaredType
+                : new UnaryExpression(
+                    this.location,
+                    "typeof",
+                    this.patch({ resolved: true })
+                );
 
-        const resolvedType = declaration.declaredType instanceof UnaryExpression
-            ? declaration.declaredType
-            : new UnaryExpression(
-                this.location,
-                "typeof",
-                this.patch({ resolved: true })
-            );
-
-        if (declaration instanceof ConstantDeclaration) {
-            const { value } = declaration;
-            if (value instanceof Literal || value instanceof Reference) {
-                return (value as Expression).patch({ resolvedType });
+            if (declaration instanceof ConstantDeclaration) {
+                const { value } = declaration;
+                if (value instanceof Literal || value instanceof Reference) {
+                    return (value as Expression).patch({ resolvedType });
+                }
             }
-        }
-        if (this.resolvedType === undefined) {
-            return this.patch({ resolvedType });
+            if (this.resolvedType === undefined) {
+                return this.patch({ resolvedType });
+            }
         }
     }
 
