@@ -97,6 +97,6 @@ type Integer = 1
 type Float = 1
 function add(a: Integer) => a
 function add(a: Float) => a
-`)
+`,)
 
 }

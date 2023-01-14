@@ -1,3 +1,4 @@
+import { EvaluationContext } from "../EvaluationContext";
 import { InfixOperator } from "../Operators";
 import { Expression } from "./Expression";
 import { Reference } from "./Reference";
@@ -11,6 +12,11 @@ export class CallExpression extends Expression {
         public readonly args: Expression[],
     ){
         super(location);
+    }
+
+    protected *dependencies(c: EvaluationContext) {
+        yield this.callee;
+        yield* this.args;
     }
 
     *splitInternal(operator: InfixOperator): Generator<Expression> {

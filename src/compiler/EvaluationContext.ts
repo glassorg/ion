@@ -19,8 +19,8 @@ export class EvaluationContext {
 
     getSingleDeclarationFromName(from: AstNode, name: string): Declaration {
         const declarations = this.getDeclarationsFromName(from, name);
-        if (declarations.length !== 1) {
-            throw new SemanticError(`Expected a single declaration`, ...declarations);
+        if (declarations?.length !== 1) {
+            throw new SemanticError(`Expected a single declaration`, ...(declarations ?? []));
         }
         return declarations[0];
     }
@@ -29,7 +29,7 @@ export class EvaluationContext {
         return this.getDeclarationsFromName(ref, ref.name);
     }
 
-    getDeclarationsFromName(from: AstNode, name: string): Declaration[] {
+    getDeclarationsFromName(from: AstNode, name: string): Declaration[] | undefined {
         const scope = this.scopes.get(this.lookup.getOriginal(from));
         return scope[name];
     }

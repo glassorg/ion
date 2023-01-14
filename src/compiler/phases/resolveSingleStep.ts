@@ -4,9 +4,9 @@ import { skip, traverseWithContext } from "../common/traverse";
 
 type Log = (stageName: string, declaration: ParsedDeclaration) => void;
 
-export function resolveSingleStep(root: AnalyzedDeclaration, log: Log, externals: AnalyzedDeclaration[]): AnalyzedDeclaration
+export function resolveSingleStep(root: AnalyzedDeclaration, log: Log, externals: AnalyzedDeclaration[], phaseName: string): AnalyzedDeclaration
 export function resolveSingleStep(root: AnalyzedDeclarationMap, log: Log): AnalyzedDeclarationMap
-export function resolveSingleStep(root: AnalyzedDeclaration | AnalyzedDeclarationMap, log: Log, externals: AnalyzedDeclaration[] = []): AnalyzedDeclarationMap | AnalyzedDeclaration {
+export function resolveSingleStep(root: AnalyzedDeclaration | AnalyzedDeclarationMap, log: Log, externals: AnalyzedDeclaration[] = [], phaseName = "resolveSingleStep"): AnalyzedDeclarationMap | AnalyzedDeclaration {
     return traverseWithContext(root, externals, c => ({
         enter(node) {
             if (isRootDeclaration(node)) {
@@ -18,11 +18,17 @@ export function resolveSingleStep(root: AnalyzedDeclaration | AnalyzedDeclaratio
         leave(node) {
             const before = node;
             if (node instanceof AstNode) {
+                if (before.toString() === "`sample.a`") {
+                    debugger;
+                }
                 node = node.maybeResolve(c) ?? node;
+                if (before.toString() === "`sample.a`") {
+                    console.log(before + " => " + node);
+                }
             }
             if (isRootDeclaration(node)) {
                 if (before !== node) {
-                    log("resolveSingleStep", node);
+                    log(phaseName, node);
                 }
             }
             return node;

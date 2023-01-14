@@ -73,7 +73,6 @@ export class Compiler {
                 return analyzed;
             },
             resolveSolo: async (declaration: AnalyzedDeclaration, ...externals: ResolvedDeclaration[]): Promise<MaybeResolvedDeclaration> => {
-                // console.log(`Compile ${declaration.absolutePath}, externals: ${externals.map(e => e.absolutePath )}`);
                 declaration = resolveExternalReferences(declaration, externals);
                 this.log(`resolveExternalReferences`, declaration);
 
@@ -83,13 +82,11 @@ export class Compiler {
                 //  add in N phases of solo resolution
                 for (let i = 0; i < 100; i++) {
                     const before = declaration;
-                    const after = resolveSingleStep(declaration, this.log.bind(this), externals);
-                    // this.log(`resolveSolo ${i}`, declaration);
-                    if (equals(before, after)) {
+                    declaration = resolveSingleStep(declaration, this.log.bind(this), externals, `resolveSolo ${i}`);
+                    if (equals(before, declaration)) {
                         // console.log(`${declaration.absolutePath} EQUALS ${i}`);
                         break;
                     }
-                    declaration = after;
                 }
 
                 // don't automatically patch a declaration as resolved.

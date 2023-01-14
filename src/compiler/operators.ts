@@ -53,6 +53,8 @@ export const ComparisonOperators = {
 };
 
 export const LogicalOperators = {
+    "&": new Operator(12),
+    "|": new Operator(10),
     "&&": new Operator(7),
     "||": new Operator(6),
 }
@@ -92,12 +94,13 @@ export const InfixOperators = {
     //  default unknown operator precedence
     "+": new Operator(14, { overridable: true }),
     "-": new Operator(14, { overridable: true }),
-    "&": new Operator(12, { overridable: true }),
+    "&": LogicalOperators["&"],
     "^": new Operator(11, { overridable: true }),
-    "|": new Operator(10, { overridable: true }),
+    "|": LogicalOperators["|"],
     ...ComparisonOperators,
     "..": new Operator(8),
-    ...LogicalOperators,
+    "&&": LogicalOperators["&&"],
+    "||": LogicalOperators["||"],
     ":": new Operator(5),
     "=>": new Operator(4, { allowOutline: true }),
     ...AssignmentOperators,

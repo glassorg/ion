@@ -6,7 +6,7 @@ function integer(a: Float): Integer => @Native()
 function fraction(a: Float): Float => @Native()
 function float(a: Integer): Float => @Native()
 
-function `+`
-     (a: Float, b: Float): Float => @Native()
-     (a: Integer, b: Float): Float => a.float + b
-     (a: Float, b: Integer): Float => a + b.float
+function `+`(a: Float, b: Float): Float => @Native()
+function `+`(a: Integer, b: Float): Float => a.float + b
+function `+`(a: Float, b: Integer): Float => a + b.float
+

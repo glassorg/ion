@@ -3,7 +3,9 @@ import { AssignmentExpression } from "./AssignmentExpression";
 import { CallExpression } from "./CallExpression";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { Expression } from "./Expression";
+import { Identifier } from "./Identifier";
 import { LogicalExpression } from "./LogicalExpression";
+import { MemberExpression } from "./MemberExpression";
 import { Reference } from "./Reference";
 import { SequenceExpression } from "./SequenceExpression";
 import { SourceLocation } from "./SourceLocation";
@@ -24,7 +26,16 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     if (isSequenceOperator(operator)) {
         return new SequenceExpression(location, left, operator, right);
     }
-    return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
+    return new CallExpression(
+        location,
+        new MemberExpression(
+            SourceLocation.merge(left.location, operatorLocation),
+            left,
+            new Identifier(operatorLocation, operator)
+        ),
+        [right]
+    )
+    // return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }
 
 export function joinExpressions(operator: InfixOperator, expressions: Expression[]) {

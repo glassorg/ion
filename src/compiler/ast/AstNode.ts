@@ -17,7 +17,7 @@ export class AstNode extends Immutable {
     protected *dependencies(c: EvaluationContext): Generator<AstNode> {
     }
 
-    private areAllDependenciesResolved(c: EvaluationContext) {
+    protected areAllDependenciesResolved(c: EvaluationContext) {
         for (const dep of this.dependencies(c)) {
             if (!dep.resolved) {
                 return false;

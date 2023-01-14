@@ -1,5 +1,6 @@
 import { ParsedDeclaration } from "../ast/Declaration";
 import { FunctionDeclaration } from "../ast/FunctionDeclaration";
+import { joinPath } from "../common/pathFunctions";
 import { SemanticError } from "../SemanticError";
 
 export function mergeAllDeclarations(moduleDeclarations: ParsedDeclaration[][]): ParsedDeclaration[] {
@@ -31,7 +32,7 @@ export function mergeAllDeclarations(moduleDeclarations: ParsedDeclaration[][]):
     // ok, now we really do need to rename the things.
     return [...map.values()].map(value => {
         if (Array.isArray(value)) {
-            return value.map((item, index) => item.patch({ absolutePath: `${item.absolutePath}_${index + 1}`}));
+            return value.map((item, index) => item.patch({ absolutePath: joinPath(item.absolutePath, String(index + 1))}));
         }
         else {
             return value;

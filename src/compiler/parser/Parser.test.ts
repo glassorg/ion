@@ -31,14 +31,17 @@ testParseExpression(`a = 1`, {
 testParseExpression(`a + 1`, {
     "": "CallExpression",
     "callee": {
-        "": "Reference",
-        "name": "+"
-    },
-    "args": [
-        {
+        "": "MemberExpression",
+        "object": {
             "": "Reference",
             "name": "a"
         },
+        "property": {
+            "": "Identifier",
+            "name": "+"
+        }
+    },
+    "args": [
         {
             "": "IntegerLiteral",
             "value": 1
@@ -370,7 +373,7 @@ for x in foo
                 "": "Declarator",
                 "name": "x"
             },
-            "meta": [],
+            "meta": []
         },
         {
             "": "BlockStatement",
@@ -380,14 +383,17 @@ for x in foo
                     "expression": {
                         "": "CallExpression",
                         "callee": {
-                            "": "Reference",
-                            "name": "+"
-                        },
-                        "args": [
-                            {
+                            "": "MemberExpression",
+                            "object": {
                                 "": "Reference",
                                 "name": "x"
                             },
+                            "property": {
+                                "": "Identifier",
+                                "name": "+"
+                            }
+                        },
+                        "args": [
                             {
                                 "": "Reference",
                                 "name": "bar"
@@ -664,14 +670,17 @@ testParseExpression(`x += 10`, {
     "right": {
         "": "CallExpression",
         "callee": {
-            "": "Reference",
-            "name": "+"
-        },
-        "args": [
-            {
+            "": "MemberExpression",
+            "object": {
                 "": "Reference",
                 "name": "x"
             },
+            "property": {
+                "": "Identifier",
+                "name": "+"
+            }
+        },
+        "args": [
             {
                 "": "IntegerLiteral",
                 "value": 10
@@ -758,8 +767,7 @@ testParseExpression(`function sample() => 1 + 2
         "name": "sample"
     },
     "meta": [],
-    "value":
-    {
+    "value": {
         "": "FunctionExpression",
         "parameters": [],
         "body": {
@@ -770,14 +778,17 @@ testParseExpression(`function sample() => 1 + 2
                     "expression": {
                         "": "CallExpression",
                         "callee": {
-                            "": "Reference",
-                            "name": "+"
-                        },
-                        "args": [
-                            {
+                            "": "MemberExpression",
+                            "object": {
                                 "": "IntegerLiteral",
                                 "value": 1
                             },
+                            "property": {
+                                "": "Identifier",
+                                "name": "+"
+                            }
+                        },
+                        "args": [
                             {
                                 "": "IntegerLiteral",
                                 "value": 2

@@ -1,5 +1,7 @@
+import { debug } from "console";
 import { AstNode } from "./ast/AstNode"
-import { Declaration, isRootDeclaration, ParsedDeclaration } from "./ast/Declaration"
+import { Declaration, ParsedDeclaration } from "./ast/Declaration"
+import { FunctionDeclaration } from "./ast/FunctionDeclaration";
 import { isScope } from "./ast/Scope";
 import { traverse } from "./common/traverse";
 
@@ -18,16 +20,27 @@ export function createScopes(root: Declaration, externals: ParsedDeclaration[] =
     let globalScope: Scope = {};
     let map = new Map<AstNode, Scope>();
     let scopes: Scope[] = [globalScope];
+    let getDeclarationArraysOriginalScope = new Map<Declaration[], Scope>();
 
-    const declare = (declaration: Declaration, name = declaration.id.name) => {
-        let scope = scopes[scopes.length - 1];
-        (scope[name] ??= []).push(declaration);
+    function declare(declaration: Declaration, name = declaration.id.name, currentScope = scopes[scopes.length - 1]) {
+        let value: Declaration[] | undefined = currentScope[name];
+        let originalScope = getDeclarationArraysOriginalScope.get(value);
+        if (value && currentScope === originalScope) {
+            value.push(declaration);
+        }
+        else {
+            currentScope[name] = value = [...(value ?? []), declaration];
+            getDeclarationArraysOriginalScope.set(value, currentScope);
+        }
     }
 
     for (const external of externals) {
-        declare(external);
-        if (external.absolutePath !== external.id.name) {
-            declare(external, external.absolutePath);
+        //  always declare the absolute path
+        declare(external, external.absolutePath);
+        //  if it's a function then we will also always declare it in the global scope as well.
+        if (external instanceof FunctionDeclaration && external.absolutePath !== external.id.name) {
+            // external functions are always declared in the global scope.
+            declare(external);
         }
     }
 

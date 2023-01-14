@@ -84,9 +84,9 @@ Declaration                     1
 
 Every module level declaration has an absolute path.
 
-/path/to/File#File  => #path.to.File
-/path/to/File#foo   => #path.to.File.foo
-/path/to/File#bar   => #path.to.File.bar
+/path/to/File#File  => path.to.File
+/path/to/File#foo   => path.to.File.foo
+/path/to/File#bar   => path.to.File.bar
 
 How do we know what the root is from a compilation pov? If find a package.json?
 
@@ -114,9 +114,9 @@ Let's imagine operator overloading for Vectors.
 
 ```typescript
 Integer.+ = (a: Integer, b: Integer): Integer => @Native()
-Float.+ = (a: Float, b: Float): Float => @Native()
-Float.+ = (a: Float, b: Integer): Float => @Native()
-Float.+ = (a: Integer, b: Float): Float => @Native()
+Float.+.1 = (a: Float, b: Float): Float => @Native()
+Float.+.2 = (a: Float, b: Integer): Float => @Native()
+Float.+.3 = (a: Integer, b: Float): Float => @Native()
 
 function `+`
     (a: Integer, b: Integer): Integer => @Native()
@@ -130,3 +130,45 @@ class Vector
 Vector.+ = (a: Vector2, b: Vector2): Vector2 => Vector2(a.x + b.x, a.y + b.y)
 
 ```
+
+```typescript
+
+//  Integer.ion
+function add(a: Integer, b: Integer) => @Native()
+
+//  foo.Vector.ion
+function add
+    (a: Integer, b: Vector) => Vector(b.x + a, b.y + a, b.z + a)
+    (a: Vector, b: Integer) => b + a
+
+//  foo.bar.baz.ion
+let sum1 = foo.Vector.add(1, Vector(2, 3, 4))
+let sum2 = add(1, Vector(2, 3, 4))
+
+//  hmmm, we NEVER need to reference functions directly
+//  IF their signatures must be unique anyways.
+
+```
+
+## Decision on namespace scoping
+
+Functions are always defined in a global namespace.
+They can be overloaded with the following limitations:
+For two functions with the same name
+    A(...AIn) => AOut
+    B(...BIn) => BOut
+
+    AIn.isSubClassOf(BIn), BIn.isSubClassOf(AIn)
+    --------------------------------------------
+    true, true  => Error: Duplicate signatures.
+    null, null  => Error: Ambiguous overloads, not clear which should come first.
+    true, null  => OK, sort A before B. Check Compatible Outputs.
+                    AOut.isSubClassOf(BOut) must be true
+    null, true  => OK, sort B before A. Check Compatible Outputs.
+                    BOut.isSubClassOf(AOut) must be true
+    false, false  => OK, sort order is irrelevant as overlap is impossible.
+    true, false => Impossible.
+    false, true => Impossible.
+    false, null => Impossible.
+    null, false => Impossible.
+

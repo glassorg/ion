@@ -10,12 +10,6 @@ export function resolveExternalReferences(root: AnalyzedDeclaration, externals: 
     const found = new Set<string>();
     root = traverse(root, {
         leave(node) {
-            const DEBUG = root.absolutePath === "Integer.sample";
-            const debug = (...messages: any[]) => {
-                if (DEBUG) {
-                    console.log(...messages);
-                }
-            }
             if (node instanceof Reference) {
                 if (node.name === root.id.name) {
                     // self reference.
@@ -23,7 +17,6 @@ export function resolveExternalReferences(root: AnalyzedDeclaration, externals: 
                 }
                 const scope = scopes.get(node);
                 const declarations = scope[node.name];
-                debug("Reference", { node, declarations });
                 if (!declarations) {
                     const possiblePaths = getPossiblePaths(root.absolutePath, node.name);
                     for (const path of possiblePaths) {

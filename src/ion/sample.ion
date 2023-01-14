@@ -1,8 +1,4 @@
 
 let a = 1
 let b = 2.0
-
-//  TODO: Have to import from all the types we know to find the + or else
-//  we can place all multifunctions in the global namespace again?
-//  or do we want functions to always be in the global namespace?
-//  let c = a + b
+let c = a + b
