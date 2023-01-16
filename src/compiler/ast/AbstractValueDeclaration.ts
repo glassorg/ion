@@ -11,9 +11,9 @@ export abstract class AbstractValueDeclaration extends Declaration {
     constructor(
         location: SourceLocation,
         id: Declarator,
-        public readonly valueType: TypeExpression | null,
+        declaredType?: TypeExpression,
     ) {
-        super(location, id);
+        super(location, id, declaredType);
     }
 
 }

@@ -8,7 +8,7 @@ export interface Scope {
     [id: string]: Declaration[]
 }
 export interface Scopes {
-    get(node: AstNode): Scope
+    get(node: AstNode | null): Scope
 }
 
 /**
@@ -17,7 +17,7 @@ export interface Scopes {
  */
 export function createScopes(root: Assembly): Scopes {
     let globalScope: Scope = {};
-    let map = new Map<AstNode, Scope>();
+    let map = new Map<AstNode | null, Scope>([[null, globalScope]]);
     let scopes: Scope[] = [globalScope];
     let getDeclarationArraysOriginalScope = new Map<Declaration[], Scope>();
 

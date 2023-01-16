@@ -12,7 +12,7 @@ export class ConstantDeclaration extends AbstractValueDeclaration {
         id: Declarator,
         public readonly value: Expression,
     ) {
-        super(location, id, null);
+        super(location, id);
     }
 
     protected override *dependencies(c: EvaluationContext): Generator<AstNode, any, unknown> {
@@ -20,7 +20,7 @@ export class ConstantDeclaration extends AbstractValueDeclaration {
     }
 
     override resolve(this: ConstantDeclaration, c: EvaluationContext): void | AstNode {
-        return this.patch({ declaredType: this.value.resolvedType! });
+        return this.patch({ resolvedType: this.value.resolvedType! });
     }
 
     toString() {

@@ -21,7 +21,7 @@ export class ClassParselet extends PrefixParselet {
             if (!(s instanceof VariableDeclaration)) {
                 throw new SemanticError(`Expected class member declaration`, s);
             }
-            return new FieldDeclaration(s.location, s.id, s.valueType, s.defaultValue);
+            return new FieldDeclaration(s.location, s.id, s.declaredType, s.defaultValue);
         })
         return new (classToken.type === TokenNames.Class ? ClassDeclaration : StructDeclaration)(
             location,

@@ -96,15 +96,13 @@ export async function test() {
 //     return a + b
 // `);
 
-await testCompile(`
-class @Native
-class Integer
-class Float
-function \`+\`(a: Integer, b: Integer) => @Native()
-function \`+\`(a: Float, b: Float) => @Native()
-let a = 1
-let b = 2.0
-let c = a + b
-`, true)
+// await testCompile(`
+// class @Native
+// class Integer
+// function \`+\`(a: Integer, b: Integer) => @Native()
+// let a = 1
+// let b = 2
+// let c = a + b
+// `, true)
 
 }

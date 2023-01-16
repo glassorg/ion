@@ -2,6 +2,7 @@ import { EvaluationContext } from "../EvaluationContext";
 import { Expression } from "./Expression";
 import { Identifier } from "./Identifier";
 import { SourceLocation } from "./SourceLocation";
+import * as kype from "@glas/kype";
 
 export class Unresolvable extends Expression {
 
@@ -31,6 +32,10 @@ export class MemberExpression extends Expression {
             // if declarations aren't found then this cannot be resolved yet.
             yield new Unresolvable(this.location);
         }
+    }
+
+    public toKype(): kype.Expression {
+        return new kype.MemberExpression(this.object.toKype(), new kype.Reference(this.property.name));
     }
 
     toString() {

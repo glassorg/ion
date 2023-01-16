@@ -1,17 +1,17 @@
-import { BlockStatement } from "./BlockStatement";
+import { AstNode } from "./AstNode";
 import { RootDeclaration } from "./Declaration";
 import { SourceLocation } from "./SourceLocation";
 
-export class Assembly extends BlockStatement {
+export class Assembly extends AstNode {
 
     constructor(
-        declarations: RootDeclaration[]
+        public readonly declarations: RootDeclaration[]
     ) {
-        super(SourceLocation.empty, declarations);
+        super(SourceLocation.empty);
     }
 
-    public get declarations(): RootDeclaration[] {
-        return this.statements as RootDeclaration[];
+    toString() {
+        return this.toBlockString(this.declarations);
     }
 
 }

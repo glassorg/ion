@@ -1,8 +1,9 @@
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
-import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
+import { FunctionDeclaration } from "./FunctionDeclaration";
+import { FunctionType } from "./FunctionType";
 import { ParameterDeclaration } from "./ParameterDeclaration";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
@@ -11,23 +12,32 @@ import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
 import { VariableDeclaration } from "./VariableDeclaration";
 
-export class FunctionExpression extends Expression implements Scope {
+export class FunctionExpression extends Expression implements Scope, FunctionType {
 
     constructor(
         location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
-        public readonly declaredType?: TypeExpression
+        public readonly declaredReturnType?: TypeExpression,
+        public readonly resolvedReturnType?: TypeExpression
     ) {
         super(location);
     }
 
     toString() {
-        return `(${this.parameters.join(", ")})${this.toTypeString(this.declaredType)} => ${this.body}`;
+        return `(${this.parameters.join(", ")})${this.toTypeString(this.declaredReturnType)} => ${this.body}`;
     }
 
     get isScope(): true {
         return true;
+    }
+    
+    get parameterTypes(): Expression[] {
+        return this.parameters.map(p => p.declaredType!);
+    }
+
+    getReturnType(argumentTypes: TypeExpression[]): TypeExpression {
+        return this.resolvedReturnType ?? this.declaredReturnType!;
     }
 
     private static parameterFromNode(node: AstNode): ParameterDeclaration {
@@ -35,10 +45,10 @@ export class FunctionExpression extends Expression implements Scope {
             return node;
         }
         if (node instanceof Reference) {
-            return new ParameterDeclaration(node.location, node.toDeclarator(), null, null);
+            return new ParameterDeclaration(node.location, node.toDeclarator());
         }
         if (node instanceof VariableDeclaration) {
-            return new ParameterDeclaration(node.location, node.id, node.valueType, node.defaultValue);
+            return new ParameterDeclaration(node.location, node.id, node.declaredType, node.defaultValue);
         }
         throw new SemanticError(`Expected Parameter`, node);
     }

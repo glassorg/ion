@@ -7,6 +7,8 @@ import { DotExpression } from "./DotExpression";
 import { Expression } from "./Expression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
+import * as kype from "@glas/kype";
+import { SemanticError } from "../SemanticError";
 
 export abstract class Literal<T> extends Expression {
 
@@ -18,6 +20,16 @@ export abstract class Literal<T> extends Expression {
     }
 
     abstract get coreType(): CoreType
+
+    public toKype(): kype.Expression {
+        if (typeof this.value === "number") {
+            return new kype.NumberLiteral(this.value);
+        }
+        if (typeof this.value === "string") {
+            return new kype.StringLiteral(this.value);
+        }
+        throw new SemanticError(`Expected number literal`, this);
+    }
 
     resolve(this: Literal<T>, c: EvaluationContext): void | AstNode {
         return this.patch({
@@ -39,7 +51,7 @@ export abstract class Literal<T> extends Expression {
     }
 
     toString() {
-        return JSON.stringify(this.value);
+        return JSON.stringify(this.value) + this.toTypeString();
     }
 
 }

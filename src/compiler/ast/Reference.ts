@@ -7,6 +7,7 @@ import { Expression } from "./Expression";
 import { Literal } from "./Literal";
 import { SourceLocation } from "./SourceLocation";
 import { UnaryExpression } from "./UnaryExpression";
+import * as kype from "@glas/kype";
 
 export class Reference extends Expression {
 
@@ -23,6 +24,10 @@ export class Reference extends Expression {
 
     get isReference() {
         return true;
+    }
+
+    public toKype(): kype.Expression {
+        return new kype.Reference(this.name);
     }
 
     toDeclarator() {

@@ -29,7 +29,6 @@ export function addExplicitReturns(assembly: Assembly): Assembly {
                                 return new ReturnStatement(innerNode.location, innerNode.expression);
                             }
                             else if (!(innerNode instanceof ReturnStatement)) {
-                                console.log(innerNode);
                                 throw new SemanticError(`Invalid function return value`, innerNode);
                             }
                         }

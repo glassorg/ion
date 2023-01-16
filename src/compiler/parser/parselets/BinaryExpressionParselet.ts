@@ -39,10 +39,9 @@ export class BinaryExpressionParselet extends InfixParselet {
                 return left.patch({ declaredType: right });
             }
             if (!(left instanceof Reference)) {
-                console.log({ left });
                 throw new SemanticError(`Expected Identifier`, left);
             }
-            return new VariableDeclaration(location, left.toDeclarator(), right, null);
+            return new VariableDeclaration(location, left.toDeclarator(), right);
         }
         if (operator === ".") {
             if (!(right instanceof Reference)) {

@@ -3,16 +3,17 @@ import { Expression } from "./Expression";
 import { AbstractValueDeclaration } from "./AbstractValueDeclaration";
 import { TypeExpression } from "./TypeExpression";
 import { SourceLocation } from "./SourceLocation";
+import { InferredType } from "./InferredType";
 
 export class VariableDeclaration extends AbstractValueDeclaration {
 
     constructor(
         location: SourceLocation,
         id: Declarator,
-        valueType: TypeExpression | null,
-        public readonly defaultValue: Expression | null,
+        declaredType: TypeExpression = new InferredType(location),
+        public readonly defaultValue?: Expression,
     ){
-        super(location, id, valueType);
+        super(location, id, declaredType);
     }
 
     get keyword() {
@@ -20,11 +21,11 @@ export class VariableDeclaration extends AbstractValueDeclaration {
     }
 
     toString() {
-        if (this.valueType) {
+        if (this.declaredType) {
             if (this.defaultValue) {
-                return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.valueType} = ${this.defaultValue}`;
+                return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.declaredType} = ${this.defaultValue}`;
             }
-            return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.valueType}`;
+            return `${this.toMetaString()}${this.keyword} ${this.id}: ${this.declaredType}`;
         }
         else if (this.defaultValue) {
             return `${this.toMetaString()}${this.keyword} ${this.id} := ${this.defaultValue}`;
