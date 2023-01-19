@@ -26,9 +26,6 @@ export class EvaluationContext {
     getSingleDeclarationFromName(from: AstNode, name: string): Declaration {
         const declarations = this.getDeclarationsFromName(from, name);
         if (declarations?.length !== 1) {
-            debugger;
-            this.getDeclarationsFromName(from, name);
-            console.log(`????`, { declarations, from, name });
             throw new SemanticError(`Expected a single declaration ${name}`, ...(declarations ?? []));
         }
         return declarations[0];
