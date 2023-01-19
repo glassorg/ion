@@ -21,7 +21,7 @@ export function resolveReferences(root: Assembly): Assembly {
         return traverse(declaration, {
             leave(node) {
                 if (node instanceof Reference) {
-                    const scope = scopes.get(node);
+                    const scope = scopes.get(node.scopeKey);
                     const declarations = scope[node.name];
                     if (!declarations) {
                         const possiblePaths = getPossiblePaths(declaration.absolutePath, node.name);

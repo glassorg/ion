@@ -8,7 +8,7 @@ import { areValidArguments, FunctionType } from "./ast/FunctionType";
 import { Reference } from "./ast/Reference";
 import { TypeExpression } from "./ast/TypeExpression";
 import { isTypeof, UnaryExpression } from "./ast/UnaryExpression";
-import { Scopes } from "./createScopes";
+import { globalScopeKey, Scopes } from "./createScopes";
 import { SemanticError } from "./SemanticError";
 
 export class EvaluationContext {
@@ -26,7 +26,10 @@ export class EvaluationContext {
     getSingleDeclarationFromName(from: AstNode, name: string): Declaration {
         const declarations = this.getDeclarationsFromName(from, name);
         if (declarations?.length !== 1) {
-            throw new SemanticError(`Expected a single declaration`, ...(declarations ?? []));
+            debugger;
+            this.getDeclarationsFromName(from, name);
+            console.log(`????`, { declarations, from, name });
+            throw new SemanticError(`Expected a single declaration ${name}`, ...(declarations ?? []));
         }
         return declarations[0];
     }
@@ -36,7 +39,7 @@ export class EvaluationContext {
     }
 
     getDeclarationsFromName(from: AstNode, name: string): Declaration[] {
-        const scope = this.scopes.get(this.lookup.getOriginal(from)) ?? this.scopes.get(null);
+        const scope = this.scopes.get(from.scopeKey) ?? this.scopes.get(globalScopeKey);
         return scope[name];
     }
 

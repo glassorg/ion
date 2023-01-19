@@ -16,6 +16,10 @@ export class BlockStatement extends Statement implements Scope {
         this.statements = statements.map(node => node instanceof Statement ? node : new ExpressionStatement(node.location, node));
     }
 
+    *dependencies() {
+        yield* this.statements;
+    }
+
     get isScope(): true {
         return true;
     }

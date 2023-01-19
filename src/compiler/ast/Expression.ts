@@ -33,7 +33,7 @@ export class Expression extends AstNode implements Resolvable {
      * Returns an empty string if not resolved or else " : Type"
      */
     toTypeString(type = this.resolvedType, colon = ":") {
-        return type ? ` ${colon} ${type}` : ``;
+        return type ? ` ${colon} ${type.toUserTypeString()}` : ``;
     }
 
     /**

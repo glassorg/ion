@@ -51,7 +51,7 @@ export abstract class Literal<T> extends Expression {
     }
 
     toString() {
-        return JSON.stringify(this.value) + this.toTypeString();
+        return JSON.stringify(this.value);
     }
 
 }

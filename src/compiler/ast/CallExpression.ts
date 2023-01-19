@@ -29,6 +29,7 @@ export class CallExpression extends Expression {
     }
 
     protected *dependencies(c: EvaluationContext) {
+        // console.log(`CallExpression.dependencies ${this.resolved} ${this} ${[this.callee, ...this.args].map(arg => arg.resolved ? 0 : 1).join(",")}`);
         yield this.callee;
         yield* this.args;
     }

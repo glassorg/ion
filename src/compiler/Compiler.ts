@@ -155,6 +155,7 @@ export class Compiler {
         for (const phase of assemblyPhases) {
             const repeat = phase.name.endsWith(repeatSuffix);
             for (let i = 0; i < (repeat ? 100 : 1); i++) {
+                console.log(`Start: ${i} ${phase.name}`);
                 const name = repeat ? phase.name.slice(0, -repeatSuffix.length) + `_${i}` : phase.name;
                 const before = assembly;
                 assembly = phase(assembly);
@@ -164,6 +165,7 @@ export class Compiler {
                     this.log(name, declaration);
                 }
                 if (assembly === before) {
+                    console.log(`Nothing changed breaking ${i}`);
                     break;
                 }
             }

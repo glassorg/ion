@@ -14,6 +14,16 @@ export class AstNode extends Immutable {
         super();
     }
 
+    /**
+     * returns the key used to get this nodes scope.
+     */
+    public get scopeKey() {
+        if (this.location == null) {
+            debugger;
+        }
+        return `${this.location.filename}:${this.location.startIndex}`;
+    }
+
     protected *dependencies(c: EvaluationContext): Generator<AstNode> {
     }
 

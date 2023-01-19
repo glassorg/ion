@@ -1,3 +1,4 @@
+import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
@@ -36,6 +37,10 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         return this.parameters.map(p => p.declaredType!);
     }
 
+    protected *dependencies(c: EvaluationContext) {
+        yield this.body;
+    }
+
     getReturnType(argumentTypes: TypeExpression[]): TypeExpression {
         return this.resolvedReturnType ?? this.declaredReturnType!;
     }
@@ -53,20 +58,20 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         throw new SemanticError(`Expected Parameter`, node);
     }
 
-    static createFromLambda(left?: Expression, right?: Expression): FunctionExpression {
+    static createFromLambda(left: Expression, right: Expression): FunctionExpression {
         let declaredType: TypeExpression | undefined;
-        if (left instanceof PstGroup) {
-            declaredType = left.declaredType;
-            left = left.value;
-        }
-        let parameters = left?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
-        let body!: BlockStatement;
-        let location!: SourceLocation;
+        let leftValue = left instanceof PstGroup ? left.value : left;
+        let parameters = leftValue?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
+        let body: BlockStatement;
+        let location = SourceLocation.merge(left.location, right.location);
         if (right instanceof BlockStatement) {
             body = right;
         }
         else if (right instanceof Expression) {
             body = new BlockStatement(right.location, [right]);
+        }
+        else {
+            throw new SemanticError(`Unexpected lambda`, left, right);
         }
         return new FunctionExpression(location, parameters, body, declaredType);
     }

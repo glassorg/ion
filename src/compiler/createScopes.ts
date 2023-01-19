@@ -1,5 +1,5 @@
 import { Assembly } from "./ast/Assembly";
-import { AstNode } from "./ast/AstNode"
+import { AstNode } from "./ast/AstNode";
 import { Declaration } from "./ast/Declaration"
 import { isScope } from "./ast/Scope";
 import { traverse } from "./common/traverse";
@@ -8,8 +8,10 @@ export interface Scope {
     [id: string]: Declaration[]
 }
 export interface Scopes {
-    get(node: AstNode | null): Scope
+    get(node: string): Scope
 }
+
+export const globalScopeKey = "";
 
 /**
  * Returns a Map which will contain a scope object with variable names returning Declarations.
@@ -17,7 +19,7 @@ export interface Scopes {
  */
 export function createScopes(root: Assembly): Scopes {
     let globalScope: Scope = {};
-    let map = new Map<AstNode | null, Scope>([[null, globalScope]]);
+    let map = new Map<string, Scope>([[globalScopeKey, globalScope]]);
     let scopes: Scope[] = [globalScope];
     let getDeclarationArraysOriginalScope = new Map<Declaration[], Scope>();
 
@@ -35,10 +37,14 @@ export function createScopes(root: Assembly): Scopes {
 
     traverse(root, {
         enter(node) {
+            if (!(node instanceof AstNode)) {
+                return;
+            }
+
             //  get the current scope
             let scope = scopes[scopes.length - 1];
             //  save a map from this nodes location to it's scope
-            map.set(node, scope);
+            map.set(node.scopeKey, scope);
 
             if (node instanceof Declaration) {
                 declare(node);

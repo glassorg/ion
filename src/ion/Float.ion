@@ -1,5 +1,0 @@
-
-@Native()
-struct Float
-
-function `+`(a: Float, b: Float): Float => @Native()

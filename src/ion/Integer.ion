@@ -1,5 +1,4 @@
 
-@Native()
 struct Integer
 
-function `+`(a: Integer, b: Integer): Integer => @Native()
+function `+`(a: Integer, b: Integer): Integer => a
