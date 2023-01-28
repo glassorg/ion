@@ -1,3 +1,4 @@
+import { EvaluationContext } from "../EvaluationContext";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
@@ -9,6 +10,10 @@ export class ReturnStatement extends Statement {
         public readonly argument: Expression,
     ){
         super(location);
+    }
+
+    protected *dependencies(c: EvaluationContext) {
+        yield this.argument;
     }
 
     toString() {

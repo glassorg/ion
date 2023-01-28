@@ -60,7 +60,7 @@ export async function test() {
 // type String = 1
 // class @Meta
 // @Meta()
-// function min(a: Number | String, b: Number) =>
+// function min(a: Number | String, b: Number)
 //     if a < b
 //         return a
 //     else

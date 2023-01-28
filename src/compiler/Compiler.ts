@@ -7,10 +7,7 @@ import { defineGraphFunctions, GraphExecutor } from "@glas/graph";
 import { getAbsolutePath } from "./common/pathFunctions";
 import { Assembly } from "./ast/Assembly";
 import { assemblyPhases } from "./phases/assembly";
-import { FunctionDeclaration, isGloballyScoped } from "./ast/FunctionDeclaration";
-import { ConstantDeclaration } from "./ast/ConstantDeclaration";
-import { Declarator } from "./ast/Declarator";
-import { Reference } from "./ast/Reference";
+import { isGloballyScoped } from "./ast/FunctionDeclaration";
 import { repeatSuffix } from "./phases/assembly/resolveSingleStep";
 
 export interface CompilerOptions {
@@ -72,37 +69,6 @@ export class Compiler {
                 }).flat();
                 return declarations;
             },
-            // semanticAnalysisSolo: async (declaration: ParsedDeclaration): Promise<ParsedDeclaration> => {
-            //     return this.log(`semanticAnalysisSolo`, await phases.semanticAnalysisSolo(declaration));
-            // },
-            // analyze: async (declaration: ParsedDeclaration): Promise<AnalyzedDeclaration> => {
-            //     //  do the solo semantic analysis
-            //     declaration = this.log(`semanticAnalysisSolo`, await phases.semanticAnalysisSolo(declaration));
-            //     //  get externals
-            //     const externals = await phases.getPossibleExternalReferences(declaration);
-            //     const analyzed = this.log(`getPossibleExternalReferences`, declaration.patch({ externals }));
-            //     return analyzed;
-            // },
-            // resolveSolo: async (declaration: AnalyzedDeclaration, ...externals: ResolvedDeclaration[]): Promise<MaybeResolvedDeclaration> => {
-            //     declaration = resolveExternalReferences(declaration, externals);
-            //     this.log(`resolveExternalReferences`, declaration);
-
-            //     declaration = semanticAnalysis(declaration, externals);
-            //     this.log(`semanticAnalysis`, declaration);
-
-            //     //  add in N phases of solo resolution
-            //     for (let i = 0; i < 100; i++) {
-            //         const before = declaration;
-            //         declaration = resolveSingleStep(declaration, this.log.bind(this), externals, `resolveSolo ${i}`);
-            //         if (equals(before, declaration)) {
-            //             // console.log(`${declaration.absolutePath} EQUALS ${i}`);
-            //             break;
-            //         }
-            //     }
-
-            //     // don't automatically patch a declaration as resolved.
-            //     return declaration;
-            // }
         });
     }
 
@@ -118,44 +84,10 @@ export class Compiler {
         return this.parseExecutor.getOutputsByType("parse").flat();
     }
 
-    // async getAllAnalyzedDeclarations(declarations: ParsedDeclaration[]): Promise<AnalyzedDeclaration[]> {
-    //     const builder = this.analyzeExecutor.builder();
-    //     for (const declaration of declarations) {
-    //         builder.append(`analyze:${declaration.absolutePath}`, "analyze", declaration);
-    //     }
-    //     this.analyzeExecutor.update(builder.build());
-    //     await this.analyzeExecutor.execute();
-    //     return this.analyzeExecutor.getOutputsByType("analyze");
-    // }
-
-    // async getMaybeResolvedDeclarations(declarations: AnalyzedDeclaration[]): Promise<MaybeResolvedDeclaration[]> {
-    //     const builder = this.compileExecutor.builder();
-    //     const lookup = new Map(declarations.map(d => [d.absolutePath, d]));
-    //     for (const declaration of declarations) {
-    //         const externalRefs = declaration.externals.filter(e => lookup.has(e)).map(e => ({ ref: e }));
-    //         //  externalRefs as any because the graph doesn't know that these references are valid yet.
-    //         builder.append(declaration.absolutePath, "resolveSolo", declaration, ...externalRefs as any);
-    //     }
-    //     try {
-    //         this.compileExecutor.update(builder.build());
-    //     }
-    //     catch (e) {
-    //         if (e instanceof CircularReferenceError) {
-    //             // convert a circular reference error to a semantic error.
-    //             // console.log(JSON.stringify(e.path.map(name => lookup.get(name)!.id.location), null, 2));
-    //             e = new SemanticError(e.message, ...e.path.map(name => lookup.get(name)!.id));
-    //         }
-    //         throw e;
-    //     }
-    //     await this.compileExecutor.execute();
-    //     return this.compileExecutor.getOutputsByType("resolveSolo");
-    // }
-
     compileAssembly(assembly: Assembly): Assembly {
         for (const phase of assemblyPhases) {
             const repeat = phase.name.endsWith(repeatSuffix);
             for (let i = 0; i < (repeat ? 100 : 1); i++) {
-                console.log(`Start: ${i} ${phase.name}`);
                 const name = repeat ? phase.name.slice(0, -repeatSuffix.length) + `_${i}` : phase.name;
                 const before = assembly;
                 assembly = phase(assembly);
@@ -165,7 +97,6 @@ export class Compiler {
                     this.log(name, declaration);
                 }
                 if (assembly === before) {
-                    console.log(`Nothing changed breaking ${i}`);
                     break;
                 }
             }

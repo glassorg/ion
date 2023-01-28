@@ -7,3 +7,7 @@ export function isValidId(name: string) {
 export function isMetaId(name: string) {
     return isValidId(name) && name[0] === "@";
 }
+
+export function isTypeName(name: string) {
+    return name[0].toUpperCase() === name[0];
+}

@@ -1,7 +1,9 @@
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { AstNode } from "./AstNode";
+import { CallExpression } from "./CallExpression";
 import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
+import { Expression } from "./Expression";
 import { FunctionExpression } from "./FunctionExpression";
 import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
@@ -22,16 +24,15 @@ export class FunctionDeclaration extends ConstantDeclaration {
         super(location, id, value);
     }
 
-    getReturnType(argumentTypes: TypeExpression[]): TypeExpression {
+    getReturnType(argumentTypes: TypeExpression[], callee: CallExpression): TypeExpression {
         const name = `${this.id}(${this.value.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
         const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
         if (nativeFunctionReturnType) {
-            const result = nativeFunctionReturnType(...argumentTypes);
+            const result = nativeFunctionReturnType(callee, ...argumentTypes);
             console.log(`FunctionDeclaration.getReturnType: ${name} \n    ${argumentTypes.join("\n    ")}\n    =>\n    ${result}`);
             return result;
         }
-
-        return this.value.getReturnType(argumentTypes);
+        return this.value.getReturnType(argumentTypes, callee);
     }
 
     toString() {

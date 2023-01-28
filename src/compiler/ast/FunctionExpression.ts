@@ -1,13 +1,17 @@
+import { combineTypes } from "../analysis/combineTypes";
+import { getFinalStatements } from "../analysis/getFinalStatements";
+import { isSubType } from "../analysis/isSubType";
 import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
-import { FunctionDeclaration } from "./FunctionDeclaration";
 import { FunctionType } from "./FunctionType";
+import { InferredType } from "./InferredType";
 import { ParameterDeclaration } from "./ParameterDeclaration";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
+import { ReturnStatement } from "./ReturnStatement";
 import { Scope } from "./Scope";
 import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
@@ -26,7 +30,7 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
     }
 
     toString() {
-        return `(${this.parameters.join(", ")})${this.toTypeString(this.declaredReturnType)} => ${this.body}`;
+        return `${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.declaredReturnType)} ${this.body}`;
     }
 
     get isScope(): true {
@@ -37,15 +41,55 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         return this.parameters.map(p => p.declaredType!);
     }
 
-    protected *dependencies(c: EvaluationContext) {
-        yield this.body;
+    protected override *dependencies(c: EvaluationContext) {
+        for (const statement of this.getReturnStatements()) {
+            yield statement.argument;
+        }
     }
 
-    getReturnType(argumentTypes: TypeExpression[]): TypeExpression {
+    private *getReturnStatements() {
+        for (const statement of getFinalStatements(this.body)) {
+            if (statement instanceof ReturnStatement) {
+                yield statement;
+            }
+            else {
+                throw new SemanticError(`Expected return statement`, statement);
+            }
+        }
+    }
+
+    protected override resolve(this: FunctionExpression, c: EvaluationContext): FunctionExpression {
+        const resolvedReturnType = combineTypes("||", [...this.getReturnStatements()].map(s => s.argument.resolvedType!));
+        const resolvedType = new InferredType(this.location);
+        return this.patch({ resolvedType, resolvedReturnType });
+    }
+
+    areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {
+        // if these argumentTypes are not valid arguments for this function we return undefined
+        const parameterTypes = this.parameterTypes;
+        if (argumentTypes.length !== parameterTypes.length) {
+            return false;
+        }
+        let areAllValid = false;
+        for (let i = 0; i < argumentTypes.length; i++) {
+            let argType = argumentTypes[i];
+            let paramType = parameterTypes[i];
+            let isArgValid = isSubType(argType, paramType);
+            if (isArgValid === false) {
+                return false;
+            }
+            if (isArgValid === null) {
+                areAllValid = false;
+            }
+        }
+        return areAllValid ? true : null;
+    }
+
+    getReturnType(argumentTypes: TypeExpression[], callee: Expression): TypeExpression {
         return this.resolvedReturnType ?? this.declaredReturnType!;
     }
 
-    private static parameterFromNode(node: AstNode): ParameterDeclaration {
+    public static parameterFromNode(node: AstNode): ParameterDeclaration {
         if (node instanceof ParameterDeclaration) {
             return node;
         }

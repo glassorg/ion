@@ -86,7 +86,6 @@ export const TokenTypes = {
     //  anything after Unknown will never be matched against, they're manually inserted.
     Indent: new TokenType(/^[]/, { isWhitespace: true }),
     Outdent: new TokenType(/^[]/, { isWhitespace: true }),
-    DoubleArrow: new TokenType(/^=>/),  //  TODO: Remove.
 } as const;
 
 export type TokenName = keyof typeof TokenTypes;

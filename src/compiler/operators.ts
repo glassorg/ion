@@ -6,6 +6,8 @@ export class Operator {
     public readonly overridable: boolean;
     public readonly rightAssociative: boolean;
     public readonly prefixAmbiguous: boolean;
+    public readonly reflect?: string;
+    public readonly negate?: string;
 
     constructor(
         precedence: number,
@@ -14,6 +16,8 @@ export class Operator {
             overridable?: boolean,
             rightAssociative?: boolean,
             prefixAmbiguous?: boolean,
+            reflect?: string,
+            negate?: string
         }
     ){
         this.precedence = precedence;
@@ -21,6 +25,8 @@ export class Operator {
         this.overridable = options?.overridable ?? false;
         this.rightAssociative = options?.rightAssociative ?? false;
         this.prefixAmbiguous = options?.prefixAmbiguous ?? false;
+        this.reflect = options?.reflect;
+        this.negate = options?.negate;
     }
 }
 
@@ -42,14 +48,14 @@ export const PrefixOperators = {
 export type PrefixOperator = keyof typeof PrefixOperators;
 
 export const ComparisonOperators = {
-    "<": new Operator(9),
-    "<=": new Operator(9),
-    ">": new Operator(9),
-    ">=": new Operator(9),
-    "is": new Operator(9),
-    "isnt": new Operator(9),
-    "==": new Operator(8),
-    "!=": new Operator(8),
+    "<": new Operator(9, { reflect: ">", negate: ">=" }),
+    "<=": new Operator(9, { reflect: ">=", negate: ">" }),
+    ">": new Operator(9, { reflect: "<", negate: "<=" }),
+    ">=": new Operator(9, { reflect: "<=", negate: "<" }),
+    "is": new Operator(9, { negate: "isnt" }),
+    "isnt": new Operator(9, { negate: "is" }),
+    "==": new Operator(8, { reflect: "==", negate: "!=" }),
+    "!=": new Operator(8, { reflect: "!=", negate: "==" }),
 };
 
 export const LogicalOperators = {

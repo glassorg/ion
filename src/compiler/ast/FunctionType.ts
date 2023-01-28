@@ -1,12 +1,13 @@
 import { isSubType } from "../analysis/isSubType";
 import { AstNode } from "./AstNode";
+import { Expression } from "./Expression";
 import { ParameterDeclaration } from "./ParameterDeclaration";
 import { TypeExpression } from "./TypeExpression";
 
 export interface FunctionType extends AstNode {
 
     readonly parameters: ParameterDeclaration[];
-    getReturnType(argumentTypes: TypeExpression[]): TypeExpression;
+    getReturnType(argumentTypes: TypeExpression[], callee: Expression): TypeExpression;
 
 }
 

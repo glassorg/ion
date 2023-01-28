@@ -5,13 +5,14 @@ import { Expression } from "../../ast/Expression";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
+import { BlockStatement } from "../../ast/BlockStatement";
 
 export class IfParselet extends PrefixParselet {
 
     parse(p: Parser, ifToken: Token): AstNode {
         let test = p.parseNode();
         let consequent = p.parseBlock();
-        let alternate: AstNode | undefined;
+        let alternate: BlockStatement | undefined;
         p.eol();
         let elseToken: Token | undefined;
         if (elseToken = p.maybeConsume(TokenNames.Else)) {
@@ -19,7 +20,7 @@ export class IfParselet extends PrefixParselet {
             let elseIfToken = p.maybeConsume(TokenNames.If)
             if (elseIfToken) {
                 p.whitespace();
-                alternate = this.parse(p, elseIfToken);
+                alternate = this.parse(p, elseIfToken) as BlockStatement;
             }
             else {
                 alternate = p.parseBlock();
@@ -29,7 +30,7 @@ export class IfParselet extends PrefixParselet {
             ifToken.location.merge(alternate?.location ?? test.location),
             test as Expression,
             consequent,
-            alternate as Expression,
+            alternate,
         );
     }
 

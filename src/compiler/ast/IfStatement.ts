@@ -1,14 +1,15 @@
+import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
 
-export class IfStatement extends Expression {
+export class IfStatement extends Statement {
 
     constructor(
         location: SourceLocation,
         public readonly test: Expression,
-        public readonly consequent: Statement,
-        public readonly alternate?: Statement,
+        public readonly consequent: BlockStatement,
+        public readonly alternate?: BlockStatement,
     ){
         super(location);
     }

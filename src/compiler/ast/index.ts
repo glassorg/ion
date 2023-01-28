@@ -9,6 +9,9 @@ import { SequenceExpression } from "./SequenceExpression";
 import { SourceLocation } from "./SourceLocation";
 
 export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
+    if (operator == null) {
+        debugger;
+    }
     if (isAssignmentOperator(operator)) {
         if (operator !== "=") {
             right = createBinaryExpression(location, left, operator.slice(0, -1) as InfixOperator, right);

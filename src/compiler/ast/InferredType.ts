@@ -2,8 +2,9 @@ import { Expression } from "./Expression";
 
 export class InferredType extends Expression {
 
-    // dot expressions are always considered resolved.
-    public readonly resolved = true;
+    public override get resolved() {
+        return true;
+    }
 
     toString() {
         return `?`;

@@ -1,4 +1,6 @@
 import { joinExpressions } from ".";
+import { CoreTypes } from "../common/CoreType";
+import { getTypeAssertion } from "../common/utility";
 import { SemanticError } from "../SemanticError";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
@@ -30,15 +32,18 @@ export function toTypeExpression(e: Expression): TypeExpression {
                     ||
                     ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
                 )) {
+                    console.log({ start, finish })
                     throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
                 }
                 if (!(finish.value > start.value)) {
                     throw new SemanticError(`Range finish must be more than start`, term);
                 }
+                const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
                 term = joinExpressions("&&", [
                     new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
                     new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
-                ])
+                    getTypeAssertion(coreType)
+                ]);
             }
             if (term instanceof Reference || term instanceof Literal) {
                 const operator = term instanceof Reference ? "is" : "==";

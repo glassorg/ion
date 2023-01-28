@@ -12,14 +12,7 @@ export class TerminalParselet extends PrefixParselet {
     }
 
     parse(p: Parser, token: Token) {
-        try {
-            return this.factory(token);
-        }
-        catch (e) {
-            debugger;
-            const result = this.factory(token);
-            throw e;
-        }
+        return this.factory(token);
     }
 
 }

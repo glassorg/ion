@@ -2,6 +2,7 @@ import * as kype from "@glas/kype";
 import { createBinaryExpression } from "../ast";
 import { DotExpression } from "../ast/DotExpression";
 import { Expression } from "../ast/Expression";
+import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
@@ -23,8 +24,17 @@ function toExpression(e: kype.Expression, location: SourceLocation): Expression 
     }
     // we NEED to know the difference between Integers and Floats.
     if (e instanceof kype.NumberLiteral) {
-        return new IntegerLiteral(location, e.value);
+        if (typeof e.value === "bigint") {
+            return new IntegerLiteral(location, e.value);
+        }
+        else {
+            return new FloatLiteral(location, e.value);
+        }
     }
+    // if (e instanceof UnaryExpression && e.operator === "typeof") {
+    //     return toExpression(e.argument.resolvedType!, e.location)
+    // }
+
     throw new Error(`Not implemented ${e.constructor.name}`);
 }
 

@@ -10,7 +10,7 @@ export function createLogger(debugPattern?: RegExp): LogFunction {
     }
     const diffLogger = createDiffLogger("./output.html");
     return (stepName?: string | string[], stepState?: string | object, channel?: string) => {
-        if (!channel || debugPattern.test(channel)) {
+        if (!channel || debugPattern.test(channel) || stepState instanceof Assembly) {
             if (channel) {
                 if (stepState instanceof Assembly) {
                     diffLogger(stepName, stepState?.toString(), `${channel}!`);

@@ -1,11 +1,12 @@
 import { EvaluationContext } from "../EvaluationContext";
 import { InfixOperator } from "../Operators";
-import { AstNode } from "./AstNode";
 import { Expression } from "./Expression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { combineTypes } from "../analysis/combineTypes";
+import { SemanticError } from "../SemanticError";
+import { TypeExpression } from "./TypeExpression";
 
 export class CallExpression extends Expression {
 
@@ -34,23 +35,22 @@ export class CallExpression extends Expression {
         yield* this.args;
     }
 
-    resolve(this: CallExpression, c: EvaluationContext): void | AstNode {
+    override resolveType(this: CallExpression, c: EvaluationContext): TypeExpression {
         // boom, we have the correctly resolved types.
         const argTypes = this.args.map(arg => c.getType(arg));
-        const functionTypes = c.getFunctionTypes(this.callee, argTypes);
+        let functionTypes = c.getFunctionTypes(this.callee, argTypes);
         if (Array.isArray(functionTypes)) {
-            // console.log("FOUND TYPES", functionTypes.join("\n"));
-            const returnTypes = functionTypes.map(declaration => declaration.getReturnType(argTypes));
+            functionTypes = functionTypes.filter(type => type.value.areArgumentsValid(argTypes) !== false);
+            if (functionTypes.length === 0) {
+                throw new SemanticError(`${this.callee} Function with these parameters not found`, this);
+            }
+            const returnTypes = functionTypes.map(declaration => declaration.getReturnType(argTypes, this)).filter(Boolean) as Expression[];
             const resolvedType = combineTypes("||", returnTypes);
-            return this.patch({ resolvedType });
+            return resolvedType;
         }
         else {
             throw new Error("Not handled yet");
         }
-        // For the native math operations, we are ready to use kype to resolve their types.
-        // console.log(argTypes.join("\n"));
-        // console.log(functionTypes.join("\n"));
-        // console.log("-----> " + this);
     }
 
     public toKype(): kype.Expression {

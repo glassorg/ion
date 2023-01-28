@@ -1,4 +1,23 @@
 
 struct Integer
 
-function `+`(a: Integer, b: Integer): Integer => a
+function `+`(a: Integer, b: Integer) : Integer
+    return a
+
+function `*`(a: Integer, b: Integer) : Integer
+    return a
+
+function `**`(a: Integer, b: Integer) : Integer
+    return a
+
+function `/`(a: Integer, b: 0) : Error
+    return Error
+
+function `/`(a: Integer, b: Integer) : Integer
+    return a
+
+function `%`(a: Integer, b: 0) : Error
+    return Error
+
+function `%`(a: Integer, b: Integer) : Integer
+    return a

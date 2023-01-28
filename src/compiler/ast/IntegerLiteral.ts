@@ -1,10 +1,10 @@
-import { Literal } from "./Literal";
-import { CoreType } from "../common/types";
+import { CoreTypes } from "../common/CoreType";
+import { NumberLiteral } from "./NumberLiteral";
 
-export class IntegerLiteral extends Literal<number> {
+export class IntegerLiteral extends NumberLiteral<bigint> {
 
     get coreType() {
-        return CoreType.Integer;
+        return CoreTypes.Integer;
     }
 
 }

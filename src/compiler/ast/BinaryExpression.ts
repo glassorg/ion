@@ -13,6 +13,9 @@ export abstract class BinaryExpression extends Expression {
         public readonly right: Expression
     ){
         super(location);
+        if (operator == null) {
+            throw new Error(`operator missing`);
+        }
     }
 
     *splitInternal(operator: InfixOperator): Generator<Expression> {
@@ -50,10 +53,10 @@ export abstract class BinaryExpression extends Expression {
             return this.right.toString();
         }
         if (this.operator === "&&") {
-            return `${this.left.toUserTypeString()} & ${this.right.toUserTypeString()}`;
+            return `(${this.left.toUserTypeString()} & ${this.right.toUserTypeString()})`;
         }
         if (this.operator === "||") {
-            return `${this.left.toUserTypeString()} | ${this.right.toUserTypeString()}`;
+            return `(${this.left.toUserTypeString()} | ${this.right.toUserTypeString()})`;
         }
         return super.toUserTypeString();
     }

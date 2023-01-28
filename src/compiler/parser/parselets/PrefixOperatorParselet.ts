@@ -1,6 +1,8 @@
 import { AstNode } from "../../ast/AstNode";
 import { BinaryExpression } from "../../ast/BinaryExpression";
 import { Expression } from "../../ast/Expression";
+import { Literal } from "../../ast/Literal";
+import { NumberLiteral } from "../../ast/NumberLiteral";
 import { Token } from "../../ast/Token";
 import { UnaryExpression } from "../../ast/UnaryExpression";
 import { InfixOperators, PrefixOperator, PrefixOperators } from "../../Operators";
@@ -46,6 +48,14 @@ export class PrefixOperatorParselet extends PrefixParselet {
             //  otherwise we don't know if -1 ** 2 is (-1) ** 2 or -(1 ** 2)
             let name = (argument as BinaryExpression).operator;
             throw new SemanticError(`Unary operator '${operator.value}' used before '${name}'. Use parentheses to disambiguate operator precedence.`, location);
+        }
+
+        // resolve +/- unary expressions on literals immediately.
+        if ((operator.value === "+" || operator.value === "-") && argument instanceof NumberLiteral) {
+            switch (operator.value) {
+                case "+": return argument;
+                case "-": return argument.patch({ value: - argument.value });
+            }
         }
 
         return new UnaryExpression(

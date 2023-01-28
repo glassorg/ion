@@ -3,11 +3,12 @@ import * as kype from "@glas/kype";
 
 export class DotExpression extends Expression {
 
-    // dot expressions are always considered resolved.
-    public readonly resolved = true;
-
     public toKype(): kype.Expression {
         return new kype.DotExpression();
+    }
+
+    public override get resolved(): boolean {
+        return true;
     }
 
     toString() {

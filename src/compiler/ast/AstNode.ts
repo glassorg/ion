@@ -6,8 +6,6 @@ import { EvaluationContext } from "../EvaluationContext";
 
 export class AstNode extends Immutable {
 
-    public readonly resolved?: true;
-
     constructor(
         public readonly location: SourceLocation
     ) {
@@ -18,31 +16,7 @@ export class AstNode extends Immutable {
      * returns the key used to get this nodes scope.
      */
     public get scopeKey() {
-        if (this.location == null) {
-            debugger;
-        }
         return `${this.location.filename}:${this.location.startIndex}`;
-    }
-
-    protected *dependencies(c: EvaluationContext): Generator<AstNode> {
-    }
-
-    protected areAllDependenciesResolved(c: EvaluationContext) {
-        for (const dep of this.dependencies(c)) {
-            if (!dep.resolved) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    maybeResolve(c: EvaluationContext): AstNode | void {
-        if (!this.resolved && this.areAllDependenciesResolved(c)) {
-            return (this.resolve(c) ?? this).patch({ resolved: true });
-        }
-    }
-
-    resolve(c: EvaluationContext): AstNode | void {
     }
 
     // THIS Expression reference is a problem we need to fix.

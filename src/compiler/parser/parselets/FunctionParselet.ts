@@ -7,7 +7,9 @@ import { PrefixParselet } from "../PrefixParselet";
 import { FunctionDeclaration } from "../../ast/FunctionDeclaration";
 import { SemanticError } from "../../SemanticError";
 import { FunctionExpression } from "../../ast/FunctionExpression";
-import { ExpressionStatement } from "../../ast/ExpressionStatement";
+import { PstGroup } from "../../ast/PstGroup";
+import { Expression } from "../../ast/Expression";
+import { TypeExpression } from "../../ast/TypeExpression";
 
 export class FunctionParselet extends PrefixParselet {
 
@@ -19,24 +21,28 @@ export class FunctionParselet extends PrefixParselet {
             id = id.patch({ value: id.value.slice(1, -1) });
         }
         p.whitespace();
-        let value = p.parseExpression();
-        if (!(value instanceof FunctionExpression)) {
+        // let block = p.maybeParseBlock();
+        let value: Expression | undefined = p.parseExpression();
+
+        let functionExpression: FunctionExpression;
+        if (value instanceof PstGroup) {
+            let declaredType = value.declaredType;
+            value = value.value;
+            let parameters = value?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
+            let body = p.parseBlock();
+            let location = functionToken.location.merge(body.location);
+            functionExpression = new FunctionExpression(location, parameters, body, declaredType);
+        }
+        else if (value instanceof FunctionExpression) {
+            throw new SemanticError(`Lambda Function not supported yet`, value);
+            // functionExpression = value;
+        }
+        else {
             throw new SemanticError(`Expected FunctionExpression`, value);
         }
-        // const maybeMultiFunctionBlock = p.maybeParseBlock();
-        // let values = (maybeMultiFunctionBlock?.statements
-        //     ?? [p.parseExpression()]).map(value => {
-        //         if (value instanceof ExpressionStatement) {
-        //             value = value.expression;
-        //         }
-        //         if (!(value instanceof FunctionExpression)) {
-        //             throw new SemanticError(`Expected FunctionExpression`, value);
-        //         }
-        //         return value;
-        //     });
-        // might be a multi function?
-        let location = functionToken.location.merge(value.location);
-        return new FunctionDeclaration(location, new Declarator(id.location, id.value), value);
+        //  legacy function expression format with () => value
+        let location = functionToken.location.merge(value?.location);
+        return new FunctionDeclaration(location, new Declarator(id.location, id.value), functionExpression);
     }
 
 }

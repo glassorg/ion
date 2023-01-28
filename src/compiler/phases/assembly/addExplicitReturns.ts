@@ -1,4 +1,4 @@
-import getFinalStatements from "../../analysis/getFinalStatements";
+import { getFinalStatements } from "../../analysis/getFinalStatements";
 import { Assembly } from "../../ast/Assembly";
 import { ExpressionStatement } from "../../ast/ExpressionStatement";
 import { FunctionDeclaration } from "../../ast/FunctionDeclaration";

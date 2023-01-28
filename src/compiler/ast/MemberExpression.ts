@@ -26,7 +26,7 @@ export class MemberExpression extends Expression {
         yield this.object;
         let declarations = c.getDeclarationsFromName(this.property, this.property.name);
         if (declarations) {
-            yield* declarations;
+            yield* declarations.map(d => d.declaredType);
         }
         else {
             // if declarations aren't found then this cannot be resolved yet.

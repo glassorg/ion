@@ -8,6 +8,8 @@ import { Literal } from "./Literal";
 import { SourceLocation } from "./SourceLocation";
 import { UnaryExpression } from "./UnaryExpression";
 import * as kype from "@glas/kype";
+import { InferredType } from "./InferredType";
+import { CoreType, isCoreType } from "../common/CoreType";
 
 export class Reference extends Expression {
 
@@ -16,6 +18,9 @@ export class Reference extends Expression {
         public readonly name: string,
     ){
         super(location);
+        if (this.name == null) {
+            throw new Error(`Missing name`);
+        }
     }
 
     get isAbsolute() {
@@ -34,41 +39,48 @@ export class Reference extends Expression {
         return new Declarator(this.location, this.name);
     }
 
-    protected *dependencies(c: EvaluationContext): Generator<AstNode, any, unknown> {
+    override get resolved() {
+        if (isCoreType(this.name)) {
+            return true;
+        }
+        return super.resolved;
+    }
+
+    protected override *dependencies(c: EvaluationContext) {
         const declarations = c.getDeclarations(this);
         if (declarations) {
             for (const declaration of declarations) {
-                yield declaration;
+                if (declaration.declaredType) {
+                    yield declaration.declaredType;
+                }
             }
         }
     }
 
-    resolve(this: Reference, c: EvaluationContext): AstNode | void {
+    protected override resolve(this: Reference, c: EvaluationContext): Expression {
         const declarations = c.getDeclarations(this);
+        if (declarations == null) {
+            console.log("WTF?");
+            debugger;
+            const foo = c.getDeclarations(this);
+        }
         if (declarations.length === 1) {
             const declaration = declarations[0];
-            const resolvedType = declaration.declaredType instanceof UnaryExpression
-                ? declaration.declaredType
-                : new UnaryExpression(
-                    this.location,
-                    "typeof",
-                    this.patch({ resolved: true })
-                );
-
+            const resolvedType = declaration.declaredType
             if (declaration instanceof ConstantDeclaration) {
                 const { value } = declaration;
                 if (value instanceof Literal || value instanceof Reference) {
                     return (value as Expression).patch({ resolvedType });
                 }
             }
-            if (this.resolvedType === undefined) {
-                return this.patch({ resolvedType });
-            }
+            return this.patch({ resolvedType });
         }
+        // this is a multi function so we will consider the type inferred, maybe should be something else?
+        return this.patch({ resolvedType: new InferredType(this.location) });
     }
 
     toString() {
-        return isValidId(this.name) ? this.name : ("`" + this.name + "`");
+        return isValidId(this.name) ? this.name : ("`" + this.name + "`") + this.toTypeString();
     }
 
 }
