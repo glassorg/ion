@@ -1,7 +1,9 @@
 import { combineTypes } from "../analysis/combineTypes";
+import { isSubTypeOf } from "../analysis/isSubType";
 import { expressionToType, splitFilterJoinMultiple } from "../common/utility";
 import { EvaluationContext } from "../EvaluationContext";
 import { LogicalOperator } from "../Operators";
+import { SemanticError } from "../SemanticError";
 import { CallExpression } from "./CallExpression";
 import { Expression } from "./Expression";
 import { IfStatement } from "./IfStatement";
@@ -50,6 +52,13 @@ export class ConditionalAssertion extends Expression {
         if (assertedType) {
             if (assertedType instanceof CallExpression) {
                 splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, this.value, this.negate));
+            }
+            const isAssertedConsequent = isSubTypeOf(type, assertedType);
+            if (isAssertedConsequent === false) {
+                throw new SemanticError(`If test will always evaluate to false`, test);
+            }
+            if (isAssertedConsequent === true) {
+                throw new SemanticError(`If test will always evaluate to true`, test);
             }
             // if this conditional lets us assert a more specific type then we add it.
             type = combineTypes("&&", [type, assertedType]);

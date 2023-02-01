@@ -20,6 +20,7 @@ async function testCompileError(source: string, startLine: number, startColumn: 
             let expectedLocation = { startLine, startColumn, finishLine, finishColumn };
             let actualLocation = { startLine: location.startLine, startColumn: location.startColumn, finishLine: location.finishLine, finishColumn: location.finishColumn };
             if (JSON.stringify(actualLocation) !== JSON.stringify(expectedLocation)) {
+                console.log("Error: " + e);
                 console.log(errors.map(error => compiler.toConsoleMessage(error)).join("\n"));
             }
             assert.deepEqual(actualLocation, expectedLocation);
@@ -41,11 +42,31 @@ async function testCompile(source: string | Files, debug = false) {
 }
 
 export async function test() {
+await testCompileError(
+`
+struct Integer
+struct Number
+var y: Number = 2
+`, 3, 0, 3, 17);
+
 // await testCompileError(
 // `
-// var y: Number = 2
-// `, 1, 0, 1, 17);
+// struct Integer
+// function bar(a: 0 .. 3)
+//     if a < 0
+//         return a
+//     return a
+// `, 3, 7, 3, 12);
 
+// await testCompileError(
+// `
+// struct Integer
+// function bar(a: 0 .. 3)
+//     if a > -1 && a < 4
+//         return a
+//     return a
+// `, 3, 7, 3, 22);
+    
 // await testCompileError(`
 // let a = b
 // let b = a
@@ -56,53 +77,36 @@ export async function test() {
 // `, 1, 8, 1, 9);
 
 // await testCompile(`
-// type Number = 1
-// type String = 1
+// struct Integer
+// struct String
 // class @Meta
 // @Meta()
-// function min(a: Number | String, b: Number)
+// function min(a: Integer | String, b: Integer)
 //     if a < b
 //         return a
 //     else
 //         return b
 // `);
 
-// await testCompile(`
-// let a = 1
-// let b = a
-// let c = b
-// `);
+await testCompile(`
+struct Integer
+let a = 1
+let b = a
+let c = b
+`);
 
-// await testCompile(`
-// type Range = 0 .. 10
-// `);
+await testCompile(`
+struct Integer
+type Range = 0 .. 10
+`);
 
-// await testCompile(`
-// class @NativeClass
-
-// @NativeClass()
-// class String
-
-// class @NativeFunction
-//     javascript: String
-
-// @NativeClass()
-// struct Integer
-
-// @NativeFunction("foo")
-// function \`+\`(a: Integer, b: Integer) => a
-
-// function add(a: Integer, b: Integer) =>
-//     return a + b
-// `);
-
-// await testCompile(`
-// class @Native
-// class Integer
-// function \`+\`(a: Integer, b: Integer) => @Native()
-// let a = 1
-// let b = 2
-// let c = a + b
-// `, true)
+await testCompile(`
+struct String
+struct Integer
+function \`+\`(a: Integer, b: Integer)
+    return a
+function add(a: Integer, b: Integer)
+    return a + b
+`);
 
 }

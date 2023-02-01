@@ -96,7 +96,7 @@ export class Compiler {
                 for (const declaration of assembly.declarations) {
                     this.log(name, declaration);
                 }
-                if (assembly === before) {
+                if (assembly.toString() === before.toString()) {
                     break;
                 }
             }

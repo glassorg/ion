@@ -1,6 +1,6 @@
 import { combineTypes } from "../analysis/combineTypes";
 import { getFinalStatements } from "../analysis/getFinalStatements";
-import { isSubType } from "../analysis/isSubType";
+import { isSubTypeOf } from "../analysis/isSubType";
 import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
@@ -74,7 +74,7 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         for (let i = 0; i < argumentTypes.length; i++) {
             let argType = argumentTypes[i];
             let paramType = parameterTypes[i];
-            let isArgValid = isSubType(argType, paramType);
+            let isArgValid = isSubTypeOf(argType, paramType);
             if (isArgValid === false) {
                 return false;
             }

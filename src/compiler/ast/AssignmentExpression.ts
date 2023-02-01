@@ -18,8 +18,8 @@ export class AssignmentExpression extends BinaryExpression {
         yield this.right;
     }
 
-    override resolve(this: AssignmentExpression, c: EvaluationContext) {
-        return this.patch({ resolvedType: this.right.resolvedType! });
+    override resolveType(this: AssignmentExpression, c: EvaluationContext) {
+        return this.right.resolvedType!;
     }
 
 }

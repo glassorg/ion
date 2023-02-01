@@ -21,6 +21,8 @@
 // }
 
 import { Assembly } from "../../ast/Assembly";
+import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { traverseWithContext } from "../../common/traverse";
 import { SemanticError } from "../../SemanticError";
 
 export function semanticAnalysis(assembly: Assembly) {
@@ -28,6 +30,16 @@ export function semanticAnalysis(assembly: Assembly) {
 
     //  DO SOMETHING.
     // console.log("SemanticAnalysis", assembly);
+    traverseWithContext(assembly, c => ({
+        enter(node, ancestors, path) {
+            if (node instanceof VariableDeclaration) {
+                const isRoot = path.length == 2;
+                if (isRoot) {
+                    errors.push(new SemanticError(`'var' cannot be declared in a module root. Use 'let' instead.`, node));
+                }
+            }
+        }
+    }));
 
     if (errors.length > 0) {
         throw errors;

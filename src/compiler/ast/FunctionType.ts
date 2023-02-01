@@ -1,4 +1,4 @@
-import { isSubType } from "../analysis/isSubType";
+import { isSubTypeOf } from "../analysis/isSubType";
 import { AstNode } from "./AstNode";
 import { Expression } from "./Expression";
 import { ParameterDeclaration } from "./ParameterDeclaration";
@@ -20,7 +20,7 @@ export function areValidArguments(functionType: FunctionType, argTypes: TypeExpr
         let parameter = functionType.parameters[i];
         let parameterType = parameter.declaredType!;
         let argType = argTypes[i];
-        let isArgValid = isSubType(argType, parameterType);
+        let isArgValid = isSubTypeOf(argType, parameterType);
         if (isArgValid === false) {
             return false;
         }

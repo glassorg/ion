@@ -21,6 +21,9 @@ export class Reference extends Expression {
         if (this.name == null) {
             throw new Error(`Missing name`);
         }
+        if (this.name === "`sample.Integer`") {
+            debugger;
+        }
     }
 
     get isAbsolute() {
@@ -60,7 +63,7 @@ export class Reference extends Expression {
     protected override resolve(this: Reference, c: EvaluationContext): Expression {
         const declarations = c.getDeclarations(this);
         if (declarations == null) {
-            console.log("WTF?");
+            console.log(`WTF? ${this}`);
             debugger;
             const foo = c.getDeclarations(this);
         }
