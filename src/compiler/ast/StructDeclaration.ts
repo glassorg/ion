@@ -1,6 +1,9 @@
+import { EvaluationContext } from "../EvaluationContext";
 import { AbstractTypeDeclaration } from "./AbstractTypeDeclaration";
 import { Declarator } from "./Declarator";
+import { Expression } from "./Expression";
 import { FieldDeclaration } from "./FieldDeclaration";
+import { InferredType } from "./InferredType";
 import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
 

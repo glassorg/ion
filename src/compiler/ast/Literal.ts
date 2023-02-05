@@ -1,4 +1,4 @@
-import { joinExpressions } from ".";
+import { joinExpressions } from "./AstFunctions";
 import { CoreType } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
 import { ComparisonExpression } from "./ComparisonExpression";
@@ -30,24 +30,6 @@ export abstract class Literal<T> extends Expression {
             return new kype.StringLiteral(this.value);
         }
         throw new SemanticError(`Expected number literal`, this);
-    }
-
-    override resolveType(this: Literal<T>, c: EvaluationContext): TypeExpression {
-        return joinExpressions("&&", [
-            new ComparisonExpression(
-                this.location,
-                new DotExpression(this.location),
-                "is",
-                new Reference(this.location, this.coreType)
-            ),
-            new ComparisonExpression(
-                this.location,
-                new DotExpression(this.location),
-                "==",
-                // must have type specified to avoid infinite recursion
-                this.patch({ resolvedType: new InferredType(this.location) })
-            ),
-        ]);
     }
 
     toString() {

@@ -1,3 +1,4 @@
+import { splitExpressions } from "../../ast/AstFunctions";
 import { AstNode } from "../../ast/AstNode";
 import { CallExpression } from "../../ast/CallExpression";
 import { Expression } from "../../ast/Expression";
@@ -20,7 +21,7 @@ export class CallParselet extends BinaryExpressionParselet {
     parse(p: Parser, callee: Expression, open: Token): AstNode {
         let group = this.groupParselet.parse(p, open);
         let { value } = group;
-        let args = value?.split(`,`) ?? [];
+        let args = splitExpressions(",", value);
 
         return new CallExpression(
             callee.location.merge(group.location),

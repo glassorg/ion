@@ -251,7 +251,7 @@ export class Parser {
                 throw new SemanticError(`Expected Statement`, node);
             }
         }
-        return node;
+        return node as Statement;
     }
 
     parseNode(precedence: number = 0): AstNode {

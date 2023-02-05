@@ -3,7 +3,7 @@ import { Serializer } from "./Serializer";
 import * as astNamespace from "../ast/AstNamespace";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression, LogicalExpression, Reference, SourceLocation } from "../ast/AstNamespace";
-import { joinExpressions } from "../ast";
+import { joinExpressions } from "../ast/AstFunctions";
 
 const serializer = new Serializer(astNamespace, { indent: 2 });
 

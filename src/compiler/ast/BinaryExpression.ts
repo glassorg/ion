@@ -19,16 +19,6 @@ export abstract class BinaryExpression extends Expression {
         }
     }
 
-    *splitInternal(operator: InfixOperator): Generator<Expression> {
-        if (this.operator === operator) {
-            yield* this.left.splitInternal(operator);
-            yield* this.right.splitInternal(operator);
-        }
-        else {
-            yield this;
-        }
-    }
-
     public toKype(): kype.Expression {
         if (this.operator === "is") {
             //  we only have a structural types, no inheritance, so type constraints are clear.

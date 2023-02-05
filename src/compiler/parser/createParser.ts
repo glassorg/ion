@@ -23,7 +23,6 @@ import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
 import { toTypeExpression } from "../ast/TypeExpression";
-import { AbsoluteReference } from "../ast/AbsoluteReference";
 
 export function createParser() {
     return new Parser({
@@ -32,7 +31,7 @@ export function createParser() {
         String: new TerminalParselet(token => new StringLiteral(token.location, JSON.parse(token.value))),
         Operator: new PrefixOperatorParselet(),
         Id: new TerminalParselet(token => new Reference(token.location, token.value)),
-        EscapedId: new TerminalParselet(token => new AbsoluteReference(token.location, token.value.slice(1, -1))),
+        EscapedId: new TerminalParselet(token => new Reference(token.location, token.value.slice(1, -1))),
         If: new IfParselet(),
         For: new ForParselet(),
         Var: new VariableParselet(),

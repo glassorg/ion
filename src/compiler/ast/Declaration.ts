@@ -19,7 +19,7 @@ export abstract class Declaration extends Statement implements Resolvable {
     public readonly absolutePath?: string;
  
     public readonly meta: CallExpression[] = []
-    public readonly resolvedType?: TypeExpression;
+    // public readonly resolvedType?: TypeExpression;
     
     constructor(
         location: SourceLocation,

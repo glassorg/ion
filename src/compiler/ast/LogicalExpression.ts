@@ -19,12 +19,4 @@ export class LogicalExpression extends BinaryExpression {
         super(location, left, operator, right);
     }
 
-    protected override resolveType(c: EvaluationContext): Expression {
-        return new ComparisonExpression(this.location,
-            new DotExpression(this.location),
-            "is",
-            new Reference(this.location, CoreTypes.Boolean)
-        );
-    }
-
 }

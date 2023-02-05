@@ -10,6 +10,7 @@ import { FunctionExpression } from "../../ast/FunctionExpression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Expression } from "../../ast/Expression";
 import { TypeExpression } from "../../ast/TypeExpression";
+import { splitExpressions } from "../../ast/AstFunctions";
 
 export class FunctionParselet extends PrefixParselet {
 
@@ -28,7 +29,7 @@ export class FunctionParselet extends PrefixParselet {
         if (value instanceof PstGroup) {
             let declaredType = value.declaredType;
             value = value.value;
-            let parameters = value?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
+            let parameters = splitExpressions(",", value).map(FunctionExpression.parameterFromNode) ?? [];
             let body = p.parseBlock();
             let location = functionToken.location.merge(body.location);
             functionExpression = new FunctionExpression(location, parameters, body, declaredType);

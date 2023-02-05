@@ -22,14 +22,6 @@ export class UnaryExpression extends Expression {
         super(location);
     }
 
-    protected override *dependencies(c: EvaluationContext) {
-        yield this.argument;
-    }
-
-    protected override resolveType(this: UnaryExpression, c: EvaluationContext) {
-        return this.argument.resolvedType!
-    }
-
     public toKype(): kype.Expression {
         if (this.operator === "typeof") {
             const argumentType = this.argument.resolvedType;

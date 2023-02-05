@@ -1,4 +1,4 @@
-import { joinExpressions } from "../ast";
+import { joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { BlockStatement } from "../ast/BlockStatement";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression } from "../ast/DotExpression";
@@ -10,11 +10,11 @@ import { toTypeExpression, TypeExpression } from "../ast/TypeExpression";
 import { ComparisonOperator, ComparisonOperators, isComparisonOperator, LogicalOperator } from "../Operators";
 import { traverse } from "./traverse";
 
-function getLastBlockNode(maybeBlock: Statement): Statement {
+function getLastBlockNode(maybeBlock: Expression): Statement {
     if (maybeBlock instanceof BlockStatement) {
         return getLastBlockNode(maybeBlock.statements[maybeBlock.statements.length - 1]);
     }
-    return maybeBlock;
+    return maybeBlock as Statement;
 }
 
 export function splitFilterJoinMultiple(root: Expression, splitOperators: LogicalOperator[], joinOperators: LogicalOperator[], filter: (e: Expression) => Expression | null): Expression {
@@ -25,7 +25,7 @@ export function splitFilterJoinMultiple(root: Expression, splitOperators: Logica
     let useFilter = remainingSplitOperators.length === 0
         ? filter
         : ((e: Expression) => splitFilterJoinMultiple(e, remainingSplitOperators, remainingJoinOperators, filter));
-    let expressions = [...root.split(splitOperator)].map(useFilter).map(node => getLastBlockNode(node!)).filter(Boolean) as Expression[]
+    let expressions = splitExpressions(splitOperator, root).map(useFilter).map(node => getLastBlockNode(node!)).filter(Boolean) as Expression[]
     return joinExpressions(joinOperator, expressions);
 }
 

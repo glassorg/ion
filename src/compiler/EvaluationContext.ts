@@ -64,14 +64,14 @@ export class EvaluationContext {
             const allFunctions = this.getDeclarations(callee);
             //  now we've found some functions, let's see which ones are potentially valid.
             //  we need kype-based type checking.
-            const validFunctions = allFunctions.filter(declaration => {
+            const validFunctions = allFunctions?.filter(declaration => {
                 if (!(declaration instanceof FunctionDeclaration)) {
                     throw new SemanticError(`Expected FunctionDeclaration`, declaration);
                 }
                 const func = declaration.value;
                 return areValidArguments(func, argTypes) !== false;
-            }) as FunctionDeclaration[];
-            return validFunctions;
+            });
+            return validFunctions as FunctionDeclaration[] ?? [];
         }
         throw new SemanticError(`Not a valid function`, callee);
     }

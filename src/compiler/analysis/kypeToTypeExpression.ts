@@ -1,5 +1,5 @@
 import * as kype from "@glas/kype";
-import { createBinaryExpression } from "../ast";
+import { createBinaryExpression } from "../ast/AstFunctions";
 import { DotExpression } from "../ast/DotExpression";
 import { Expression } from "../ast/Expression";
 import { FloatLiteral } from "../ast/FloatLiteral";
@@ -31,9 +31,9 @@ function toExpression(e: kype.Expression, location: SourceLocation): Expression 
             return new FloatLiteral(location, e.value);
         }
     }
-    // if (e instanceof UnaryExpression && e.operator === "typeof") {
-    //     return toExpression(e.argument.resolvedType!, e.location)
-    // }
+    if (e instanceof kype.Reference) {
+        return new Reference(location, e.name);
+    }
 
     console.log(`????? ${e}`);
 

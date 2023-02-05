@@ -26,10 +26,6 @@ export class Reference extends Expression {
         }
     }
 
-    get isAbsolute() {
-        return false;
-    }
-
     get isReference() {
         return true;
     }
@@ -52,34 +48,8 @@ export class Reference extends Expression {
     protected override *dependencies(c: EvaluationContext) {
         const declarations = c.getDeclarations(this);
         if (declarations) {
-            for (const declaration of declarations) {
-                if (declaration.declaredType) {
-                    yield declaration.declaredType;
-                }
-            }
+            yield *declarations;
         }
-    }
-
-    protected override resolve(this: Reference, c: EvaluationContext): Expression {
-        const declarations = c.getDeclarations(this);
-        if (declarations == null) {
-            console.log(`WTF? ${this}`);
-            debugger;
-            const foo = c.getDeclarations(this);
-        }
-        if (declarations.length === 1) {
-            const declaration = declarations[0];
-            const resolvedType = declaration.declaredType
-            if (declaration instanceof ConstantDeclaration) {
-                const { value } = declaration;
-                if (value instanceof Literal || value instanceof Reference) {
-                    return (value as Expression).patch({ resolvedType });
-                }
-            }
-            return this.patch({ resolvedType });
-        }
-        // this is a multi function so we will consider the type inferred, maybe should be something else?
-        return this.patch({ resolvedType: new InferredType(this.location) });
     }
 
     toString() {

@@ -96,7 +96,7 @@ export class Compiler {
                 for (const declaration of assembly.declarations) {
                     this.log(name, declaration);
                 }
-                if (assembly.toString() === before.toString()) {
+                if (JSON.stringify(assembly) === JSON.stringify(before)) {
                     break;
                 }
             }

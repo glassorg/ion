@@ -9,7 +9,7 @@ import { MemberExpression } from "../../ast/MemberExpression";
 import { Reference } from "../../ast/Reference";
 import { Identifier } from "../../ast/Identifier";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
-import { createBinaryExpression } from "../../ast";
+import { createBinaryExpression } from "../../ast/AstFunctions";
 import { toTypeExpression } from "../../ast/TypeExpression";
 import { RangeExpression } from "../../ast/RangeExpression";
 import { FunctionExpression } from "../../ast/FunctionExpression";

@@ -1,7 +1,7 @@
 import { TypeExpression } from "../ast/TypeExpression";
 import * as kype from "@glas/kype";
 import { kypeToTypeExpression } from "./kypeToTypeExpression";
-import { joinExpressions } from "../ast";
+import { joinExpressions } from "../ast/AstFunctions";
 import { InfixOperator } from "../Operators";
 import { Literal } from "@glas/kype";
 import { SemanticError } from "../SemanticError";

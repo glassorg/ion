@@ -14,12 +14,4 @@ export class AssignmentExpression extends BinaryExpression {
         super(location, left, "=", right);
     }
 
-    override *dependencies(c: EvaluationContext) {
-        yield this.right;
-    }
-
-    override resolveType(this: AssignmentExpression, c: EvaluationContext) {
-        return this.right.resolvedType!;
-    }
-
 }

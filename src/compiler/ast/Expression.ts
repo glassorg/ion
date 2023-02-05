@@ -5,7 +5,14 @@ import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 
 export interface Resolvable extends AstNode {
+    isResolvable: true;
     readonly resolvedType?: TypeExpression;
+    readonly resolved: boolean;
+}
+
+export function isResolvable(node: any): node is Resolvable {
+    const maybeResolvable = node as Resolvable;
+    return maybeResolvable?.isResolvable;
 }
 
 export interface Resolved extends Resolvable {
@@ -23,6 +30,10 @@ export class Expression extends AstNode implements Resolvable {
      */
     public readonly resolvedType?: TypeExpression;
 
+    get isResolvable(): true {
+        return true;
+    }
+
     protected *dependencies(c: EvaluationContext): Generator<Expression | undefined> {
     }
 
@@ -37,20 +48,6 @@ export class Expression extends AstNode implements Resolvable {
 
     public get resolved() {
         return this.resolvedType != null;
-    }
-
-    public maybeResolve(c: EvaluationContext): Expression | void {
-        if (!this.resolved && this.areAllDependenciesResolved(c)) {
-            return this.resolve(c);
-        }
-    }
-
-    protected resolve(this: Expression, c: EvaluationContext): Expression {
-        return this.patch({ resolvedType: this.resolveType(c) });
-    }
-
-    protected resolveType(c: EvaluationContext): TypeExpression {
-        throw new SemanticError(`${this.constructor.name}.resolveType not implemented`, this);
     }
 
     public toKypeType(): kype.TypeExpression {

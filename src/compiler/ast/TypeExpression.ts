@@ -1,4 +1,4 @@
-import { joinExpressions } from ".";
+import { joinExpressions, splitExpressions } from "./AstFunctions";
 import { CoreTypes } from "../common/CoreType";
 import { getTypeAssertion } from "../common/utility";
 import { SemanticError } from "../SemanticError";
@@ -22,8 +22,8 @@ import { Reference } from "./Reference";
 export type TypeExpression = Expression;
 
 export function toTypeExpression(e: Expression): TypeExpression {
-    return joinExpressions("||", e.split("|").map(option => {
-        return joinExpressions("&&", option.split("&").map(term => {
+    return joinExpressions("||", splitExpressions("|", e).map(option => {
+        return joinExpressions("&&", splitExpressions("&", option).map(term => {
             //  we can't convert to range without knowing
             if (term instanceof RangeExpression) {
                 const { start, finish } = term;

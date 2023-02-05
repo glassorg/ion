@@ -1,5 +1,6 @@
 import { InfixOperator, isAssignmentOperator, isComparisonOperator, isLogicalOperator, isSequenceOperator } from "../Operators";
 import { AssignmentExpression } from "./AssignmentExpression";
+import { BinaryExpression } from "./BinaryExpression";
 import { CallExpression } from "./CallExpression";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { Expression } from "./Expression";
@@ -39,7 +40,7 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }
 
-export function joinExpressions(operator: InfixOperator, expressions: Expression[]) {
+export function joinExpressions(operator: InfixOperator, expressions: Expression[]): Expression {
     let right = expressions[expressions.length - 1];
     for (let i = expressions.length - 2; i >= 0; i--) {
         const left = expressions[i];
@@ -51,5 +52,16 @@ export function joinExpressions(operator: InfixOperator, expressions: Expression
         );
     }
     return right;
+}
+
+export function splitExpressions(operator: InfixOperator, expression: Expression | undefined, expressions: Expression[] = []): Expression[] {
+    if (expression instanceof BinaryExpression && expression.operator === operator) {
+        splitExpressions(operator, expression.left, expressions);
+        splitExpressions(operator, expression.right, expressions);
+    }
+    else if (expression != null) {
+        expressions.push(expression);
+    }
+    return expressions;
 }
 

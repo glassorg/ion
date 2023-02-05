@@ -1,10 +1,11 @@
-export * from "./AbstractTypeDeclaration";
-export * from "./AbstractValueDeclaration";
+// export * from "./AbstractTypeDeclaration";
+// export * from "./AbstractValueDeclaration";
 export * from "./AssignmentExpression";
-export * from "./AstNode";
+// export * from "./AstNode";
 export * from "./BinaryExpression";
 export * from "./CallExpression";
 export * from "./ClassDeclaration";
+export * from "./ConditionalAssertion";
 export * from "./ComparisonExpression";
 export * from "./Container";
 export * from "./Declaration";

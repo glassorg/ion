@@ -49,24 +49,24 @@ struct Number
 var y: Number = 2
 `, 3, 0, 3, 17);
 
-// await testCompileError(
-// `
-// struct Integer
-// function bar(a: 0 .. 3)
-//     if a < 0
-//         return a
-//     return a
-// `, 3, 7, 3, 12);
+await testCompileError(
+`
+struct Integer
+function bar(a: 0 .. 3)
+    if a < 0
+        return a
+    return a
+`, 3, 7, 3, 12);
 
-// await testCompileError(
-// `
-// struct Integer
-// function bar(a: 0 .. 3)
-//     if a > -1 && a < 4
-//         return a
-//     return a
-// `, 3, 7, 3, 22);
-    
+await testCompileError(
+`
+struct Integer
+function bar(a: 0 .. 3)
+    if a > -1 && a < 4
+        return a
+    return a
+`, 3, 7, 3, 22);
+
 // await testCompileError(`
 // let a = b
 // let b = a
@@ -76,17 +76,17 @@ var y: Number = 2
 // let a = a
 // `, 1, 8, 1, 9);
 
-// await testCompile(`
-// struct Integer
-// struct String
-// class @Meta
-// @Meta()
-// function min(a: Integer | String, b: Integer)
-//     if a < b
-//         return a
-//     else
-//         return b
-// `);
+await testCompile(`
+struct Integer
+struct String
+class @Meta
+@Meta()
+function min(a: Integer | String, b: Integer)
+    if a < b
+        return a
+    else
+        return b
+`);
 
 await testCompile(`
 struct Integer

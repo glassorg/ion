@@ -1,3 +1,4 @@
+import { splitExpressions } from "./AstFunctions";
 import { combineTypes } from "../analysis/combineTypes";
 import { getFinalStatements } from "../analysis/getFinalStatements";
 import { isSubTypeOf } from "../analysis/isSubType";
@@ -47,7 +48,7 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         }
     }
 
-    private *getReturnStatements() {
+    *getReturnStatements() {
         for (const statement of getFinalStatements(this.body)) {
             if (statement instanceof ReturnStatement) {
                 yield statement;
@@ -58,10 +59,8 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
         }
     }
 
-    protected override resolve(this: FunctionExpression, c: EvaluationContext): FunctionExpression {
-        const resolvedReturnType = combineTypes("||", [...this.getReturnStatements()].map(s => s.argument.resolvedType!));
-        const resolvedType = new InferredType(this.location);
-        return this.patch({ resolvedType, resolvedReturnType });
+    public get resolved() {
+        return this.resolvedType != null && this.resolvedReturnType != null;
     }
 
     areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {
@@ -105,7 +104,7 @@ export class FunctionExpression extends Expression implements Scope, FunctionTyp
     static createFromLambda(left: Expression, right: Expression): FunctionExpression {
         let declaredType: TypeExpression | undefined;
         let leftValue = left instanceof PstGroup ? left.value : left;
-        let parameters = leftValue?.split(",").map(FunctionExpression.parameterFromNode) ?? [];
+        let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;
         let location = SourceLocation.merge(left.location, right.location);
         if (right instanceof BlockStatement) {
