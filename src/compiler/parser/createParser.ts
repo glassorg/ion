@@ -27,7 +27,7 @@ import { toTypeExpression } from "../ast/TypeExpression";
 export function createParser() {
     return new Parser({
         Number: new TerminalParselet(token => new FloatLiteral(token.location, JSON.parse(token.value))),
-        Integer: new TerminalParselet(token => new IntegerLiteral(token.location, JSON.parse(token.value))),
+        Integer: new TerminalParselet(token => new IntegerLiteral(token.location, BigInt(token.value))),
         String: new TerminalParselet(token => new StringLiteral(token.location, JSON.parse(token.value))),
         Operator: new PrefixOperatorParselet(),
         Id: new TerminalParselet(token => new Reference(token.location, token.value)),

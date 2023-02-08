@@ -7,4 +7,8 @@ export class StringLiteral extends Literal<string> {
         return CoreTypes.String;
     }
 
+    toString() {
+        return JSON.stringify(this.value);
+    }
+
 }

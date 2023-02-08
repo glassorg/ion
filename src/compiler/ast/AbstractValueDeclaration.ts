@@ -15,5 +15,5 @@ export abstract class AbstractValueDeclaration extends Declaration {
     ) {
         super(location, id, declaredType);
     }
-
+    
 }

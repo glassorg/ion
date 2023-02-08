@@ -42,4 +42,17 @@ export abstract class Declaration extends Statement implements Resolvable {
         return metaStrings;
     }
 
+    /**
+     * Returns an empty string if not resolved or else " : Type"
+     */
+    toTypeString() {
+        if (this.resolvedType) {
+            return super.toTypeString(this.resolvedType, "::");
+        }
+        if (this.declaredType) {
+            return super.toTypeString(this.declaredType, ":");
+        }
+        return ``
+    }
+    
 }

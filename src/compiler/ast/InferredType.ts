@@ -7,7 +7,7 @@ export class InferredType extends Expression {
     }
 
     toString() {
-        return `?`;
+        return `InferredType`;
     }
 }
 

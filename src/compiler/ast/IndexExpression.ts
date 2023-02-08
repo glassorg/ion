@@ -11,4 +11,8 @@ export class IndexExpression extends Expression {
         super(location);
     }
 
+    toString(includeTypes = true): string {
+        return `${this.object.toString(includeTypes)}[${this.index.toString(includeTypes)}]`;
+    }
+
 }

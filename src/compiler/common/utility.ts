@@ -42,12 +42,12 @@ export function splitFilterJoinMultiple(root: Expression, splitOperators: Logica
 //     return null;    
 // }
 
-function isDot(e: Expression, dot: Expression) {
-    return e.toString() === dot.toString();
+function isEquivalent(e: Expression, dot: Expression) {
+    return e.toString(false) === dot.toString(false);
 }
 
 export function hasDot(root: Expression, dot: Expression) {
-    if (isDot(root, dot)) {
+    if (isEquivalent(root, dot)) {
         return true;
     }
     let found = false;
@@ -56,7 +56,7 @@ export function hasDot(root: Expression, dot: Expression) {
             return found || node instanceof SourceLocation;
         },
         enter(node) {
-            if (isDot(node, dot)) {
+            if (isEquivalent(node, dot)) {
                 found = true;
             }
         }
@@ -84,7 +84,7 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
             }
         }
         if (leftHasDot) {
-            if (isDot(left, dot)) {
+            if (isEquivalent(left, dot)) {
                 if (negate) {
                     if (!ComparisonOperators[operator].negate) {
                         throw new Error(`Found no negate for ${operator}`);

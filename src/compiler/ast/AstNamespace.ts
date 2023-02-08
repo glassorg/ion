@@ -33,7 +33,7 @@ export * from "./PstModule";
 export * from "./RangeExpression";
 export * from "./Reference";
 export * from "./ReturnStatement";
-export * from "./Scope";
+export * from "./ScopeNode";
 export * from "./SourceLocation";
 export * from "./Statement";
 export * from "./StringLiteral";

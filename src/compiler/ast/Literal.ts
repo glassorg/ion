@@ -23,17 +23,17 @@ export abstract class Literal<T> extends Expression {
     abstract get coreType(): CoreType
 
     public toKype(): kype.Expression {
-        if (typeof this.value === "number") {
-            return new kype.NumberLiteral(this.value);
-        }
         if (typeof this.value === "string") {
             return new kype.StringLiteral(this.value);
+        }
+        if (typeof this.value === "number" || typeof this.value === "bigint") {
+            return new kype.NumberLiteral(this.value);
         }
         throw new SemanticError(`Expected number literal`, this);
     }
 
-    toString() {
-        return JSON.stringify(this.value);
+    toString(): string {
+        throw new Error("implement in subclasses");
     }
 
 }

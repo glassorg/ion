@@ -23,7 +23,7 @@ export function isResolved(node: Resolvable): node is Resolved {
     return node.resolvedType !== undefined;
 }
 
-export class Expression extends AstNode implements Resolvable {
+export abstract class Expression extends AstNode implements Resolvable {
 
     /**
      * The resolved type or false if this is a type and therefore doesn't resolve further.
@@ -61,7 +61,7 @@ export class Expression extends AstNode implements Resolvable {
     /**
      * Returns an empty string if not resolved or else " : Type"
      */
-    toTypeString(type = this.resolvedType, colon = ":") {
+    toTypeString(type?: TypeExpression, colon = ":") {
         return type ? ` ${colon} ${type.toUserTypeString()}` : ``;
     }
 
@@ -71,5 +71,10 @@ export class Expression extends AstNode implements Resolvable {
     public toUserTypeString() {
         return this.toString();
     }
+
+    /**
+     * Returns a string without type information that can be used to compare
+     */
+    abstract toString(includeTypes?: boolean): string;
 
 }

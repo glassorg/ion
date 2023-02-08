@@ -24,7 +24,7 @@ testParseExpression(`a = 1`, {
     "operator": "=",
     "right": {
         "": "IntegerLiteral",
-        "value": 1
+        "value": "1"
     }
 });
 
@@ -41,7 +41,7 @@ testParseExpression(`a + 1`, {
         },
         {
             "": "IntegerLiteral",
-            "value": 1
+            "value": "1"
         }
     ]
 });
@@ -55,7 +55,7 @@ testParseExpression(`a || 1`, {
     "operator": "||",
     "right": {
         "": "IntegerLiteral",
-        "value": 1
+        "value": "1"
     }
 });
 
@@ -290,7 +290,7 @@ testParseExpression(`var x: Number = 10`, {
     "meta": [],
     "defaultValue": {
         "": "IntegerLiteral",
-        "value": 10
+        "value": "10"
     }
 });
 
@@ -303,7 +303,7 @@ testParseExpression(`let x = 20`, {
     "meta": [],
     "value": {
         "": "IntegerLiteral",
-        "value": 20
+        "value": "20"
     }
 });
 
@@ -437,7 +437,7 @@ testParseExpression(
                 "meta": [],
                 "defaultValue": {
                     "": "IntegerLiteral",
-                    "value": 0
+                    "value": "0"
                 }
             },
             {
@@ -460,7 +460,7 @@ testParseExpression(
                 "meta": [],
                 "defaultValue": {
                     "": "IntegerLiteral",
-                    "value": 0
+                    "value": "0"
                 }
             }
         ],
@@ -575,7 +575,7 @@ class Vector
             "meta": [],
             "defaultValue": {
                 "": "IntegerLiteral",
-                "value": 0
+                "value": "0"
             }
         }
     ]
@@ -628,7 +628,7 @@ struct Vector
             "meta": [],
             "defaultValue": {
                 "": "IntegerLiteral",
-                "value": 0
+                "value": "0"
             }
         },
         {
@@ -651,7 +651,7 @@ struct Vector
             "meta": [],
             "defaultValue": {
                 "": "IntegerLiteral",
-                "value": 0
+                "value": "0"
             }
         }
     ]
@@ -677,7 +677,7 @@ testParseExpression(`x += 10`, {
             },
             {
                 "": "IntegerLiteral",
-                "value": 10
+                "value": "10"
             }
         ]
     }
@@ -769,11 +769,11 @@ testParseExpression(
                         "args": [
                             {
                                 "": "IntegerLiteral",
-                                "value": 1
+                                "value": "1"
                             },
                             {
                                 "": "IntegerLiteral",
-                                "value": 2
+                                "value": "2"
                             }
                         ]
                     }

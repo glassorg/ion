@@ -59,8 +59,15 @@ const maybeResolveNode: {
         return node.patch({ resolvedType: node.right.resolvedType });    
     },
     UnaryExpression(node, c) {
+        console.log("CHECK: " + node.toString() + " resolved type: " + node.argument.resolvedType);
         if (!node.argument.resolvedType) {
             return;
+        }
+        if (node.operator === "typeof") {
+            if (node.argument.resolvedType) {
+                // convert this to the underlying typeof value.
+                return node.argument.resolvedType!
+            }
         }
         //  are we sure that's right? I don't think it is
         //  Unary ! stays boolean
@@ -68,10 +75,24 @@ const maybeResolveNode: {
         return node.patch({ resolvedType: node.argument.resolvedType });    
     },
     ParameterDeclaration(node, c) {
-        if (!node.declaredType) {
-            return;
+        if (node.declaredType?.resolved) {
+            return node.patch({ resolvedType: node.declaredType });
         }
-        return node.patch({ resolvedType: node.declaredType });
+        if (node.defaultValue?.resolvedType) {
+            return node.patch({ resolvedType: node.defaultValue.resolvedType });
+        }
+    },
+    VariableDeclaration(node, c) {
+        if (node.declaredType) {
+            if (node.declaredType.resolvedType?.resolved) {
+                return node.patch({ resolvedType: node.declaredType });
+            }
+        }
+        else if (node.defaultValue) {
+            if (node.defaultValue.resolvedType?.resolved) {
+                return node.patch({ resolvedType: node.defaultValue.resolvedType });
+            }
+        }
     },
     ConditionalAssertion(node, c) {
         // console.log("MAYBE: ", node.value);
@@ -94,12 +115,6 @@ const maybeResolveNode: {
                 splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
             }
             const isAssertedConsequent = isSubTypeOf(type, assertedType);
-            console.log({
-                type: type.toString(),
-                test: test.toString(),
-                assertedType: assertedType.toString(),
-                isAssertedConsequent
-            })
             if (isAssertedConsequent === false) {
                 throw new SemanticError(`If test will always evaluate to false`, test);
             }
@@ -112,6 +127,7 @@ const maybeResolveNode: {
         return node.patch({ resolvedType: type });
     },
     CallExpression(node, c) {
+        // functions need to be resolved into inferred types or something.
         if (!node.callee.resolved || !(node.args.every(arg => arg.resolved))) {
             return
         }
@@ -148,21 +164,13 @@ const maybeResolveNode: {
         return node.patch({ resolvedType: LiteralType(node) });
     },
     Reference(node, c) {
-        // function debug(...args: any) {
-        //     if (node.toString() === "a") {
-        //         console.log(...args);
-        //     }
-        // }
-        // debug("REF: " + node);
         const declarations = c.getDeclarations(node);
-        for (const declaration of declarations) {
-            if (!declaration.resolvedType) {
-                // debug("FAIL: " + declaration.toString())
-                return;
-            }
-        }
         if (declarations.length === 1) {
             const declaration = declarations[0];
+            if (!declaration.resolved) {
+                // wait for a single function to be resolved.
+                return;
+            }
             const resolvedType = declaration.declaredType
             if (declaration instanceof ConstantDeclaration) {
                 const { value } = declaration;
@@ -172,6 +180,7 @@ const maybeResolveNode: {
             }
             return node.patch({ resolvedType });
         }
+        //  if it's multiple functions then we will type it as Inferred
         // this is a multi function so we will consider the type inferred, maybe should be something else?
         return node.patch({ resolvedType: new InferredType(node.location) });
     },

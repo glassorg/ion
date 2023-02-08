@@ -6,6 +6,7 @@ import { resolveSingleStep_N } from "./resolveSingleStep";
 import { addExplicitReturns } from "./addExplicitReturns";
 import { addElseIfReturn } from "./addElseIfReturn";
 import { insertConditionals } from "./insertConditionals";
+import { ssaForm } from "./ssaForm";
 
 type AssemblyPhase = (a: Assembly) => Assembly;
 
@@ -15,6 +16,7 @@ export const assemblyPhases = [
     addExplicitReturns,
     addElseIfReturn,
     insertConditionals,
+    ssaForm,
     resolveSingleStep_N,
     semanticAnalysis,
 ] satisfies AssemblyPhase[];

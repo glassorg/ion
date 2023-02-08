@@ -172,6 +172,12 @@ For two functions with the same name
     false, null => Impossible.
     null, false => Impossible.
 
+## Type AST
+
+type Type = TypeConstraint // dot > 0 && dot < 10 && dot is Integer
+          | MultiFunctionType
+
+
 ## Compilation Structure
 
     src/

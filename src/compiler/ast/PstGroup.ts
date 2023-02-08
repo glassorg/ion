@@ -15,4 +15,8 @@ export class PstGroup extends Expression {
         super(location);
     }
 
+    toString(includeTypes?: boolean | undefined): string {
+        return this.value?.toString(includeTypes) ?? `PSTGROUP`;
+    }
+
 }

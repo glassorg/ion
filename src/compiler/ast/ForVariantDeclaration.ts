@@ -7,4 +7,8 @@ export class ForVariantDeclaration extends AbstractValueDeclaration {
         super(id.location, id);
     }
 
+    toString(includeTypes = true): string {
+        return this.id.toString();
+    }
+
 }

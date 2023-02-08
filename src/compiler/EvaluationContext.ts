@@ -4,7 +4,7 @@ import { Declaration } from "./ast/Declaration";
 import { Expression, isResolved, Resolvable, Resolved } from "./ast/Expression";
 import { FunctionDeclaration } from "./ast/FunctionDeclaration";
 import { FunctionExpression } from "./ast/FunctionExpression";
-import { areValidArguments, FunctionType } from "./ast/FunctionType";
+import { areValidArguments, OldFunctionType } from "./ast/FunctionType";
 import { Reference } from "./ast/Reference";
 import { TypeExpression } from "./ast/TypeExpression";
 import { isTypeof, UnaryExpression } from "./ast/UnaryExpression";
@@ -56,7 +56,7 @@ export class EvaluationContext {
         return type;
     }
 
-    getFunctionTypes(callee: Expression, argTypes: TypeExpression[]): FunctionType | FunctionDeclaration[] {
+    getFunctionTypes(callee: Expression, argTypes: TypeExpression[]): OldFunctionType | FunctionDeclaration[] {
         if (callee instanceof FunctionExpression) {
             return callee;
         }

@@ -7,18 +7,18 @@ import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
-import { FunctionType } from "./FunctionType";
+import { OldFunctionType } from "./FunctionType";
 import { InferredType } from "./InferredType";
 import { ParameterDeclaration } from "./ParameterDeclaration";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
 import { ReturnStatement } from "./ReturnStatement";
-import { Scope } from "./Scope";
+import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
 import { VariableDeclaration } from "./VariableDeclaration";
 
-export class FunctionExpression extends Expression implements Scope, FunctionType {
+export class FunctionExpression extends Expression implements ScopeNode, OldFunctionType {
 
     constructor(
         location: SourceLocation,

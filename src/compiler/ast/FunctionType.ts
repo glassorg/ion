@@ -4,14 +4,14 @@ import { Expression } from "./Expression";
 import { ParameterDeclaration } from "./ParameterDeclaration";
 import { TypeExpression } from "./TypeExpression";
 
-export interface FunctionType extends AstNode {
+export interface OldFunctionType extends AstNode {
 
     readonly parameters: ParameterDeclaration[];
     getReturnType(argumentTypes: TypeExpression[], callee: Expression): TypeExpression;
 
 }
 
-export function areValidArguments(functionType: FunctionType, argTypes: TypeExpression[]): boolean | null {
+export function areValidArguments(functionType: OldFunctionType, argTypes: TypeExpression[]): boolean | null {
     if (functionType.parameters.length !== argTypes.length) {
         return false;
     }

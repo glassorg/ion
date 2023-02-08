@@ -9,6 +9,6 @@ export function isSubTypeOf(maybeSubType: TypeExpression, superType: TypeExpress
     const kypeSubType = maybeSubType.toKype();
     const kypeSuperType = superType.toKype();
     const result = kype.isConsequent(kypeSubType, kypeSuperType);
-    console.log(`isSubType ${kypeSubType} --> ${kypeSuperType} = ${result}`);
+    // console.log(`isSubType ${kypeSubType} --> ${kypeSuperType} = ${result}`);
     return result;
 }

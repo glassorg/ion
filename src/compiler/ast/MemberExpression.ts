@@ -10,6 +10,10 @@ export class Unresolvable extends Expression {
         return false;
     }
 
+    toString(includeTypes = true): string {
+        return `!UNRESOLVABLE!`;
+    }
+
 }
 
 export class MemberExpression extends Expression {
@@ -38,7 +42,7 @@ export class MemberExpression extends Expression {
         return new kype.MemberExpression(this.object.toKype(), new kype.Reference(this.property.name));
     }
 
-    toString() {
+    toString(includTypes = true) {
         return `${this.object}.${this.property}`;
     }
 

@@ -45,15 +45,8 @@ export class Reference extends Expression {
         return super.resolved;
     }
 
-    protected override *dependencies(c: EvaluationContext) {
-        const declarations = c.getDeclarations(this);
-        if (declarations) {
-            yield *declarations;
-        }
-    }
-
-    toString() {
-        return isValidId(this.name) ? this.name : ("`" + this.name + "`") + this.toTypeString();
+    toString(includeTypes = true) {
+        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.resolvedType, "::") : "");
     }
 
 }

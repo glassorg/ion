@@ -1,10 +1,10 @@
 import { Expression } from "./Expression";
 import { ExpressionStatement } from "./ExpressionStatement";
-import { Scope } from "./Scope";
+import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
 
-export class BlockStatement extends Statement implements Scope {
+export class BlockStatement extends Statement implements ScopeNode {
 
     public readonly statements: Statement[];
 
@@ -14,6 +14,14 @@ export class BlockStatement extends Statement implements Scope {
     ) {
         super(location);
         this.statements = statements.map(node => node instanceof Statement ? node : new ExpressionStatement(node.location, node));
+    }
+
+    get firstStatement(): Statement | undefined {
+        return this.statements[0];
+    }
+
+    get lastStatement(): Statement | undefined {
+        return this.statements[this.statements.length - 1];
     }
 
     *dependencies() {
