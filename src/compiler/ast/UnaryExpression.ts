@@ -1,13 +1,11 @@
 import { PrefixOperator } from "../Operators";
 import { Expression } from "./Expression";
-import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
-import { TypeExpression } from "./TypeExpression";
 import * as kype from "@glas/kype";
 
-export function isTypeof(node: TypeExpression): node is (UnaryExpression & { operator: "typeof", argument: Reference }) {
-    return node instanceof UnaryExpression && node.operator === "typeof" && node.argument instanceof Reference;
-}
+// export function isTypeof(node: Type): node is (UnaryExpression & { operator: "typeof", argument: Reference }) {
+//     return node instanceof UnaryExpression && node.operator === "typeof" && node.argument instanceof Reference;
+// }
 
 export class UnaryExpression extends Expression {
 
@@ -21,17 +19,18 @@ export class UnaryExpression extends Expression {
 
     public toKype(): kype.Expression {
         if (this.operator === "typeof") {
-            const argumentType = this.argument.resolvedType;
+            const argumentType = this.argument.type;
             if (!argumentType) {
+                console.log(this);
                 throw new Error(`Expected this to be resolved for typeof`);
             }
-            return this.argument.resolvedType!.toKype();
+            return this.argument.type!.toKype();
         }
         return new kype.UnaryExpression(this.operator, this.argument.toKype());
     }
 
     toString() {
-        return `${this.operator} ${this.argument}${this.toTypeString(this.resolvedType)}`;
+        return `${this.operator} ${this.argument}${this.toTypeString(this.type)}`;
     }
 
 }

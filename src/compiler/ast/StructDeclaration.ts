@@ -1,24 +1,16 @@
-import { EvaluationContext } from "../EvaluationContext";
-import { AbstractTypeDeclaration } from "./AbstractTypeDeclaration";
+import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
-import { Expression } from "./Expression";
-import { FieldDeclaration } from "./FieldDeclaration";
-import { InferredType } from "./InferredType";
 import { SourceLocation } from "./SourceLocation";
-import { TypeExpression } from "./TypeExpression";
+import { VariableDeclaration } from "./VariableDeclaration";
 
-export class StructDeclaration extends AbstractTypeDeclaration {
+export class StructDeclaration extends Declaration {
 
     constructor(
         location: SourceLocation,
         id: Declarator,
-        public readonly fields: FieldDeclaration[]
+        public readonly fields: VariableDeclaration[]
     ){
         super(location, id);
-    }
-
-    get type(): TypeExpression {
-        throw new Error();
     }
 
     get keyword() {

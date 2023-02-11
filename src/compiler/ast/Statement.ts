@@ -1,7 +1,5 @@
-import { EvaluationContext } from "../EvaluationContext";
-import { Expression } from "./Expression";
-import { InferredType } from "./InferredType";
+import { Resolvable } from "./Resolvable";
 
-export abstract class Statement extends Expression {
+export abstract class Statement extends Resolvable {
 
 }

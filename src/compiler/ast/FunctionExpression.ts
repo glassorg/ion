@@ -1,5 +1,4 @@
 import { splitExpressions } from "./AstFunctions";
-import { combineTypes } from "../analysis/combineTypes";
 import { getFinalStatements } from "../analysis/getFinalStatements";
 import { isSubTypeOf } from "../analysis/isSubType";
 import { EvaluationContext } from "../EvaluationContext";
@@ -8,15 +7,13 @@ import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
 import { OldFunctionType } from "./FunctionType";
-import { InferredType } from "./InferredType";
-import { ParameterDeclaration } from "./ParameterDeclaration";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
 import { ReturnStatement } from "./ReturnStatement";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
+import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
 import { TypeExpression } from "./TypeExpression";
-import { VariableDeclaration } from "./VariableDeclaration";
 
 export class FunctionExpression extends Expression implements ScopeNode, OldFunctionType {
 
@@ -24,29 +21,28 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
         location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
-        public readonly declaredReturnType?: TypeExpression,
-        public readonly resolvedReturnType?: TypeExpression
+        public readonly returnType?: TypeExpression,
     ) {
         super(location);
     }
 
     toString() {
-        return `${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.declaredReturnType)} ${this.body}`;
+        return `${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.returnType)} ${this.body}`;
     }
 
     get isScope(): true {
         return true;
     }
     
-    get parameterTypes(): Expression[] {
-        return this.parameters.map(p => p.declaredType!);
+    get parameterTypes(): TypeExpression[] {
+        return this.parameters.map(p => p.type!);
     }
 
-    protected override *dependencies(c: EvaluationContext) {
-        for (const statement of this.getReturnStatements()) {
-            yield statement.argument;
-        }
-    }
+    // protected override *dependencies(c: EvaluationContext) {
+    //     for (const statement of this.getReturnStatements()) {
+    //         yield statement.argument;
+    //     }
+    // }
 
     *getReturnStatements() {
         for (const statement of getFinalStatements(this.body)) {
@@ -57,10 +53,6 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
                 throw new SemanticError(`Expected return statement`, statement);
             }
         }
-    }
-
-    public get resolved() {
-        return this.resolvedType != null && this.resolvedReturnType != null;
     }
 
     areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {
@@ -85,24 +77,21 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
     }
 
     getReturnType(argumentTypes: TypeExpression[], callee: Expression): TypeExpression {
-        return this.resolvedReturnType ?? this.declaredReturnType!;
+        return this.returnType!;
     }
 
     public static parameterFromNode(node: AstNode): ParameterDeclaration {
-        if (node instanceof ParameterDeclaration) {
-            return node;
-        }
         if (node instanceof Reference) {
-            return new ParameterDeclaration(node.location, node.toDeclarator());
+            return newParameterDeclaration(node.location, node.toDeclarator());
         }
         if (node instanceof VariableDeclaration) {
-            return new ParameterDeclaration(node.location, node.id, node.declaredType, node.defaultValue);
+            return node.patch({ kind: VariableKind.Parameter }) as ParameterDeclaration;
         }
         throw new SemanticError(`Expected Parameter`, node);
     }
 
     static createFromLambda(left: Expression, right: Expression): FunctionExpression {
-        let declaredType: TypeExpression | undefined;
+        let type: TypeExpression | undefined;
         let leftValue = left instanceof PstGroup ? left.value : left;
         let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;
@@ -116,7 +105,7 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
         else {
             throw new SemanticError(`Unexpected lambda`, left, right);
         }
-        return new FunctionExpression(location, parameters, body, declaredType);
+        return new FunctionExpression(location, parameters, body, type);
     }
 
 }

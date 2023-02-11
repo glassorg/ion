@@ -1,4 +1,4 @@
-import { Declaration, RootDeclaration } from "./ast/Declaration";
+import { RootDeclaration } from "./ast/Declaration";
 import { createLogger } from "./Logger";
 import { FileSystem } from "./filesystem/FileSystem";
 import { createParser } from "./parser/createParser";
@@ -7,7 +7,7 @@ import { defineGraphFunctions, GraphExecutor } from "@glas/graph";
 import { getAbsolutePath } from "./common/pathFunctions";
 import { Assembly } from "./ast/Assembly";
 import { assemblyPhases } from "./phases/assembly";
-import { isGloballyScoped } from "./ast/FunctionDeclaration";
+import { FunctionDeclaration } from "./ast/FunctionDeclaration";
 import { repeatSuffix } from "./phases/assembly/resolveSingleStep";
 
 export interface CompilerOptions {
@@ -58,9 +58,17 @@ export class Compiler {
         return defineGraphFunctions({
             parse: async (filename: string, source: string): Promise<RootDeclaration[]> => {
                 const mod = this.parser.parseModule(filename, source);
+                const functionCountsByName = new Map<string,number>();
+                function incrementFunctionCount(name: string) {
+                    let count = functionCountsByName.get(name) || 0;
+                    count++;
+                    functionCountsByName.set(name, count);
+                    return count;
+                }
+
                 const declarations = mod.declarations.map((d, index) => {
-                    const globalScoped = isGloballyScoped(d);
-                    let absolutePath = getAbsolutePath(d.location.filename, d.id.name, ...(globalScoped ? [index.toString()] : []));
+                    const globalScoped = d instanceof FunctionDeclaration;
+                    let absolutePath = getAbsolutePath(d.location.filename, d.id.name, ...(globalScoped ? [incrementFunctionCount(d.id.name).toString()] : []));
                     d = d.patch({ absolutePath });
                     if (!globalScoped) {
                         d = d.patch({ id: d.id.patch({ name: absolutePath })});

@@ -26,17 +26,17 @@ export class MemberExpression extends Expression {
         super(location);
     }
 
-    protected *dependencies(c: EvaluationContext) {
-        yield this.object;
-        let declarations = c.getDeclarationsFromName(this.property, this.property.name);
-        if (declarations) {
-            yield* declarations.map(d => d.declaredType);
-        }
-        else {
-            // if declarations aren't found then this cannot be resolved yet.
-            yield new Unresolvable(this.location);
-        }
-    }
+    // protected *dependencies(c: EvaluationContext) {
+    //     yield this.object;
+    //     let declarations = c.getDeclarationsFromName(this.property, this.property.name);
+    //     if (declarations) {
+    //         yield* declarations.map(d => d.type);
+    //     }
+    //     else {
+    //         // if declarations aren't found then this cannot be resolved yet.
+    //         yield new Unresolvable(this.location);
+    //     }
+    // }
 
     public toKype(): kype.Expression {
         return new kype.MemberExpression(this.object.toKype(), new kype.Reference(this.property.name));

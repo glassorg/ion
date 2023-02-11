@@ -1,4 +1,3 @@
-import { Identifier } from "../../ast/Identifier";
 import { Declarator } from "../../ast/Declarator";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
@@ -7,8 +6,7 @@ import { SemanticError } from "../../SemanticError";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { AstNode } from "../../ast/AstNode";
 import { ClassDeclaration } from "../../ast/ClassDeclaration";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
-import { FieldDeclaration } from "../../ast/FieldDeclaration";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 
 export class ClassParselet extends PrefixParselet {
@@ -17,11 +15,11 @@ export class ClassParselet extends PrefixParselet {
         let id = p.consume(TokenNames.Id);
         let block = p.maybeParseBlock();
         let location = classToken.location.merge(block?.location)
-        let fields: FieldDeclaration[] = (block?.statements ?? []).map(s => {
+        let fields: VariableDeclaration[] = (block?.statements ?? []).map(s => {
             if (!(s instanceof VariableDeclaration)) {
                 throw new SemanticError(`Expected class member declaration`, s);
             }
-            return new FieldDeclaration(s.location, s.id, s.declaredType, s.defaultValue);
+            return new VariableDeclaration(s.location, s.id, { type: s.type, value: s.value, kind: VariableKind.Property });
         })
         return new (classToken.type === TokenNames.Class ? ClassDeclaration : StructDeclaration)(
             location,

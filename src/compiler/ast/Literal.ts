@@ -1,15 +1,8 @@
-import { joinExpressions } from "./AstFunctions";
 import { CoreType } from "../common/CoreType";
-import { EvaluationContext } from "../EvaluationContext";
-import { ComparisonExpression } from "./ComparisonExpression";
-import { DotExpression } from "./DotExpression";
 import { Expression } from "./Expression";
-import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { SemanticError } from "../SemanticError";
-import { TypeExpression } from "./TypeExpression";
-import { InferredType } from "./InferredType";
 
 export abstract class Literal<T> extends Expression {
 

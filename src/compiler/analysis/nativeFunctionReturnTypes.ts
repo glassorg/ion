@@ -1,4 +1,3 @@
-import { TypeExpression } from "../ast/TypeExpression";
 import * as kype from "@glas/kype";
 import { kypeToTypeExpression } from "./kypeToTypeExpression";
 import { joinExpressions } from "../ast/AstFunctions";
@@ -8,6 +7,7 @@ import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { getTypeAssertion } from "../common/utility";
 import { CoreType, CoreTypes } from "../common/CoreType";
+import { TypeExpression } from "../ast/TypeExpression";
 
 function isAnyFloat(result: kype.TypeExpression) {
     const prop = result.proposition;
@@ -18,7 +18,7 @@ function isAnyFloat(result: kype.TypeExpression) {
         && prop.right.value == Number.POSITIVE_INFINITY;
 }
 
-function addCoreType(result: kype.TypeExpression, coreType: CoreType) {
+function addCoreType(result: kype.TypeExpression, coreType: CoreType): TypeExpression {
     const typeAssertion = getTypeAssertion(coreType)
     if (isAnyFloat(result)) {
         if (coreType !== CoreTypes.Float) {

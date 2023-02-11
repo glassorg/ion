@@ -8,7 +8,7 @@ import { AstNode } from "../../ast/AstNode";
 import { MemberExpression } from "../../ast/MemberExpression";
 import { Reference } from "../../ast/Reference";
 import { Identifier } from "../../ast/Identifier";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { createBinaryExpression } from "../../ast/AstFunctions";
 import { toTypeExpression } from "../../ast/TypeExpression";
 import { RangeExpression } from "../../ast/RangeExpression";
@@ -33,15 +33,15 @@ export class BinaryExpressionParselet extends InfixParselet {
         let location = left.location.merge(right.location);
         let operator = operatorToken.value as InfixOperator;
         if (operator === ":") {
-            right = toTypeExpression(right);
+            let type = toTypeExpression(right);
             if (left instanceof PstGroup) {
                 // this is used sometimes to create a function declaration
-                return left.patch({ declaredType: right });
+                return left.patch({ type });
             }
             if (!(left instanceof Reference)) {
                 throw new SemanticError(`Expected Identifier`, left);
             }
-            return new VariableDeclaration(location, left.toDeclarator(), right);
+            return new VariableDeclaration(location, left.toDeclarator(), { type });
         }
         if (operator === ".") {
             if (!(right instanceof Reference)) {

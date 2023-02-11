@@ -11,7 +11,7 @@ export class MultiFunction extends Expression {
     }
 
     toString() {
-        return `multifunction(${this.functions.join(`,`)})`;
+        return `multifunction ${this.toBlockString(this.functions)}`;
     }
 
 }

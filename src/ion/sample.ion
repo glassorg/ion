@@ -4,6 +4,10 @@
 //        return a
 //    return a
 
+let a = 10
+let b = a
+let c = b
+
 function bar(a: 1 .. 3)
     var x: 0 .. 20 = 5
     if a < 2
@@ -11,5 +15,5 @@ function bar(a: 1 .. 3)
         return a
     else
         x += 20
-    return a
+    return x
 

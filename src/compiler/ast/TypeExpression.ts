@@ -21,55 +21,56 @@ import { NumberLiteral } from "./NumberLiteral";
  *      Number = . is Number
  *      ZeroToOne = . >= 0.0 && . <= 1.0
  */
+
 export type TypeExpression = Expression;
 
 export function toTypeExpression(e: Expression): TypeExpression {
     return joinExpressions("||", splitExpressions("|", e).map(option => {
-        return joinExpressions("&&", splitExpressions("&", option).map(term => {
-            if (term instanceof UnaryExpression) {
-                switch (term.operator) {
-                    case ">":
-                    case ">=":
-                    case "<":
-                    case ">=":
-                        const expressions: Expression[] = [
-                            new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
-                        ];
-                        if (term.argument instanceof NumberLiteral) {
-                            expressions.push(getTypeAssertion(term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float));
-                        }
-                        term = joinExpressions("&&", expressions);
-                        break;
-                    default:
-                        throw new SemanticError(`Unsupported type expression: ${term}`);
-                }
-            }
-            //  we can't convert to range without knowing
-            else if (term instanceof RangeExpression) {
-                const { start, finish } = term;
-                if (!(
-                    ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
-                    ||
-                    ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
-                )) {
-                    // console.log({ start, finish })
-                    throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
-                }
-                if (!(finish.value > start.value)) {
-                    throw new SemanticError(`Range finish must be more than start`, term);
-                }
-                const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
-                term = joinExpressions("&&", [
-                    new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
-                    new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
-                    getTypeAssertion(coreType)
-                ]);
-            }
-            else if (term instanceof Reference || term instanceof Literal) {
-                const operator = term instanceof Reference ? "is" : "==";
-                term = new ComparisonExpression(term.location, new DotExpression(term.location), operator, term);
-            }
-            return term;
-        }));
-    }));
+           return joinExpressions("&&", splitExpressions("&", option).map(term => {
+               if (term instanceof UnaryExpression) {
+                   switch (term.operator) {
+                       case ">":
+                       case ">=":
+                       case "<":
+                       case ">=":
+                           const expressions: Expression[] = [
+                               new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
+                           ];
+                           if (term.argument instanceof NumberLiteral) {
+                               expressions.push(getTypeAssertion(term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float));
+                           }
+                           term = joinExpressions("&&", expressions);
+                           break;
+                       default:
+                           throw new SemanticError(`Unsupported type expression: ${term}`);
+                   }
+               }
+               //  we can't convert to range without knowing
+               else if (term instanceof RangeExpression) {
+                   const { start, finish } = term;
+                   if (!(
+                       ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
+                       ||
+                       ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
+                   )) {
+                       // console.log({ start, finish })
+                       throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
+                   }
+                   if (!(finish.value > start.value)) {
+                       throw new SemanticError(`Range finish must be more than start`, term);
+                   }
+                   const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
+                   term = joinExpressions("&&", [
+                       new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
+                       new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
+                       getTypeAssertion(coreType)
+                   ]);
+               }
+               else if (term instanceof Reference || term instanceof Literal) {
+                   const operator = term instanceof Reference ? "is" : "==";
+                   term = new ComparisonExpression(term.location, new DotExpression(term.location), operator, term);
+               }
+               return term;
+           }));
+       }))
 }

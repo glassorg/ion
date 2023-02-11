@@ -1,54 +1,9 @@
-import { AstNode } from "./AstNode";
-import { TypeExpression } from "./TypeExpression";
 import * as kype from "@glas/kype";
-import { EvaluationContext } from "../EvaluationContext";
-import { SemanticError } from "../SemanticError";
+// import { EvaluationContext } from "../EvaluationContext";
+import { Resolvable } from "./Resolvable";
 
-export interface Resolvable extends AstNode {
-    isResolvable: true;
-    readonly resolvedType?: TypeExpression;
-    readonly resolved: boolean;
-}
+export abstract class Expression extends Resolvable {
 
-export function isResolvable(node: any): node is Resolvable {
-    const maybeResolvable = node as Resolvable;
-    return maybeResolvable?.isResolvable;
-}
-
-export interface Resolved extends Resolvable {
-    readonly resolvedType: TypeExpression;
-}
-
-export function isResolved(node: Resolvable): node is Resolved {
-    return node.resolvedType !== undefined;
-}
-
-export abstract class Expression extends AstNode implements Resolvable {
-
-    /**
-     * The resolved type or false if this is a type and therefore doesn't resolve further.
-     */
-    public readonly resolvedType?: TypeExpression;
-
-    get isResolvable(): true {
-        return true;
-    }
-
-    protected *dependencies(c: EvaluationContext): Generator<Expression | undefined> {
-    }
-
-    protected areAllDependenciesResolved(c: EvaluationContext) {
-        for (const dep of this.dependencies(c)) {
-            if (dep && !dep.resolved) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public get resolved() {
-        return this.resolvedType != null;
-    }
 
     public toKypeType(): kype.TypeExpression {
         return new kype.TypeExpression(this.toKype());
@@ -56,13 +11,6 @@ export abstract class Expression extends AstNode implements Resolvable {
 
     public toKype(): kype.Expression {
         throw new Error("Not implemented yet");
-    }
-
-    /**
-     * Returns an empty string if not resolved or else " : Type"
-     */
-    toTypeString(type?: TypeExpression, colon = ":") {
-        return type ? ` ${colon} ${type.toUserTypeString()}` : ``;
     }
 
     /**

@@ -175,8 +175,17 @@ For two functions with the same name
 ## Type AST
 
 type Type = TypeConstraint // dot > 0 && dot < 10 && dot is Integer
+          | FunctionType
           | MultiFunctionType
 
+AstNode
+    -> Token
+    -> Resolvable
+        resolved: boolean
+        -> Expression
+        -> Type
+        -> Statement
+            -> Declaration
 
 ## Compilation Structure
 

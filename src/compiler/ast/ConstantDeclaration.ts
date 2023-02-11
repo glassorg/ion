@@ -1,18 +1,16 @@
+import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
-import { AbstractValueDeclaration } from "./AbstractValueDeclaration";
 import { SourceLocation } from "./SourceLocation";
-import { TypeExpression } from "./TypeExpression";
 
-export class ConstantDeclaration extends AbstractValueDeclaration {
+export abstract class ConstantDeclaration extends Declaration {
 
     constructor(
         location: SourceLocation,
         id: Declarator,
-        public readonly value: Expression,
-        declaredType?: TypeExpression,
+        public readonly value: Expression
     ) {
-        super(location, id, declaredType);
+        super(location, id);
     }
 
     toString(includeTypes = true) {

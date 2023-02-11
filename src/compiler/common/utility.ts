@@ -6,11 +6,11 @@ import { Expression } from "../ast/Expression";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
-import { toTypeExpression, TypeExpression } from "../ast/TypeExpression";
+import { toTypeExpression } from "../ast/TypeExpression";
 import { ComparisonOperator, ComparisonOperators, isComparisonOperator, LogicalOperator } from "../Operators";
 import { traverse } from "./traverse";
 
-function getLastBlockNode(maybeBlock: Expression): Statement {
+function getLastBlockNode(maybeBlock: Statement): Statement {
     if (maybeBlock instanceof BlockStatement) {
         return getLastBlockNode(maybeBlock.statements[maybeBlock.statements.length - 1]);
     }
@@ -64,7 +64,7 @@ export function hasDot(root: Expression, dot: Expression) {
     return found;
 }
 
-export function expressionToType(e: Expression, dot: Expression, negate: boolean): TypeExpression | null {
+export function expressionToType(e: Expression, dot: Expression, negate: boolean): Expression | null {
     //  if this is a Block, it could have been created just to hold a conditional assertion
     //  replace it with the last node in the block.
     if (e instanceof ComparisonExpression) {

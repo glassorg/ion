@@ -1,14 +1,14 @@
-import { AbstractTypeDeclaration } from "./AbstractTypeDeclaration";
+import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
-import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
+import { TypeExpression } from "./TypeExpression";
 
-export class TypeDeclaration extends AbstractTypeDeclaration {
+export class TypeDeclaration extends Declaration {
 
     constructor(
         location: SourceLocation,
         id: Declarator,
-        public readonly type: Expression
+        public readonly type: TypeExpression
     ) {
         super(location, id);
     }

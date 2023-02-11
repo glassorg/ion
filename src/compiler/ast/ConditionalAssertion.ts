@@ -27,8 +27,8 @@ export class ConditionalAssertion extends Expression {
     }
 
     toString() {
-        if (this.resolvedType) {
-            return `cond ${this.resolvedType}`;
+        if (this.type) {
+            return `cond ${this.type}`;
         }
         else {
             return `cond ${this.negate ? `!` : ``}${this.value}`;

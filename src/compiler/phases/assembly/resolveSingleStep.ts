@@ -1,11 +1,10 @@
 import { Assembly } from "../../ast/Assembly";
-import { Expression, isResolvable } from "../../ast/Expression";
-import { traverseWithContext } from "../../common/traverse";
+import { Expression } from "../../ast/Expression";
+import { traverse, traverseWithContext } from "../../common/traverse";
 import { AstNS } from "../../ast/AstTypes";
 import { EvaluationContext } from "../../EvaluationContext";
 import { AstNode } from "../../ast/AstNode";
 import { Reference } from "../../ast/Reference";
-import { InferredType } from "../../ast/InferredType";
 import { ConstantDeclaration } from "../../ast/ConstantDeclaration";
 import { Literal } from "../../ast/Literal";
 import { SemanticError } from "../../SemanticError";
@@ -19,18 +18,30 @@ import { LogicalOperator } from "../../Operators";
 import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
 import { CallExpression } from "../../ast/CallExpression";
 import { isSubTypeOf } from "../../analysis/isSubType";
+import { Resolvable } from "../../ast/Resolvable";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
+import { FunctionType } from "../../ast/FunctionType";
+
+function resolveAll(node: AstNode) {
+    return traverse(node, {
+        leave(node) {
+            if (node instanceof Resolvable && !node.resolved) {
+                return node.patch({ resolved: true });
+            }
+        }
+    })
+}
 
 function BooleanType(location: SourceLocation) {
-    return new ComparisonExpression(location,
+    return resolveAll(new ComparisonExpression(location,
         new DotExpression(location),
         "is",
         new Reference(location, CoreTypes.Boolean)
-    // the patch of resolvedType ensures no recursive resolution.
-    ).patch({ resolvedType: new InferredType(location) });
+    ));
 }
 
 function LiteralType(node: Literal<any>) {
-    return joinExpressions("&&", [
+    return resolveAll(joinExpressions("&&", [
         new ComparisonExpression(
             node.location,
             new DotExpression(node.location),
@@ -41,10 +52,9 @@ function LiteralType(node: Literal<any>) {
             node.location,
             new DotExpression(node.location),
             "==",
-            // must have type specified to avoid infinite recursion
-            node.patch({ resolvedType: new InferredType(node.location) })
+            node
         ),
-    ]);
+    ]));
 }
 
 type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: InstanceType<T>, c: EvaluationContext) => AstNode | void
@@ -52,46 +62,40 @@ type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: Instanc
 const maybeResolveNode: {
     [Key in keyof AstNS]?: AstNS[Key] extends (new (...args: any[]) => AstNode) ? ResolveFunction<AstNS[Key]> : never
 } = {
-    AssignmentExpression(node, c) {
-        if (!node.right.resolvedType) {
-            return;
-        }
-        return node.patch({ resolvedType: node.right.resolvedType });    
-    },
+    // AssignmentExpression(node, c) {
+    //     if (!node.right.type) {
+    //         return;
+    //     }
+    //     return node.patch({ type: node.right.type });
+    // },
     UnaryExpression(node, c) {
-        console.log("CHECK: " + node.toString() + " resolved type: " + node.argument.resolvedType);
-        if (!node.argument.resolvedType) {
-            return;
-        }
         if (node.operator === "typeof") {
-            if (node.argument.resolvedType) {
+            if (node.argument.type) {
                 // convert this to the underlying typeof value.
-                return node.argument.resolvedType!
+                return node.argument.type!
             }
+        }
+        if (!node.argument.type) {
+            return;
         }
         //  are we sure that's right? I don't think it is
         //  Unary ! stays boolean
         //  Unary - should change the sign of the resolved type...
-        return node.patch({ resolvedType: node.argument.resolvedType });    
-    },
-    ParameterDeclaration(node, c) {
-        if (node.declaredType?.resolved) {
-            return node.patch({ resolvedType: node.declaredType });
-        }
-        if (node.defaultValue?.resolvedType) {
-            return node.patch({ resolvedType: node.defaultValue.resolvedType });
-        }
+        return node.patch({ type: node.argument.type, resolved: true });
     },
     VariableDeclaration(node, c) {
-        if (node.declaredType) {
-            if (node.declaredType.resolvedType?.resolved) {
-                return node.patch({ resolvedType: node.declaredType });
+        if (node.kind === VariableKind.Constant) {
+            //  we actually don't care if the node value is completely resolved
+            //  so long as it's type is resolved.
+            //  this is true when the value is a function expression.
+            //  the function may not be fully resolved, but as long as the signature is
+            //  resolved then we know the variables type.
+            if (node.value?.type?.resolved) {
+                return node.patch({ type: node.value.type, resolved: true });
             }
         }
-        else if (node.defaultValue) {
-            if (node.defaultValue.resolvedType?.resolved) {
-                return node.patch({ resolvedType: node.defaultValue.resolvedType });
-            }
+        else if (node.type?.resolved) {
+            return node.patch({ type: node.type, resolved: true });
         }
     },
     ConditionalAssertion(node, c) {
@@ -108,7 +112,7 @@ const maybeResolveNode: {
         if (node.negate) {
             joinOps.reverse();
         }
-        let type = node.value.resolvedType!;
+        let type = node.value.type!;
         let assertedType = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
         if (assertedType) {
             if (assertedType instanceof CallExpression) {
@@ -124,7 +128,7 @@ const maybeResolveNode: {
             // if this conditional lets us assert a more specific type then we add it.
             type = combineTypes("&&", [type, assertedType]);
         }
-        return node.patch({ resolvedType: type });
+        return node.patch({ type: type, resolved: true });
     },
     CallExpression(node, c) {
         // functions need to be resolved into inferred types or something.
@@ -132,74 +136,73 @@ const maybeResolveNode: {
             return
         }
 
-        // boom, we have the correctly resolved types.
-        const argTypes = node.args.map(arg => c.getType(arg));
-        let functionTypes = c.getFunctionTypes(node.callee, argTypes);
-        if (Array.isArray(functionTypes)) {
-            functionTypes = functionTypes.filter(type => type.value.areArgumentsValid(argTypes) !== false);
-            if (functionTypes.length === 0) {
-                throw new SemanticError(`${node.callee} Function with these parameters not found`, node);
-            }
-            const returnTypes = functionTypes.map(declaration => declaration.getReturnType(argTypes, node)).filter(Boolean) as Expression[];
-            const resolvedType = combineTypes("||", returnTypes);
-            return resolvedType;
-        }
-        else {
-            throw new Error("Not handled yet");
-        }        
+        console.log(node.toString());
+
+        // // boom, we have the correctly resolved types.
+        // const argTypes = node.args.map(arg => c.getType(arg));
+        // let functionTypes = c.getFunctionTypes(node.callee, argTypes);
+        // if (Array.isArray(functionTypes)) {
+        //     functionTypes = functionTypes.filter(type => type.value.areArgumentsValid(argTypes) !== false);
+        //     if (functionTypes.length === 0) {
+        //         throw new SemanticError(`${node.callee} Function with these parameters not found`, node);
+        //     }
+        //     const returnTypes = functionTypes.map(declaration => declaration.getReturnType(argTypes, node)).filter(Boolean) as Expression[];
+        //     const type = combineTypes("||", returnTypes);
+        //     return type;
+        // }
+        // else {
+        //     throw new Error("Not handled yet");
+        // }
     },
     ComparisonExpression(node, c) {
-        return node.patch({ resolvedType: BooleanType(node.location) });
+        return node.patch({ type: BooleanType(node.location), resolved: true });
     },
     LogicalExpression(node, c) {
-        return node.patch({ resolvedType: BooleanType(node.location) });
+        return node.patch({ type: BooleanType(node.location), resolved: true });
     },
     FloatLiteral(node, c) {
-        return node.patch({ resolvedType: LiteralType(node) });
+        return node.patch({ type: LiteralType(node), resolved: true });
     },
     StringLiteral(node, c) {
-        return node.patch({ resolvedType: LiteralType(node) });
+        return node.patch({ type: LiteralType(node), resolved: true });
     },
     IntegerLiteral(node, c) {
-        return node.patch({ resolvedType: LiteralType(node) });
+        return node.patch({ type: LiteralType(node), resolved: true });
     },
     Reference(node, c) {
-        const declarations = c.getDeclarations(node);
-        if (declarations.length === 1) {
-            const declaration = declarations[0];
-            if (!declaration.resolved) {
-                // wait for a single function to be resolved.
-                return;
-            }
-            const resolvedType = declaration.declaredType
-            if (declaration instanceof ConstantDeclaration) {
-                const { value } = declaration;
-                if (value instanceof Literal || value instanceof Reference) {
-                    return (value as Expression).patch({ resolvedType });
-                }
-            }
-            return node.patch({ resolvedType });
-        }
-        //  if it's multiple functions then we will type it as Inferred
-        // this is a multi function so we will consider the type inferred, maybe should be something else?
-        return node.patch({ resolvedType: new InferredType(node.location) });
-    },
-    FunctionExpression(node, c) {
-        //  node resolved?
-        if (node.resolvedReturnType && node.resolvedType) {
+        const declaration = c.getDeclaration(node);
+        if (!declaration.resolved) {
             return;
         }
-        //  dependencies resolved?
-        const returnStatements = [...node.getReturnStatements()];
-        for (const statement of returnStatements) {
-            if (!statement.argument.resolvedType) {
-                return;
+
+        const { type } = declaration
+        if (declaration instanceof VariableDeclaration && declaration.kind === VariableKind.Constant) {
+            const value = declaration.value!;
+            if (value instanceof Literal || value instanceof Reference) {
+                return value.patch({ type, resolved: true });
             }
         }
-        //  resolve!
-        const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.resolvedType!));
-        const resolvedType = new InferredType(node.location);
-        return node.patch({ resolvedType, resolvedReturnType });
+        return node.patch({ type, resolved: true });
+    },
+    FunctionExpression(node, c) {
+        if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
+            const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
+            return node.patch({ type /* do not resolve entire function expression */ });
+        }
+        // //  node resolved?
+        // if (node.returnType && node.type) {
+        //     return;
+        // }
+        // //  dependencies resolved?
+        // const returnStatements = [...node.getReturnStatements()];
+        // for (const statement of returnStatements) {
+        //     if (!statement.argument.type) {
+        //         return;
+        //     }
+        // }
+        // //  resolve!
+        // const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
+        // return node.patch({ resolved: true, returnType: resolvedReturnType });
     }
 };
 
@@ -208,7 +211,7 @@ export function resolveSingleStep_N(root: Assembly): Assembly {
     return traverseWithContext(root, c => {
         return ({
             leave(node) {
-                if (isResolvable(node) && !node.resolved) {
+                if (node instanceof Resolvable && !node.resolved) {
                     node = (maybeResolveNode as any)[node.constructor.name]?.(node, c) ?? node;
                 }
                 return node;

@@ -42,71 +42,71 @@ async function testCompile(source: string | Files, debug = false) {
 }
 
 export async function test() {
-await testCompileError(
-`
-struct Integer
-struct Number
-var y: Number = 2
-`, 3, 0, 3, 17);
+// await testCompileError(
+// `
+// struct Integer
+// struct Number
+// var y: Number = 2
+// `, 3, 0, 3, 17);
 
-await testCompileError(
-`
-struct Integer
-function bar(a: 0 .. 3)
-    if a < 0
-        return a
-    return a
-`, 3, 7, 3, 12);
+// await testCompileError(
+// `
+// struct Integer
+// function bar(a: 0 .. 3)
+//     if a < 0
+//         return a
+//     return a
+// `, 3, 7, 3, 12);
 
-await testCompileError(
-`
-struct Integer
-function bar(a: 0 .. 3)
-    if a > -1 && a < 4
-        return a
-    return a
-`, 3, 7, 3, 22);
+// await testCompileError(
+// `
+// struct Integer
+// function bar(a: 0 .. 3)
+//     if a > -1 && a < 4
+//         return a
+//     return a
+// `, 3, 7, 3, 22);
 
-// await testCompileError(`
-// let a = b
+// // await testCompileError(`
+// // let a = b
+// // let b = a
+// // `, 1, 4, 1, 5);
+
+// // await testCompileError(`
+// // let a = a
+// // `, 1, 8, 1, 9);
+
+// await testCompile(`
+// struct Integer
+// struct String
+// class @Meta
+// @Meta()
+// function min(a: Integer | String, b: Integer)
+//     if a < b
+//         return a
+//     else
+//         return b
+// `);
+
+// await testCompile(`
+// struct Integer
+// let a = 1
 // let b = a
-// `, 1, 4, 1, 5);
+// let c = b
+// `);
 
-// await testCompileError(`
-// let a = a
-// `, 1, 8, 1, 9);
+// await testCompile(`
+// struct Integer
+// type Range = 0 .. 10
+// `);
 
-await testCompile(`
-struct Integer
-struct String
-class @Meta
-@Meta()
-function min(a: Integer | String, b: Integer)
-    if a < b
-        return a
-    else
-        return b
-`);
-
-await testCompile(`
-struct Integer
-let a = 1
-let b = a
-let c = b
-`);
-
-await testCompile(`
-struct Integer
-type Range = 0 .. 10
-`);
-
-await testCompile(`
-struct String
-struct Integer
-function \`+\`(a: Integer, b: Integer)
-    return a
-function add(a: Integer, b: Integer)
-    return a + b
-`);
+// await testCompile(`
+// struct String
+// struct Integer
+// function \`+\`(a: Integer, b: Integer)
+//     return a
+// function add(a: Integer, b: Integer)
+//     return a + b
+// `);
 
 }

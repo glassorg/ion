@@ -20,7 +20,7 @@ export class CallExpression extends Expression {
     }
 
     toString(includeTypes = true) {
-        return `${this.callee}(${this.args.join(", ")})${includeTypes ? this.toTypeString(this.resolvedType, "::") : ""}`;
+        return `${this.callee}(${this.args.join(", ")})${includeTypes ? this.toTypeString(this.type, "::") : ""}`;
     }
 
 }

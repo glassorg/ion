@@ -11,7 +11,7 @@ export class Immutable {
         let properties: any = { "": this.constructor.name }
         for (let name in this) {
             let value = this[name];
-            if (value != null) {
+            if (value != null && value !== this.constructor.prototype[name]) {
                 properties[name] = value;
             }
         }

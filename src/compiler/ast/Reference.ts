@@ -1,15 +1,10 @@
 import { isValidId } from "../common/names";
-import { EvaluationContext } from "../EvaluationContext";
-import { AstNode } from "./AstNode";
-import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
-import { Literal } from "./Literal";
 import { SourceLocation } from "./SourceLocation";
-import { UnaryExpression } from "./UnaryExpression";
 import * as kype from "@glas/kype";
-import { InferredType } from "./InferredType";
-import { CoreType, isCoreType } from "../common/CoreType";
+import { isCoreType } from "../common/CoreType";
+import { Writable } from "../common/TypescriptTypes";
 
 export class Reference extends Expression {
 
@@ -21,13 +16,9 @@ export class Reference extends Expression {
         if (this.name == null) {
             throw new Error(`Missing name`);
         }
-        if (this.name === "`sample.Integer`") {
-            debugger;
+        if (isCoreType(this.name)) {
+            (this as Writable<typeof this>).resolved = true;
         }
-    }
-
-    get isReference() {
-        return true;
     }
 
     public toKype(): kype.Expression {
@@ -38,15 +29,8 @@ export class Reference extends Expression {
         return new Declarator(this.location, this.name);
     }
 
-    override get resolved() {
-        if (isCoreType(this.name)) {
-            return true;
-        }
-        return super.resolved;
-    }
-
     toString(includeTypes = true) {
-        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.resolvedType, "::") : "");
+        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.type, "::") : "");
     }
 
 }

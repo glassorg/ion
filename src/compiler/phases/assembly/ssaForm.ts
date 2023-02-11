@@ -1,14 +1,10 @@
-import { combineTypes } from "../../analysis/combineTypes";
-import { getFinalStatements } from "../../analysis/getFinalStatements";
 import { Assembly } from "../../ast/Assembly";
 import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { joinExpressions } from "../../ast/AstFunctions";
 import { AstNode } from "../../ast/AstNode";
 import { BlockStatement } from "../../ast/BlockStatement";
-import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { ConditionalAssertion } from "../../ast/ConditionalAssertion";
 import { Declarator } from "../../ast/Declarator";
-import { DotExpression } from "../../ast/DotExpression";
 import { ExpressionStatement } from "../../ast/ExpressionStatement";
 import { ForStatement } from "../../ast/ForStatement";
 import { Identifier } from "../../ast/Identifier";
@@ -18,7 +14,7 @@ import { ReturnStatement } from "../../ast/ReturnStatement";
 import { isScopeNode, ScopeNode } from "../../ast/ScopeNode";
 import { Statement } from "../../ast/Statement";
 import { UnaryExpression } from "../../ast/UnaryExpression";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { traverse, traverseWithContext } from "../../common/traverse";
 import { EvaluationContext } from "../../EvaluationContext";
 
@@ -92,7 +88,7 @@ export function getAncestorsUpToFirstCommon(c: EvaluationContext, childAncestors
 }
 
 export function getVariableIfWithinLoop(c: EvaluationContext, ref: Reference, ancestors: object[]) {
-    let variable = c.getSingleDeclaration(ref);
+    let variable = c.getDeclaration(ref);
     let commonAncestors = getAncestorsUpToFirstCommon(c, ancestors, variable);
     let withinLoop = commonAncestors.find(ancestor => ancestor instanceof ForStatement) != null;
     return withinLoop ? variable : null;
@@ -151,7 +147,6 @@ class Converter {
                     }));
                 }
                 if (node instanceof ExpressionStatement && node.expression instanceof AssignmentExpression && node.expression.left instanceof Reference && node.expression.left.name === this.originalName) {
-                    let { location } = node;
                     let { right: value } = node.expression;
                     let id = node.expression.left as Reference;
                     let withinLoop = getVariableIfWithinLoop(c, id, ancestors);
@@ -161,14 +156,11 @@ class Converter {
                     let conditional = value instanceof ConditionalAssertion ? true : undefined;
                     //  if we are within a loop, our type must remain the declared type
                     //  otherwise we can infer a much more specific type
-                    let declaredType = withinLoop ? originalVariable.declaredType : undefined;
+                    let type = withinLoop ? originalVariable.type : undefined;
                     return track(new VariableDeclaration(
-                        location,
+                        node.location,
                         new Declarator(id.location, this.getNextName()),
-                        declaredType,
-                        value,
-                        undefined,
-                        conditional
+                        { type,value }
                     ));
                 }
                 if (node instanceof Reference && node.name === this.originalName && !(parent instanceof AssignmentExpression && parent.left === node)) {
@@ -194,14 +186,11 @@ class Converter {
                             let types = vars.map(v => new UnaryExpression(
                                 v.location, "typeof", new Reference(v.location, v.id.name)
                             ));
-                            let declaredType = joinExpressions("||", types);
+                            let type = joinExpressions("||", types);
                             let phi = new VariableDeclaration(
                                 originalVariable.location,
                                 originalVariable.id.patch({ name: this.getNextName() }),
-                                declaredType,
-                                undefined,
-                                undefined,
-                                true
+                                { type, kind: VariableKind.Phi },
                             )
                             return new BlockStatement(
                                 originalVariable.location,
@@ -222,7 +211,7 @@ class Converter {
                     if (variablesAndReferences.has(node)) {
                         let varOrRef = node as VariableDeclaration | Reference;
                         // we must convert ALL variable references and SSA declarations to use
-                        return varOrRef.patch({ resolvedType: originalVariable.declaredType });
+                        return varOrRef.patch({ type: originalVariable.type });
                     }
                 }
             });

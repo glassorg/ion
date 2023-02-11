@@ -4,13 +4,12 @@ import { Token } from "../../ast/Token";
 import { TokenNames } from "../../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
-import { FunctionDeclaration } from "../../ast/FunctionDeclaration";
 import { SemanticError } from "../../SemanticError";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Expression } from "../../ast/Expression";
-import { TypeExpression } from "../../ast/TypeExpression";
 import { splitExpressions } from "../../ast/AstFunctions";
+import { FunctionDeclaration } from "../../ast/FunctionDeclaration";
 
 export class FunctionParselet extends PrefixParselet {
 
@@ -27,12 +26,12 @@ export class FunctionParselet extends PrefixParselet {
 
         let functionExpression: FunctionExpression;
         if (value instanceof PstGroup) {
-            let declaredType = value.declaredType;
+            let type = value.type;
             value = value.value;
             let parameters = splitExpressions(",", value).map(FunctionExpression.parameterFromNode) ?? [];
             let body = p.parseBlock();
             let location = functionToken.location.merge(body.location);
-            functionExpression = new FunctionExpression(location, parameters, body, declaredType);
+            functionExpression = new FunctionExpression(location, parameters, body, type);
         }
         else if (value instanceof FunctionExpression) {
             throw new SemanticError(`Lambda Function not supported yet`, value);

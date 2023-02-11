@@ -1,7 +1,7 @@
 import { getFinalStatements } from "../../analysis/getFinalStatements";
 import { Assembly } from "../../ast/Assembly";
 import { ExpressionStatement } from "../../ast/ExpressionStatement";
-import { FunctionDeclaration } from "../../ast/FunctionDeclaration";
+import { FunctionExpression } from "../../ast/FunctionExpression";
 import { ReturnStatement } from "../../ast/ReturnStatement";
 import { Lookup, skip, traverse } from "../../common/traverse";
 import { SemanticError } from "../../SemanticError";
@@ -12,13 +12,13 @@ export function addExplicitReturns(assembly: Assembly): Assembly {
     assembly = traverse(assembly, {
         lookup,
         enter(node) {
-            if (node instanceof FunctionDeclaration) {
+            if (node instanceof FunctionExpression) {
                 return skip;
             }
         },
         leave(node) {
-            if (node instanceof FunctionDeclaration) {
-                let statements = new Set(getFinalStatements(node.value.body));
+            if (node instanceof FunctionExpression) {
+                let statements = new Set(getFinalStatements(node.body));
                 if (statements.size === 0) {
                     errors.push(new SemanticError("Functions must return an expression", node));
                 }

@@ -7,7 +7,7 @@ import { traverse } from "./common/traverse";
 import { isSSAVersionName } from "./phases/assembly/ssaForm";
 
 export interface Scope {
-    [id: string]: Declaration[]
+    [id: string]: Declaration
 }
 export interface Scopes {
     get(node: string): Scope
@@ -23,7 +23,6 @@ export function createScopes(root: Assembly): Scopes {
     let globalScope: Scope = {};
     let map = new Map<string, Scope>([[globalScopeKey, globalScope]]);
     let scopes: Scope[] = [globalScope];
-    let getDeclarationArraysOriginalScope = new Map<Declaration[], Scope>();
     let nodeThatCreatedScope = new Map<Scope, AstNode>();
 
     function getFunctionScope() {
@@ -38,23 +37,19 @@ export function createScopes(root: Assembly): Scopes {
     }
 
     function declare(declaration: Declaration, name = declaration.id.name, currentScope = scopes[scopes.length - 1]) {
-        let value: Declaration[] | undefined = currentScope[name];
-        let originalScope = getDeclarationArraysOriginalScope.get(value);
-        if (value && currentScope === originalScope) {
-            value.push(declaration);
+        let currentValue: Declaration | undefined = currentScope[name];
+        if (currentValue) {
+            // do we allow overwriting a variable in a parent scope?
+            console.log(`Overwriting variable: ${name}`);
         }
-        else {
-            currentScope[name] = value = [...(value ?? []), declaration];
-            getDeclarationArraysOriginalScope.set(value, currentScope);
-        }
+        currentScope[name] = declaration;
 
         if (isSSAVersionName(name)) {
             const functionScope = getFunctionScope();
             //  SSA variables must be put in function scope so they can be used by
             //  PHI functions that reference the variables from previous conditionals
-            functionScope[name] = value;
+            functionScope[name] = declaration;
         }
-
     }
 
     traverse(root, {

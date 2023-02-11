@@ -17,12 +17,12 @@ import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { TokenNames } from "../tokenizer/TokenTypes";
 import { VariableParselet } from "./parselets/VariableParselet";
 import { ConstantParselet } from "./parselets/ConstantParselet";
-import { ConstantDeclaration } from "../ast/ConstantDeclaration";
 import { TypeDeclaration } from "../ast/TypeDeclaration";
 import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
 import { toTypeExpression } from "../ast/TypeExpression";
+import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
 
 export function createParser() {
     return new Parser({
@@ -39,7 +39,7 @@ export function createParser() {
         Extends: new ReservedWordParselet(),
         Implements: new ReservedWordParselet(),
         Function: new FunctionParselet(),
-        Let: new ConstantParselet((location, id, value) => new ConstantDeclaration(location, id, value)),
+        Let: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value, kind: VariableKind.Constant })),
         Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toTypeExpression(value))),
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
