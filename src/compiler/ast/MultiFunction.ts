@@ -1,6 +1,12 @@
+import { combineTypes } from "../analysis/combineTypes";
+import { EvaluationContext } from "../EvaluationContext";
+import { SemanticError } from "../SemanticError";
+import { CallExpression } from "./CallExpression";
 import { Expression } from "./Expression";
+import { FunctionExpression } from "./FunctionExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
+import { TypeExpression } from "./TypeExpression";
 
 export class MultiFunction extends Expression {
 
@@ -11,7 +17,17 @@ export class MultiFunction extends Expression {
     }
 
     toString() {
-        return `multifunction ${this.toBlockString(this.functions)}`;
+        return `multifunction ${this.toBlockString(this.functions, "[", "]")}`;
+    }
+
+    getReturnType(argTypes: TypeExpression[], c: EvaluationContext, callee: CallExpression): TypeExpression {
+        const functions = this.functions.map(func => c.getConstantValue(func)) as FunctionExpression[];
+        const returnTypes = functions.map(declaration => declaration.getReturnType(argTypes, callee)).filter(Boolean) as Expression[];
+        if (returnTypes.length === 0) {
+            throw new SemanticError(`${callee} Function with these parameters not found (${argTypes.map(arg => arg.toUserTypeString()).join(",")})`, callee);
+        }
+        const type = combineTypes("||", returnTypes);
+        return type;
     }
 
 }

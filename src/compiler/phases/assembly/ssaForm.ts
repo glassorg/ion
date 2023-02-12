@@ -143,7 +143,8 @@ class Converter {
                 let parent = ancestors[ancestors.length - 1];
                 if (node instanceof VariableDeclaration && node.id.name === this.originalName) {
                     return track(originalVariable = node.patch({
-                        id: node.id.patch({ name: this.currentName })
+                        id: node.id.patch({ name: this.currentName }),
+                        // kind: VariableKind.Constant
                     }));
                 }
                 if (node instanceof ExpressionStatement && node.expression instanceof AssignmentExpression && node.expression.left instanceof Reference && node.expression.left.name === this.originalName) {
@@ -160,7 +161,7 @@ class Converter {
                     return track(new VariableDeclaration(
                         node.location,
                         new Declarator(id.location, this.getNextName()),
-                        { type,value }
+                        { type, value, kind: VariableKind.Constant }
                     ));
                 }
                 if (node instanceof Reference && node.name === this.originalName && !(parent instanceof AssignmentExpression && parent.left === node)) {

@@ -29,7 +29,7 @@ export class Reference extends Expression {
         return new Declarator(this.location, this.name);
     }
 
-    toString(includeTypes = true) {
+    toString(includeTypes = false) {
         return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.type, "::") : "");
     }
 

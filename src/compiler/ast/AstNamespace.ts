@@ -3,6 +3,7 @@
 export * from "./AssignmentExpression";
 // export * from "./AstNode";
 export * from "./BinaryExpression";
+export * from "./BlockStatement";
 export * from "./CallExpression";
 export * from "./ClassDeclaration";
 export * from "./ConditionalAssertion";

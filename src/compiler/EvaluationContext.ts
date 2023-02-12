@@ -1,7 +1,9 @@
 import { Lookup } from "@glas/traverse";
 import { AstNode } from "./ast/AstNode";
 import { Declaration } from "./ast/Declaration";
+import { Expression } from "./ast/Expression";
 import { Reference } from "./ast/Reference";
+import { VariableDeclaration, VariableKind } from "./ast/VariableDeclaration";
 import { globalScopeKey, Scopes } from "./createScopes";
 import { SemanticError } from "./SemanticError";
 
@@ -23,6 +25,18 @@ export class EvaluationContext {
             throw new SemanticError(`Declaration not found: ${name}`, from);
         }
         return declaration;
+    }
+
+    getConstantValue(from: Reference): Expression {
+        const declaration = this.getDeclaration(from);
+        if (!(declaration instanceof VariableDeclaration && declaration.isConstant)) {
+            throw new SemanticError(`Does not reference a constant`, from);
+        }
+        const value = declaration.value;
+        if (!value) {
+            throw new SemanticError(`Constant missing value`, declaration);
+        }
+        return value instanceof Reference ? this.getConstantValue(value) : value;
     }
 
     // getDeclarations(ref: Reference) {

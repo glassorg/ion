@@ -19,7 +19,7 @@ export class CallExpression extends Expression {
         return new kype.CallExpresssion(this.callee.toKype(), this.args.map(arg => arg.toKype()));
     }
 
-    toString(includeTypes = true) {
+    toString(includeTypes = false) {
         return `${this.callee}(${this.args.join(", ")})${includeTypes ? this.toTypeString(this.type, "::") : ""}`;
     }
 

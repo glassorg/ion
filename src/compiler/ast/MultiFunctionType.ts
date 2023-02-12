@@ -12,6 +12,6 @@ export class MultiFunctionType extends Expression {
     }
 
     toString() {
-        return this.toBlockString(this.functionTypes);
+        return `multifunctype ${this.toBlockString(this.functionTypes, "[", "]")}`;
     }
 }

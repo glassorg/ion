@@ -3,4 +3,6 @@ High performance functional language targeting web assembly with strong typescri
 
 ## TODO
 [x] Type Expressions to AST format.
-[ ] Use Kype to calculate +(Integer, Integer)
+[x] Use Kype to calculate +(Integer, Integer)
+[ ] Check that function resolved return type actually matches declared return type
+[ ] Fix parameter declarations being in scope

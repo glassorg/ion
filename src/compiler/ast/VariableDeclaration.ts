@@ -44,6 +44,16 @@ export class VariableDeclaration extends Declaration {
         this.value = options.value;
     }
 
+    get isConstant() {
+        switch(this.kind) {
+            case VariableKind.Constant:
+            case VariableKind.Phi:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     toString() {
         return `${this.toMetaString()}${this.kind} ${this.id}${this.toTypeString()}${this.value ? ` = ${this.value}`: ``}`;
     }

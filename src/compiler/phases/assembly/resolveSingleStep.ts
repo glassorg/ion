@@ -21,6 +21,8 @@ import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
 import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { FunctionType } from "../../ast/FunctionType";
+import { MultiFunctionType } from "../../ast/MultiFunctionType";
+import { MultiFunction } from "../../ast/MultiFunction";
 
 function resolveAll(node: AstNode) {
     return traverse(node, {
@@ -68,6 +70,11 @@ const maybeResolveNode: {
     //     }
     //     return node.patch({ type: node.right.type });
     // },
+    BlockStatement(node, c) {
+        if (node.statements.every(s => s.resolved)) {
+            return node.patch({ resolved: true });
+        }
+    },
     UnaryExpression(node, c) {
         if (node.operator === "typeof") {
             if (node.argument.type) {
@@ -84,7 +91,7 @@ const maybeResolveNode: {
         return node.patch({ type: node.argument.type, resolved: true });
     },
     VariableDeclaration(node, c) {
-        if (node.kind === VariableKind.Constant) {
+        if (node.isConstant) {
             //  we actually don't care if the node value is completely resolved
             //  so long as it's type is resolved.
             //  this is true when the value is a function expression.
@@ -132,27 +139,26 @@ const maybeResolveNode: {
     },
     CallExpression(node, c) {
         // functions need to be resolved into inferred types or something.
-        if (!node.callee.resolved || !(node.args.every(arg => arg.resolved))) {
-            return
+        const calleeType = node.callee.type;
+        if (!calleeType?.resolved || !(node.args.every(arg => arg.type?.resolved))) {
+            return;
         }
 
-        console.log(node.toString());
+        if (!(node.callee instanceof Reference)) {
+            throw new SemanticError(`Only multifunction references currently supported`, node.callee);
+        }
 
-        // // boom, we have the correctly resolved types.
-        // const argTypes = node.args.map(arg => c.getType(arg));
-        // let functionTypes = c.getFunctionTypes(node.callee, argTypes);
-        // if (Array.isArray(functionTypes)) {
-        //     functionTypes = functionTypes.filter(type => type.value.areArgumentsValid(argTypes) !== false);
-        //     if (functionTypes.length === 0) {
-        //         throw new SemanticError(`${node.callee} Function with these parameters not found`, node);
-        //     }
-        //     const returnTypes = functionTypes.map(declaration => declaration.getReturnType(argTypes, node)).filter(Boolean) as Expression[];
-        //     const type = combineTypes("||", returnTypes);
-        //     return type;
-        // }
-        // else {
-        //     throw new Error("Not handled yet");
-        // }
+        const callee = c.getDeclaration(node.callee);
+        if (!(callee instanceof VariableDeclaration) || !(callee.value instanceof MultiFunction)) {
+            throw new SemanticError(`Invalid callee`, node.callee);
+        }
+        const multiFunc = callee.value;
+
+        // boom, we have the correctly resolved types.
+        const argTypes = node.args.map(arg => arg.type!);
+
+        const type = multiFunc.getReturnType(argTypes, c, node);
+        return node.patch({ type, resolved: true });
     },
     ComparisonExpression(node, c) {
         return node.patch({ type: BooleanType(node.location), resolved: true });
@@ -176,7 +182,7 @@ const maybeResolveNode: {
         }
 
         const { type } = declaration
-        if (declaration instanceof VariableDeclaration && declaration.kind === VariableKind.Constant) {
+        if (declaration instanceof VariableDeclaration && declaration.isConstant) {
             const value = declaration.value!;
             if (value instanceof Literal || value instanceof Reference) {
                 return value.patch({ type, resolved: true });
@@ -184,15 +190,30 @@ const maybeResolveNode: {
         }
         return node.patch({ type, resolved: true });
     },
+    MultiFunction(node, c) {
+        // check if every is resolved?
+        if (!node.type && node.functions.every(func => func.type)) {
+            const type = new MultiFunctionType(node.location, node.functions.map(func => func.type as FunctionType));
+            node = node.patch({ type });
+        }
+
+        if (node.type?.resolved) {
+            node = node.patch({ resolved: true });
+        }
+
+        return node;
+    },
+    MultiFunctionType(node, c) {
+        if (node.functionTypes.every(funcType => funcType.resolved)) {
+            return node.patch({ resolved: true });
+        }
+    },
     FunctionExpression(node, c) {
         if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
             const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
             return node.patch({ type /* do not resolve entire function expression */ });
         }
-        // //  node resolved?
-        // if (node.returnType && node.type) {
-        //     return;
-        // }
+
         // //  dependencies resolved?
         // const returnStatements = [...node.getReturnStatements()];
         // for (const statement of returnStatements) {

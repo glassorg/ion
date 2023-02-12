@@ -1,12 +1,10 @@
 import { splitExpressions } from "./AstFunctions";
 import { getFinalStatements } from "../analysis/getFinalStatements";
 import { isSubTypeOf } from "../analysis/isSubType";
-import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
-import { OldFunctionType } from "./FunctionType";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
 import { ReturnStatement } from "./ReturnStatement";
@@ -14,20 +12,27 @@ import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
 import { TypeExpression } from "./TypeExpression";
+import { Declarator } from "./Declarator";
+import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
+import { CallExpression } from "./CallExpression";
+import { FunctionType } from "./FunctionType";
 
-export class FunctionExpression extends Expression implements ScopeNode, OldFunctionType {
+export class FunctionExpression extends Expression implements ScopeNode {
+
+    declare public readonly type: FunctionType;
 
     constructor(
         location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
         public readonly returnType?: TypeExpression,
+        public readonly id?: Declarator,
     ) {
         super(location);
     }
 
     toString() {
-        return `${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.returnType)} ${this.body}`;
+        return `${this.id}${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.returnType)} ${this.body}`;
     }
 
     get isScope(): true {
@@ -38,11 +43,19 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
         return this.parameters.map(p => p.type!);
     }
 
-    // protected override *dependencies(c: EvaluationContext) {
-    //     for (const statement of this.getReturnStatements()) {
-    //         yield statement.argument;
-    //     }
-    // }
+    getReturnType(argumentTypes: TypeExpression[], callee: CallExpression): TypeExpression | undefined {
+        if (this.type!.areArgumentsValid(argumentTypes) === false) {
+            return undefined;
+        }
+        const name = `${this.id}(${this.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
+        const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
+        if (nativeFunctionReturnType) {
+            const result = nativeFunctionReturnType(callee, ...argumentTypes);
+            console.log(`FunctionExpression.getReturnType: ${name} \n    ${argumentTypes.join("\n    ")}\n    =>\n    ${result}`);
+            return result;
+        }
+        return this.returnType!;
+    }
 
     *getReturnStatements() {
         for (const statement of getFinalStatements(this.body)) {
@@ -53,31 +66,6 @@ export class FunctionExpression extends Expression implements ScopeNode, OldFunc
                 throw new SemanticError(`Expected return statement`, statement);
             }
         }
-    }
-
-    areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {
-        // if these argumentTypes are not valid arguments for this function we return undefined
-        const parameterTypes = this.parameterTypes;
-        if (argumentTypes.length !== parameterTypes.length) {
-            return false;
-        }
-        let areAllValid = false;
-        for (let i = 0; i < argumentTypes.length; i++) {
-            let argType = argumentTypes[i];
-            let paramType = parameterTypes[i];
-            let isArgValid = isSubTypeOf(argType, paramType);
-            if (isArgValid === false) {
-                return false;
-            }
-            if (isArgValid === null) {
-                areAllValid = false;
-            }
-        }
-        return areAllValid ? true : null;
-    }
-
-    getReturnType(argumentTypes: TypeExpression[], callee: Expression): TypeExpression {
-        return this.returnType!;
     }
 
     public static parameterFromNode(node: AstNode): ParameterDeclaration {
