@@ -9,3 +9,9 @@ export function combineTypes(operator: "&&" | "||", types: TypeExpression[]) {
     }
     return kypeToTypeExpression(type, types[0].location);
 }
+
+export function simplifyType(type: TypeExpression) {
+    let kypeType = type.toKypeType();
+    let newKypeType = kype.simplify(kypeType) as kype.TypeExpression;
+    return kypeToTypeExpression(newKypeType, type.location);
+}

@@ -8,7 +8,7 @@ import { Reference } from "../../ast/Reference";
 import { ConstantDeclaration } from "../../ast/ConstantDeclaration";
 import { Literal } from "../../ast/Literal";
 import { SemanticError } from "../../SemanticError";
-import { combineTypes } from "../../analysis/combineTypes";
+import { combineTypes, simplifyType } from "../../analysis/combineTypes";
 import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { DotExpression } from "../../ast/DotExpression";
 import { CoreTypes } from "../../common/CoreType";
@@ -81,6 +81,7 @@ const maybeResolveNode: {
                 // convert this to the underlying typeof value.
                 return node.argument.type!
             }
+            return;
         }
         if (!node.argument.type) {
             return;
@@ -91,7 +92,14 @@ const maybeResolveNode: {
         return node.patch({ type: node.argument.type, resolved: true });
     },
     VariableDeclaration(node, c) {
-        if (node.isConstant) {
+        if (node.kind === VariableKind.Phi) {
+            if (node.type?.resolved) {
+                // let's simplify the type, as this can be a phi typeA | typeB
+                let type = simplifyType(node.type);
+                return node.patch({ type, resolved: true });
+            }
+        }
+        else if (node.isConstant) {
             //  we actually don't care if the node value is completely resolved
             //  so long as it's type is resolved.
             //  this is true when the value is a function expression.
@@ -161,10 +169,18 @@ const maybeResolveNode: {
         return node.patch({ type, resolved: true });
     },
     ComparisonExpression(node, c) {
-        return node.patch({ type: BooleanType(node.location), resolved: true });
+        let type = node.type || BooleanType(node.location);
+        let resolved = node.left.resolved && node.right.resolved;
+        if (type !== node.type || resolved !== node.resolved) {
+            return node.patch({ type, resolved });
+        }
     },
     LogicalExpression(node, c) {
-        return node.patch({ type: BooleanType(node.location), resolved: true });
+        let type = node.type || BooleanType(node.location);
+        let resolved = node.left.resolved && node.right.resolved;
+        if (type !== node.type || resolved !== node.resolved) {
+            return node.patch({ type, resolved });
+        }
     },
     FloatLiteral(node, c) {
         return node.patch({ type: LiteralType(node), resolved: true });
@@ -211,19 +227,17 @@ const maybeResolveNode: {
     FunctionExpression(node, c) {
         if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
             const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
-            return node.patch({ type /* do not resolve entire function expression */ });
+            node = node.patch({ type /* do not resolve entire function expression */ });
         }
 
-        // //  dependencies resolved?
-        // const returnStatements = [...node.getReturnStatements()];
-        // for (const statement of returnStatements) {
-        //     if (!statement.argument.type) {
-        //         return;
-        //     }
-        // }
-        // //  resolve!
-        // const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
-        // return node.patch({ resolved: true, returnType: resolvedReturnType });
+        //  return statements resolved?
+        const returnStatements = [...node.getReturnStatements()];
+        if (returnStatements.every(statement => statement.argument.type)) {
+            //  resolve!
+            const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
+            node = node.patch({ resolved: true, returnType: resolvedReturnType });
+        }
+        return node;
     }
 };
 

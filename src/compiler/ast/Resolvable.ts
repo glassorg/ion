@@ -13,7 +13,7 @@ export class Resolvable extends AstNode {
     /**
      * Returns an empty string if not resolved or else " : Type"
      */
-    toTypeString(type = this.type, colon = type?.resolved ? "::" : ":") {
+    toTypeString(type = this.type, colon = this.resolved ? "::" : ":") {
         return type ? ` ${colon} ${type.toUserTypeString()}` : ``;
     }
     
