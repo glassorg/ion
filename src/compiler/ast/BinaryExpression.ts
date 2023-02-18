@@ -35,7 +35,7 @@ export abstract class BinaryExpression extends Expression {
                 new kype.StringLiteral((this.right as any).name)
             );
         }
-        return new kype.BinaryExpression(this.left.toKype(), this.operator, this.right.toKype());
+        return new kype.BinaryExpression(this.left.toKype(), this.operator as kype.BinaryOperator, this.right.toKype());
     }
 
     toString() {

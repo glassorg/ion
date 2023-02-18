@@ -3,6 +3,7 @@ import { Expression } from "./Expression";
 import { Identifier } from "./Identifier";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
+import { ExpressionKind } from "@glas/kype";
 
 export class Unresolvable extends Expression {
 
@@ -26,20 +27,8 @@ export class MemberExpression extends Expression {
         super(location);
     }
 
-    // protected *dependencies(c: EvaluationContext) {
-    //     yield this.object;
-    //     let declarations = c.getDeclarationsFromName(this.property, this.property.name);
-    //     if (declarations) {
-    //         yield* declarations.map(d => d.type);
-    //     }
-    //     else {
-    //         // if declarations aren't found then this cannot be resolved yet.
-    //         yield new Unresolvable(this.location);
-    //     }
-    // }
-
     public toKype(): kype.Expression {
-        return new kype.MemberExpression(this.object.toKype(), new kype.Reference(this.property.name));
+        return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
     }
 
     toString(includTypes = true) {

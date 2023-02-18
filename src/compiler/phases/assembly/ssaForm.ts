@@ -7,6 +7,7 @@ import { ConditionalAssertion } from "../../ast/ConditionalAssertion";
 import { Declarator } from "../../ast/Declarator";
 import { ExpressionStatement } from "../../ast/ExpressionStatement";
 import { ForStatement } from "../../ast/ForStatement";
+import { FunctionExpression } from "../../ast/FunctionExpression";
 import { Identifier } from "../../ast/Identifier";
 import { IfStatement } from "../../ast/IfStatement";
 import { Reference } from "../../ast/Reference";
@@ -124,7 +125,7 @@ class Converter {
         return this.currentName = this.lastName = getSSANextVersion(this.lastName);
     }
 
-    convert(c: EvaluationContext, block: BlockStatement): BlockStatement {
+    convert(c: EvaluationContext, root: AstNode): BlockStatement {
         let stack = new Array<string>();
         let originalVariable!: VariableDeclaration;
         let isOriginalVariableAssignedWithinLoops = false;
@@ -133,7 +134,7 @@ class Converter {
             variablesAndReferences.add(varOrRef);
             return varOrRef;
         } 
-        let result = traverse(block, {
+        let result = traverse(root, {
             enter: (node, ancestors) => {
                 if (node instanceof BlockStatement) {
                     stack.push(this.currentName);
@@ -232,14 +233,14 @@ export function ssaForm(assembly: Assembly) {
     let result = traverseWithContext(assembly, (c) => {
         return {
             leave(node: AstNode) {
-                if (node instanceof BlockStatement) {
-                    let variables = [...node.statements]
+                if (node instanceof FunctionExpression) {
+                    let variables = [...node.body.statements, ...node.parameters]
                         .filter(n => n instanceof VariableDeclaration) as VariableDeclaration[];
                     if (variables.length > 0) {
                         for (let variable of variables) {
                             let name = getNewVarName(variable.id.name);
                             let converter = new Converter(variable.id.name, name);
-                            node = converter.convert(c, node as BlockStatement);
+                            node = converter.convert(c, node);
                         }
                     }
                 }

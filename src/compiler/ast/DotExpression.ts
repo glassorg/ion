@@ -3,6 +3,8 @@ import * as kype from "@glas/kype";
 import { SourceLocation } from "./SourceLocation";
 import { Writable } from "../common/TypescriptTypes";
 
+export const DotExpressionString = '.';
+
 export class DotExpression extends Expression {
 
     constructor(location: SourceLocation) {
@@ -11,11 +13,11 @@ export class DotExpression extends Expression {
     }
 
     public toKype(): kype.Expression {
-        return new kype.DotExpression();
+        return new kype.DotExpression(this);
     }
 
     toString() {
-        return `.`;
+        return DotExpressionString;
     }
 
     toJSON() {

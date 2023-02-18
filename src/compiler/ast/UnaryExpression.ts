@@ -3,10 +3,6 @@ import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 
-// export function isTypeof(node: Type): node is (UnaryExpression & { operator: "typeof", argument: Reference }) {
-//     return node instanceof UnaryExpression && node.operator === "typeof" && node.argument instanceof Reference;
-// }
-
 export class UnaryExpression extends Expression {
 
     constructor(
@@ -26,7 +22,7 @@ export class UnaryExpression extends Expression {
             }
             return this.argument.type!.toKype();
         }
-        return new kype.UnaryExpression(this.operator, this.argument.toKype());
+        return new kype.UnaryExpression(this.operator as kype.UnaryOperator, this.argument.toKype(), this);
     }
 
     toString() {

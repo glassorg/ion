@@ -12,7 +12,7 @@ import { TypeExpression } from "../ast/TypeExpression";
 function isAnyFloat(result: kype.TypeExpression) {
     const prop = result.proposition;
     return prop instanceof kype.BinaryExpression
-        && prop.left instanceof kype.DotExpression
+        // && prop.left instanceof kype.DotExpression
         && prop.operator === "<="
         && prop.right instanceof Literal
         && prop.right.value == Number.POSITIVE_INFINITY;
@@ -31,8 +31,18 @@ function addCoreType(result: kype.TypeExpression, coreType: CoreType): TypeExpre
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     return (callee: CallExpression, a: TypeExpression, b: TypeExpression) => {
-        const result = kype.combineTypes(a.toKypeType(), operator, b.toKypeType());
-        return addCoreType(result, coreType);
+        const result = kype.combineTypes(a.toKypeType(), operator as kype.BinaryOperator, b.toKypeType());
+        try {
+            return addCoreType(result, coreType);
+        }
+        catch (e) {
+            console.log({
+                aKype: a.toKypeType().toString(),
+                bKype: b.toKypeType().toString(),
+                result: result.toString()
+            })
+            throw e;
+        }
     };
 }
 

@@ -1,6 +1,6 @@
 import * as kype from "@glas/kype";
 import { createBinaryExpression } from "../ast/AstFunctions";
-import { DotExpression } from "../ast/DotExpression";
+import { DotExpression, DotExpressionString } from "../ast/DotExpression";
 import { Expression } from "../ast/Expression";
 import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
@@ -8,6 +8,9 @@ import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 
 function toExpression(e: kype.Expression, location: SourceLocation): Expression {
+    if (e.source instanceof Expression) {
+        return e.source;
+    }
     if (e instanceof kype.DotExpression) {
         return new DotExpression(location);
     }
@@ -32,6 +35,9 @@ function toExpression(e: kype.Expression, location: SourceLocation): Expression 
         }
     }
     if (e instanceof kype.Reference) {
+        if (e.name === DotExpressionString) {
+            return new DotExpression(location);
+        }
         return new Reference(location, e.name);
     }
 

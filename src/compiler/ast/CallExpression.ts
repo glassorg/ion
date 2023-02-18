@@ -1,9 +1,7 @@
-import { EvaluationContext } from "../EvaluationContext";
-import { InfixOperator } from "../Operators";
 import { Expression } from "./Expression";
-import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
+import { ExpressionKind } from "@glas/kype";
 
 export class CallExpression extends Expression {
 
@@ -16,7 +14,7 @@ export class CallExpression extends Expression {
     }
 
     public toKype(): kype.Expression {
-        return new kype.CallExpresssion(this.callee.toKype(), this.args.map(arg => arg.toKype()));
+        return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
     }
 
     toString(includeTypes = false) {
