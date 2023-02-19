@@ -51,11 +51,11 @@ export function insertConditionals(root: Assembly) {
                         ifStatement = ifStatement.patch({
                             consequent: insertConditionalAssignment(ifStatement.consequent, ref, false)
                         });
-                        if (ifStatement.alternate) {
-                            ifStatement = ifStatement.patch({
-                                alternate: insertConditionalAssignment(node.alternate!, ref, true)
-                            });
-                        }
+                        //  we always insert an else even if it doesn't exist.
+                        //  it's necessary for correct phi result merging after conditional.
+                        ifStatement = ifStatement.patch({
+                            alternate: insertConditionalAssignment(node.alternate ?? new BlockStatement(node.location, []), ref, true)
+                        });
                     }
                     node = ifStatement;
                 }

@@ -124,6 +124,6 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
     return null;
 }
 
-export function getTypeAssertion(absolutePathName: string, location = SourceLocation.empty) {
+export function getTypeAssertion(absolutePathName: string, location: SourceLocation) {
     return toTypeExpression(new Reference(location, absolutePathName));
 }

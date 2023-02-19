@@ -32,7 +32,6 @@ export class PrefixOperatorParselet extends PrefixParselet {
     }
 
     parse(p: Parser, operator: Token): AstNode {
-        let { location} = operator;
         let value = operator.value as PrefixOperator;
         let argument = this.parseArgument(p, operator);
 
@@ -47,7 +46,7 @@ export class PrefixOperatorParselet extends PrefixParselet {
             //  we need a grouping construct because
             //  otherwise we don't know if -1 ** 2 is (-1) ** 2 or -(1 ** 2)
             let name = (argument as BinaryExpression).operator;
-            throw new SemanticError(`Unary operator '${operator.value}' used before '${name}'. Use parentheses to disambiguate operator precedence.`, location);
+            throw new SemanticError(`Unary operator '${operator.value}' used before '${name}'. Use parentheses to disambiguate operator precedence.`, operator.location);
         }
 
         // resolve +/- unary expressions on literals immediately.
@@ -59,7 +58,7 @@ export class PrefixOperatorParselet extends PrefixParselet {
         }
 
         return new UnaryExpression(
-            location,
+            operator.location.merge(argument.location),
             operator.value as PrefixOperator,
             argument as Expression,
         );

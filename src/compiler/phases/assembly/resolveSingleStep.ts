@@ -233,6 +233,17 @@ const maybeResolveNode: {
         //  return statements resolved?
         const returnStatements = [...node.getReturnStatements()];
         if (returnStatements.every(statement => statement.argument.type)) {
+            if (node.returnType) {
+                for (let statement of returnStatements) {
+                    const returnType = statement.argument.type!;
+                    const isSubType = isSubTypeOf(returnType, node.returnType);
+                    if (isSubType !== true) {
+                        throw new SemanticError(`Return type ${returnType.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared return type ${node.returnType.toUserTypeString()}`, node.returnType, statement);
+                    }
+                }
+            }
+
+            //  check each return statements type 
             //  resolve!
             const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
             node = node.patch({ resolved: true, returnType: resolvedReturnType });

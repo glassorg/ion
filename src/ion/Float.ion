@@ -14,7 +14,7 @@ function `**`(a: Float, b: Integer) : Float
     return a
 
 function `/`(a: 0.0, b: 0.0) : NaN
-    return a
+    return NaN
 
 function `/`(a: Float, b: Float) : Float
     return a

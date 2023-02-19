@@ -8,6 +8,7 @@ import { CallExpression } from "../ast/CallExpression";
 import { getTypeAssertion } from "../common/utility";
 import { CoreType, CoreTypes } from "../common/CoreType";
 import { TypeExpression } from "../ast/TypeExpression";
+import { SourceLocation } from "../ast/SourceLocation";
 
 function isAnyFloat(result: kype.TypeExpression) {
     const prop = result.proposition;
@@ -18,8 +19,8 @@ function isAnyFloat(result: kype.TypeExpression) {
         && prop.right.value == Number.POSITIVE_INFINITY;
 }
 
-function addCoreType(result: kype.TypeExpression, coreType: CoreType): TypeExpression {
-    const typeAssertion = getTypeAssertion(coreType)
+function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: SourceLocation): TypeExpression {
+    const typeAssertion = getTypeAssertion(coreType, location);
     if (isAnyFloat(result)) {
         if (coreType !== CoreTypes.Float) {
             throw new Error("Expected CoreType Float: " + coreType);
@@ -33,7 +34,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     return (callee: CallExpression, a: TypeExpression, b: TypeExpression) => {
         const result = kype.combineTypes(a.toKypeType(), operator as kype.BinaryOperator, b.toKypeType());
         try {
-            return addCoreType(result, coreType);
+            return addCoreType(result, coreType, callee.location);
         }
         catch (e) {
             console.log({

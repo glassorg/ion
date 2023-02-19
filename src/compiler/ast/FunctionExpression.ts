@@ -50,7 +50,6 @@ export class FunctionExpression extends Expression implements ScopeNode {
         const name = `${this.id}(${this.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
         const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
         if (nativeFunctionReturnType) {
-            debugger;
             const result = nativeFunctionReturnType(callee, ...argumentTypes);
             console.log(`FunctionExpression.getReturnType: ${name} \n    ${argumentTypes.join("\n    ")}\n    =>\n    ${result}`);
             return result;
