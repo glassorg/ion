@@ -2,28 +2,27 @@ import { BlockStatement } from "./BlockStatement";
 import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
 import { ForVariantDeclaration } from "./ForVariantDeclaration";
+import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
+import { Statement } from "./Statement";
 
-export class ForStatement extends BlockStatement {
+export class ForStatement extends Statement implements ScopeNode {
 
     constructor(
         location: SourceLocation,
-        left: Declarator,
+        public readonly left: ForVariantDeclaration,
         public readonly right: Expression,
-        body: BlockStatement,
+        public readonly body: BlockStatement,
     ){
-        super(location, [
-            new ForVariantDeclaration(left),
-            body
-        ]);
+        super(location);
     }
 
-    get left(): ForVariantDeclaration {
-        return this.statements[0] as ForVariantDeclaration;
+    get isScope(): true {
+        return true;
     }
 
-    get body(): BlockStatement {
-        return this.statements[1] as BlockStatement;
+    toString() {
+        return `for ${this.left} in ${this.right} ${this.body}`
     }
 
 }

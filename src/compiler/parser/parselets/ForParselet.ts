@@ -1,6 +1,7 @@
 import { AstNode } from "../../ast/AstNode";
 import { Declarator } from "../../ast/Declarator";
 import { ForStatement } from "../../ast/ForStatement";
+import { ForVariantDeclaration } from "../../ast/ForVariantDeclaration";
 import { Reference } from "../../ast/Reference";
 import { Token } from "../../ast/Token";
 import { SemanticError } from "../../SemanticError";
@@ -13,7 +14,7 @@ export class ForParselet extends PrefixParselet {
     parse(p: Parser, forToken: Token): AstNode {
         let id = p.parseNode();
         if (!(id instanceof Reference)) {
-            throw new SemanticError(`Expected identifier`, id)
+            throw new SemanticError(`Expected identifier`, id);
         }
         p.whitespace();
         p.consume(TokenNames.In);
@@ -23,7 +24,7 @@ export class ForParselet extends PrefixParselet {
         let body = p.parseBlock();
         return new ForStatement(
             forToken.location.merge(value.location),
-            new Declarator(id.location, id.name),
+            new ForVariantDeclaration(new Declarator(id.location, id.name)),
             value,
             body,
         );

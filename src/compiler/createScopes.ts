@@ -1,6 +1,7 @@
 import { Assembly } from "./ast/Assembly";
 import { AstNode } from "./ast/AstNode";
 import { Declaration } from "./ast/Declaration"
+import { ForStatement } from "./ast/ForStatement";
 import { FunctionExpression } from "./ast/FunctionExpression";
 import { isScopeNode } from "./ast/ScopeNode";
 import { traverse } from "./common/traverse";

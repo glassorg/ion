@@ -66,6 +66,14 @@ export async function test() {
 await testCompileError(
 `
 struct Integer
+function bar(a: >= 0)
+    a = -1
+    return a
+`, 2, 16, 2, 20);
+
+await testCompileError(
+`
+struct Integer
 function bar(a: 0 .. 3)
     if a < 0
         return a
@@ -81,14 +89,14 @@ function bar(a: 0 .. 3)
     return a
 `, 3, 7, 3, 22);
 
-// // await testCompileError(`
-// // let a = b
-// // let b = a
-// // `, 1, 4, 1, 5);
+// await testCompileError(`
+// let a = b
+// let b = a
+// `, 1, 4, 1, 5);
 
-// // await testCompileError(`
-// // let a = a
-// // `, 1, 8, 1, 9);
+// await testCompileError(`
+// let a = a
+// `, 1, 8, 1, 9);
 
 await testCompile(`
 struct Integer

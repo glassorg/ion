@@ -158,11 +158,14 @@ class Converter {
                     let conditional = value instanceof ConditionalAssertion ? true : undefined;
                     //  if we are within a loop, our type must remain the declared type
                     //  otherwise we can infer a much more specific type
+
+                    //  withinLoop, must return original type
+                    //  need declaredType in order to make sure we don't assign outside of that type.
                     let type = withinLoop ? originalVariable.type : undefined;
                     return track(new VariableDeclaration(
                         node.location,
                         new Declarator(id.location, this.getNextName()),
-                        { type, value, kind: VariableKind.Constant }
+                        { type, declaredType: originalVariable.type, value, kind: VariableKind.Constant }
                     ));
                 }
                 if (node instanceof Reference && node.name === this.originalName && !(parent instanceof AssignmentExpression && parent.left === node)) {

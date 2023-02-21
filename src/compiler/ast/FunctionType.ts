@@ -1,7 +1,9 @@
 import { isSubTypeOf } from "../analysis/isSubType";
+import { kypeToTypeExpression } from "../analysis/kypeToTypeExpression";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import { TypeExpression } from "./TypeExpression";
+import * as kype from "@glas/kype";
 
 export class FunctionType extends Expression {
 
@@ -15,6 +17,10 @@ export class FunctionType extends Expression {
 
     toString() {
         return `(${this.parameterTypes.map(p => p.toUserTypeString()).join(",")}) => ${this.returnType?.toUserTypeString()}`;
+    }
+
+    toKype() {
+        return new kype.CustomExpression(this);
     }
 
     areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {

@@ -15,6 +15,7 @@ export enum VariableKind {
 export interface VariableOptions {
     kind?: VariableKind;
     type?: TypeExpression;
+    declaredType?: TypeExpression;
     value?: Expression;
 }
 
@@ -33,6 +34,7 @@ export class VariableDeclaration extends Declaration {
 
     public readonly kind: VariableKind;
     public readonly value?: Expression;
+    public readonly declaredType?: TypeExpression;
 
     constructor(
         location: SourceLocation,
@@ -42,6 +44,7 @@ export class VariableDeclaration extends Declaration {
         super(location, id, options.type);
         this.kind = options.kind ?? VariableKind.Var;
         this.value = options.value;
+        this.declaredType = options.declaredType;
     }
 
     get isConstant() {

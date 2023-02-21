@@ -49,16 +49,18 @@ export class PrefixOperatorParselet extends PrefixParselet {
             throw new SemanticError(`Unary operator '${operator.value}' used before '${name}'. Use parentheses to disambiguate operator precedence.`, operator.location);
         }
 
+        const location = operator.location.merge(argument.location);
+
         // resolve +/- unary expressions on literals immediately.
         if ((operator.value === "+" || operator.value === "-") && argument instanceof NumberLiteral) {
             switch (operator.value) {
-                case "+": return argument;
-                case "-": return argument.patch({ value: - argument.value });
+                case "+": return argument.patch({ location });
+                case "-": return argument.patch({ location, value: - argument.value });
             }
         }
 
         return new UnaryExpression(
-            operator.location.merge(argument.location),
+            location,
             operator.value as PrefixOperator,
             argument as Expression,
         );

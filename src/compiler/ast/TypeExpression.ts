@@ -34,7 +34,6 @@ export function toTypeExpression(e: Expression): TypeExpression {
                     case ">=":
                     case "<":
                     case ">=":
-                        const before = term;
                         const expressions: Expression[] = [
                             new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
                         ];
@@ -42,14 +41,6 @@ export function toTypeExpression(e: Expression): TypeExpression {
                             expressions.push(getTypeAssertion(term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float, term.location));
                         }
                         term = joinExpressions("&&", expressions);
-
-                        if (before.operator === "!=") {
-                            console.log({
-                                before: before.location,
-                                after: term.location,
-                            });
-                        }
-
                         break;
                     default:
                         throw new SemanticError(`Unsupported type expression: ${term}`);

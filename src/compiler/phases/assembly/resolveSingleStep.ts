@@ -23,6 +23,8 @@ import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration
 import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
+import { AssignmentExpression } from "../../ast/AssignmentExpression";
+import { getTypeAssertion } from "../../common/utility";
 
 function resolveAll(node: AstNode) {
     return traverse(node, {
@@ -64,12 +66,6 @@ type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: Instanc
 const maybeResolveNode: {
     [Key in keyof AstNS]?: AstNS[Key] extends (new (...args: any[]) => AstNode) ? ResolveFunction<AstNS[Key]> : never
 } = {
-    // AssignmentExpression(node, c) {
-    //     if (!node.right.type) {
-    //         return;
-    //     }
-    //     return node.patch({ type: node.right.type });
-    // },
     BlockStatement(node, c) {
         if (node.statements.every(s => s.resolved)) {
             return node.patch({ resolved: true });
@@ -92,30 +88,26 @@ const maybeResolveNode: {
         return node.patch({ type: node.argument.type, resolved: true });
     },
     VariableDeclaration(node, c) {
-        if (node.kind === VariableKind.Phi) {
-            if (node.type?.resolved) {
-                // let's simplify the type, as this can be a phi typeA | typeB
-                let type = simplifyType(node.type);
-                return node.patch({ type, resolved: true });
+        if ((node.type == null || node.type.resolved) &&
+            (node.declaredType == null || node.declaredType.resolved) &&
+            (node.value == null || node.value?.type?.resolved)
+        ) {
+            if (node.value?.type && node.declaredType) {
+                const isSubType = isSubTypeOf(node.value.type, node.declaredType);
+                if (!isSubType) {
+                    throw new SemanticError(`Variable value type ${node.value.type.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserTypeString()}`, node.declaredType, node.value);
+                }
             }
-        }
-        else if (node.isConstant) {
-            //  we actually don't care if the node value is completely resolved
-            //  so long as it's type is resolved.
-            //  this is true when the value is a function expression.
-            //  the function may not be fully resolved, but as long as the signature is
-            //  resolved then we know the variables type.
-            if (node.value?.type?.resolved) {
-                return node.patch({ type: node.value.type, resolved: true });
-            }
-        }
-        else if (node.type?.resolved) {
-            return node.patch({ type: node.type, resolved: true });
+            // ensure type is simplified
+            let type = simplifyType(node.type ?? node.value?.type ?? node.declaredType!);
+
+            return node.patch({ type, resolved: true });
         }
     },
     ConditionalAssertion(node, c) {
-        // console.log("MAYBE: ", node.value);
-        if (!node.value.resolved) {
+        // console.log("MAYBE: " + node);
+        if (!node.value.resolved && node.value.toString() === "`a:16:0`") {
+            console.log("!node.value.resolved: " + node.value);
             return;
         }
         const test = node.getKnownTrueExpression(c);
@@ -144,6 +136,14 @@ const maybeResolveNode: {
             type = combineTypes("&&", [type, assertedType]);
         }
         return node.patch({ type: type, resolved: true });
+    },
+    ClassDeclaration(node, c) {
+        if (!node.fields.every(child => child.resolved)) {
+            return;
+        }
+        // TODO: Add Instance Types for Class Declarations...
+        const type = resolveAll(getTypeAssertion(node.absolutePath!, node.location));
+        return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
         // functions need to be resolved into inferred types or something.
@@ -257,6 +257,12 @@ export function resolveSingleStep_N(root: Assembly): Assembly {
     return traverseWithContext(root, c => {
         return ({
             leave(node) {
+                if (node instanceof AssignmentExpression) {
+                    console.log(node.toString(), {
+                        resolvable: node instanceof Resolvable,
+                        resolved: node.resolved
+                    })
+                }
                 if (node instanceof Resolvable && !node.resolved) {
                     node = (maybeResolveNode as any)[node.constructor.name]?.(node, c) ?? node;
                 }
