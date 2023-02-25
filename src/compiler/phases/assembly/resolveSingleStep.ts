@@ -1,11 +1,9 @@
 import { Assembly } from "../../ast/Assembly";
-import { Expression } from "../../ast/Expression";
 import { traverse, traverseWithContext } from "../../common/traverse";
 import { AstNS } from "../../ast/AstTypes";
 import { EvaluationContext } from "../../EvaluationContext";
 import { AstNode } from "../../ast/AstNode";
 import { Reference } from "../../ast/Reference";
-import { ConstantDeclaration } from "../../ast/ConstantDeclaration";
 import { Literal } from "../../ast/Literal";
 import { SemanticError } from "../../SemanticError";
 import { combineTypes, simplifyType } from "../../analysis/combineTypes";
@@ -19,12 +17,13 @@ import { expressionToType, splitFilterJoinMultiple } from "../../common/utility"
 import { CallExpression } from "../../ast/CallExpression";
 import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
-import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
+import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
 import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { getTypeAssertion } from "../../common/utility";
+import { ForStatement } from "../../ast/ForStatement";
 
 function resolveAll(node: AstNode) {
     return traverse(node, {
@@ -49,14 +48,14 @@ function LiteralType(node: Literal<any>) {
         new ComparisonExpression(
             node.location,
             new DotExpression(node.location),
-            "is",
-            new Reference(node.location, node.coreType)
+            "==",
+            node
         ),
         new ComparisonExpression(
             node.location,
             new DotExpression(node.location),
-            "==",
-            node
+            "is",
+            new Reference(node.location, node.coreType)
         ),
     ]));
 }
@@ -87,6 +86,24 @@ const maybeResolveNode: {
         //  Unary - should change the sign of the resolved type...
         return node.patch({ type: node.argument.type, resolved: true });
     },
+    RangeExpression(node, c) {
+        if (node.start.resolved && node.finish.resolved) {
+            // we need array type!
+            // what's the type of a RangeExpression?
+            console.log("we need array type " + node);
+        }
+    },
+    ForVariantDeclaration(node, c) {
+        const parent = c.lookup.findAncestor(node, ForStatement)!;
+        if (parent.right.resolved) {
+            console.log(" ------> " + node + " right: " + parent.right);
+        }
+    },
+    TypeDeclaration(node, c) {
+        if (node.type.resolved) {
+            return node.patch({ type: resolveAll(simplifyType(node.type)), resolved: true });
+        }
+    },
     VariableDeclaration(node, c) {
         if ((node.type == null || node.type.resolved) &&
             (node.declaredType == null || node.declaredType.resolved) &&
@@ -103,6 +120,7 @@ const maybeResolveNode: {
 
             return node.patch({ type, resolved: true });
         }
+
     },
     ConditionalAssertion(node, c) {
         // console.log("MAYBE: " + node);
@@ -194,6 +212,10 @@ const maybeResolveNode: {
     Reference(node, c) {
         const declaration = c.getDeclaration(node);
         if (!declaration.resolved) {
+            return;
+        }
+        // check any generic parameters on the reference.
+        if (!node.generics.every(ref => ref.resolved)) {
             return;
         }
 

@@ -9,6 +9,7 @@ import { getTypeAssertion } from "../common/utility";
 import { CoreType, CoreTypes } from "../common/CoreType";
 import { TypeExpression } from "../ast/TypeExpression";
 import { SourceLocation } from "../ast/SourceLocation";
+import { simplifyType } from "./combineTypes";
 
 function isAnyFloat(result: kype.TypeExpression) {
     const prop = result.proposition;
@@ -27,7 +28,7 @@ function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: 
         }
         return typeAssertion;
     }
-    return joinExpressions("&&", [typeAssertion, kypeToTypeExpression(result)]);
+    return simplifyType(joinExpressions("&&", [typeAssertion, kypeToTypeExpression(result)]));
 }
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
@@ -49,6 +50,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
 
 export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpression, ...argTypes: TypeExpression[]) => TypeExpression) | undefined } = {
     "`+`(Integer,Integer)": binaryTypeFunction("+", CoreTypes.Integer),
+    "`-`(Integer,Integer)": binaryTypeFunction("-", CoreTypes.Integer),
     "`*`(Integer,Integer)": binaryTypeFunction("*", CoreTypes.Integer),
     "`**`(Integer,Integer)": binaryTypeFunction("**", CoreTypes.Integer),
     "`/`(Integer,Integer)": binaryTypeFunction("/", CoreTypes.Integer),
@@ -58,6 +60,7 @@ export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpressi
 
     "`**`(Float,Integer)": binaryTypeFunction("**", CoreTypes.Float),
     "`+`(Float,Float)": binaryTypeFunction("+", CoreTypes.Float),
+    "`-`(Float,Float)": binaryTypeFunction("-", CoreTypes.Float),
     "`*`(Float,Float)": binaryTypeFunction("*", CoreTypes.Float),
     "`**`(Float,Float)": (callee) => { throw new SemanticError(`Exponent must be an integer`, callee) },
     "`/`(Float,Float)": binaryTypeFunction("/", CoreTypes.Float),

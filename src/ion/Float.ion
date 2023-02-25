@@ -4,6 +4,9 @@ struct Float
 function `+`(a: Float, b: Float) : Float
     return a
 
+function `-`(a: Float, b: Float) : Float
+    return a
+
 function `*`(a: Float, b: Float) : Float
     return a
 

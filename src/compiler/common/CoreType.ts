@@ -1,7 +1,8 @@
 
 export const CoreTypes = {
-    Boolean: "Integer", //  for now
     Integer: "Integer",
+    Boolean: "Boolean",
+    Array: "Array",
     Float: "Float",
     NaN: "NaN",
     String: "String",

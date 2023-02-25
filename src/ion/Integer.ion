@@ -4,6 +4,9 @@ struct Integer
 function `+`(a: Integer, b: Integer) : Integer
     return a
 
+function `-`(a: Integer, b: Integer) : Integer
+    return a
+
 function `*`(a: Integer, b: Integer) : Integer
     return a
 

@@ -35,7 +35,6 @@ export class FunctionParselet extends PrefixParselet {
         }
         else if (value instanceof FunctionExpression) {
             throw new SemanticError(`Lambda Function not supported yet`, value);
-            // functionExpression = value;
         }
         else {
             throw new SemanticError(`Expected FunctionExpression`, value);
