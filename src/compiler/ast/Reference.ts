@@ -5,13 +5,14 @@ import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { isCoreType } from "../common/CoreType";
 import { Writable } from "../common/TypescriptTypes";
+import { TypeExpression } from "./TypeExpression";
 
 export class Reference extends Expression {
 
     constructor(
         location: SourceLocation,
         public readonly name: string,
-        public readonly generics: Reference[] = [],
+        public readonly generics: TypeExpression[] = [],
     ){
         super(location);
         if (this.name == null) {

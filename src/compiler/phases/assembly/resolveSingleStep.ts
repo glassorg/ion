@@ -24,6 +24,7 @@ import { MultiFunction } from "../../ast/MultiFunction";
 import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { getTypeAssertion } from "../../common/utility";
 import { ForStatement } from "../../ast/ForStatement";
+import { BinaryExpression } from "../../ast/BinaryExpression";
 
 function resolveAll(node: AstNode) {
     return traverse(node, {
@@ -88,9 +89,14 @@ const maybeResolveNode: {
     },
     RangeExpression(node, c) {
         if (node.start.resolved && node.finish.resolved) {
-            // we need array type!
-            // what's the type of a RangeExpression?
-            console.log("we need array type " + node);
+            //  we need array type!
+            //  no constraint on length right now.
+            const stuff = joinExpressions("&&", [
+                new ComparisonExpression(node.start.location, new DotExpression(node.start.location), ">=", node.start),
+                new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish),
+            ])
+            //  what's the type of a RangeExpression?
+            console.log("we need array type " + node + " -> " + stuff);
         }
     },
     ForVariantDeclaration(node, c) {
