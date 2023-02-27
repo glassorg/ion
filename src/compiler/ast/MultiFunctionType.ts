@@ -2,8 +2,9 @@ import { Expression } from "./Expression";
 import { FunctionType } from "./FunctionType";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
+import { Type } from "./Type";
 
-export class MultiFunctionType extends Expression {
+export class MultiFunctionType extends Type {
 
     constructor(
         location: SourceLocation,
@@ -13,7 +14,7 @@ export class MultiFunctionType extends Expression {
     }
 
     public toKype() {
-        return new kype.CustomExpression(this);
+        return new kype.TypeExpression(new kype.CustomExpression(this));
     }
 
     toString() {

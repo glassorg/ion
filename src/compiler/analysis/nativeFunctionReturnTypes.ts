@@ -7,9 +7,11 @@ import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { getTypeAssertion } from "../common/utility";
 import { CoreType, CoreTypes } from "../common/CoreType";
-import { TypeInterface } from "../ast/TypeExpression";
 import { SourceLocation } from "../ast/SourceLocation";
-import { simplifyType } from "./combineTypes";
+import { simplify } from "./combineTypes";
+import { Type } from "../ast/Type";
+import { TypeExpression } from "../ast/TypeExpression";
+import { Expression } from "../ast/Expression";
 
 function isAnyFloat(result: kype.TypeExpression) {
     const prop = result.proposition;
@@ -20,27 +22,33 @@ function isAnyFloat(result: kype.TypeExpression) {
         && prop.right.value == Number.POSITIVE_INFINITY;
 }
 
-function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: SourceLocation): TypeInterface {
+function addCoreType(input: kype.TypeExpression, coreType: CoreType, location: SourceLocation): Type {
     const typeAssertion = getTypeAssertion(coreType, location);
-    if (isAnyFloat(result)) {
+    let output: Expression;
+    if (isAnyFloat(input)) {
         if (coreType !== CoreTypes.Float) {
             throw new Error("Expected CoreType Float: " + coreType);
         }
-        return typeAssertion;
+        output = typeAssertion;
     }
-    return simplifyType(joinExpressions("&&", [typeAssertion, kypeToTypeExpression(result)]));
+    else {
+        output = simplify(
+            joinExpressions("&&", [typeAssertion, kypeToTypeExpression(input)])
+        );
+    }
+    return new TypeExpression(location, output);
 }
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
-    return (callee: CallExpression, a: TypeInterface, b: TypeInterface) => {
-        const result = kype.combineTypes(a.toKypeType(), operator as kype.BinaryOperator, b.toKypeType());
+    return (callee: CallExpression, a: Type, b: Type) => {
+        const result = kype.combineTypes(a.toKype(), operator as kype.BinaryOperator, b.toKype());
         try {
             return addCoreType(result, coreType, callee.location);
         }
         catch (e) {
             console.log({
-                aKype: a.toKypeType().toString(),
-                bKype: b.toKypeType().toString(),
+                aKype: a.toKype().toString(),
+                bKype: b.toKype().toString(),
                 result: result.toString()
             })
             throw e;
@@ -48,7 +56,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     };
 }
 
-export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpression, ...argTypes: TypeInterface[]) => TypeInterface) | undefined } = {
+export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpression, ...argTypes: Type[]) => Type) | undefined } = {
     "`+`(Integer,Integer)": binaryTypeFunction("+", CoreTypes.Integer),
     "`-`(Integer,Integer)": binaryTypeFunction("-", CoreTypes.Integer),
     "`*`(Integer,Integer)": binaryTypeFunction("*", CoreTypes.Integer),

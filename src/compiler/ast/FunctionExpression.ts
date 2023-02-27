@@ -1,6 +1,5 @@
 import { splitExpressions } from "./AstFunctions";
 import { getFinalStatements } from "../analysis/getFinalStatements";
-import { isSubTypeOf } from "../analysis/isSubType";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
@@ -11,11 +10,12 @@ import { ReturnStatement } from "./ReturnStatement";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
-import { TypeInterface } from "./TypeExpression";
+import { TypeExpression } from "./TypeExpression";
 import { Declarator } from "./Declarator";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CallExpression } from "./CallExpression";
 import { FunctionType } from "./FunctionType";
+import { Type } from "./Type";
 
 export class FunctionExpression extends Expression implements ScopeNode {
 
@@ -25,7 +25,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
         location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
-        public readonly returnType?: TypeInterface,
+        public readonly returnType?: Type,
         public readonly id?: Declarator,
     ) {
         super(location);
@@ -39,11 +39,11 @@ export class FunctionExpression extends Expression implements ScopeNode {
         return true;
     }
     
-    get parameterTypes(): TypeInterface[] {
+    get parameterTypes(): Type[] {
         return this.parameters.map(p => p.type!);
     }
 
-    getReturnType(argumentTypes: TypeInterface[], callee: CallExpression): TypeInterface | undefined {
+    getReturnType(argumentTypes: Type[], callee: CallExpression): Type | undefined {
         if (this.type!.areArgumentsValid(argumentTypes) === false) {
             return undefined;
         }
@@ -79,7 +79,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
     }
 
     static createFromLambda(left: Expression, right: Expression): FunctionExpression {
-        let type: TypeInterface | undefined;
+        let type: TypeExpression | undefined;
         let leftValue = left instanceof PstGroup ? left.value : left;
         let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;

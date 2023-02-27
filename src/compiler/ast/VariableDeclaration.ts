@@ -2,7 +2,7 @@ import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import { Declaration } from "./Declaration";
-import { TypeInterface } from "./TypeExpression";
+import { Type } from "./Type";
 
 export enum VariableKind {
     Constant = "const",
@@ -14,8 +14,8 @@ export enum VariableKind {
 
 export interface VariableOptions {
     kind?: VariableKind;
-    type?: TypeInterface;
-    declaredType?: TypeInterface;
+    type?: Type;
+    declaredType?: Type;
     value?: Expression;
 }
 
@@ -25,7 +25,7 @@ export function isParameterDeclaration(node: unknown): node is ParameterDeclarat
     return node instanceof VariableDeclaration && node.kind === VariableKind.Parameter;
 }
 
-export function newParameterDeclaration(location: SourceLocation, id: Declarator, type?: TypeInterface, value?: Expression)
+export function newParameterDeclaration(location: SourceLocation, id: Declarator, type?: Type, value?: Expression)
 {
     return new VariableDeclaration(location, id, { kind: VariableKind.Parameter, type, value }) as ParameterDeclaration;
 }
@@ -34,7 +34,7 @@ export class VariableDeclaration extends Declaration {
 
     public readonly kind: VariableKind;
     public readonly value?: Expression;
-    public readonly declaredType?: TypeInterface;
+    public readonly declaredType?: Type;
 
     constructor(
         location: SourceLocation,

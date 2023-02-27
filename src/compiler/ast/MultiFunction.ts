@@ -6,7 +6,7 @@ import { Expression } from "./Expression";
 import { FunctionExpression } from "./FunctionExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
-import { TypeInterface } from "./TypeExpression";
+import { Type } from "./Type";
 
 export class MultiFunction extends Expression {
 
@@ -20,9 +20,9 @@ export class MultiFunction extends Expression {
         return `multifunction ${this.toBlockString(this.functions, "[", "]")}`;
     }
 
-    getReturnType(argTypes: TypeInterface[], c: EvaluationContext, callee: CallExpression): TypeInterface {
+    getReturnType(argTypes: Type[], c: EvaluationContext, callee: CallExpression): Type {
         const functions = this.functions.map(func => c.getConstantValue(func)) as FunctionExpression[];
-        const returnTypes = functions.map(declaration => declaration.getReturnType(argTypes, callee)).filter(Boolean) as Expression[];
+        const returnTypes = functions.map(declaration => declaration.getReturnType(argTypes, callee)).filter(Boolean) as Type[];
         if (returnTypes.length === 0) {
             throw new SemanticError(`${callee} Function with these parameters not found (${argTypes.map(arg => arg.toUserTypeString()).join(",")})`, callee);
         }

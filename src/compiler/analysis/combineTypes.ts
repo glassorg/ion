@@ -1,17 +1,19 @@
 import * as kype from "@glas/kype";
-import { TypeInterface } from "../ast/TypeExpression";
-import { kypeToTypeExpression } from "./kypeToTypeExpression";
+import { Expression } from "../ast/Expression";
+import { Type } from "../ast/Type";
+import { kypeToTypeExpression, toExpression } from "./kypeToTypeExpression";
 
-export function combineTypes(operator: "&&" | "||", types: TypeInterface[]) {
-    let type = types[0].toKypeType();
+export function combineTypes(operator: "&&" | "||", types: Type[]): Type {
+    let type = types[0].toKype();
     for (let i = 1; i < types.length; i++) {
-        type = kype.combineTypes(type, operator, types[i].toKypeType());
+        type = kype.combineTypes(type, operator, types[i].toKype());
     }
-    return kypeToTypeExpression(type, types[0].location);
+    return kypeToTypeExpression(type, types[0].location) as Type;
 }
 
-export function simplifyType(type: TypeInterface) {
-    let kypeType = type.toKypeType();
-    let newKypeType = kype.simplify(kypeType) as kype.TypeExpression;
-    return kypeToTypeExpression(newKypeType, type.location);
+export function simplify(type: Type): Type
+export function simplify(type: Expression): Expression
+export function simplify(type: Type | Expression): Type | Expression {
+    let newKypeType = kype.simplify(type.toKype());
+    return toExpression(newKypeType, type.location);
 }

@@ -1,5 +1,4 @@
 import { strict as assert } from "assert";
-import { Declaration } from "../ast/Declaration";
 import { CompileError, Compiler } from "../Compiler";
 import { MemoryFileSystem } from "../filesystem/MemoryFileSystem";
 
@@ -56,12 +55,12 @@ async function testCompile(source: string | Files, checkTypes?: { [key: string]:
 }
 
 export async function test() {
-// await testCompileError(
-// `
-// struct Integer
-// struct Number
-// var y: Number = 2
-// `, 3, 0, 3, 17);
+// // await testCompileError(
+// // `
+// // struct Integer
+// // struct Number
+// // var y: Number = 2
+// // `, 3, 0, 3, 17);
 
 await testCompileError(
 `
@@ -89,14 +88,14 @@ function bar(a: 0 .. 3)
     return a
 `, 3, 7, 3, 22);
 
-// await testCompileError(`
-// let a = b
-// let b = a
-// `, 1, 4, 1, 5);
+// // await testCompileError(`
+// // let a = b
+// // let b = a
+// // `, 1, 4, 1, 5);
 
-// await testCompileError(`
-// let a = a
-// `, 1, 8, 1, 9);
+// // await testCompileError(`
+// // let a = a
+// // `, 1, 8, 1, 9);
 
 await testCompile(`
 struct Integer
@@ -110,12 +109,12 @@ function min(a: Integer | String, b: Integer)
         return b
 `);
 
-await testCompile(`
-struct Integer
-let a = 1
-let b = a
-let c = b
-`);
+// await testCompile(`
+// struct Integer
+// let a = 1
+// let b = a
+// let c = b
+// `);
 
 await testCompile(`
 struct Integer

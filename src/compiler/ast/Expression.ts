@@ -1,12 +1,7 @@
 import * as kype from "@glas/kype";
-// import { EvaluationContext } from "../EvaluationContext";
 import { Resolvable } from "./Resolvable";
 
 export abstract class Expression extends Resolvable {
-
-    public toKypeType(): kype.TypeExpression {
-        return new kype.TypeExpression(this.toKype());
-    }
 
     public toKype(): kype.Expression {
         throw new Error("Not implemented yet");

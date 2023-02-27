@@ -1,12 +1,8 @@
-import { CoreTypes } from "../common/CoreType";
-import { EvaluationContext } from "../EvaluationContext";
 import { LogicalOperator } from "../Operators";
 import { BinaryExpression } from "./BinaryExpression";
-import { ComparisonExpression } from "./ComparisonExpression";
-import { DotExpression } from "./DotExpression";
 import { Expression } from "./Expression";
-import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
+import { TypeExpression } from "./TypeExpression";
 
 export class LogicalExpression extends BinaryExpression {
 
@@ -17,6 +13,10 @@ export class LogicalExpression extends BinaryExpression {
         right: Expression
     ){
         super(location, left, operator, right);
+        if (right instanceof TypeExpression) {
+            debugger;
+            throw new Error("No TypeExpression should be here");
+        }
     }
 
 }

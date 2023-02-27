@@ -38,6 +38,7 @@ export * from "./Statement";
 export * from "./StringLiteral";
 export * from "./StructDeclaration";
 export * from "./Token";
+export * from "./TypeExpression";
 export * from "./TypeDeclaration";
 export * from "./MultiFunction";
 export * from "./FunctionType";

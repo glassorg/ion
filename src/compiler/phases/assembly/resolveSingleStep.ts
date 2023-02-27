@@ -6,7 +6,7 @@ import { AstNode } from "../../ast/AstNode";
 import { Reference } from "../../ast/Reference";
 import { Literal } from "../../ast/Literal";
 import { SemanticError } from "../../SemanticError";
-import { combineTypes, simplifyType } from "../../analysis/combineTypes";
+import { combineTypes, simplify } from "../../analysis/combineTypes";
 import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { DotExpression } from "../../ast/DotExpression";
 import { CoreTypes } from "../../common/CoreType";
@@ -25,6 +25,8 @@ import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { getTypeAssertion } from "../../common/utility";
 import { ForStatement } from "../../ast/ForStatement";
 import { BinaryExpression } from "../../ast/BinaryExpression";
+import { TypeExpression } from "../../ast/TypeExpression";
+import { ConditionalAssertion } from "../../ast/ConditionalAssertion";
 
 function resolveAll(node: AstNode) {
     return traverse(node, {
@@ -45,7 +47,7 @@ function BooleanType(location: SourceLocation) {
 }
 
 function LiteralType(node: Literal<any>) {
-    return resolveAll(joinExpressions("&&", [
+    return resolveAll(new TypeExpression(node.location, joinExpressions("&&", [
         new ComparisonExpression(
             node.location,
             new DotExpression(node.location),
@@ -58,7 +60,7 @@ function LiteralType(node: Literal<any>) {
             "is",
             new Reference(node.location, node.coreType)
         ),
-    ]));
+    ])));
 }
 
 type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: InstanceType<T>, c: EvaluationContext) => AstNode | void
@@ -107,7 +109,12 @@ const maybeResolveNode: {
     },
     TypeDeclaration(node, c) {
         if (node.type.resolved) {
-            return node.patch({ type: resolveAll(simplifyType(node.type)), resolved: true });
+            return node.patch({ type: resolveAll(simplify(node.type)), resolved: true });
+        }
+    },
+    TypeExpression(node, c) {
+        if (node.proposition.resolved) {
+            return node.patch({ resolved: true });
         }
     },
     VariableDeclaration(node, c) {
@@ -122,8 +129,7 @@ const maybeResolveNode: {
                 }
             }
             // ensure type is simplified
-            let type = simplifyType(node.type ?? node.value?.type ?? node.declaredType!);
-
+            let type = simplify(node.type ?? node.value?.type ?? node.declaredType!);
             return node.patch({ type, resolved: true });
         }
 
@@ -144,17 +150,17 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let type = node.value.type!;
-        let assertedType = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
+        let assertedType = new TypeExpression(node.location, splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate)));
         if (assertedType) {
             if (assertedType instanceof CallExpression) {
                 splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
             }
             const isAssertedConsequent = isSubTypeOf(type, assertedType);
             if (isAssertedConsequent === false) {
-                throw new SemanticError(`If test will always evaluate to false`, test);
+                throw new SemanticError(`If test will always fail`, test);
             }
             if (isAssertedConsequent === true) {
-                throw new SemanticError(`If test will always evaluate to true`, test);
+                throw new SemanticError(`If test will always pass`, test);
             }
             // if this conditional lets us assert a more specific type then we add it.
             type = combineTypes("&&", [type, assertedType]);

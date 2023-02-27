@@ -14,6 +14,7 @@ import { Reference } from "../../ast/Reference";
 import { ReturnStatement } from "../../ast/ReturnStatement";
 import { isScopeNode, ScopeNode } from "../../ast/ScopeNode";
 import { Statement } from "../../ast/Statement";
+import { TypeExpression } from "../../ast/TypeExpression";
 import { UnaryExpression } from "../../ast/UnaryExpression";
 import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { traverse, traverseWithContext } from "../../common/traverse";
@@ -141,7 +142,7 @@ class Converter {
                 }
             },
             leave: (node, ancestors) => {
-                let parent = ancestors[ancestors.length - 1];
+                let parent = ancestors[ancestors.length - 1] as AstNode;
                 if (node instanceof VariableDeclaration && node.id.name === this.originalName) {
                     return track(originalVariable = node.patch({
                         id: node.id.patch({ name: this.currentName }),
@@ -191,7 +192,7 @@ class Converter {
                             let types = vars.map(v => new UnaryExpression(
                                 v.location, "typeof", new Reference(v.location, v.id.name)
                             ));
-                            let type = joinExpressions("||", types);
+                            let type = new TypeExpression(node.location, joinExpressions("||", types));
                             let phi = new VariableDeclaration(
                                 originalVariable.location,
                                 originalVariable.id.patch({ name: this.getNextName() }),

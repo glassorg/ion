@@ -1,4 +1,3 @@
-import { AstNode } from "./AstNode";
 import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
 import { FunctionExpression } from "./FunctionExpression";

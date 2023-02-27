@@ -1,16 +1,14 @@
 import { isSubTypeOf } from "../analysis/isSubType";
-import { kypeToTypeExpression } from "../analysis/kypeToTypeExpression";
-import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
-import { TypeInterface } from "./TypeExpression";
 import * as kype from "@glas/kype";
+import { Type } from "./Type";
 
-export class FunctionType extends Expression {
+export class FunctionType extends Type {
 
     constructor(
         location: SourceLocation,
-        public readonly parameterTypes: TypeInterface[],
-        public readonly returnType: TypeInterface
+        public readonly parameterTypes: Type[],
+        public readonly returnType: Type
     ) {
         super(location);
     }
@@ -19,11 +17,11 @@ export class FunctionType extends Expression {
         return `(${this.parameterTypes.map(p => p.toUserTypeString()).join(",")}) => ${this.returnType?.toUserTypeString()}`;
     }
 
-    toKype() {
-        return new kype.CustomExpression(this);
+    toKype(): kype.TypeExpression {
+        return new kype.TypeExpression(new kype.CustomExpression(this));
     }
 
-    areArgumentsValid(argumentTypes: TypeInterface[]): boolean | null {
+    areArgumentsValid(argumentTypes: Type[]): boolean | null {
         // if these argumentTypes are not valid arguments for this function we return undefined
         const parameterTypes = this.parameterTypes;
         if (argumentTypes.length !== parameterTypes.length) {

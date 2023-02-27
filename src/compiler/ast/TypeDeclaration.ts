@@ -1,14 +1,14 @@
 import { Declaration } from "./Declaration";
 import { Declarator } from "./Declarator";
 import { SourceLocation } from "./SourceLocation";
-import { TypeInterface } from "./TypeExpression";
+import { Type } from "./Type";
 
 export class TypeDeclaration extends Declaration {
 
     constructor(
         location: SourceLocation,
         id: Declarator,
-        public readonly type: TypeInterface
+        public readonly type: Type
     ) {
         super(location, id);
     }

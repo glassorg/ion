@@ -6,8 +6,9 @@ import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
+import { TypeExpression } from "../ast/TypeExpression";
 
-function toExpression(e: kype.Expression, location: SourceLocation): Expression {
+export function toExpression(e: kype.Expression, location: SourceLocation): Expression {
     if (e.source instanceof Expression) {
         return e.source;
     }
@@ -22,8 +23,7 @@ function toExpression(e: kype.Expression, location: SourceLocation): Expression 
         return createBinaryExpression(location, toExpression(e.left, location), e.operator as any, toExpression(e.right, location));
     }
     if (e instanceof kype.TypeExpression) {
-        throw new Error(`didn't expect a kype type expression`);
-        // return toTypeExpression(toExpression(e.proposition, location));
+        return new TypeExpression(location, toExpression(e.proposition, location));
     }
     // we NEED to know the difference between Integers and Floats.
     if (e instanceof kype.NumberLiteral) {
@@ -45,5 +45,5 @@ function toExpression(e: kype.Expression, location: SourceLocation): Expression 
 }
 
 export function kypeToTypeExpression(type: kype.TypeExpression, location = SourceLocation.empty) {
-    return toExpression(type.proposition, location);
+    return toExpression(type, location);
 }
