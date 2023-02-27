@@ -6,7 +6,7 @@ import { Expression } from "./Expression";
 import { FunctionExpression } from "./FunctionExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
-import { TypeExpression } from "./TypeExpression";
+import { TypeInterface } from "./TypeExpression";
 
 export class MultiFunction extends Expression {
 
@@ -20,7 +20,7 @@ export class MultiFunction extends Expression {
         return `multifunction ${this.toBlockString(this.functions, "[", "]")}`;
     }
 
-    getReturnType(argTypes: TypeExpression[], c: EvaluationContext, callee: CallExpression): TypeExpression {
+    getReturnType(argTypes: TypeInterface[], c: EvaluationContext, callee: CallExpression): TypeInterface {
         const functions = this.functions.map(func => c.getConstantValue(func)) as FunctionExpression[];
         const returnTypes = functions.map(declaration => declaration.getReturnType(argTypes, callee)).filter(Boolean) as Expression[];
         if (returnTypes.length === 0) {

@@ -1,5 +1,5 @@
 import { AstNode } from "./AstNode";
-import { TypeExpression } from "./TypeExpression";
+import { TypeInterface } from "./TypeExpression";
 
 export class Resolvable extends AstNode {
 
@@ -8,7 +8,7 @@ export class Resolvable extends AstNode {
     /**
      * The resolved type or false if this is a type and therefore doesn't resolve further.
      */
-    public readonly type?: TypeExpression;
+    public readonly type?: TypeInterface;
 
     /**
      * Returns an empty string if not resolved or else " : Type"

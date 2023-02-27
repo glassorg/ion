@@ -4,7 +4,6 @@ import { Resolvable } from "./Resolvable";
 
 export abstract class Expression extends Resolvable {
 
-
     public toKypeType(): kype.TypeExpression {
         return new kype.TypeExpression(this.toKype());
     }

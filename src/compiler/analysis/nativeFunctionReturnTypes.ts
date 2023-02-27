@@ -7,7 +7,7 @@ import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { getTypeAssertion } from "../common/utility";
 import { CoreType, CoreTypes } from "../common/CoreType";
-import { TypeExpression } from "../ast/TypeExpression";
+import { TypeInterface } from "../ast/TypeExpression";
 import { SourceLocation } from "../ast/SourceLocation";
 import { simplifyType } from "./combineTypes";
 
@@ -20,7 +20,7 @@ function isAnyFloat(result: kype.TypeExpression) {
         && prop.right.value == Number.POSITIVE_INFINITY;
 }
 
-function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: SourceLocation): TypeExpression {
+function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: SourceLocation): TypeInterface {
     const typeAssertion = getTypeAssertion(coreType, location);
     if (isAnyFloat(result)) {
         if (coreType !== CoreTypes.Float) {
@@ -32,7 +32,7 @@ function addCoreType(result: kype.TypeExpression, coreType: CoreType, location: 
 }
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
-    return (callee: CallExpression, a: TypeExpression, b: TypeExpression) => {
+    return (callee: CallExpression, a: TypeInterface, b: TypeInterface) => {
         const result = kype.combineTypes(a.toKypeType(), operator as kype.BinaryOperator, b.toKypeType());
         try {
             return addCoreType(result, coreType, callee.location);
@@ -48,7 +48,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     };
 }
 
-export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpression, ...argTypes: TypeExpression[]) => TypeExpression) | undefined } = {
+export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpression, ...argTypes: TypeInterface[]) => TypeInterface) | undefined } = {
     "`+`(Integer,Integer)": binaryTypeFunction("+", CoreTypes.Integer),
     "`-`(Integer,Integer)": binaryTypeFunction("-", CoreTypes.Integer),
     "`*`(Integer,Integer)": binaryTypeFunction("*", CoreTypes.Integer),

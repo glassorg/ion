@@ -2,15 +2,15 @@ import { isSubTypeOf } from "../analysis/isSubType";
 import { kypeToTypeExpression } from "../analysis/kypeToTypeExpression";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
-import { TypeExpression } from "./TypeExpression";
+import { TypeInterface } from "./TypeExpression";
 import * as kype from "@glas/kype";
 
 export class FunctionType extends Expression {
 
     constructor(
         location: SourceLocation,
-        public readonly parameterTypes: TypeExpression[],
-        public readonly returnType: TypeExpression
+        public readonly parameterTypes: TypeInterface[],
+        public readonly returnType: TypeInterface
     ) {
         super(location);
     }
@@ -23,7 +23,7 @@ export class FunctionType extends Expression {
         return new kype.CustomExpression(this);
     }
 
-    areArgumentsValid(argumentTypes: TypeExpression[]): boolean | null {
+    areArgumentsValid(argumentTypes: TypeInterface[]): boolean | null {
         // if these argumentTypes are not valid arguments for this function we return undefined
         const parameterTypes = this.parameterTypes;
         if (argumentTypes.length !== parameterTypes.length) {

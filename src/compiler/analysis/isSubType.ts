@@ -1,10 +1,10 @@
 import * as kype from "@glas/kype";
-import { TypeExpression } from "../ast/TypeExpression";
+import { TypeInterface } from "../ast/TypeExpression";
 
 /**
  * Returns true if this is a subtype, false if it's definitly never a subtype or null if it might be a subtype.
  */
-export function isSubTypeOf(maybeSubType: TypeExpression, superType: TypeExpression) {
+export function isSubTypeOf(maybeSubType: TypeInterface, superType: TypeInterface) {
     const kypeSubType = maybeSubType.toKype();
     const kypeSuperType = superType.toKype();
     const result = kype.isConsequent(kypeSubType, kypeSuperType);

@@ -12,8 +12,22 @@ import { RangeExpression } from "./RangeExpression";
 import { Reference } from "./Reference";
 import { UnaryExpression } from "./UnaryExpression";
 import { NumberLiteral } from "./NumberLiteral";
-import { BinaryExpression } from "./BinaryExpression";
 import { simplifyType } from "../analysis/combineTypes";
+import { SourceLocation } from "./SourceLocation";
+
+export class TypeExpression extends Expression {
+
+    constructor(
+        location: SourceLocation,
+        public readonly proposition: Expression
+    ) {
+        super(location);
+    }
+
+    toString() {
+        return `{ ${this.proposition} }`;
+    }
+}
 
 /**
  * A Type expression is an expression which contains DotExpressions.
@@ -24,9 +38,9 @@ import { simplifyType } from "../analysis/combineTypes";
  *      ZeroToOne = . >= 0.0 && . <= 1.0
  */
 
-export type TypeExpression = Expression;
+export type TypeInterface = Expression;
 
-export function toTypeExpression(e: Expression): TypeExpression {
+export function toTypeExpression(e: Expression): TypeInterface {
     {
         let options = splitExpressions("||", e);
         if (options.length > 1) {

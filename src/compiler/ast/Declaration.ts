@@ -2,7 +2,7 @@ import { CallExpression } from "./CallExpression";
 import { Declarator } from "./Declarator";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
-import { TypeExpression } from "./TypeExpression";
+import { TypeInterface } from "./TypeExpression";
 
 export interface RootDeclaration extends Declaration {
     absolutePath: string;
@@ -21,7 +21,7 @@ export abstract class Declaration extends Statement {
     constructor(
         location: SourceLocation,
         public readonly id: Declarator,
-        public readonly type?: TypeExpression
+        public readonly type?: TypeInterface
     ){
         super(location);
     }

@@ -11,7 +11,7 @@ import { ReturnStatement } from "./ReturnStatement";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
-import { TypeExpression } from "./TypeExpression";
+import { TypeInterface } from "./TypeExpression";
 import { Declarator } from "./Declarator";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CallExpression } from "./CallExpression";
@@ -25,7 +25,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
         location: SourceLocation,
         public readonly parameters: ParameterDeclaration[],
         public readonly body: BlockStatement,
-        public readonly returnType?: TypeExpression,
+        public readonly returnType?: TypeInterface,
         public readonly id?: Declarator,
     ) {
         super(location);
@@ -39,11 +39,11 @@ export class FunctionExpression extends Expression implements ScopeNode {
         return true;
     }
     
-    get parameterTypes(): TypeExpression[] {
+    get parameterTypes(): TypeInterface[] {
         return this.parameters.map(p => p.type!);
     }
 
-    getReturnType(argumentTypes: TypeExpression[], callee: CallExpression): TypeExpression | undefined {
+    getReturnType(argumentTypes: TypeInterface[], callee: CallExpression): TypeInterface | undefined {
         if (this.type!.areArgumentsValid(argumentTypes) === false) {
             return undefined;
         }
@@ -79,7 +79,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
     }
 
     static createFromLambda(left: Expression, right: Expression): FunctionExpression {
-        let type: TypeExpression | undefined;
+        let type: TypeInterface | undefined;
         let leftValue = left instanceof PstGroup ? left.value : left;
         let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;
