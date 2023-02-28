@@ -2,8 +2,9 @@ import { isSubTypeOf } from "../analysis/isSubType";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { Type } from "./Type";
+import { Expression } from "./Expression";
 
-export class FunctionType extends Type {
+export class FunctionType extends Expression implements Type {
 
     constructor(
         location: SourceLocation,
@@ -12,6 +13,8 @@ export class FunctionType extends Type {
     ) {
         super(location);
     }
+
+    get isType(): true { return true }
 
     toString() {
         return `(${this.parameterTypes.map(p => p.toUserTypeString()).join(",")}) => ${this.returnType?.toUserTypeString()}`;

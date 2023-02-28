@@ -10,10 +10,10 @@ import { Reference } from "../../ast/Reference";
 import { Identifier } from "../../ast/Identifier";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { createBinaryExpression } from "../../ast/AstFunctions";
-import { toTypeExpression } from "../../ast/TypeExpression";
 import { RangeExpression } from "../../ast/RangeExpression";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 import { PstGroup } from "../../ast/PstGroup";
+import { toType } from "../../ast/Type";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -33,7 +33,7 @@ export class BinaryExpressionParselet extends InfixParselet {
         let location = left.location.merge(right.location);
         let operator = operatorToken.value as InfixOperator;
         if (operator === ":") {
-            let type = toTypeExpression(right);
+            let type = toType(right);
             if (left instanceof PstGroup) {
                 // this is used sometimes to create a function declaration
                 return left.patch({ type });

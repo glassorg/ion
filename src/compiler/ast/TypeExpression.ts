@@ -17,7 +17,7 @@ import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { Type } from "./Type";
 
-export class TypeExpression extends Type {
+export class TypeExpression extends Expression implements Type {
 
     constructor(
         location: SourceLocation,
@@ -25,6 +25,8 @@ export class TypeExpression extends Type {
     ) {
         super(location);
     }
+
+    get isType(): true { return true }
 
     public toKype(): kype.TypeExpression {
         return new kype.TypeExpression(this.proposition.toKype());
@@ -43,7 +45,6 @@ export class TypeExpression extends Type {
  *      Number = . is Number
  *      ZeroToOne = . >= 0.0 && . <= 1.0
  */
-
 export function toTypeExpression(e: Expression): TypeExpression {
     if (e instanceof TypeExpression) {
         return e;

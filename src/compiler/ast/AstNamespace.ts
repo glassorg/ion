@@ -40,6 +40,7 @@ export * from "./StructDeclaration";
 export * from "./Token";
 export * from "./TypeExpression";
 export * from "./TypeDeclaration";
+export * from "./TypeReference";
 export * from "./MultiFunction";
 export * from "./FunctionType";
 export * from "./MultiFunctionType";

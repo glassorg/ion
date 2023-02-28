@@ -9,8 +9,8 @@ High performance functional language targeting web assembly with strong typescri
 [x] Simplify (!= 0 | 1) => != 0
 [x] Check that function resolved return type actually matches declared return type.
 [x] Make ranges for iterating loops.
-[ ] Check type on variable assignment.
-    [ ] Works correctly with Variables outside of a for loop. 
+[x] Check type on variable assignment.
+    [x] Works correctly with Variables outside of a for loop. 
 [ ] Add support for structure types.
 [ ] Add structure constructor rules with optional named fields.
 [ ] Test that every expression is fully resolved.

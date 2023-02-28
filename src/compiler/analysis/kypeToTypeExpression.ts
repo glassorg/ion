@@ -44,6 +44,6 @@ export function toExpression(e: kype.Expression, location: SourceLocation): Expr
     throw new Error(`toTypeExpression from kype Not implemented ${e.constructor.name}`);
 }
 
-export function kypeToTypeExpression(type: kype.TypeExpression, location = SourceLocation.empty) {
-    return toExpression(type, location);
+export function kypeToTypeExpression(type: kype.TypeExpression, location = SourceLocation.empty): TypeExpression {
+    return toExpression(type, location) as TypeExpression;
 }

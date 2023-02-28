@@ -21,8 +21,8 @@ import { TypeDeclaration } from "../ast/TypeDeclaration";
 import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
-import { toTypeExpression } from "../ast/TypeExpression";
 import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
+import { toType } from "../ast/Type";
 
 export function createParser() {
     return new Parser({
@@ -40,7 +40,7 @@ export function createParser() {
         Implements: new ReservedWordParselet(),
         Function: new FunctionParselet(),
         Let: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value, kind: VariableKind.Constant })),
-        Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toTypeExpression(value))),
+        Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toType(value))),
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
         OpenBracket: new GroupParselet(TokenNames.CloseBracket, true),

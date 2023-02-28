@@ -5,14 +5,12 @@ import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { isCoreType } from "../common/CoreType";
 import { Writable } from "../common/TypescriptTypes";
-import { Type } from "./Type";
 
 export class Reference extends Expression {
 
     constructor(
         location: SourceLocation,
         public readonly name: string,
-        public readonly generics: Type[] = [],
     ){
         super(location);
         if (this.name == null) {
@@ -31,12 +29,8 @@ export class Reference extends Expression {
         return new Declarator(this.location, this.name);
     }
 
-    toGenericsString() {
-        return this.generics.length > 0 ? `<${this.generics.join(",")}>` : ``;
-    }
-
     toString(includeTypes = false) {
-        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + this.toGenericsString() + (includeTypes ? this.toTypeString(this.type, "::") : "");
+        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.type, "::") : "");
     }
 
 }

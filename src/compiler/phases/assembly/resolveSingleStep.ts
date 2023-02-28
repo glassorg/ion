@@ -13,7 +13,7 @@ import { CoreTypes } from "../../common/CoreType";
 import { SourceLocation } from "../../ast/SourceLocation";
 import { joinExpressions } from "../../ast/AstFunctions";
 import { LogicalOperator } from "../../Operators";
-import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
+import { expressionToType, getTypeAssertion, splitFilterJoinMultiple } from "../../common/utility";
 import { CallExpression } from "../../ast/CallExpression";
 import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
@@ -22,13 +22,13 @@ import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
 import { AssignmentExpression } from "../../ast/AssignmentExpression";
-import { getTypeAssertion } from "../../common/utility";
 import { ForStatement } from "../../ast/ForStatement";
-import { BinaryExpression } from "../../ast/BinaryExpression";
 import { TypeExpression } from "../../ast/TypeExpression";
-import { ConditionalAssertion } from "../../ast/ConditionalAssertion";
+import { TypeReference } from "../../ast/TypeReference";
+import { Type } from "../../ast/Type";
+import { Expression } from "../../ast/Expression";
 
-function resolveAll(node: AstNode) {
+function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
         leave(node) {
             if (node instanceof Resolvable && !node.resolved) {
@@ -39,11 +39,11 @@ function resolveAll(node: AstNode) {
 }
 
 function BooleanType(location: SourceLocation) {
-    return resolveAll(new ComparisonExpression(location,
+    return resolveAll(new TypeExpression(location, new ComparisonExpression(location,
         new DotExpression(location),
         "is",
         new Reference(location, CoreTypes.Boolean)
-    ));
+    )));
 }
 
 function LiteralType(node: Literal<any>) {
@@ -64,6 +64,10 @@ function LiteralType(node: Literal<any>) {
 }
 
 type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: InstanceType<T>, c: EvaluationContext) => AstNode | void
+
+function isTypeReference(type: Type | undefined, name: string): type is TypeReference {
+    return type instanceof TypeReference && type.name === name;
+}
 
 const maybeResolveNode: {
     [Key in keyof AstNS]?: AstNS[Key] extends (new (...args: any[]) => AstNode) ? ResolveFunction<AstNS[Key]> : never
@@ -91,20 +95,40 @@ const maybeResolveNode: {
     },
     RangeExpression(node, c) {
         if (node.start.resolved && node.finish.resolved) {
-            //  we need array type!
-            //  no constraint on length right now.
-            const stuff = joinExpressions("&&", [
-                new ComparisonExpression(node.start.location, new DotExpression(node.start.location), ">=", node.start),
-                new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish),
-            ])
-            //  what's the type of a RangeExpression?
-            console.log("we need array type " + node + " -> " + stuff);
+            //  for now, type range expressions as equivalent to arrays.
+            const types: Expression[] = [
+                getTypeAssertion(CoreTypes.Integer, node.location)
+            ];
+            if (!isTypeReference(node.start.type, CoreTypes.Integer)) {
+                types.push(new ComparisonExpression(node.start.location, new DotExpression(node.start.location), ">=", node.start.type!));
+            }
+            if (!isTypeReference(node.finish.type, CoreTypes.Integer)) {
+                types.push(new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish.type!));
+            }
+            const elementType = new TypeExpression(
+                node.location,
+                joinExpressions("&&", types)
+            );
+            const type = resolveAll(simplify(new TypeReference(
+                node.location,
+                CoreTypes.Array,
+                [elementType]
+            )));
+            return node.patch({ type, resolved: true });
         }
     },
     ForVariantDeclaration(node, c) {
         const parent = c.lookup.findAncestor(node, ForStatement)!;
         if (parent.right.resolved) {
-            console.log(" ------> " + node + " right: " + parent.right);
+            const rightType = parent.right.type;
+            if (!isTypeReference(rightType, CoreTypes.Array)) {
+                throw new SemanticError(`Expected Array type: ${parent.right}`);
+            }
+            const elementType = rightType.generics[0];
+            if (!elementType) {
+                throw new SemanticError(`Expected Array element type: ${parent.right}`);
+            }
+            return node.patch({ type: elementType, resolved: true });
         }
     },
     TypeDeclaration(node, c) {
@@ -172,7 +196,7 @@ const maybeResolveNode: {
             return;
         }
         // TODO: Add Instance Types for Class Declarations...
-        const type = resolveAll(getTypeAssertion(node.absolutePath!, node.location));
+        const type = resolveAll(new TypeReference(node.id.location, node.absolutePath!));
         return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
@@ -221,13 +245,16 @@ const maybeResolveNode: {
     IntegerLiteral(node, c) {
         return node.patch({ type: LiteralType(node), resolved: true });
     },
+    TypeReference(node, c) {
+        // check any generic parameters on the reference.
+        if (!node.generics.every(ref => ref.resolved)) {
+            return;
+        }
+        return this.Reference!(node, c);
+    },
     Reference(node, c) {
         const declaration = c.getDeclaration(node);
         if (!declaration.resolved) {
-            return;
-        }
-        // check any generic parameters on the reference.
-        if (!node.generics.every(ref => ref.resolved)) {
             return;
         }
 

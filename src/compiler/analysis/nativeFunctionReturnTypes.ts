@@ -33,7 +33,7 @@ function addCoreType(input: kype.TypeExpression, coreType: CoreType, location: S
     }
     else {
         output = simplify(
-            joinExpressions("&&", [typeAssertion, kypeToTypeExpression(input)])
+            joinExpressions("&&", [typeAssertion, kypeToTypeExpression(input).proposition])
         );
     }
     return new TypeExpression(location, output);
@@ -48,6 +48,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
         catch (e) {
             console.log({
                 aKype: a.toKype().toString(),
+                operator,
                 bKype: b.toKype().toString(),
                 result: result.toString()
             })

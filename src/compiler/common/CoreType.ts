@@ -1,4 +1,3 @@
-
 export const CoreTypes = {
     Integer: "Integer",
     Boolean: "Boolean",

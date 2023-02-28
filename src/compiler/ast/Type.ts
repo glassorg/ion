@@ -1,12 +1,22 @@
 import { Expression } from "./Expression";
 import * as kype from "@glas/kype";
-import { SemanticError } from "../SemanticError";
+import { Reference } from "./Reference";
+import { TypeReference } from "./TypeReference";
+import { toTypeExpression } from "./TypeExpression";
 
-export abstract class Type extends Expression {
-
-    public toKype(): kype.TypeExpression {
-        throw new SemanticError(`${this.constructor.name}.toKype not implemented`);
-    }
-
+export function isType(node: unknown): node is Type {
+    const maybe = node as Partial<Type>;
+    return maybe.isType === true;
 }
 
+export interface Type extends Expression {
+    isType: true;
+    toKype(): kype.TypeExpression;
+}
+
+export function toType(e: Expression): Type {
+    if (e instanceof Reference) {
+        return new TypeReference(e.location, e.name);
+    }
+    return toTypeExpression(e);
+}
