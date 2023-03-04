@@ -11,6 +11,7 @@ import { Type } from "./Type";
 export class MultiFunction extends Expression {
 
     constructor(
+        public readonly name: string,
         public readonly functions: Reference[],
     ) {
         super(SourceLocation.empty);

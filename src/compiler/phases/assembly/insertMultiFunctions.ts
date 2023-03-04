@@ -30,7 +30,7 @@ export function insertMultiFunctions(assembly: Assembly) {
     })
 
     const location = SourceLocation.empty;
-    const multiFunctions = [...functionsByName].map(([name, functions]) => new VariableDeclaration(location, new Declarator(location, name), { value: new MultiFunction(functions), kind: VariableKind.Constant }).patch({ absolutePath: name }));
+    const multiFunctions = [...functionsByName].map(([name, functions]) => new VariableDeclaration(location, new Declarator(location, name), { value: new MultiFunction(name, functions), kind: VariableKind.Constant }).patch({ absolutePath: name }));
 
     return assembly.patch({ declarations: [...assembly.declarations, ...multiFunctions ]});
 }

@@ -43,11 +43,19 @@ export class FunctionExpression extends Expression implements ScopeNode {
         return this.parameters.map(p => p.type!);
     }
 
+    public get nativeLookupName() {
+        return `${this.id}(${this.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
+    }
+
+    public get isNativeFunction() {
+        return nativeFunctionReturnTypes[this.nativeLookupName] != null;
+    }
+
     getReturnType(argumentTypes: Type[], callee: CallExpression): Type | undefined {
         if (this.type!.areArgumentsValid(argumentTypes) === false) {
             return undefined;
         }
-        const name = `${this.id}(${this.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
+        const name = this.nativeLookupName;
         const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
         if (nativeFunctionReturnType) {
             const result = nativeFunctionReturnType(callee, ...argumentTypes);

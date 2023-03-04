@@ -1,4 +1,8 @@
 
+function bar2(a: >= 0)
+    a = a % 10
+    return a
+
 function bar(a: Integer): >= 0
     var total: >= 0 = 0
     for i in 0 .. a

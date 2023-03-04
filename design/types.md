@@ -29,6 +29,25 @@ class Array<T>
 length(a: Array): > 0
 elementType(a: Array): Type
 
-//  
+function Prime(value: Integer)
+    return false
+
+//  How about defining values by class
+Integer( > 0, < 10, % 2 == 0, Prime )
+Float( > 0.0, <= 8.7 )
+
+
+class Integer
+    value: i64
+
+Integer(value > 0, value != 0)
+
+class Vector2
+    x: Integer
+    y: Integer
+
+Vector2(x > y, x < 10, y > 5)
+Vector2(x: > y && < 10, y > 5)
+Vector2{ x: > 0 && < 10, y: > 5}
 
 ```

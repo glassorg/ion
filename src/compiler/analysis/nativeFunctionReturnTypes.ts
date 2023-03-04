@@ -74,4 +74,5 @@ export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpressi
     "`**`(Float,Float)": (callee) => { throw new SemanticError(`Exponent must be an integer`, callee) },
     "`/`(Float,Float)": binaryTypeFunction("/", CoreTypes.Float),
     "`%`(Float,Float)": binaryTypeFunction("%", CoreTypes.Float),
+    "`%`(Float,0.0)": (callee) => { throw new SemanticError(`Possible float modulus by zero`, callee) },
 };

@@ -11,6 +11,7 @@ High performance functional language targeting web assembly with strong typescri
 [x] Make ranges for iterating loops.
 [x] Check type on variable assignment.
     [x] Works correctly with Variables outside of a for loop. 
+[ ] Resolve native functions normally and make sure they are finished being resolved.
 [ ] Add support for structure types.
 [ ] Add structure constructor rules with optional named fields.
 [ ] Test that every expression is fully resolved.

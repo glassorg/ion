@@ -200,17 +200,20 @@ const maybeResolveNode: {
         return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
-        // functions need to be resolved into inferred types or something.
-        const calleeType = node.callee.type;
-        if (!calleeType?.resolved || !(node.args.every(arg => arg.type?.resolved))) {
-            return;
-        }
-
         if (!(node.callee instanceof Reference)) {
             throw new SemanticError(`Only multifunction references currently supported`, node.callee);
         }
-
         const callee = c.getDeclaration(node.callee);
+
+        // functions need to be resolved into inferred types or something.
+        if (node.callee instanceof Reference && node.callee.name === "%") {
+            // console.log("CALLEE")
+            // console.log(`!!!!!!!!!!!!!! ${node} calleeType.resolved: ${callee.resolved}, ${node.args.map(arg => arg.resolved).join(", ")}`);
+        }
+        if (!callee.resolved || !(node.args.every(arg => arg.type?.resolved))) {
+            return;
+        }
+
         if (!(callee instanceof VariableDeclaration) || !(callee.value instanceof MultiFunction)) {
             throw new SemanticError(`Invalid callee`, node.callee);
         }
@@ -289,6 +292,12 @@ const maybeResolveNode: {
         if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
             const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
             node = node.patch({ type /* do not resolve entire function expression */ });
+            if (node.isNativeFunction) {
+                if (!node.returnType) {
+                    throw new SemanticError(`Native functions need explicit return type`, node);
+                }
+                return node.patch({ resolved: true, returnType: resolveAll(node.returnType) });
+            }
         }
 
         //  return statements resolved?
