@@ -5,6 +5,7 @@ export const CoreTypes = {
     Float: "Float",
     NaN: "NaN",
     String: "String",
+    Any: "Any",
 } as const;
 
 export type CoreType = keyof typeof CoreTypes;

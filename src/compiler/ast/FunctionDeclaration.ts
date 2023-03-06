@@ -16,7 +16,7 @@ export class FunctionDeclaration extends ConstantDeclaration {
     }
 
     toString() {
-        return `${this.toMetaString()}function ${this.id}${this.value}`;
+        return `${this.toMetaString()}function ${this.id} = ${this.value}`;
     }
 
 }

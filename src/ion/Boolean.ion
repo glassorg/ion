@@ -1,2 +1,2 @@
 
-type Boolean = true | false
+type Boolean = 0 | 1

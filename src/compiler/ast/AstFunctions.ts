@@ -3,11 +3,13 @@ import { AssignmentExpression } from "./AssignmentExpression";
 import { BinaryExpression } from "./BinaryExpression";
 import { CallExpression } from "./CallExpression";
 import { ComparisonExpression } from "./ComparisonExpression";
+import { CompositeType } from "./CompositeType";
 import { Expression } from "./Expression";
 import { LogicalExpression } from "./LogicalExpression";
 import { Reference } from "./Reference";
 import { SequenceExpression } from "./SequenceExpression";
 import { SourceLocation } from "./SourceLocation";
+import { isType } from "./Type";
 
 export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
     if (isAssignmentOperator(operator)) {
@@ -20,6 +22,9 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
         return new ComparisonExpression(location, left, operator, right);
     }
     if (isLogicalOperator(operator)) {
+        if (isType(left) && isType(right) && (operator === "&" || operator === "|")) {
+            return new CompositeType(location, left, operator, right);
+        }
         return new LogicalExpression(location, left, operator, right);
     }
     if (isSequenceOperator(operator)) {

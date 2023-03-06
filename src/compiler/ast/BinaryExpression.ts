@@ -14,7 +14,7 @@ export function toKypeCheck(left: Expression, right: Reference) {
             new kype.Reference("class")
         ),
         "==",
-        new kype.StringLiteral(right.name)
+        new kype.StringLiteral(right.name, right)
     );    
 }
 

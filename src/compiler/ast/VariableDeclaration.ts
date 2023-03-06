@@ -58,7 +58,7 @@ export class VariableDeclaration extends Declaration {
     }
 
     toString() {
-        return `${this.toMetaString()}${this.kind} ${this.id}${this.toTypeString()}${this.value ? ` = ${this.value}`: ``}`;
+        return `${this.toMetaString()}${this.kind} ${this.id}${this.toTypeString()}${this.value ? ` = ${this.value}`: ``};`;
     }
 
 }

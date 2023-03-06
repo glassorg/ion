@@ -18,6 +18,7 @@ export class TypeReference extends Reference implements Type {
     get isType(): true { return true; }
 
     public toKype(): kype.TypeExpression {
+        console.log(`TypeReference.toKype: ${this}`);
         return new kype.TypeExpression(toKypeCheck(new DotExpression(this.location), this));
     }
 

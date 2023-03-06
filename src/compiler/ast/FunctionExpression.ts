@@ -10,7 +10,6 @@ import { ReturnStatement } from "./ReturnStatement";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
-import { TypeExpression } from "./TypeExpression";
 import { Declarator } from "./Declarator";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CallExpression } from "./CallExpression";
@@ -56,6 +55,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
             return undefined;
         }
         const name = this.nativeLookupName;
+        console.log(name);
         const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
         if (nativeFunctionReturnType) {
             const result = nativeFunctionReturnType(callee, ...argumentTypes);
@@ -87,7 +87,7 @@ export class FunctionExpression extends Expression implements ScopeNode {
     }
 
     static createFromLambda(left: Expression, right: Expression): FunctionExpression {
-        let type: TypeExpression | undefined;
+        let type: Type | undefined;
         let leftValue = left instanceof PstGroup ? left.value : left;
         let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;

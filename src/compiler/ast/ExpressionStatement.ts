@@ -12,7 +12,7 @@ export class ExpressionStatement extends Statement {
     }
 
     toString() {
-        return this.expression.toString();
+        return `${this.expression};`
     }
 
 }

@@ -17,7 +17,7 @@ export class ReturnStatement extends Statement {
     }
 
     toString() {
-        return `return ${this.argument}`;
+        return `return ${this.argument};${this.toTypeString()}`;
     }
 
 }

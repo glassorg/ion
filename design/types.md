@@ -25,29 +25,23 @@ Odd =           ! Even
 function concatenate(a: Array, b: Array): Array{ length: a.length + b.length }
 //  do we have to be able to declare the shape of the types in the language itself?
 
-class Array<T>
-length(a: Array): > 0
-elementType(a: Array): Type
-
-function Prime(value: Integer)
-    return false
-
-//  How about defining values by class
-Integer( > 0, < 10, % 2 == 0, Prime )
-Float( > 0.0, <= 8.7 )
-
-
-class Integer
-    value: i64
-
-Integer(value > 0, value != 0)
-
 class Vector2
     x: Integer
     y: Integer
 
-Vector2(x > y, x < 10, y > 5)
-Vector2(x: > y && < 10, y > 5)
-Vector2{ x: > 0 && < 10, y: > 5}
+function Prime(value: Integer)
+    return false
+
+//  Array
+Integer[]{ length == 2 }    =>  Array<Integer>{ .length == 2 }
+//  Tuple
+[Integer, Float]    => Array<Integer | Float>{ .[0] is Integer, .[1] is Float }
+//  Instance
+Vector2{ x > y, x < 10, y > 5 } => Vector2{ .x > .y, .x < 10, .y > 5 }
+//  Primitive
+Integer     => Integer{}
+> 0         => Integer{ . > 0 }
+> 0.0       => Float{ . > 0.0 }
+0 .. 10     => Integer{ . >= 0, . < 10 }
 
 ```

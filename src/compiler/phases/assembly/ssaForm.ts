@@ -14,8 +14,8 @@ import { Reference } from "../../ast/Reference";
 import { ReturnStatement } from "../../ast/ReturnStatement";
 import { isScopeNode, ScopeNode } from "../../ast/ScopeNode";
 import { Statement } from "../../ast/Statement";
-import { TypeExpression } from "../../ast/TypeExpression";
-import { UnaryExpression } from "../../ast/UnaryExpression";
+import { Type } from "../../ast/Type";
+import { TypeofExpression } from "../../ast/TypeOfExpression";
 import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { traverse, traverseWithContext } from "../../common/traverse";
 import { EvaluationContext } from "../../EvaluationContext";
@@ -189,10 +189,10 @@ class Converter {
                                 vars.push(originalVariable);
                             }
     
-                            let types = vars.map(v => new UnaryExpression(
-                                v.location, "typeof", new Reference(v.location, v.id.name)
+                            let types = vars.map(v => new TypeofExpression(
+                                v.location, new Reference(v.location, v.id.name)
                             ));
-                            let type = new TypeExpression(node.location, joinExpressions("||", types));
+                            let type = joinExpressions("|", types) as Type;
                             let phi = new VariableDeclaration(
                                 originalVariable.location,
                                 originalVariable.id.patch({ name: this.getNextName() }),

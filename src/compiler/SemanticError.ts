@@ -13,6 +13,7 @@ export class SemanticError extends Error {
     }
 
     async toConsoleString(getSource?: (filename: string) => Promise<string>) {
+        debugger;
         if (!getSource || this.locations.length === 0) {
             return super.toString();
         }
@@ -20,7 +21,7 @@ export class SemanticError extends Error {
         if (filename == null) {
             throw new Error("Filename not found: " + filename);
         }
-        const source = await getSource(filename);
+        let source = await getSource(filename);
         if (source == null) {
             throw new Error("Source not found: " + filename);
         }

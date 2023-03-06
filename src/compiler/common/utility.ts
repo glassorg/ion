@@ -6,7 +6,8 @@ import { Expression } from "../ast/Expression";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
-import { toTypeExpression, TypeExpression } from "../ast/TypeExpression";
+import { Type } from "../ast/Type";
+import { toTypeExpression } from "../ast/TypeExpression";
 import { ComparisonOperator, ComparisonOperators, isComparisonOperator, LogicalOperator } from "../Operators";
 import { traverse } from "./traverse";
 
@@ -18,13 +19,13 @@ function getLastBlockNode(maybeBlock: Statement): Statement {
 }
 
 export function splitFilterJoinMultiple(root: Expression, splitOperators: LogicalOperator[], joinOperators: LogicalOperator[], filter: (e: Expression) => Expression | null): Expression
-export function splitFilterJoinMultiple(root: TypeExpression, splitOperators: LogicalOperator[], joinOperators: LogicalOperator[], filter: (e: Expression) => Expression | null): TypeExpression
+export function splitFilterJoinMultiple(root: Type, splitOperators: LogicalOperator[], joinOperators: LogicalOperator[], filter: (e: Expression) => Expression | null): Type
 export function splitFilterJoinMultiple(root: Expression, splitOperators: LogicalOperator[], joinOperators: LogicalOperator[], filter: (e: Expression) => Expression | null): Expression {
     let wasTypeExpression = false;
-    if (root instanceof TypeExpression) {
-        wasTypeExpression = true;
-        root = root.proposition;
-    }
+    // if (root instanceof TypeExpression) {
+    //     wasTypeExpression = true;
+    //     root = root.proposition;
+    // }
     let splitOperator = splitOperators[0];
     let joinOperator = joinOperators[0];
     let remainingSplitOperators = splitOperators.slice(1);
@@ -34,7 +35,8 @@ export function splitFilterJoinMultiple(root: Expression, splitOperators: Logica
         : ((e: Expression) => splitFilterJoinMultiple(e, remainingSplitOperators, remainingJoinOperators, filter));
     let expressions = splitExpressions(splitOperator, root).map(useFilter).map(node => getLastBlockNode(node!)).filter(Boolean) as Expression[]
     let result = joinExpressions(joinOperator, expressions);
-    return wasTypeExpression ? new TypeExpression(result.location, result) : result;
+    return result;
+    // return wasTypeExpression ? new TypeExpression(result.location, result) : result;
 }
 
 // function getComparisonOperationProperties(e: Expression): { left: Expression, operator: string, right: Expression } | null {
@@ -132,6 +134,6 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
     return null;
 }
 
-export function getTypeAssertion(absolutePathName: string, location: SourceLocation): ComparisonExpression {
-    return toTypeExpression(new Reference(location, absolutePathName)).proposition as ComparisonExpression;
-}
+// export function getTypeAssertion(absolutePathName: string, location: SourceLocation): ComparisonExpression {
+//     return toTypeExpression(new Reference(location, absolutePathName)) as ComparisonExpression;
+// }

@@ -1,6 +1,5 @@
 import { joinExpressions, splitExpressions } from "./AstFunctions";
 import { CoreTypes } from "../common/CoreType";
-import { getTypeAssertion } from "../common/utility";
 import { SemanticError } from "../SemanticError";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
@@ -11,11 +10,11 @@ import { Literal } from "./Literal";
 import { RangeExpression } from "./RangeExpression";
 import { Reference } from "./Reference";
 import { UnaryExpression } from "./UnaryExpression";
-import { NumberLiteral } from "./NumberLiteral";
-import { simplify } from "../analysis/combineTypes";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { Type } from "./Type";
+import { isType, Type } from "./Type";
+import { TypeConstraint } from "./TypeConstraint";
+import { TypeReference } from "./TypeReference";
 
 export class TypeExpression extends Expression implements Type {
 
@@ -39,14 +38,14 @@ export class TypeExpression extends Expression implements Type {
 
 /**
  * A Type expression is an expression which contains DotExpressions.
- * A value is an instance of a type if when the value is substituted for every dot expression
- * the resulting expression is true.
+ * A value is an instance of a type if when the value is substituted
+ * for every dot expression the resulting expression is true.
  * Examples:
- *      Number = . is Number
- *      ZeroToOne = . >= 0.0 && . <= 1.0
+ *      Number = Number{}
+ *      ZeroToOne = Float{ . >= 0.0 && . <= 1.0 }
  */
-export function toTypeExpression(e: Expression): TypeExpression {
-    if (e instanceof TypeExpression) {
+export function toTypeExpression(e: Expression): Type {
+    if (isType(e)) {
         return e;
     }
 
@@ -55,59 +54,75 @@ export function toTypeExpression(e: Expression): TypeExpression {
         if (options.length > 1) {
             throw new SemanticError(`Cannot combine types with ||, use |`, e);
         }
+        for (let option of options) {
+            let terms = splitExpressions("&&", option);
+            if (terms.length > 1) {
+                throw new SemanticError(`Cannot combine types with &&, use &`, e);
+            }
+        }
     }
-    return simplify(
-        new TypeExpression(
-            e.location,
-            joinExpressions("||", splitExpressions("|", e).map(option => {
-                return joinExpressions("&&", splitExpressions("&", option).map(term => {
-                    if (term instanceof UnaryExpression) {
-                        switch (term.operator) {
-                            case "!=":
-                            case ">":
-                            case ">=":
-                            case "<":
-                            case ">=":
-                                const expressions: Expression[] = [
-                                    new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
-                                ];
-                                if (term.argument instanceof NumberLiteral) {
-                                    expressions.push(getTypeAssertion(term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float, term.location));
-                                }
-                                term = joinExpressions("&&", expressions);
-                                break;
-                            default:
-                                throw new SemanticError(`Unsupported type expression: ${term}`);
-                        }
-                    }
-                    //  we can't convert to range without knowing
-                    else if (term instanceof RangeExpression) {
-                        const { start, finish } = term;
-                        if (!(
-                            ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
-                            ||
-                            ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
-                        )) {
-                            // console.log({ start, finish })
-                            throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
-                        }
-                        if (!(finish.value > start.value)) {
-                            throw new SemanticError(`Range finish must be more than start`, term);
-                        }
-                        const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
-                        term = joinExpressions("&&", [
-                            new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
-                            new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
-                            getTypeAssertion(coreType, term.location)
-                        ]);
-                    }
-                    else if (term instanceof Reference || term instanceof Literal) {
-                        const operator = term instanceof Reference ? "is" : "==";
-                        term = new ComparisonExpression(term.location, new DotExpression(term.location), operator, term);
-                    }
-                    return term;
-                }));
-            }))
-        )
-    ) as TypeExpression
+    const result = joinExpressions("|", splitExpressions("|", e).map(option => {
+        return joinExpressions("&", splitExpressions("&", option).map(term => {
+            if (term instanceof UnaryExpression) {
+                switch (term.operator) {
+                    case "!=":
+                    case ">":
+                    case ">=":
+                    case "<":
+                    case ">=":
+                        term = new TypeConstraint(
+                            term.location,
+                            new TypeReference(term.location, term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float),
+                            [
+                                new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
+                            ]
+                        );
+                        break;
+                    default:
+                        throw new SemanticError(`Unsupported type expression: ${term}`);
+                }
+            }
+            //  we can't convert to range without knowing
+            else if (term instanceof RangeExpression) {
+                const { start, finish } = term;
+                if (!(
+                    ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
+                    ||
+                    ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
+                )) {
+                    // console.log({ start, finish })
+                    throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
+                }
+                if (!(finish.value > start.value)) {
+                    throw new SemanticError(`Range finish must be more than start`, term);
+                }
+                const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
+                return new TypeConstraint(
+                    term.location,
+                    new TypeReference(term.location, coreType), [
+                        new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
+                        new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
+                    ]
+                );
+            }
+            else if (term instanceof Reference) {
+                const baseType = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
+                term = new TypeConstraint(term.location, baseType);
+            }
+            else if (term instanceof Literal) {
+                term = new TypeConstraint(
+                    term.location,
+                    new TypeReference(term.location, term instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float),
+                    [
+                        new ComparisonExpression(term.location, new DotExpression(term.location), "==", term)
+                    ]
+                )
+            }
+            return term;
+        }));
+    }));
+    if (!isType(result)) {
+        throw new Error(`Expected a Type: ${result}`);
+    }
+    return result;
 }

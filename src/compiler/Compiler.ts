@@ -122,6 +122,10 @@ export class Compiler {
             return assembly;
         }
         catch (e) {
+            console.log("******* COMPILATION ERROR *******");
+            console.log(e);
+            console.log("*********************************");
+            this.logger();
             if (e instanceof SemanticError || Array.isArray(e)) {
                 const errors = [e as SemanticError | SemanticError[]].flat()
                 if (this.options.debugPattern) {

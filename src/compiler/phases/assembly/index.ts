@@ -1,6 +1,6 @@
 import { Assembly } from "../../ast/Assembly";
-import { resolveReferences } from "./resolveReferences";
 import { identity } from "./identity";
+import { resolveReferences } from "./resolveReferences";
 import { addExplicitReturns } from "./addExplicitReturns";
 import { addElseIfReturn } from "./addElseIfReturn";
 import { insertMultiFunctions } from "./insertMultiFunctions";
@@ -19,5 +19,5 @@ export const assemblyPhases = [
     insertConditionals,
     ssaForm,
     resolveSingleStep_N,
-    // semanticAnalysis,
+    // // semanticAnalysis,
 ] satisfies AssemblyPhase[];
