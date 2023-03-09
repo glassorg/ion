@@ -11,7 +11,6 @@ import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
 import { Declarator } from "./Declarator";
-import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CallExpression } from "./CallExpression";
 import { FunctionType } from "./FunctionType";
 import { Type } from "./Type";
@@ -42,28 +41,12 @@ export class FunctionExpression extends Expression implements ScopeNode {
         return this.parameters.map(p => p.type!);
     }
 
-    public get nativeLookupName() {
-        return `${this.id}(${this.parameterTypes.map(p => p?.toUserTypeString()).join(",")})`;
-    }
-
-    public get isNativeFunction() {
-        return nativeFunctionReturnTypes[this.nativeLookupName] != null;
-    }
-
-    getReturnType(argumentTypes: Type[], callee: CallExpression): Type | undefined {
-        if (this.type!.areArgumentsValid(argumentTypes) === false) {
-            return undefined;
-        }
-        const name = this.nativeLookupName;
-        console.log(name);
-        const nativeFunctionReturnType = nativeFunctionReturnTypes[name];
-        if (nativeFunctionReturnType) {
-            const result = nativeFunctionReturnType(callee, ...argumentTypes);
-            console.log(`FunctionExpression.getReturnType: ${name} \n    ${argumentTypes.join("\n    ")}\n    =>\n    ${result}`);
-            return result;
-        }
-        return this.returnType!;
-    }
+    // getReturnType(argumentTypes: Type[], callee: CallExpression): Type | undefined {
+    //     if (this.type!.areArgumentsValid(argumentTypes) === false) {
+    //         return undefined;
+    //     }
+    //     return this.returnType!;
+    // }
 
     *getReturnStatements() {
         for (const statement of getFinalStatements(this.body)) {

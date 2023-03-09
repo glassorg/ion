@@ -49,6 +49,22 @@ export class Compiler {
         return await this.fileSystem.find(this.filePattern);
     }
 
+    private cachedSources?: Record<string,string>
+    async getAllSources(): Promise<Record<string,string>> {
+        if (!this.cachedSources) {
+            const results: Record<string,string> = {};
+            const promises: Promise<void>[] = [];
+            for (const filename of await this.getAllSourceFilenames()) {
+                promises.push((async () => {
+                    results[filename] = (await this.fileSystem.read(filename))!;
+                })());
+            }
+            await Promise.all(promises);
+            this.cachedSources = results;
+        }
+        return this.cachedSources;
+    }
+
     log<T extends RootDeclaration>(name: string, declaration: T): T {
         this.logger(name, declaration, declaration.absolutePath);
         return declaration;
@@ -82,9 +98,8 @@ export class Compiler {
 
     async getAllParsedDeclarations(): Promise<RootDeclaration[]> {
         const builder = this.parseExecutor.builder();
-        for (const filename of await this.getAllSourceFilenames()) {
-            //  this is sub-optimally sequential.
-            const source = (await this.fileSystem.read(filename))!;
+        const sources = await this.getAllSources();
+        for (const [filename, source] of Object.entries(sources)) {
             builder.append(`parse:${filename}`, "parse", filename, source);
         }
         this.parseExecutor.update(builder.build());
@@ -122,15 +137,16 @@ export class Compiler {
             return assembly;
         }
         catch (e) {
-            console.log("******* COMPILATION ERROR *******");
-            console.log(e);
-            console.log("*********************************");
+            // console.log("******* COMPILATION ERROR *******");
+            // console.log(e);
+            // console.log("*********************************");
+            const sources = await this.getAllSources();
             this.logger();
             if (e instanceof SemanticError || Array.isArray(e)) {
-                const errors = [e as SemanticError | SemanticError[]].flat()
+                const errors = [e as SemanticError | SemanticError[]].flat();
                 if (this.options.debugPattern) {
                     for (const error of errors) {
-                        console.log(await this.toConsoleMessage(error));
+                        console.log(this.toConsoleMessage(error, sources));
                     }
                 }
                 throw new CompileError(errors);
@@ -146,8 +162,8 @@ export class Compiler {
         }
     }
 
-    async toConsoleMessage(error: SemanticError) {
-        return error.toConsoleString(async (filename) => await this.fileSystem.read(filename) ?? "");
+    toConsoleMessage(error: SemanticError, sources: Record<string, string>) {
+        return error.toConsoleString(sources);
     }
 
     //  [x] 1. Parse Declarations from File

@@ -3,6 +3,7 @@ import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import { Declaration } from "./Declaration";
 import { Type } from "./Type";
+import { CallExpression } from "./CallExpression";
 
 export enum VariableKind {
     Constant = "const",
@@ -17,6 +18,7 @@ export interface VariableOptions {
     type?: Type;
     declaredType?: Type;
     value?: Expression;
+    meta?: CallExpression[];
 }
 
 export type ParameterDeclaration = VariableDeclaration & { kind: VariableKind.Parameter };
@@ -41,7 +43,7 @@ export class VariableDeclaration extends Declaration {
         id: Declarator,
         options: VariableOptions = {},
     ){
-        super(location, id, options.type);
+        super(location, id, options.type, options.meta);
         this.kind = options.kind ?? VariableKind.Var;
         this.value = options.value;
         this.declaredType = options.declaredType;

@@ -10,12 +10,15 @@ import { CoreTypes } from "../common/CoreType";
 
 export class TypeConstraint extends Expression implements Type {
 
+    public readonly baseType: TypeReference;
+
     constructor(
         location: SourceLocation,
-        public readonly baseType: TypeReference,
+        baseType: TypeReference | string,
         public readonly constraints: Expression[] = [],
     ) {
         super(location);
+        this.baseType = baseType instanceof TypeReference ? baseType : new TypeReference(location, baseType);
     }
 
     get isType(): true { return true }
@@ -33,4 +36,5 @@ export class TypeConstraint extends Expression implements Type {
     toString() {
         return `${this.baseType}{${this.constraints}}`;
     }
+
 }

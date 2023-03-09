@@ -72,7 +72,7 @@ export function toTypeExpression(e: Expression): Type {
                     case ">=":
                         term = new TypeConstraint(
                             term.location,
-                            new TypeReference(term.location, term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float),
+                            term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
                             [
                                 new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
                             ]
@@ -99,7 +99,7 @@ export function toTypeExpression(e: Expression): Type {
                 const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
                 return new TypeConstraint(
                     term.location,
-                    new TypeReference(term.location, coreType), [
+                    coreType, [
                         new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
                         new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
                     ]
@@ -112,7 +112,7 @@ export function toTypeExpression(e: Expression): Type {
             else if (term instanceof Literal) {
                 term = new TypeConstraint(
                     term.location,
-                    new TypeReference(term.location, term instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float),
+                    term instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
                     [
                         new ComparisonExpression(term.location, new DotExpression(term.location), "==", term)
                     ]

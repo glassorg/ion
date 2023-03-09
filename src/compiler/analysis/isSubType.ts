@@ -1,4 +1,5 @@
 import * as kype from "@glas/kype";
+import { Maybe } from "@glas/kype";
 import { Type } from "../ast/Type";
 
 /**
@@ -10,4 +11,30 @@ export function isSubTypeOf(maybeSubType: Type, superType: Type) {
     const result = kype.isConsequent(kypeSubType, kypeSuperType);
     // console.log(`isSubType ${kypeSubType} --> ${kypeSuperType} = ${result}`);
     return result;
+}
+
+/**
+ * Returns true if all types are subtypes of the supertypes.
+ * Returns false if any types are never subtypes of the supertypes.
+ * Returns null otherwise.
+ */
+export function areSubTypesOf(maybeSubTypes: Type[], superTypes: Type[]): Maybe {
+    if (maybeSubTypes.length !== superTypes.length) {
+        return false;
+    }
+    let allTrue = true;
+    for (let i = 0; i < maybeSubTypes.length; i++) {
+        let maybeSubType = maybeSubTypes[i];
+        let superType = superTypes[i];
+        switch (isSubTypeOf(maybeSubType, superType)) {
+            case false:
+                return false;
+            case null:
+                allTrue = false;
+                //  fall through
+            case true:
+                continue;
+        }
+    }
+    return allTrue ? true : null;
 }

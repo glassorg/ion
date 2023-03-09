@@ -17,7 +17,8 @@ export function insertMultiFunctions(assembly: Assembly) {
             functionsByName.set(d.id.name, functions = []);
         }
         functions.push(new Reference(d.id.location, d.absolutePath!));
-        return new VariableDeclaration(d.location, new Declarator(d.id.location, d.absolutePath), { value: d.value, kind: VariableKind.Constant }).patch({ absolutePath: d.absolutePath });
+        // return d.patch({ id: d.id.patch({ name: d.absolutePath }) });
+        return new VariableDeclaration(d.location, new Declarator(d.id.location, d.absolutePath), { value: d.value, kind: VariableKind.Constant, meta: d.meta }).patch({ absolutePath: d.absolutePath });
     }
 
     assembly = traverse(assembly, {

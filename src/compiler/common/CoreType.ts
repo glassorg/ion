@@ -6,6 +6,7 @@ export const CoreTypes = {
     NaN: "NaN",
     String: "String",
     Any: "Any",
+    Native: "@Native",
 } as const;
 
 export type CoreType = keyof typeof CoreTypes;

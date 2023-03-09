@@ -11,14 +11,13 @@ export class TypeReference extends Reference implements Type {
         location: SourceLocation,
         public readonly name: string,
         public readonly generics: Type[] = [],
-    ){
+    ) {
         super(location, name);
     }
 
     get isType(): true { return true; }
 
     public toKype(): kype.TypeExpression {
-        console.log(`TypeReference.toKype: ${this}`);
         return new kype.TypeExpression(toKypeCheck(new DotExpression(this.location), this));
     }
 

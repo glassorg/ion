@@ -1,5 +1,4 @@
 import * as kype from "@glas/kype";
-import { isConsequent } from "@glas/kype";
 import { createBinaryExpression, joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression, DotExpressionString } from "../ast/DotExpression";
@@ -37,6 +36,7 @@ export function toExpression(e: kype.Expression, location: SourceLocation): Expr
             let constraints = splitExpressions("&&", option);
             let typeConstraint = constraints.find(c => c instanceof ComparisonExpression && c.operator === "is" && c.left instanceof DotExpression) as ComparisonExpression | undefined;
             if (!typeConstraint) {
+                debugger;
                 throw new SemanticError(`Expected class constraint: ${e}`, location);
             }
             let otherConstraints = constraints.filter(constraint => constraint !== typeConstraint);

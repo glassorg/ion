@@ -1,29 +1,38 @@
 
 struct Float
 
+@Native()
 function `+`(a: Float, b: Float) : Float
     return a
 
+@Native()
 function `-`(a: Float, b: Float) : Float
     return a
 
+@Native()
 function `*`(a: Float, b: Float) : Float
     return a
 
+@Native()
 function `**`(a: Float, b: Float) : Error
     return Error()
 
+@Native()
 function `**`(a: Float, b: Integer) : Float
     return a
 
-function `/`(a: 0.0, b: 0.0) : NaN
-    return NaN()
-
+@Native()
 function `/`(a: Float, b: Float) : Float
     return a
 
+@Native()
+function `/`(a: 0.0, b: 0.0) : NaN
+    return NaN()
+
+@Native()
 function `%`(a: Float, b: 0.0) : Error
     return Error()
 
+@Native()
 function `%`(a: Float, b: Float) : Float
     return a

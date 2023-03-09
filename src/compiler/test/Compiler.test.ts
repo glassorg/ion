@@ -5,7 +5,8 @@ import { MemoryFileSystem } from "../filesystem/MemoryFileSystem";
 const filename = "sample.ion";
 
 async function testCompileError(source: string, startLine: number, startColumn: number, finishLine: number, finishColumn: number) {
-    let compiler = new Compiler(new MemoryFileSystem({[filename]: source}));
+    const sources = {[filename]: source};
+    let compiler = new Compiler(new MemoryFileSystem(sources));
     try {
         let result = await compiler.compileAllFiles();
         assert.fail(`Expected compilation to fail: ${source}`);
@@ -21,7 +22,7 @@ async function testCompileError(source: string, startLine: number, startColumn: 
             let actualLocation = { startLine: location.startLine, startColumn: location.startColumn, finishLine: location.finishLine, finishColumn: location.finishColumn };
             if (JSON.stringify(actualLocation) !== JSON.stringify(expectedLocation)) {
                 console.log("Error: " + e);
-                console.log(errors.map(error => compiler.toConsoleMessage(error)).join("\n"));
+                console.log(errors.map(error => compiler.toConsoleMessage(error, sources)).join("\n"));
             }
             assert.deepEqual(actualLocation, expectedLocation);
         }

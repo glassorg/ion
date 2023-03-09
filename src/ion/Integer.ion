@@ -1,26 +1,34 @@
 
 struct Integer
 
+@Native()
 function `+`(a: Integer, b: Integer) : Integer
     return a
 
+@Native()
 function `-`(a: Integer, b: Integer) : Integer
     return a
 
+@Native()
 function `*`(a: Integer, b: Integer) : Integer
     return a
 
+@Native()
 function `**`(a: Integer, b: Integer) : Integer
     return a
 
+@Native()
 function `/`(a: Integer, b: 0) : Error
     return Error
 
+@Native()
 function `/`(a: Integer, b: Integer) : Integer
     return a
 
+@Native()
 function `%`(a: Integer, b: 0) : Error
     return Error
 
+@Native()
 function `%`(a: Integer, b: Integer) : Integer
     return a

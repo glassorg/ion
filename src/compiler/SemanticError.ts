@@ -12,22 +12,27 @@ export class SemanticError extends Error {
         this.locations = [...new Set(nodes.filter(node => node != null).map(node => node instanceof AstNode ? node.location : node) as SourceLocation[])];
     }
 
-    async toConsoleString(getSource?: (filename: string) => Promise<string>) {
-        debugger;
-        if (!getSource || this.locations.length === 0) {
+    toConsoleString(sources: Record<string,string>) {
+        if (this.locations.length === 0) {
             return super.toString();
         }
         const filename = this.locations[0].filename;
-        if (filename == null) {
-            throw new Error("Filename not found: " + filename);
+        if (!filename) {
+            console.error(`SemanticError.Filename not found: ${JSON.stringify(filename)}`);
+            return this.toString();
         }
-        let source = await getSource(filename);
-        if (source == null) {
-            throw new Error("Source not found: " + filename);
+        let source = sources[filename];
+        if (!source) {
+            console.error(`SemanticError.Source not found: ${JSON.stringify(filename)}`);
+            return this.toString();
         }
         let errorContext = new ErrorContext(source, filename);
         let error = errorContext.getError(this.message, ...this.locations);
         return error.message;
+    }
+
+    toString() {
+        return this.message + (this.stack ?? "");
     }
 
 }

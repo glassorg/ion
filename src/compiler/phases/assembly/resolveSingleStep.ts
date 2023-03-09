@@ -13,21 +13,20 @@ import { CoreTypes } from "../../common/CoreType";
 import { SourceLocation } from "../../ast/SourceLocation";
 import { LogicalOperator } from "../../Operators";
 import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
-import { CallExpression } from "../../ast/CallExpression";
 import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
-import { AssignmentExpression } from "../../ast/AssignmentExpression";
 import { ForStatement } from "../../ast/ForStatement";
-import { toTypeExpression, TypeExpression } from "../../ast/TypeExpression";
+import { toTypeExpression } from "../../ast/TypeExpression";
 import { TypeReference } from "../../ast/TypeReference";
 import { Type } from "../../ast/Type";
 import { Expression } from "../../ast/Expression";
 import { TypeConstraint } from "../../ast/TypeConstraint";
 import { splitExpressions } from "../../ast/AstFunctions";
+import { StructDeclaration } from "../../ast/StructDeclaration";
 
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
@@ -89,18 +88,15 @@ const maybeResolveNode: {
             }
             const elementType = new TypeConstraint(
                 node.location,
-                new TypeReference(node.location, CoreTypes.Integer),
+                CoreTypes.Integer,
                 constraints
             )
             const type = resolveAll(
                 simplify(
                     new TypeConstraint(
                         node.location,
-                        new TypeReference(
-                            node.location,
-                            CoreTypes.Array,
-                            [elementType]
-                        )
+                        CoreTypes.Array,
+                        [elementType]
                         // could add length constraint here.
                     )
                 )
@@ -124,7 +120,6 @@ const maybeResolveNode: {
     },
     ReturnStatement(node, c) {
         if (node.type?.resolved) {
-            console.log("ReturnStatement!!!!!!!!!!!!!!!!! " + node);
             return node.patch({ resolved: true });
         }
     },
@@ -165,7 +160,6 @@ const maybeResolveNode: {
         if (!test.resolved) {
             return;
         }
-        console.log(`${node} 1`);
 
         const splitOps: LogicalOperator[] = ["||", "&&"];
         let joinOps = splitOps.slice(0);
@@ -177,27 +171,25 @@ const maybeResolveNode: {
         let { location } = node.value
         let assertedType = new TypeConstraint(
             location,
-            new TypeReference(location, CoreTypes.Any),
+            CoreTypes.Any,
             splitExpressions("&&", splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate)))
         );
         console.log(`${node} 2 ${assertedType}`);
         if (assertedType) {
-            console.log(`${node} 3`);
             const isAssertedConsequent = isSubTypeOf(type, assertedType);
-            console.log(`${node} 5 ${isAssertedConsequent}`);
             if (isAssertedConsequent === false) {
                 throw new SemanticError(`If test will always fail`, test);
             }
             if (isAssertedConsequent === true) {
                 throw new SemanticError(`If test will always pass`, test);
             }
-            console.log(`${node} 6 ---> ${type}   asserted  ${assertedType}`);
-            // if this conditional lets us assert a more specific type then we add it.
-            type = combineTypes("&&", [type, assertedType]);
-            console.log(`${node} 7 type: ${type}`);
+            // // if this conditional lets us assert a more specific type then we add it.
+            // type = combineTypes("&&", [type, assertedType]);
         }
-        // console.log(`${node} -----> ${type}`);
-        return node.patch({ type, resolved: true });
+        // return node.patch({ type, resolved: true });
+    },
+    StructDeclaration(node, c) {
+        return this.ClassDeclaration!(node, c);
     },
     ClassDeclaration(node, c) {
         if (!node.fields.every(child => child.resolved)) {
@@ -213,20 +205,42 @@ const maybeResolveNode: {
         }
         const callee = c.getDeclaration(node.callee);
 
+        function debug(...args: any[]) {
+            if (callee.id.name === "/") {
+                console.log(...args);
+            }
+        }
+
+        if (c.getDeclaration(node.callee) instanceof VariableDeclaration) {
+            const multiFunc = c.getConstantValue(node.callee) as MultiFunction;
+
+            // debug(JSON.stringify({
+            //     calleeResolved: callee.resolved,
+            //     funcsResolved: Object.fromEntries(
+            //         multiFunc.functions.map(m => [m.name, m.resolved])
+            //     )
+            // }, null, 2))
+        }
+
         // functions need to be resolved into inferred types or something.
         if (!callee.resolved || !(node.args.every(arg => arg.type?.resolved))) {
             return;
         }
 
-        if (!(callee instanceof VariableDeclaration) || !(callee.value instanceof MultiFunction)) {
-            throw new SemanticError(`Invalid callee`, node.callee);
+        let type: Type;
+        if (callee instanceof StructDeclaration) {
+            type = new TypeConstraint(node.location, callee.absolutePath!);
         }
-        const multiFunc = callee.value;
-
-        // boom, we have the correctly resolved types.
-        const argTypes = node.args.map(arg => arg.type!);
-
-        const type = multiFunc.getReturnType(argTypes, c, node);
+        else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
+            const multiFunc = callee.value;
+            // boom, we have the correctly resolved types.
+            const argTypes = node.args.map(arg => arg.type!);
+    
+            type = multiFunc.getReturnType(argTypes, c, node);
+        }
+        else {
+            throw new SemanticError(`Invalid callee: ${callee}`, callee);
+        }
         return node.patch({ type, resolved: true });
     },
     ComparisonExpression(node, c) {
@@ -250,8 +264,7 @@ const maybeResolveNode: {
         return node.patch({ type: LiteralType(node), resolved: true });
     },
     IntegerLiteral(node, c) {
-        const type = LiteralType(node);
-        return node.patch({ type, resolved: true });
+        return node.patch({ type: LiteralType(node), resolved: true });
     },
     TypeReference(node, c) {
         // check any generic parameters on the reference.
@@ -278,6 +291,8 @@ const maybeResolveNode: {
     MultiFunction(node, c) {
         // check if every is resolved?
         if (!node.type && node.functions.every(func => func.type)) {
+            // sort the multi function
+            node = node.toSorted(c);
             const type = new MultiFunctionType(node.location, node.functions.map(func => func.type as FunctionType));
             node = node.patch({ type });
         }
@@ -297,12 +312,6 @@ const maybeResolveNode: {
         if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
             const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
             node = node.patch({ type /* do not resolve entire function expression */ });
-            if (node.isNativeFunction) {
-                if (!node.returnType) {
-                    throw new SemanticError(`Native functions need explicit return type`, node);
-                }
-                return node.patch({ resolved: true, returnType: resolveAll(node.returnType) });
-            }
         }
 
         //  return statements resolved?

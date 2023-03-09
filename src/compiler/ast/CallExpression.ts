@@ -17,7 +17,7 @@ export class CallExpression extends Expression {
         return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
     }
 
-    toString(includeTypes = false) {
+    toString(includeTypes = true) {
         return `${this.callee}(${this.args.join(", ")})${includeTypes ? this.toTypeString(this.type, "::") : ""}`;
     }
 

@@ -30,7 +30,7 @@ export class EvaluationContext {
     getConstantValue(from: Reference): Expression {
         const declaration = this.getDeclaration(from);
         if (!(declaration instanceof VariableDeclaration && declaration.isConstant)) {
-            throw new SemanticError(`Does not reference a constant`, from);
+            throw new SemanticError(`Does not reference a constant ${from}`, from);
         }
         const value = declaration.value;
         if (!value) {
