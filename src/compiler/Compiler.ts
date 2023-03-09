@@ -141,7 +141,6 @@ export class Compiler {
             // console.log(e);
             // console.log("*********************************");
             const sources = await this.getAllSources();
-            this.logger();
             if (e instanceof SemanticError || Array.isArray(e)) {
                 const errors = [e as SemanticError | SemanticError[]].flat();
                 if (this.options.debugPattern) {

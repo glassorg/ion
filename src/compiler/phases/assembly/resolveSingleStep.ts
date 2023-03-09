@@ -313,7 +313,11 @@ const maybeResolveNode: {
         }
 
         //  return statements resolved?
-        const returnStatements = [...node.getReturnStatements()];
+        const returnStatements = node.getReturnStatements();
+        if (returnStatements.length === 0) {
+            debugger;
+            node.getReturnStatements();
+        }
         if (returnStatements.every(statement => statement.argument.type)) {
             if (node.returnType) {
                 for (let statement of returnStatements) {

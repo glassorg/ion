@@ -11,6 +11,10 @@ export function combineTypes(operator: "&&" | "||", types: Type[]): Type {
     if (types.length === 1) {
         return types[0];
     }
+    if (types.length === 0) {
+        debugger;
+        console.log("TYPES!!!!!!", types);
+    }
     let type = new kype.TypeExpression(types[0].toKype());
     for (let i = 1; i < types.length; i++) {
         type = kype.combineTypes(type, operator, new kype.TypeExpression(types[i].toKype()));

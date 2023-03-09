@@ -1,5 +1,5 @@
 import { splitExpressions } from "./AstFunctions";
-import { getFinalStatements } from "../analysis/getFinalStatements";
+import { getFinalStatements, getReturnStatements } from "../analysis/getFinalStatements";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
@@ -14,6 +14,7 @@ import { Declarator } from "./Declarator";
 import { CallExpression } from "./CallExpression";
 import { FunctionType } from "./FunctionType";
 import { Type } from "./Type";
+import { ExpressionStatement } from "./ExpressionStatement";
 
 export class FunctionExpression extends Expression implements ScopeNode {
 
@@ -41,22 +42,8 @@ export class FunctionExpression extends Expression implements ScopeNode {
         return this.parameters.map(p => p.type!);
     }
 
-    // getReturnType(argumentTypes: Type[], callee: CallExpression): Type | undefined {
-    //     if (this.type!.areArgumentsValid(argumentTypes) === false) {
-    //         return undefined;
-    //     }
-    //     return this.returnType!;
-    // }
-
-    *getReturnStatements() {
-        for (const statement of getFinalStatements(this.body)) {
-            if (statement instanceof ReturnStatement) {
-                yield statement;
-            }
-            else {
-                throw new SemanticError(`Expected return statement`, statement);
-            }
-        }
+    getReturnStatements() {
+        return getReturnStatements(this.body);
     }
 
     public static parameterFromNode(node: AstNode): ParameterDeclaration {
