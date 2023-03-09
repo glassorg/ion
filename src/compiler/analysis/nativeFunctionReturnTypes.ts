@@ -1,5 +1,5 @@
 import * as kype from "@glas/kype";
-import { kypeToTypeExpression } from "./kypeToTypeExpression";
+import { kypeToTypeExpression, toExpression } from "./kypeToTypeExpression";
 import { joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { InfixOperator } from "../Operators";
 import { Literal } from "@glas/kype";
@@ -29,22 +29,13 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
             operator as kype.BinaryOperator,
             new kype.TypeExpression(b.toKype())
         );
-        // try {
-        return new TypeConstraint(
-            callee.location,
-            coreType,
-            splitExpressions("&&", kypeToTypeExpression(result))
-        );
-        // }
-        // catch (e) {
-        //     console.log({
-        //         aKype: a.toKype().toString(),
-        //         operator,
-        //         bKype: b.toKype().toString(),
-        //         result: result.toString()
-        //     })
-        //     throw e;
-        // }
+        return joinExpressions("|", result.proposition.split("||").map(kypeExpr => {
+            return new TypeConstraint(
+                callee.location,
+                coreType,
+                splitExpressions("&&", toExpression(kypeExpr, callee.location))
+            )
+        })) as Type;
     };
 }
 
@@ -55,7 +46,7 @@ export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpressi
     "`*`(Integer{},Integer{})": binaryTypeFunction("*", CoreTypes.Integer),
     "`**`(Integer{},Integer{})": binaryTypeFunction("**", CoreTypes.Integer),
     "`/`(Integer{},Integer{})": binaryTypeFunction("/", CoreTypes.Integer),
-    "`/`(Integer,0)": (callee) => { throw new SemanticError(`Possible integer division by zero`, callee) },
+    "`/`(Integer{},Integer{(. == 0)})": (callee) => { throw new SemanticError(`Possible integer division by zero`, callee) },
     "`%`(Integer{},Integer{})": binaryTypeFunction("%", CoreTypes.Integer),
     "`%`(Integer{},0)": (callee) => { throw new SemanticError(`Possible integer modulus by zero`, callee) },
 

@@ -167,14 +167,12 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let type = node.value.type!;
-        // TODO: Continue from here.
         let { location } = node.value
         let assertedType = new TypeConstraint(
             location,
             CoreTypes.Any,
             splitExpressions("&&", splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate)))
         );
-        console.log(`${node} 2 ${assertedType}`);
         if (assertedType) {
             const isAssertedConsequent = isSubTypeOf(type, assertedType);
             if (isAssertedConsequent === false) {
@@ -183,10 +181,10 @@ const maybeResolveNode: {
             if (isAssertedConsequent === true) {
                 throw new SemanticError(`If test will always pass`, test);
             }
-            // // if this conditional lets us assert a more specific type then we add it.
-            // type = combineTypes("&&", [type, assertedType]);
+            // if this conditional lets us assert a more specific type then we add it.
+            type = combineTypes("&&", [type, assertedType]);
         }
-        // return node.patch({ type, resolved: true });
+        return node.patch({ type, resolved: true });
     },
     StructDeclaration(node, c) {
         return this.ClassDeclaration!(node, c);
@@ -330,6 +328,11 @@ const maybeResolveNode: {
             //  check each return statements type 
             //  resolve!
             const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
+            if (resolvedReturnType.toString() === `Integer{(((. == -10) || ((. >= -2) && (. <= 0))) || ((. >= 1) && (. <= 2)))}`) {
+                console.log(`RESOLVED: ${resolvedReturnType}`);
+                debugger;
+                console.log(`SIMPLIFIED: ${simplify(resolvedReturnType)}`);
+            }
             node = node.patch({ resolved: true, returnType: resolvedReturnType });
         }
         return node;

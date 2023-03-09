@@ -70,10 +70,10 @@ export class MultiFunction extends Expression {
     getReturnType(argTypes: Type[], c: EvaluationContext, callee: CallExpression): Type {
         const returnTypes: Type[] = [];
 
-        const DEBUG = ((argTypes.toString() + callee.toString()) == 'Float{(. == 0.0)},Float{(. == 0.0)}`/`(0.0, 0.0)');
-        if (DEBUG) {
-            debugger;
-        }
+        // const DEBUG = (callee.toString() + this.functions[2].toString()) === '`/`(`a:18:0`, `b:18:2`)`Integer./.1`';
+        // if (DEBUG) {
+        //     debugger;
+        // }
         for (let func of this.functions) {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
@@ -88,7 +88,6 @@ export class MultiFunction extends Expression {
             let returnType: Type | undefined;
             if (nativeCalls.length > 0) {
                 const nativeTypeName = `${functionValue.id}(${functionValue.parameterTypes.join(`,`)})`;
-                declaration.type!.toString(); 
                 const nativeType = nativeFunctionReturnTypes[nativeTypeName];
                 if (!nativeType) {
                     throw new SemanticError(`Missing native type ${nativeTypeName}`, declaration.id);
