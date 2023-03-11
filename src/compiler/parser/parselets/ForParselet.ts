@@ -5,7 +5,7 @@ import { ForVariantDeclaration } from "../../ast/ForVariantDeclaration";
 import { Reference } from "../../ast/Reference";
 import { Token } from "../../ast/Token";
 import { SemanticError } from "../../SemanticError";
-import { TokenNames } from "../../tokenizer/TokenTypes";
+import { TokenNames } from "../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
 

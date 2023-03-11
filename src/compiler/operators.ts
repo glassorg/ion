@@ -58,13 +58,6 @@ export const ComparisonOperators = {
     "!=": new Operator(8, { reflect: "!=", negate: "==" }),
 };
 
-export const LogicalOperators = {
-    "&": new Operator(12),
-    "|": new Operator(10),
-    "&&": new Operator(7),
-    "||": new Operator(6),
-}
-
 export const AssignmentOperators = {
     "=": new Operator(3, { rightAssociative: true }),
     "+=": new Operator(3, { rightAssociative: true }),
@@ -87,6 +80,13 @@ export const SequenceOperators = {
     ";": new Operator(1),
 }
 
+export const LogicalOperators = {
+    "&": new Operator(12),
+    "|": new Operator(10),
+    "&&": new Operator(7),
+    "||": new Operator(6),
+}
+
 export const InfixOperators = {
     "[": new Operator(19),    //  ]
     ".": new Operator(19),
@@ -100,14 +100,15 @@ export const InfixOperators = {
     //  default unknown operator precedence
     "+": new Operator(14, { overridable: true }),
     "-": new Operator(14, { overridable: true }),
+    "..": new Operator(13),
     "&": LogicalOperators["&"],
     "^": new Operator(11, { overridable: true }),
     "|": LogicalOperators["|"],
     ...ComparisonOperators,
-    "..": new Operator(8),
     "&&": LogicalOperators["&&"],
     "||": LogicalOperators["||"],
     ":": new Operator(5),
+    "::": new Operator(5),
     "=>": new Operator(4, { allowOutline: true }),
     ...AssignmentOperators,
     ...SequenceOperators,

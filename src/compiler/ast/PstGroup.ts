@@ -11,6 +11,7 @@ export class PstGroup extends Expression {
         public readonly close: Token,
         public readonly value?: Expression,
         public readonly type?: Type,
+        public readonly exactType?: boolean,
     ){
         super(location);
     }

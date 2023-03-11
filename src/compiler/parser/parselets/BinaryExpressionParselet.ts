@@ -32,11 +32,11 @@ export class BinaryExpressionParselet extends InfixParselet {
         let right = this.parseRight(p, operatorToken) as Expression;
         let location = left.location.merge(right.location);
         let operator = operatorToken.value as InfixOperator;
-        if (operator === ":") {
+        if (operator === ":" || operator === "::") {
             let type = toType(right);
             if (left instanceof PstGroup) {
                 // this is used sometimes to create a function declaration
-                return left.patch({ type });
+                return left.patch({ type, exactType: operator === "::" });
             }
             if (!(left instanceof Reference)) {
                 throw new SemanticError(`Expected Identifier`, left);

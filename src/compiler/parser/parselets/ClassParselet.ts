@@ -3,7 +3,7 @@ import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
 import { Token } from "../../ast/Token";
 import { SemanticError } from "../../SemanticError";
-import { TokenNames } from "../../tokenizer/TokenTypes";
+import { TokenNames } from "../tokenizer/TokenTypes";
 import { AstNode } from "../../ast/AstNode";
 import { ClassDeclaration } from "../../ast/ClassDeclaration";
 import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";

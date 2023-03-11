@@ -69,7 +69,7 @@ export function toTypeExpression(e: Expression): Type {
                     case ">":
                     case ">=":
                     case "<":
-                    case ">=":
+                    case "<=":
                         term = new TypeConstraint(
                             term.location,
                             term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
@@ -79,6 +79,7 @@ export function toTypeExpression(e: Expression): Type {
                         );
                         break;
                     default:
+                        console.log(term);
                         throw new SemanticError(`Unsupported type expression: ${term}`);
                 }
             }
@@ -90,7 +91,7 @@ export function toTypeExpression(e: Expression): Type {
                     ||
                     ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
                 )) {
-                    // console.log({ start, finish })
+                    console.log({ start: start.toString(), finish: finish.toString() })
                     throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
                 }
                 if (!(finish.value > start.value)) {

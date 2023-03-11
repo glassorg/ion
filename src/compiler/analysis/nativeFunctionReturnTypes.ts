@@ -1,26 +1,12 @@
 import * as kype from "@glas/kype";
-import { kypeToTypeExpression, toIonExpression } from "./kypeToTypeExpression";
+import { toIonExpression } from "./kypeToTypeExpression";
 import { joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { InfixOperator } from "../Operators";
-import { Literal } from "@glas/kype";
 import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { CoreType, CoreTypes } from "../common/CoreType";
-import { SourceLocation } from "../ast/SourceLocation";
-import { simplify } from "./simplify";
 import { Type } from "../ast/Type";
-import { Expression } from "../ast/Expression";
 import { TypeConstraint } from "../ast/TypeConstraint";
-import { TypeReference } from "../ast/TypeReference";
-
-function isAnyFloat(result: kype.TypeExpression) {
-    const prop = result.proposition;
-    return prop instanceof kype.BinaryExpression
-        // && prop.left instanceof kype.DotExpression
-        && prop.operator === "<="
-        && prop.right instanceof Literal
-        && prop.right.value == Number.POSITIVE_INFINITY;
-}
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     return (callee: CallExpression, a: Type, b: Type) => {
@@ -35,15 +21,15 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
                 splitExpressions("&&", toIonExpression(kypeExpr, callee.location))
             )
         }));
-        console.log({
-            a: a.toString(),
-            operator,
-            b: b.toString(),
-            aKype: aKype.toString(),
-            bKype: bKype.toString(),
-            kypeResult: result.toString(),
-            ionResult: ionResult.toString(),
-        })
+        // console.log({
+        //     a: a.toString(),
+        //     operator,
+        //     b: b.toString(),
+        //     aKype: aKype.toString(),
+        //     bKype: bKype.toString(),
+        //     kypeResult: result.toString(),
+        //     ionResult: ionResult.toString(),
+        // })
         return ionResult;
     };
 }

@@ -14,7 +14,7 @@ import { BlockParselet } from "./parselets/BlockParselet";
 import { OutlineStringParselet } from "./parselets/OutlineStringParselet";
 import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
-import { TokenNames } from "../tokenizer/TokenTypes";
+import { TokenNames } from "./tokenizer/TokenTypes";
 import { VariableParselet } from "./parselets/VariableParselet";
 import { ConstantParselet } from "./parselets/ConstantParselet";
 import { TypeDeclaration } from "../ast/TypeDeclaration";

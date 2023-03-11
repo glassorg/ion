@@ -9,10 +9,10 @@ async function testCompile() {
     const debug = true;
     let compiler = new Compiler(
         new CacheFileSystem(new NodeFileSystem(ionCoreFolder)),
-        { debugPattern: debug ? /sample|Float\.\+\.1/ : undefined }
+        { debugPattern: debug ? /sample/ : undefined }
     );
     let assembly = await compiler.compileAllFiles();
-    console.log(assembly.declarations.map(d => d.absolutePath));
+    // console.log(assembly.declarations.map(d => d.absolutePath));
 }
 
 testCompile().then(() => {

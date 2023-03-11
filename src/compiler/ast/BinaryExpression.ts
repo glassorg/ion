@@ -60,12 +60,12 @@ export abstract class BinaryExpression extends Expression {
         if (this.left instanceof DotExpression && (this.operator === "is" || this.operator === "==")) {
             return this.right.toString();
         }
-        if (this.operator === "&&") {
-            return `(${this.left.toUserTypeString()} & ${this.right.toUserTypeString()})`;
-        }
-        if (this.operator === "||") {
-            return `(${this.left.toUserTypeString()} | ${this.right.toUserTypeString()})`;
-        }
+        // if (this.operator === "&&") {
+        //     return `(${this.left.toUserTypeString()} & ${this.right.toUserTypeString()})`;
+        // }
+        // if (this.operator === "||") {
+        //     return `(${this.left.toUserTypeString()} | ${this.right.toUserTypeString()})`;
+        // }
         return super.toUserTypeString();
     }
     

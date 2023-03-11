@@ -60,7 +60,7 @@ export const TokenTypes = {
     Integer: new TokenType(/^([1-9][0-9]*|0x[0-9]+|0\b)/),
     OutlineString: new TokenType(/^""/),
     String: new TokenType(/^"([^"\\]|\\.)*"/),
-    RegExp: new TokenType(/^\/([^/]|\\.)*\//),
+    // RegExp: new TokenType(/^\/([^/]|\\.)*\//),
     // Operator has to come after Number/Integer so an adjacent - or + binds to literal.
     Operator: new TokenType(/^(\bvoid\b|\btypeof\b|\bis\b|[\=\+\-\*\&\^\%\!\~\/\.\:\;\?\,\<\>\|\&:]+)/i),
     //  Id has to come after Operator because of operator 'void'

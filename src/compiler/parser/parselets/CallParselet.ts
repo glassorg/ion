@@ -3,7 +3,7 @@ import { AstNode } from "../../ast/AstNode";
 import { CallExpression } from "../../ast/CallExpression";
 import { Expression } from "../../ast/Expression";
 import { Token } from "../../ast/Token";
-import { TokenName, TokenNames } from "../../tokenizer/TokenTypes";
+import { TokenName, TokenNames } from "../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { BinaryExpressionParselet } from "./BinaryExpressionParselet";
 import { GroupParselet } from "./GroupParselet";

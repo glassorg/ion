@@ -12,8 +12,8 @@ import { Statement } from "../ast/Statement";
 import { Token } from "../ast/Token";
 import { isMetaId } from "../common/names";
 import { SemanticError } from "../SemanticError";
-import { Tokenizer } from "../tokenizer/Tokenizer";
-import { TokenName, TokenNames, TokenTypes } from "../tokenizer/TokenTypes";
+import { Tokenizer } from "./tokenizer/Tokenizer";
+import { TokenName, TokenNames, TokenTypes } from "./tokenizer/TokenTypes";
 import { InfixParselet } from "./InfixParslet";
 import { PrefixParselet } from "./PrefixParselet";
 
@@ -259,6 +259,7 @@ export class Parser {
         this.whitespace();
         let prefix = this.prefixParselets[token.type as TokenName];
         if (prefix == null) {
+            console.log(token);
             throw new SemanticError(`Could not parse: ${token.type}(${token.value})`);
         }
         let left = prefix.parse(this, token);

@@ -24,7 +24,7 @@ import { toTypeExpression } from "../../ast/TypeExpression";
 import { TypeReference } from "../../ast/TypeReference";
 import { Type } from "../../ast/Type";
 import { Expression } from "../../ast/Expression";
-import { TypeConstraint } from "../../ast/TypeConstraint";
+import { getArrayElementType, isArrayType, TypeConstraint } from "../../ast/TypeConstraint";
 import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 
@@ -91,16 +91,12 @@ const maybeResolveNode: {
                 CoreTypes.Integer,
                 constraints
             )
-            const type = resolveAll(
-                simplify(
-                    new TypeConstraint(
-                        node.location,
-                        CoreTypes.Array,
-                        [elementType]
-                        // could add length constraint here.
-                    )
-                )
+            const before = new TypeConstraint(
+                node.location,
+                new TypeReference(node.location, CoreTypes.Array, [elementType])
+                // could add length constraint here.
             );
+            const type = resolveAll(before);
             return node.patch({ type, resolved: true });
         }
     },
@@ -108,10 +104,10 @@ const maybeResolveNode: {
         const parent = c.lookup.findAncestor(node, ForStatement)!;
         if (parent.right.resolved) {
             const rightType = parent.right.type;
-            if (!isTypeReference(rightType, CoreTypes.Array)) {
-                throw new SemanticError(`Expected Array type: ${parent.right}`);
+            if (!isArrayType(rightType)) {
+                throw new SemanticError(`Expected Array type: ${parent.right}`, parent.right);
             }
-            const elementType = rightType.generics[0];
+            const elementType = getArrayElementType(rightType);
             if (!elementType) {
                 throw new SemanticError(`Expected Array element type: ${parent.right}`);
             }
@@ -166,25 +162,31 @@ const maybeResolveNode: {
         if (node.negate) {
             joinOps.reverse();
         }
-        let type = node.value.type!;
-        let { location } = node.value
-        let assertedType = new TypeConstraint(
-            location,
-            CoreTypes.Any,
-            splitExpressions("&&", splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate)))
-        );
-        if (assertedType) {
-            const isAssertedConsequent = isSubTypeOf(type, assertedType);
-            if (isAssertedConsequent === false) {
-                throw new SemanticError(`If test will always fail`, test);
-            }
-            if (isAssertedConsequent === true) {
-                throw new SemanticError(`If test will always pass`, test);
-            }
-            // if this conditional lets us assert a more specific type then we add it.
-            type = joinExpressions("|", [type, assertedType]);
+        let knownType = node.value.type!;
+        if (!(knownType instanceof TypeConstraint)) {
+            throw new SemanticError(`We don't know how to handle this yet`, node.value);
         }
-        return node.patch({ type, resolved: true });
+        const assertedDotConstraints = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
+        let newTypes = splitExpressions("||", assertedDotConstraints).map(assertedOption => {
+            return splitExpressions("|", knownType).map(knownTypeOption => {
+                if (!(knownTypeOption instanceof TypeConstraint)) {
+                    throw new SemanticError(`We expected a type constraint here ` + knownTypeOption);
+                }
+                return knownTypeOption.patch({
+                    constraints: [...knownTypeOption.constraints, ...splitExpressions("&&", assertedOption)]
+                });
+            })
+        }).flat();
+        let newType = simplify(joinExpressions("|", newTypes));
+        const isAssertedConsequent = isSubTypeOf(knownType, newType);
+        if (isAssertedConsequent === false) {
+            throw new SemanticError(`If test will always fail`, test);
+        }
+        if (isAssertedConsequent === true) {
+            throw new SemanticError(`If test will always pass`, test);
+        }
+        // if this conditional lets us assert a more specific type then we add it.
+        return node.patch({ type: newType, resolved: true });
     },
     StructDeclaration(node, c) {
         return this.ClassDeclaration!(node, c);
@@ -331,12 +333,15 @@ const maybeResolveNode: {
 
             //  check each return statements type 
             //  resolve!
-            const resolvedReturnType = joinExpressions("|", returnStatements.map(s => s.argument.type!));
-            if (resolvedReturnType.toString() === `Integer{(((. == -10) || ((. >= -2) && (. <= 0))) || ((. >= 1) && (. <= 2)))}`) {
-                console.log(`RESOLVED: ${resolvedReturnType}`);
-                debugger;
-                console.log(`SIMPLIFIED: ${simplify(resolvedReturnType)}`);
+            const resolvedReturnType = simplify(joinExpressions("|", returnStatements.map(s => s.argument.type!)));
+            if (node.returnTypeExact && node.returnType) {
+                // user has requested an exact return type check
+                const expectedReturnType = simplify(node.returnType);
+                if (expectedReturnType.toString() !== resolvedReturnType.toString()) {
+                    throw new SemanticError(`Return type (${expectedReturnType.toUserTypeString()}) declared as exact with :: did not match resolved type (${resolvedReturnType.toUserTypeString()})`, node.returnType);
+                }
             }
+
             node = node.patch({ resolved: true, returnType: resolvedReturnType });
         }
         return node;

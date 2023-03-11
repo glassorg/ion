@@ -1,7 +1,7 @@
 import { Expression } from "../../ast/Expression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Token } from "../../ast/Token";
-import { TokenName } from "../../tokenizer/TokenTypes";
+import { TokenName } from "../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixOperatorParselet } from "./PrefixOperatorParselet";
 

@@ -1,7 +1,7 @@
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
 import { StringLiteral } from "../../ast/StringLiteral";
-import { TokenNames } from "../../tokenizer/TokenTypes";
+import { TokenNames } from "../tokenizer/TokenTypes";
 import { Token } from "../../ast/Token";
 import { AstNode } from "../../ast/AstNode";
 

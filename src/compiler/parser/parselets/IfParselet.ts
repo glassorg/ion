@@ -2,7 +2,7 @@ import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
 import { IfStatement } from "../../ast/IfStatement";
 import { Expression } from "../../ast/Expression";
-import { TokenNames } from "../../tokenizer/TokenTypes";
+import { TokenNames } from "../tokenizer/TokenTypes";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
 import { BlockStatement } from "../../ast/BlockStatement";

@@ -101,7 +101,7 @@ export class MultiFunction extends Expression {
             }
 
             if (returnType) {
-                console.log(`${functionValue.parameterTypes.join(",")}(${argTypes.join(",")}) => ${returnType}`)
+                // console.log(`${functionValue.parameterTypes.join(",")}(${argTypes.join(",")}) => ${returnType}`)
                 returnTypes.push(returnType);
             }
 
@@ -118,12 +118,12 @@ export class MultiFunction extends Expression {
         if (!lastWasAlwaysMatch) {
             throw new SemanticError(`Function arguments may not always match: ${this.name}(${argTypes.join(",")})`, callee);
         }
-        const type2 = simplify(joinExpressions("|", returnTypes));
-        console.log({
-            returnTypes: returnTypes.join(" , "),
-            type2: type2.toString()
-        })
-        return type2;
+        const type = simplify(joinExpressions("|", returnTypes));
+        // console.log({
+        //     returnTypes: returnTypes.join(" , "),
+        //     type: type.toString()
+        // })
+        return type;
     }
 
 }

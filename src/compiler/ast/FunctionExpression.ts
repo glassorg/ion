@@ -1,24 +1,28 @@
 import { splitExpressions } from "./AstFunctions";
-import { getFinalStatements, getReturnStatements } from "../analysis/getFinalStatements";
+import { getReturnStatements } from "../analysis/getFinalStatements";
 import { SemanticError } from "../SemanticError";
 import { AstNode } from "./AstNode";
 import { BlockStatement } from "./BlockStatement";
 import { Expression } from "./Expression";
 import { PstGroup } from "./PstGroup";
 import { Reference } from "./Reference";
-import { ReturnStatement } from "./ReturnStatement";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, VariableKind } from "./VariableDeclaration";
 import { Declarator } from "./Declarator";
-import { CallExpression } from "./CallExpression";
 import { FunctionType } from "./FunctionType";
 import { Type } from "./Type";
-import { ExpressionStatement } from "./ExpressionStatement";
+
 
 export class FunctionExpression extends Expression implements ScopeNode {
 
     declare public readonly type: FunctionType;
+
+    /**
+     * If true then we want the compiler to check that our
+     * declared return type exactly matches our inferred return type.
+     */
+    public readonly returnTypeExact: boolean = false;
 
     constructor(
         location: SourceLocation,

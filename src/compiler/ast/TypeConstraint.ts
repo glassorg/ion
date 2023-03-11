@@ -8,6 +8,21 @@ import { DotExpression } from "./DotExpression";
 import { joinExpressions } from "./AstFunctions";
 import { CoreTypes } from "../common/CoreType";
 
+export function isArrayType(type?: Type) {
+    return getArrayElementType(type) !== undefined;
+}
+
+export function getArrayElementType(type?: Type): Type | null | undefined {
+    if (type instanceof TypeReference) {
+        if (type.name === CoreTypes.Array) {
+            return type.generics[0] ?? null;
+        }
+    }
+    else if (type instanceof TypeConstraint) {
+        return getArrayElementType(type.baseType);
+    }
+}
+
 export class TypeConstraint extends Expression implements Type {
 
     public readonly baseType: TypeReference;
@@ -35,6 +50,13 @@ export class TypeConstraint extends Expression implements Type {
 
     toString() {
         return `${this.baseType}{${this.constraints}}`;
+    }
+
+    public toUserTypeString(): string {
+        if (this.constraints.length === 0) {
+            return this.baseType.toUserTypeString();
+        }
+        return `${this.baseType.toUserTypeString()}{${this.constraints.map(c => c.toUserTypeString()).join(",")}}`;
     }
 
 }

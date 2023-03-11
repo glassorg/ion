@@ -3,7 +3,7 @@ import { BinaryExpressionParselet } from "./BinaryExpressionParselet";
 import { Expression } from "../../ast/Expression";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
-import { TokenName } from "../../tokenizer/TokenTypes";
+import { TokenName } from "../tokenizer/TokenTypes";
 import { IndexExpression } from "../../ast/IndexExpression";
 
 export class MemberParselet extends BinaryExpressionParselet {

@@ -1,5 +1,5 @@
-import { Token } from "../ast/Token";
-import { InfixOperators, isInfixOperator } from "../Operators";
+import { Token } from "../../ast/Token";
+import { InfixOperators, isInfixOperator } from "../../Operators";
 import { TokenNames } from "./TokenTypes";
 
 function splitIntoLines(tokens: Token[]): Token[][] {

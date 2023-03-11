@@ -1,5 +1,5 @@
-import { SourceLocation } from "../ast/SourceLocation";
-import { Token } from "../ast/Token";
+import { SourceLocation } from "../../ast/SourceLocation";
+import { Token } from "../../ast/Token";
 import { indentation } from "./indentation";
 import { TokenType, TokenNames } from "./TokenTypes";
 
