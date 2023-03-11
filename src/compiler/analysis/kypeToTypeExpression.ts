@@ -1,5 +1,6 @@
 import * as kype from "@glas/kype";
 import { createBinaryExpression, joinExpressions, splitExpressions } from "../ast/AstFunctions";
+import { BinaryExpression } from "../ast/BinaryExpression";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression, DotExpressionString } from "../ast/DotExpression";
 import { Expression } from "../ast/Expression";
@@ -12,9 +13,10 @@ import { SourceLocation } from "../ast/SourceLocation";
 import { Type } from "../ast/Type";
 import { TypeConstraint } from "../ast/TypeConstraint";
 import { TypeReference } from "../ast/TypeReference";
+import { CoreTypes } from "../common/CoreType";
 import { SemanticError } from "../SemanticError";
 
-export function toExpression(e: kype.Expression, location: SourceLocation): Expression {
+export function toIonExpression(e: kype.Expression, location: SourceLocation): Expression {
     if (e.source instanceof Expression) {
         return e.source;
     }
@@ -24,28 +26,42 @@ export function toExpression(e: kype.Expression, location: SourceLocation): Expr
     if (e instanceof kype.BinaryExpression) {
         if (e.left instanceof kype.MemberExpression && e.left.property instanceof kype.Reference && e.left.property.name === "class" && e.right instanceof kype.StringLiteral) {
             // this is an assertion of form "left is right";
-            return createBinaryExpression(location, toExpression(e.left.object, location), "is", toExpression(e.right, location));
+            return createBinaryExpression(location, toIonExpression(e.left.object, location), "is", toIonExpression(e.right, location));
         } 
-        return createBinaryExpression(location, toExpression(e.left, location), e.operator as any, toExpression(e.right, location));
+        return createBinaryExpression(location, toIonExpression(e.left, location), e.operator as any, toIonExpression(e.right, location));
     }
     if (e instanceof kype.TypeExpression) {
-        return joinExpressions("&", splitExpressions("||", toExpression(e.proposition, location)).map(option => {
+        return joinExpressions("|", splitExpressions("||", toIonExpression(e.proposition, location)).map(option => {
             if (option instanceof FunctionType || option instanceof MultiFunctionType) {
                 return option;
             }
             let constraints = splitExpressions("&&", option);
             let typeConstraint = constraints.find(c => c instanceof ComparisonExpression && c.operator === "is" && c.left instanceof DotExpression) as ComparisonExpression | undefined;
             if (!typeConstraint) {
-                debugger;
                 throw new SemanticError(`Expected class constraint: ${e}`, location);
             }
             let otherConstraints = constraints.filter(constraint => constraint !== typeConstraint);
             if (!(typeConstraint.right instanceof TypeReference)) {
                 throw new SemanticError(`Expected TypeReference ${typeConstraint.right}`, location);
             }
+            let baseType = typeConstraint.right;
+            // remove some redundant constraints
+            if (baseType.name === CoreTypes.Float) {
+                otherConstraints = otherConstraints.filter(e => {
+                    if (e instanceof BinaryExpression && e.left instanceof DotExpression) {
+                        if (e.operator === "<=" && e.right instanceof FloatLiteral && e.right.value === Number.POSITIVE_INFINITY) {
+                            return false;
+                        }
+                        if (e.operator === ">=" && e.right instanceof FloatLiteral && e.right.value === Number.NEGATIVE_INFINITY) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
+            }
             return new TypeConstraint(
                 location,
-                typeConstraint.right,
+                baseType,
                 otherConstraints
             )
         }));
@@ -70,5 +86,5 @@ export function toExpression(e: kype.Expression, location: SourceLocation): Expr
 }
 
 export function kypeToTypeExpression(type: kype.TypeExpression, location = SourceLocation.empty): Type {
-    return toExpression(type, location) as Type;
+    return toIonExpression(type, location) as Type;
 }

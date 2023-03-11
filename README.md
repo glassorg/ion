@@ -15,3 +15,11 @@ High performance functional language targeting web assembly with strong typescri
 [ ] Add support for structure types.
 [ ] Add structure constructor rules with optional named fields.
 [ ] Test that every expression is fully resolved.
+
+
+TODO
+
+    THIS IS WRONG
+
+            phi `b:18:5` : {typeof `b:18:1` | typeof `b:18:2`};
+            phi `b:18:5` :: Integer{(. >= -2),(. <= 0),(. >= 1),(. <= 1)};

@@ -12,14 +12,14 @@
 //  [Integer[],Integer]{ .[1] >= 0, .[1] < .[0].length}
 //  function get(array: Integer[], index: 0 .. array.length)
 
-// @Native()
 // function bar(a: 1.0 .. 3.0, b: -3.0 .. 3.0)
 //     return a / b
 
-@Native()
-function bar(a: 1 .. 5, b: -2 .. 2)
-    if b == 0
-        return -10
-    if b > 0
-        return -20
-    return a / b
+// function bar(a: -1.0 .. 5.0, b: -2.0 .. 2.0)
+//     if b > 0.0
+//         return -20.0
+//     return a / b
+
+//  this doesn't look correct.
+function bar(a: > 0.0, b: Float)
+    a / b

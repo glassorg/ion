@@ -9,7 +9,7 @@ import { LogicalExpression } from "./LogicalExpression";
 import { Reference } from "./Reference";
 import { SequenceExpression } from "./SequenceExpression";
 import { SourceLocation } from "./SourceLocation";
-import { isType } from "./Type";
+import { isType, Type } from "./Type";
 
 export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
     if (isAssignmentOperator(operator)) {
@@ -42,6 +42,8 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }
 
+export function joinExpressions(operator: "|" | "&", expressions: Type[]): Type
+export function joinExpressions(operator: InfixOperator, expressions: Expression[]): Expression
 export function joinExpressions(operator: InfixOperator, expressions: Expression[]): Expression {
     let right = expressions[expressions.length - 1];
     for (let i = expressions.length - 2; i >= 0; i--) {

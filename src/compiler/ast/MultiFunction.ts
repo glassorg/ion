@@ -1,9 +1,10 @@
-import { combineTypes } from "../analysis/combineTypes";
+import { simplify } from "../analysis/simplify";
 import { areSubTypesOf, isSubTypeOf } from "../analysis/isSubType";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
+import { joinExpressions } from "./AstFunctions";
 import { CallExpression } from "./CallExpression";
 import { Expression } from "./Expression";
 import { FunctionExpression } from "./FunctionExpression";
@@ -74,6 +75,7 @@ export class MultiFunction extends Expression {
         // if (DEBUG) {
         //     debugger;
         // }
+        let lastWasAlwaysMatch = false;
         for (let func of this.functions) {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
@@ -99,17 +101,29 @@ export class MultiFunction extends Expression {
             }
 
             if (returnType) {
+                console.log(`${functionValue.parameterTypes.join(",")}(${argTypes.join(",")}) => ${returnType}`)
                 returnTypes.push(returnType);
             }
 
             if (isValidCall === true) {
+                lastWasAlwaysMatch = true;
                 //  this is ALWAYS a valid call so we know no later functions will be called
                 //  so we break the loop and add no further types to the possible types.
                 break;
             }
         }
-        const type = combineTypes("||", returnTypes);
-        return type;
+        if (returnTypes.length === 0) {
+            throw new SemanticError(`No functions found matching arguments: ${this.name}(${argTypes.join(",")})`, callee);
+        }
+        if (!lastWasAlwaysMatch) {
+            throw new SemanticError(`Function arguments may not always match: ${this.name}(${argTypes.join(",")})`, callee);
+        }
+        const type2 = simplify(joinExpressions("|", returnTypes));
+        console.log({
+            returnTypes: returnTypes.join(" , "),
+            type2: type2.toString()
+        })
+        return type2;
     }
 
 }

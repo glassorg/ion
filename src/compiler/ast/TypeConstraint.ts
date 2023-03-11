@@ -30,7 +30,7 @@ export class TypeConstraint extends Expression implements Type {
                 new ComparisonExpression(this.baseType.location, new DotExpression(this.baseType.location), "is", this.baseType)
             )
         }
-        return joinExpressions("&&", constraints).toKype();
+        return new kype.TypeExpression(joinExpressions("&&", constraints).toKype());
     }
 
     toString() {

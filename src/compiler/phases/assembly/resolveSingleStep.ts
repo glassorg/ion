@@ -6,7 +6,7 @@ import { AstNode } from "../../ast/AstNode";
 import { Reference } from "../../ast/Reference";
 import { Literal } from "../../ast/Literal";
 import { SemanticError } from "../../SemanticError";
-import { combineTypes, simplify } from "../../analysis/combineTypes";
+import { simplify } from "../../analysis/simplify";
 import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { DotExpression } from "../../ast/DotExpression";
 import { CoreTypes } from "../../common/CoreType";
@@ -25,7 +25,7 @@ import { TypeReference } from "../../ast/TypeReference";
 import { Type } from "../../ast/Type";
 import { Expression } from "../../ast/Expression";
 import { TypeConstraint } from "../../ast/TypeConstraint";
-import { splitExpressions } from "../../ast/AstFunctions";
+import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 
 function resolveAll<T extends AstNode>(node: T): T {
@@ -182,7 +182,7 @@ const maybeResolveNode: {
                 throw new SemanticError(`If test will always pass`, test);
             }
             // if this conditional lets us assert a more specific type then we add it.
-            type = combineTypes("&&", [type, assertedType]);
+            type = joinExpressions("|", [type, assertedType]);
         }
         return node.patch({ type, resolved: true });
     },
@@ -331,7 +331,7 @@ const maybeResolveNode: {
 
             //  check each return statements type 
             //  resolve!
-            const resolvedReturnType = combineTypes("||", returnStatements.map(s => s.argument.type!));
+            const resolvedReturnType = joinExpressions("|", returnStatements.map(s => s.argument.type!));
             if (resolvedReturnType.toString() === `Integer{(((. == -10) || ((. >= -2) && (. <= 0))) || ((. >= 1) && (. <= 2)))}`) {
                 console.log(`RESOLVED: ${resolvedReturnType}`);
                 debugger;
