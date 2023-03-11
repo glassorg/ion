@@ -60,9 +60,13 @@ export class FunctionExpression extends Expression implements ScopeNode {
         throw new SemanticError(`Expected Parameter`, node);
     }
 
-    static createFromLambda(left: Expression, right: Expression): FunctionExpression {
+    static createFromLambda(left: Expression, right: Expression | BlockStatement): FunctionExpression {
         let type: Type | undefined;
-        let leftValue = left instanceof PstGroup ? left.value : left;
+        let leftValue = left;
+        if (left instanceof PstGroup) {
+            leftValue = left.value!;
+            type = left.type;
+        }
         let parameters = splitExpressions(",", leftValue).map(FunctionExpression.parameterFromNode);
         let body: BlockStatement;
         let location = SourceLocation.merge(left.location, right.location);
@@ -75,7 +79,11 @@ export class FunctionExpression extends Expression implements ScopeNode {
         else {
             throw new SemanticError(`Unexpected lambda`, left, right);
         }
-        return new FunctionExpression(location, parameters, body, type);
+        let result = new FunctionExpression(location, parameters, body, type);
+        if (left instanceof PstGroup && left.exactType) {
+            result = result.patch({ returnTypeExact: true });
+        }
+        return result;
     }
 
 }

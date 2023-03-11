@@ -1,18 +1,11 @@
 
-function float_div_float(a: Float, b: Float) :: Float | NaN
-    a / b
-
-function nonzero_div_Float(a: != 0.0, b: Float) :: Float
-    a / b
-
-function float_div_NonZero(a: Float, b: != 0.0) :: Float
-    a / b
-
-function positive_mod_10(a: >= 0) :: 0 .. 10
-    a % 10
+function float_div_float(a: Float, b: Float) :: Float | NaN => a / b
+function nonzero_div_Float(a: != 0.0, b: Float) :: Float => a / b
+function float_div_NonZero(a: Float, b: != 0.0) :: Float => a / b
+function positive_mod_10(a: >= 0) :: 0 .. 10 => a % 10
 
 function one_to_four_div_neg_four_to_four(a: 1.0 .. 4.0, b: -4.0 .. 4.0) :: <= -0.25 | > 0.25
-    a / b
+    return a / b
 
 function for_loop_result_positive(a: Integer) :: >= 0
     var total: >= 0 = 0

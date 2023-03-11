@@ -26,19 +26,23 @@ export class FunctionParselet extends PrefixParselet {
 
         let functionExpression: FunctionExpression;
         if (value instanceof PstGroup) {
-            let type = value.type;
-            let exact = value.exactType;
-            value = value.value;
-            let parameters = splitExpressions(",", value).map(FunctionExpression.parameterFromNode) ?? [];
             let body = p.parseBlock();
-            let location = functionToken.location.merge(body.location);
-            functionExpression = new FunctionExpression(location, parameters, body, type);
-            if (exact) {
-                functionExpression = functionExpression.patch({ returnTypeExact: exact });
-            }
+            functionExpression = FunctionExpression.createFromLambda(value, body);
+
+            // let type = value.type;
+            // let exact = value.exactType;
+            // value = value.value;
+            // let parameters = splitExpressions(",", value).map(FunctionExpression.parameterFromNode) ?? [];
+            // let location = functionToken.location.merge(body.location);
+            // functionExpression = new FunctionExpression(location, parameters, body, type);
+            // if (exact) {
+            //     functionExpression = functionExpression.patch({ returnTypeExact: exact });
+            // }
         }
         else if (value instanceof FunctionExpression) {
-            throw new SemanticError(`Lambda Function not supported yet`, value);
+            // console.log(value.toString());
+            functionExpression = value;
+            // throw new SemanticError(`Lambda Function not supported yet`, value);
         }
         else {
             throw new SemanticError(`Expected FunctionExpression`, value);
