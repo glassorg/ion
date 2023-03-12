@@ -101,8 +101,8 @@ export function toTypeExpression(e: Expression): Type {
                 return new TypeConstraint(
                     term.location,
                     coreType, [
-                        new ComparisonExpression(term.location, new DotExpression(term.location), ">=", term.start),
-                        new ComparisonExpression(term.location, new DotExpression(term.location), "<", term.finish),
+                        new ComparisonExpression(term.location, new DotExpression(term.location), (term.minExclusive ? ">" : ">="), term.start),
+                        new ComparisonExpression(term.location, new DotExpression(term.location), (term.maxExclusive ? "<" : "<="), term.finish),
                     ]
                 );
             }

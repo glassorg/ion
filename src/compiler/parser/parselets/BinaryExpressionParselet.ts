@@ -49,8 +49,10 @@ export class BinaryExpressionParselet extends InfixParselet {
             }
             return new MemberExpression(location, left, new Identifier(right.location, right.name));
         }
-        if (operator === "..") {
-            return new RangeExpression(location, left, right);
+        if (operator.indexOf("..") >= 0) {
+            let minExclusive = operator.startsWith("<");
+            let maxExclusive = operator.endsWith("<");
+            return new RangeExpression(location, left, right, minExclusive, maxExclusive);
         }
         if (operator === "=>") {
             return FunctionExpression.createFromLambda(left, right);

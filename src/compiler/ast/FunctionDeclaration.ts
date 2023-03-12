@@ -1,3 +1,4 @@
+import { CallExpression } from "./CallExpression";
 import { ConstantDeclaration } from "./ConstantDeclaration";
 import { Declarator } from "./Declarator";
 import { FunctionExpression } from "./FunctionExpression";
@@ -10,7 +11,7 @@ export class FunctionDeclaration extends ConstantDeclaration {
     constructor(
         location: SourceLocation,
         id: Declarator,
-        value: FunctionExpression
+        value: FunctionExpression,
     ){
         super(location, id, value.patch({ id }));
     }

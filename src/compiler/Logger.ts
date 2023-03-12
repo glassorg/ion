@@ -13,7 +13,7 @@ export function createLogger(debugPattern?: RegExp): LogFunction {
         if (!channel || debugPattern.test(channel) || (stepState instanceof Assembly && debugPattern.test("assembly"))) {
             if (channel) {
                 // if (stepState instanceof Assembly) {
-                    diffLogger(stepName, stepState?.toString(), `${channel}!`);
+                    diffLogger(stepName, stepState?.toString(), `@${channel}`);
                 // }
             }
             if (stepState === undefined) {

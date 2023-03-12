@@ -11,6 +11,8 @@ export class RangeExpression extends Expression {
         location: SourceLocation,
         public readonly start: Expression,
         public readonly finish: Expression,
+        public readonly minExclusive = false,
+        public readonly maxExclusive = false,
     ){
         super(location);
     }

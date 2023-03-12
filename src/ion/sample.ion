@@ -3,4 +3,5 @@
 //  [Integer[],Integer]{ .[1] >= 0, .[1] < .[0].length}
 //  function get(array: Integer[], index: 0 .. array.length)
 
-function double(a: Integer) => a * 2
+double = (a: Integer) => a * 2
+double = (a: Float) => a * 2.0

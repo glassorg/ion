@@ -16,6 +16,11 @@ import { Tokenizer } from "./tokenizer/Tokenizer";
 import { TokenName, TokenNames, TokenTypes } from "./tokenizer/TokenTypes";
 import { InfixParselet } from "./InfixParslet";
 import { PrefixParselet } from "./PrefixParselet";
+import { AssignmentExpression } from "../ast/AssignmentExpression";
+import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
+import { Declarator } from "../ast/Declarator";
+import { FunctionExpression } from "../ast/FunctionExpression";
+import { FunctionDeclaration } from "../ast/FunctionDeclaration";
 
 export class Parser {
 
@@ -132,10 +137,28 @@ export class Parser {
                 continue;
             }
 
-            if (!(statement instanceof Declaration)) {
-                if (statement instanceof BlockStatement) {
-                    throw new SemanticError(`BlockStatement found in module scope, did you accidentally indent?`, statement);
+            if (statement instanceof BlockStatement) {
+                throw new SemanticError(`BlockStatement found in module scope, did you accidentally indent?`, statement);
+            }
+            if (statement instanceof ExpressionStatement && statement.expression instanceof AssignmentExpression) {
+                let { location, left, operator, right: value } = statement.expression;
+                if (!(left instanceof Reference)) {
+                    throw new SemanticError(`Expected identifier`, left);
                 }
+                let declarator = new Declarator(left.location, left.name);
+                if (value instanceof FunctionExpression) {
+                    statement = new FunctionDeclaration(
+                        location, declarator, value
+                    );
+                }
+                else {
+                    statement = new VariableDeclaration(
+                        location, declarator,
+                        { kind: VariableKind.Constant, value }
+                    );
+                }
+            }
+            if (!(statement instanceof Declaration)) {
                 throw new SemanticError(`Only declarations are allowed within the module scope`, statement);
             }
             statements.push(statement.patch({ meta: [...meta] }));

@@ -43,5 +43,5 @@ export abstract class Declaration extends Statement {
             + this.meta.map(m => `${m}\n`).join(``);
         return metaStrings;
     }
-    
+
 }
