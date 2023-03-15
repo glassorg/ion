@@ -65,6 +65,9 @@ export class BinaryExpressionParselet extends InfixParselet {
                 return left.patch({ location, defaultValue: right });
             }
         }
+        if (operator === "{") {
+            // how will we handle an outline type constraint block?
+        }
         return createBinaryExpression(location, left, operator, right, operatorToken.location);
     }
 

@@ -4,7 +4,47 @@ import { MemoryFileSystem } from "../filesystem/MemoryFileSystem";
 
 const filename = "sample.ion";
 
-async function testCompileError(source: string, startLine: number, startColumn: number, finishLine: number, finishColumn: number) {
+interface ExpectedErrors {
+    source: string;
+    startLine: number;
+    startColumn: number;
+    finishLine: number;
+    finishColumn: number;
+    expectedError: string;
+}
+
+function extractExpectedError(source: string): ExpectedErrors {
+    let ee: ExpectedErrors = { source, startLine: 0, startColumn: 0, finishLine: 0, finishColumn: 0, expectedError: "" };
+    let count = 0;
+    ee.source = source.split("\n").filter((line, lineIndex) => {
+        let result = /\|{3,}/.exec(line);
+        if (result) {
+            let length = result[0].length;
+            let error = line.slice(result.index + length).trim();
+            // console.log(result + ", " + result[0].length + " ---> " + error);
+            if (result.index >= 0) {
+                if (!ee.expectedError) {
+                    ee.expectedError = error;
+                }
+                if (count++ === 0) {
+                    ee.startLine = lineIndex;
+                    ee.startColumn = result.index;
+                }
+                ee.finishLine = lineIndex;
+                ee.finishColumn = result.index + length;
+                return false;
+            }
+        }
+        return true;
+    }).join("\n");
+    if (!ee.expectedError) {
+        throw new Error("Missing expected error");
+    }
+    return ee;
+}
+
+async function testCompileError(rawSource: string) {
+    let { source, startLine, startColumn, finishLine, finishColumn, expectedError } = extractExpectedError(rawSource);
     const sources = {[filename]: source};
     let compiler = new Compiler(new MemoryFileSystem(sources));
     try {
@@ -17,6 +57,7 @@ async function testCompileError(source: string, startLine: number, startColumn: 
             let [error] = errors;
             assert.equal(errors.length, 1, `Expected 1 error compiling: ${source}`);
             assert(error.locations.length >= 1, `Expected at least 1 location within error: ${error}`);
+            assert(error.message.indexOf(expectedError) >= 0, `Expected error (${error.message}) to contain (${expectedError})`);
             let location = error.locations[0];
             let expectedLocation = { startLine, startColumn, finishLine, finishColumn };
             let actualLocation = { startLine: location.startLine, startColumn: location.startColumn, finishLine: location.finishLine, finishColumn: location.finishColumn };
@@ -63,72 +104,42 @@ export async function test() {
 // // var y: Number = 2
 // // `, 3, 0, 3, 17);
 
-// await testCompileError(
-// `
-// struct Integer
-// function bar(a: >= 0)
-//     a = -1
-//     return a
-// `, 2, 16, 2, 20);
+await testCompileError(
+`
+struct Integer
+                |||| can not satisfy
+function bar(a: >= 0)
+    a = -1
+    return a
+`);
 
-// await testCompileError(
-// `
-// struct Integer
-// function bar(a: 0 .. 3)
-//     if a < 0
-//         return a
-//     return a
-// `, 3, 7, 3, 12);
+await testCompileError(
+`
+struct Integer
+function bar(a: 0 .. 3)
+       ||||| test will always fail
+    if a < 0
+        return a
+    return a
+`);
 
-// await testCompileError(
-// `
-// struct Integer
-// function bar(a: 0 .. 3)
-//     if a > -1 && a < 4
-//         return a
-//     return a
-// `, 3, 7, 3, 22);
+await testCompileError(
+`
+struct Integer
+function bar(a: 0 .. 3)
+       ||||||||||||||| test will always pass
+    if a > -1 && a < 4
+        return a
+    return a
+`);
 
-// // // await testCompileError(`
-// // // let a = b
-// // // let b = a
-// // // `, 1, 4, 1, 5);
-
-// // // await testCompileError(`
-// // // let a = a
-// // // `, 1, 8, 1, 9);
-
-// await testCompile(`
-// struct Integer
-// struct String
-// class @Meta
-// @Meta()
-// function min(a: Integer | String, b: Integer)
-//     if a < b
-//         return a
-//     else
-//         return b
-// `);
-
-// // await testCompile(`
-// // struct Integer
-// // let a = 1
+// // await testCompileError(`
+// // let a = b
 // // let b = a
-// // let c = b
-// // `);
+// // `, 1, 4, 1, 5);
 
-// await testCompile(`
-// struct Integer
-// type Range = 0 .. 10
-// `);
-
-// await testCompile(`
-// struct String
-// struct Integer
-// function \`+\`(a: Integer, b: Integer)
-//     return a
-// function add(a: Integer, b: Integer)
-//     return a + b
-// `);
+// // await testCompileError(`
+// // let a = a
+// // `, 1, 8, 1, 9);
 
 }

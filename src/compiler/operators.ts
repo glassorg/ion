@@ -88,9 +88,10 @@ export const LogicalOperators = {
 }
 
 export const InfixOperators = {
-    "[": new Operator(19),    //  ]
+    "[": new Operator(19),  //  ]
     ".": new Operator(19),
-    "(": new Operator(19),    //  )
+    "(": new Operator(19),  //  )
+    "{": new Operator(19),  //  }
     "**": new Operator(17, { overridable: true, rightAssociative: true }),
     "*": new Operator(16, { overridable: true }),
     "/": new Operator(16, { overridable: true }),

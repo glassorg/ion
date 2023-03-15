@@ -20,11 +20,11 @@ import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
 import { ForStatement } from "../../ast/ForStatement";
-import { toTypeExpression } from "../../ast/TypeExpression";
+import { toType } from "../../ast/Type";
 import { TypeReference } from "../../ast/TypeReference";
 import { Type } from "../../ast/Type";
 import { Expression } from "../../ast/Expression";
-import { getArrayElementType, isArrayType, TypeConstraint } from "../../ast/TypeConstraint";
+import { getArrayElementType, isArrayType, TypeExpression } from "../../ast/TypeExpression";
 import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 
@@ -39,11 +39,11 @@ function resolveAll<T extends AstNode>(node: T): T {
 }
 
 function BooleanType(location: SourceLocation) {
-    return resolveAll(toTypeExpression(new TypeReference(location, CoreTypes.Boolean)));
+    return resolveAll(toType(new TypeReference(location, CoreTypes.Boolean)));
 }
 
 function LiteralType(node: Literal<any>) {
-    return resolveAll(toTypeExpression(node));
+    return resolveAll(toType(node));
 }
 
 type ResolveFunction<T extends (new (...args: any) => AstNode)> = (node: InstanceType<T>, c: EvaluationContext) => AstNode | void
@@ -86,12 +86,12 @@ const maybeResolveNode: {
             if (!isTypeReference(node.finish.type, CoreTypes.Integer)) {
                 constraints.push(new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish.type!));
             }
-            const elementType = new TypeConstraint(
+            const elementType = new TypeExpression(
                 node.location,
                 CoreTypes.Integer,
                 constraints
             )
-            const before = new TypeConstraint(
+            const before = new TypeExpression(
                 node.location,
                 new TypeReference(node.location, CoreTypes.Array, [elementType])
                 // could add length constraint here.
@@ -124,7 +124,7 @@ const maybeResolveNode: {
             return resolveAll(node);
         }
     },
-    TypeConstraint(node, c) {
+    TypeExpression(node, c) {
         if (node.baseType.resolved && node.constraints.every(constraint => constraint.resolved)) {
             return resolveAll(node);
         }
@@ -163,13 +163,14 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let knownType = node.value.type!;
-        if (!(knownType instanceof TypeConstraint)) {
+        if (!(knownType instanceof TypeExpression)) {
             throw new SemanticError(`We don't know how to handle this yet`, node.value);
         }
         const assertedDotConstraints = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
-        let newTypes = splitExpressions("||", assertedDotConstraints).map(assertedOption => {
+        const assertedOptions = splitExpressions("||", assertedDotConstraints);
+        let newTypes = assertedOptions.map(assertedOption => {
             return splitExpressions("|", knownType).map(knownTypeOption => {
-                if (!(knownTypeOption instanceof TypeConstraint)) {
+                if (!(knownTypeOption instanceof TypeExpression)) {
                     throw new SemanticError(`We expected a type constraint here ` + knownTypeOption);
                 }
                 return knownTypeOption.patch({
@@ -229,7 +230,7 @@ const maybeResolveNode: {
 
         let type: Type;
         if (callee instanceof StructDeclaration) {
-            type = new TypeConstraint(node.location, callee.absolutePath!);
+            type = new TypeExpression(node.location, callee.absolutePath!);
         }
         else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
             const multiFunc = callee.value;

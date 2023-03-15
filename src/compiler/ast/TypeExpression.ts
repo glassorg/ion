@@ -1,129 +1,62 @@
-import { joinExpressions, splitExpressions } from "./AstFunctions";
-import { CoreTypes } from "../common/CoreType";
-import { SemanticError } from "../SemanticError";
-import { ComparisonExpression } from "./ComparisonExpression";
-import { DotExpression } from "./DotExpression";
 import { Expression } from "./Expression";
-import { FloatLiteral } from "./FloatLiteral";
-import { IntegerLiteral } from "./IntegerLiteral";
-import { Literal } from "./Literal";
-import { RangeExpression } from "./RangeExpression";
-import { Reference } from "./Reference";
-import { UnaryExpression } from "./UnaryExpression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { isType, Type } from "./Type";
-import { TypeConstraint } from "./TypeConstraint";
+import { Type } from "./Type";
 import { TypeReference } from "./TypeReference";
+import { ComparisonExpression } from "./ComparisonExpression";
+import { DotExpression } from "./DotExpression";
+import { joinExpressions } from "./AstFunctions";
+import { CoreTypes } from "../common/CoreType";
+
+export function isArrayType(type?: Type) {
+    return getArrayElementType(type) !== undefined;
+}
+
+export function getArrayElementType(type?: Type): Type | null | undefined {
+    if (type instanceof TypeReference) {
+        if (type.name === CoreTypes.Array) {
+            return type.generics[0] ?? null;
+        }
+    }
+    else if (type instanceof TypeExpression) {
+        return getArrayElementType(type.baseType);
+    }
+}
 
 export class TypeExpression extends Expression implements Type {
 
+    public readonly baseType: TypeReference;
+
     constructor(
         location: SourceLocation,
-        public readonly proposition: Expression
+        baseType: TypeReference | string,
+        public readonly constraints: Expression[] = [],
     ) {
         super(location);
+        this.baseType = baseType instanceof TypeReference ? baseType : new TypeReference(location, baseType);
     }
 
     get isType(): true { return true }
 
-    public toKype(): kype.TypeExpression {
-        return new kype.TypeExpression(this.proposition.toKype());
+    public toKype() {
+        const constraints = [...this.constraints];
+        if (this.baseType.name !== CoreTypes.Any) {
+            constraints.push(
+                new ComparisonExpression(this.baseType.location, new DotExpression(this.baseType.location), "is", this.baseType)
+            )
+        }
+        return new kype.TypeExpression(joinExpressions("&&", constraints).toKype());
     }
 
     toString() {
-        return `{ ${this.proposition} }`;
-    }
-}
-
-/**
- * A Type expression is an expression which contains DotExpressions.
- * A value is an instance of a type if when the value is substituted
- * for every dot expression the resulting expression is true.
- * Examples:
- *      Number = Number{}
- *      ZeroToOne = Float{ . >= 0.0 && . <= 1.0 }
- */
-export function toTypeExpression(e: Expression): Type {
-    if (isType(e)) {
-        return e;
+        return `${this.baseType}{${this.constraints}}`;
     }
 
-    {
-        let options = splitExpressions("||", e);
-        if (options.length > 1) {
-            throw new SemanticError(`Cannot combine types with ||, use |`, e);
+    public toUserTypeString(): string {
+        if (this.constraints.length === 0) {
+            return this.baseType.toUserTypeString();
         }
-        for (let option of options) {
-            let terms = splitExpressions("&&", option);
-            if (terms.length > 1) {
-                throw new SemanticError(`Cannot combine types with &&, use &`, e);
-            }
-        }
+        return `${this.baseType.toUserTypeString()}{${this.constraints.map(c => c.toUserTypeString()).join(",")}}`;
     }
-    const result = joinExpressions("|", splitExpressions("|", e).map(option => {
-        return joinExpressions("&", splitExpressions("&", option).map(term => {
-            if (term instanceof UnaryExpression) {
-                switch (term.operator) {
-                    case "!=":
-                    case ">":
-                    case ">=":
-                    case "<":
-                    case "<=":
-                        term = new TypeConstraint(
-                            term.location,
-                            term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
-                            [
-                                new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
-                            ]
-                        );
-                        break;
-                    default:
-                        console.log(term);
-                        throw new SemanticError(`Unsupported type expression: ${term}`);
-                }
-            }
-            //  we can't convert to range without knowing
-            else if (term instanceof RangeExpression) {
-                const { start, finish } = term;
-                if (!(
-                    ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
-                    ||
-                    ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
-                )) {
-                    console.log({ start: start.toString(), finish: finish.toString() })
-                    throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
-                }
-                if (!(finish.value > start.value)) {
-                    throw new SemanticError(`Range finish must be more than start`, term);
-                }
-                const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
-                return new TypeConstraint(
-                    term.location,
-                    coreType, [
-                        new ComparisonExpression(term.location, new DotExpression(term.location), (term.minExclusive ? ">" : ">="), term.start),
-                        new ComparisonExpression(term.location, new DotExpression(term.location), (term.maxExclusive ? "<" : "<="), term.finish),
-                    ]
-                );
-            }
-            else if (term instanceof Reference) {
-                const baseType = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
-                term = new TypeConstraint(term.location, baseType);
-            }
-            else if (term instanceof Literal) {
-                term = new TypeConstraint(
-                    term.location,
-                    term instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
-                    [
-                        new ComparisonExpression(term.location, new DotExpression(term.location), "==", term)
-                    ]
-                )
-            }
-            return term;
-        }));
-    }));
-    if (!isType(result)) {
-        throw new Error(`Expected a Type: ${result}`);
-    }
-    return result;
+
 }

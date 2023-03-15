@@ -6,7 +6,7 @@ import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { CoreType, CoreTypes } from "../common/CoreType";
 import { Type } from "../ast/Type";
-import { TypeConstraint } from "../ast/TypeConstraint";
+import { TypeExpression } from "../ast/TypeExpression";
 
 function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
     return (callee: CallExpression, a: Type, b: Type) => {
@@ -15,7 +15,7 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
         const kypeExpression = new kype.BinaryExpression(aKype, operator as kype.BinaryOperator, bKype);
         const result = kype.simplify(kypeExpression) as kype.TypeExpression;
         const ionResult = joinExpressions("|", result.proposition.split("||").map(kypeExpr => {
-            return new TypeConstraint(
+            return new TypeExpression(
                 callee.location,
                 coreType,
                 splitExpressions("&&", toIonExpression(kypeExpr, callee.location))
@@ -51,7 +51,7 @@ export const nativeFunctionReturnTypes: { [name: string]: ((callee: CallExpressi
     "`*`(Float{},Float{})": binaryTypeFunction("*", CoreTypes.Float),
     "`**`(Float{},Float{})": (callee) => { throw new SemanticError(`Exponent must be an integer`, callee) },
     "`/`(Float{},Float{})": binaryTypeFunction("/", CoreTypes.Float),
-    "`/`(Float{(. == 0.0)},Float{(. == 0.0)})": (callee) => new TypeConstraint(callee.location, CoreTypes.NaN),
+    "`/`(Float{(. == 0.0)},Float{(. == 0.0)})": (callee) => new TypeExpression(callee.location, CoreTypes.NaN),
     "`%`(Float{},Float{})": binaryTypeFunction("%", CoreTypes.Float),
     "`%`(Float{},0.0)": (callee) => { throw new SemanticError(`Possible float modulus by zero`, callee) },
 };

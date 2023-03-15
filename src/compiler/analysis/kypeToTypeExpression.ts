@@ -1,4 +1,5 @@
 import * as kype from "@glas/kype";
+import { isAlways, isNever } from "@glas/kype";
 import { createBinaryExpression, joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { BinaryExpression } from "../ast/BinaryExpression";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
@@ -11,7 +12,7 @@ import { MultiFunctionType } from "../ast/MultiFunctionType";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Type } from "../ast/Type";
-import { TypeConstraint } from "../ast/TypeConstraint";
+import { TypeExpression } from "../ast/TypeExpression";
 import { TypeReference } from "../ast/TypeReference";
 import { CoreTypes } from "../common/CoreType";
 import { SemanticError } from "../SemanticError";
@@ -31,6 +32,12 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
         return createBinaryExpression(location, toIonExpression(e.left, location), e.operator as any, toIonExpression(e.right, location));
     }
     if (e instanceof kype.TypeExpression) {
+        if (isAlways(e)) {
+            return new TypeExpression(location, CoreTypes.Always);
+        }
+        if (isNever(e)) {
+            return new TypeExpression(location, CoreTypes.Never);
+        }
         return joinExpressions("|", splitExpressions("||", toIonExpression(e.proposition, location)).map(option => {
             if (option instanceof FunctionType || option instanceof MultiFunctionType) {
                 return option;
@@ -59,7 +66,7 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
                     return true;
                 })
             }
-            return new TypeConstraint(
+            return new TypeExpression(
                 location,
                 baseType,
                 otherConstraints

@@ -39,8 +39,10 @@ export function createParser() {
         Extends: new ReservedWordParselet(),
         Implements: new ReservedWordParselet(),
         Function: new FunctionParselet(),
+        // begin legacy
         Let: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value, kind: VariableKind.Constant })),
         Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toType(value))),
+        // end legacy
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
         OpenBracket: new GroupParselet(TokenNames.CloseBracket, true),

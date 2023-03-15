@@ -7,6 +7,8 @@ export const CoreTypes = {
     String: "String",
     Any: "Any",
     Native: "@Native",
+    Always: "Always",
+    Never: "Never",
 } as const;
 
 export type CoreType = keyof typeof CoreTypes;

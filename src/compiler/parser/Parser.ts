@@ -10,7 +10,7 @@ import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
 import { Token } from "../ast/Token";
-import { isMetaId } from "../common/names";
+import { isMetaId, isTypeName } from "../common/names";
 import { SemanticError } from "../SemanticError";
 import { Tokenizer } from "./tokenizer/Tokenizer";
 import { TokenName, TokenNames, TokenTypes } from "./tokenizer/TokenTypes";
@@ -21,6 +21,8 @@ import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
 import { Declarator } from "../ast/Declarator";
 import { FunctionExpression } from "../ast/FunctionExpression";
 import { FunctionDeclaration } from "../ast/FunctionDeclaration";
+import { TypeDeclaration } from "../ast/TypeDeclaration";
+import { toType } from "../ast/Type";
 
 export class Parser {
 
@@ -152,10 +154,17 @@ export class Parser {
                     );
                 }
                 else {
-                    statement = new VariableDeclaration(
-                        location, declarator,
-                        { kind: VariableKind.Constant, value }
-                    );
+                    if (isTypeName(declarator.name)) {
+                        statement = new TypeDeclaration(
+                            location, declarator, toType(value)
+                        )
+                    }
+                    else {
+                        statement = new VariableDeclaration(
+                            location, declarator,
+                            { kind: VariableKind.Constant, value }
+                        );
+                    }
                 }
             }
             if (!(statement instanceof Declaration)) {
