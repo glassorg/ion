@@ -13,6 +13,7 @@ function `-`(a: Integer, b: Integer) : Integer
 function `*`(a: Integer, b: Integer) : Integer
     return a
 
+//  See https://augustus-pash.gitbook.io/wasm/maths-algorithms/pow
 @Native()
 function `**`(a: Integer, b: Integer) : Integer
     return a

@@ -1,9 +1,5 @@
 import { SourceLocation } from "./SourceLocation";
-import * as kype from "@glas/kype";
 import { Type } from "./Type";
-import { ComparisonExpression } from "./ComparisonExpression";
-import { DotExpression } from "./DotExpression";
-import { joinExpressions } from "./AstFunctions";
 import { UnaryExpression } from "./UnaryExpression";
 import { Reference } from "./Reference";
 

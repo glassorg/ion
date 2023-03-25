@@ -4,13 +4,16 @@ import { SourceLocation } from "./SourceLocation";
 import { Declaration } from "./Declaration";
 import { Type } from "./Type";
 import { CallExpression } from "./CallExpression";
+import { CoreTypes } from "../common/CoreType";
+import { TypeExpression } from "./TypeExpression";
 
 export enum VariableKind {
     Constant = "const",
     Phi = "phi",
     Var = "var",
     Property = "prop",
-    Parameter = "param"
+    Parameter = "param",
+    Type = "type",
 }
 
 export interface VariableOptions {
@@ -32,6 +35,16 @@ export function newParameterDeclaration(location: SourceLocation, id: Declarator
     return new VariableDeclaration(location, id, { kind: VariableKind.Parameter, type, value }) as ParameterDeclaration;
 }
 
+export interface TypeDeclaration extends VariableDeclaration {
+    kind: VariableKind.Type;
+    type: TypeExpression;
+    value: Type;
+}
+
+export function isTypeDeclaration(value: unknown): value is TypeDeclaration {
+    return value instanceof VariableDeclaration && value.kind === VariableKind.Type;
+}
+
 export class VariableDeclaration extends Declaration {
 
     public readonly kind: VariableKind;
@@ -43,7 +56,12 @@ export class VariableDeclaration extends Declaration {
         id: Declarator,
         options: VariableOptions = {},
     ){
-        super(location, id, options.type, options.meta);
+        super(
+            location,
+            id,
+            (options.kind === VariableKind.Type ? new TypeExpression(id.location, CoreTypes.Type) : options.type),
+            options.meta
+        );
         this.kind = options.kind ?? VariableKind.Var;
         this.value = options.value;
         this.declaredType = options.declaredType;
@@ -53,6 +71,7 @@ export class VariableDeclaration extends Declaration {
         switch(this.kind) {
             case VariableKind.Constant:
             case VariableKind.Phi:
+            case VariableKind.Type:
                 return true;
             default:
                 return false;

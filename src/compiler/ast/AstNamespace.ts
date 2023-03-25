@@ -1,7 +1,4 @@
-// export * from "./AbstractTypeDeclaration";
-// export * from "./AbstractValueDeclaration";
 export * from "./AssignmentExpression";
-// export * from "./AstNode";
 export * from "./BinaryExpression";
 export * from "./BlockStatement";
 export * from "./CallExpression";
@@ -41,7 +38,6 @@ export * from "./Token";
 export * from "./TypeExpression";
 export * from "./TypeOfExpression"
 export * from "./CompositeType";
-export * from "./TypeDeclaration";
 export * from "./TypeReference";
 export * from "./MultiFunction";
 export * from "./FunctionType";

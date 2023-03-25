@@ -21,7 +21,6 @@ import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
 import { Declarator } from "../ast/Declarator";
 import { FunctionExpression } from "../ast/FunctionExpression";
 import { FunctionDeclaration } from "../ast/FunctionDeclaration";
-import { TypeDeclaration } from "../ast/TypeDeclaration";
 import { toType } from "../ast/Type";
 
 export class Parser {
@@ -155,8 +154,8 @@ export class Parser {
                 }
                 else {
                     if (isTypeName(declarator.name)) {
-                        statement = new TypeDeclaration(
-                            location, declarator, toType(value)
+                        statement = new VariableDeclaration(
+                            location, declarator, { value: toType(value), kind: VariableKind.Type }
                         )
                     }
                     else {

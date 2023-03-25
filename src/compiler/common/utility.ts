@@ -1,4 +1,5 @@
 import { joinExpressions, splitExpressions } from "../ast/AstFunctions";
+import { AstNode } from "../ast/AstNode";
 import { BlockStatement } from "../ast/BlockStatement";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression } from "../ast/DotExpression";
@@ -6,8 +7,9 @@ import { Expression } from "../ast/Expression";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
 import { Type } from "../ast/Type";
+import { TypeExpression } from "../ast/TypeExpression";
 import { ComparisonOperator, ComparisonOperators, isComparisonOperator, LogicalOperator } from "../Operators";
-import { traverse } from "./traverse";
+import { skip, traverse } from "./traverse";
 
 function getLastBlockNode(maybeBlock: Statement): Statement {
     if (maybeBlock instanceof BlockStatement) {
@@ -66,6 +68,23 @@ export function hasDot(root: Expression, dot: Expression) {
     return found;
 }
 
+export function replaceDotExpressions(root: Expression, replacement: Expression): Expression {
+    return traverse(root, {
+        enter(node) {
+            if (node instanceof TypeExpression) {
+                //  we skip type expressions because we don't
+                //  want to replace their child dot expressions
+                //  their dot expressions are bound to them
+                return skip;
+            }
+        },
+        leave(node) {
+            if (node instanceof DotExpression) {
+                return replacement;
+            }
+        }
+    })
+}
 export function expressionToType(e: Expression, dot: Expression, negate: boolean): Expression | null {
     //  if this is a Block, it could have been created just to hold a conditional assertion
     //  replace it with the last node in the block.
@@ -96,36 +115,9 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
                 return new ComparisonExpression(e.location, new DotExpression(e.left.location), operator, right);
             }
             else {
-                // //  TODO: This next
-                // //  then figure out how to handle sample.ion thingy
-                // if (left instanceof MemberExpression) {
-                //     // console.log({
-                //     //     leftObject: left.object.toString(),
-                //     //     dot: dot.toString()
-                //     // });
-                //     if (left.object.toString() === dot.toString()) {
-                //         // console.log("------------: " + left.object + " ?? " + dot);
-                //         if (compareOperators[operator]) {
-                //             let rightType = compareOperators[operator].toType(right);
-                //             let newObjectType = new ObjectType({
-                //                 location: e.location,
-                //                 properties: [new Pair({
-                //                     location: e.location,
-                //                     key: left.property as Type,
-                //                     value: rightType
-                //                 })]
-                //             });
-                //             return newObjectType;
-                //         }
-                //     }
-                // }
                 console.log("Handle your nested shit here: ", { left: left.toString(), e: e.toString() } );
             }
         }
     }
     return null;
 }
-
-// export function getTypeAssertion(absolutePathName: string, location: SourceLocation): ComparisonExpression {
-//     return toTypeExpression(new Reference(location, absolutePathName)) as ComparisonExpression;
-// }

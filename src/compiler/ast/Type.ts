@@ -1,4 +1,5 @@
 import { CoreTypes } from "../common/CoreType";
+import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
 import { joinExpressions, splitExpressions } from "./AstFunctions";
 import { ComparisonExpression } from "./ComparisonExpression";

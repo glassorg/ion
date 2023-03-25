@@ -15,7 +15,7 @@ import { LogicalOperator } from "../../Operators";
 import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
 import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { isTypeDeclaration, VariableDeclaration } from "../../ast/VariableDeclaration";
 import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
@@ -27,6 +27,7 @@ import { Expression } from "../../ast/Expression";
 import { getArrayElementType, isArrayType, TypeExpression } from "../../ast/TypeExpression";
 import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
+import { Identifier } from "../../ast/Identifier";
 
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
@@ -121,17 +122,45 @@ const maybeResolveNode: {
     },
     CompositeType(node, c) {
         if (node.left.resolved && node.right.resolved) {
-            return resolveAll(node);
+            return resolveAll(simplify(node));
         }
+    },
+    DotExpression(node, c) {
+        // get parent dot expression.
+        const parentTypeExpression = c.lookup.findAncestor(node, TypeExpression);
+        if (!parentTypeExpression) {
+            throw new SemanticError(`Dot expression only valid within a TypeExpression`, node);
+        }
+        if (!parentTypeExpression.baseType.resolved) {
+            return;
+        }
+        return node.patch({ type: parentTypeExpression.baseType.type!, resolved: true });
     },
     TypeExpression(node, c) {
         if (node.baseType.resolved && node.constraints.every(constraint => constraint.resolved)) {
+            const declaration = c.getOriginalDeclaration(node.baseType);
+            // let changed = false;
+            // const constraints = node.constraints.map(child => {
+            //     console.log(child.toString());
+            //     if (child instanceof ComparisonExpression && child.operator === "is") {
+            //         console.log({
+            //             left: child.left.toString(),
+            //             right: child.right.toString(),
+            //         })
+            //     }
+    
+            //     // check
+            //     return child;
+            // });
+            
+            if (isTypeDeclaration(declaration)) {
+                // This needs to combine the current constraints to the base declaration.
+                if (node.constraints.length > 0) {
+                    throw new SemanticError(`WE NEED TO IMPLEMENT TYPE COMBINING`, node);
+                }
+                return declaration.value;
+            }
             return resolveAll(node);
-        }
-    },
-    TypeDeclaration(node, c) {
-        if (node.type.resolved) {
-            return node.patch({ type: resolveAll(simplify(node.type)), resolved: true });
         }
     },
     VariableDeclaration(node, c) {
@@ -196,8 +225,8 @@ const maybeResolveNode: {
         if (!node.fields.every(child => child.resolved)) {
             return;
         }
-        // TODO: Add Instance Types for Class Declarations...
-        const type = resolveAll(new TypeReference(node.id.location, node.absolutePath!));
+        // convert to a TypeExpression.
+        const type = resolveAll(new TypeExpression(node.id.location, node.absolutePath!));
         return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
@@ -206,25 +235,12 @@ const maybeResolveNode: {
         }
         const callee = c.getDeclaration(node.callee);
 
-        function debug(...args: any[]) {
-            if (callee.id.name === "/") {
-                console.log(...args);
-            }
-        }
-
-        if (c.getDeclaration(node.callee) instanceof VariableDeclaration) {
-            const multiFunc = c.getConstantValue(node.callee) as MultiFunction;
-
-            // debug(JSON.stringify({
-            //     calleeResolved: callee.resolved,
-            //     funcsResolved: Object.fromEntries(
-            //         multiFunc.functions.map(m => [m.name, m.resolved])
-            //     )
-            // }, null, 2))
-        }
-
         // functions need to be resolved into inferred types or something.
         if (!callee.resolved || !(node.args.every(arg => arg.type?.resolved))) {
+            // const DEBUG = node.toString() === "`**`(`+`(`*`(`v:1:0`.x, `v:1:0`.x) :: Float{(. >= 0.0),(. <= 1.0)}, `*`(`v:1:0`.y, `v:1:0`.y) :: Float{(. >= 0.0),(. <= 1.0)}) :: Float{(. >= 0.0),(. <= 2.0)}, 0.5)";
+            // if (DEBUG) {
+            //     console.log(node.args);
+            // }
             return;
         }
 
@@ -236,7 +252,6 @@ const maybeResolveNode: {
             const multiFunc = callee.value;
             // boom, we have the correctly resolved types.
             const argTypes = node.args.map(arg => arg.type!);
-    
             type = multiFunc.getReturnType(argTypes, c, node);
         }
         else {
@@ -288,6 +303,17 @@ const maybeResolveNode: {
             }
         }
         return node.patch({ type, resolved: true });
+    },
+    MemberExpression(node, c) {
+        if (!node.object.resolved || (node.isPropertyResolved)) {
+            return;
+        }
+        const objectType = node.object.type!;
+        if (!(objectType instanceof TypeExpression)) {
+            throw new SemanticError(`Expected TypeExpression`, objectType)
+        }
+        const propertyType = objectType.getMemberType(node.property, c);
+        return node.patch({ resolved: true, type: resolveAll(propertyType) });
     },
     MultiFunction(node, c) {
         // check if every is resolved?

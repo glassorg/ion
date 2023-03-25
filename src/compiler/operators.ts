@@ -113,7 +113,7 @@ export const InfixOperators = {
     "||": LogicalOperators["||"],
     ":": new Operator(5),
     "::": new Operator(5),
-    "=>": new Operator(4, { allowOutline: true }),
+    "->": new Operator(4, { allowOutline: true }),
     ...AssignmentOperators,
     ...SequenceOperators,
 } as const;

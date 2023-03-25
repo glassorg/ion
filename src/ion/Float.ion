@@ -18,10 +18,6 @@ function `**`(a: Float, b: Float) : Error
     return Error()
 
 @Native()
-function `**`(a: Float, b: Integer) : Float
-    return a
-
-@Native()
 function `/`(a: Float, b: Float) : Float
     return a
 

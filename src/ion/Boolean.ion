@@ -1,2 +1,2 @@
 
-type Boolean = 0 | 1
+Boolean = 0 | 1

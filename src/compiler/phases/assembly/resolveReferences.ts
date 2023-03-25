@@ -4,6 +4,10 @@ import { traverse } from "../../common/traverse";
 import { createScopes } from "../../createScopes";
 import { SemanticError } from "../../SemanticError";
 import { joinPath, splitPath } from "../../common/pathFunctions";
+import { TypeExpression } from "../../ast/TypeExpression";
+import { DotExpression } from "../../ast/DotExpression";
+import { MemberExpression } from "../../ast/MemberExpression";
+import { Identifier } from "../../ast/Identifier";
 
 export function getPossiblePaths(fromPath: string, unresolvedName: string): string[] {
     let paths: string[] = [];
@@ -19,7 +23,7 @@ export function resolveReferences(root: Assembly): Assembly {
     const scopes = createScopes(root);
     let declarations = root.declarations.map(declaration => {
         return traverse(declaration, {
-            leave(node) {
+            leave(node, ancestors) {
                 if (node instanceof Reference) {
                     const scope = scopes.get(node.scopeKey);
                     const declarations = scope[node.name];
@@ -31,6 +35,14 @@ export function resolveReferences(root: Assembly): Assembly {
                                 // change this reference to the new path
                                 return node.patch({ name: path });
                             }
+                        }
+                        //  check and see if we are within a TypeExpression.
+                        //  if so this could be an implicit dot expression.
+
+                        const hasTypeExpressionAncestor = ancestors.find(a => a instanceof TypeExpression);
+                        if (hasTypeExpressionAncestor) {
+                            // convert this to a dot expression reference.
+                            return new MemberExpression(node.location, new DotExpression(node.location), new Identifier(node.location, node.name));
                         }
                         throw new SemanticError(`Could not resolve reference: ${node.name}`, node);
                     }

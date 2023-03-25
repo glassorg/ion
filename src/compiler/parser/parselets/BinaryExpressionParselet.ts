@@ -54,7 +54,7 @@ export class BinaryExpressionParselet extends InfixParselet {
             let maxExclusive = operator.endsWith("<");
             return new RangeExpression(location, left, right, minExclusive, maxExclusive);
         }
-        if (operator === "=>") {
+        if (operator === "->") {
             return FunctionExpression.createFromLambda(left, right);
         }
         if (isAssignmentOperator(operator)) {
@@ -66,7 +66,9 @@ export class BinaryExpressionParselet extends InfixParselet {
             }
         }
         if (operator === "{") {
-            // how will we handle an outline type constraint block?
+            throw new SemanticError("?????????", left);
+            console.log("---------->", operator);
+            // how will we handle an inline type constraint block?
         }
         return createBinaryExpression(location, left, operator, right, operatorToken.location);
     }

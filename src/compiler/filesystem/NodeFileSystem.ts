@@ -2,7 +2,6 @@ import { Content, FileSystem, Path } from "./FileSystem";
 import * as np from "path";
 import * as fileUtility from "./fileUtility";
 
-//  TODO: Make this actually use the async file functions.
 export class NodeFileSystem extends FileSystem {
 
     constructor(

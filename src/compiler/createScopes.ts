@@ -6,6 +6,7 @@ import { FunctionExpression } from "./ast/FunctionExpression";
 import { isScopeNode } from "./ast/ScopeNode";
 import { traverse } from "./common/traverse";
 import { isSSAVersionName } from "./phases/assembly/ssaForm";
+import { SemanticError } from "./SemanticError";
 
 export interface Scope {
     [id: string]: Declaration
@@ -41,7 +42,7 @@ export function createScopes(root: Assembly): Scopes {
         let currentValue: Declaration | undefined = currentScope[name];
         if (currentValue) {
             // do we allow overwriting a variable in a parent scope?
-            console.log(`Overwriting variable: ${name}`);
+            console.log(`Overwriting variable: ${name}: ${currentValue}`);
         }
         currentScope[name] = declaration;
 

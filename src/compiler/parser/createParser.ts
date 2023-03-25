@@ -17,12 +17,12 @@ import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { TokenNames } from "./tokenizer/TokenTypes";
 import { VariableParselet } from "./parselets/VariableParselet";
 import { ConstantParselet } from "./parselets/ConstantParselet";
-import { TypeDeclaration } from "../ast/TypeDeclaration";
 import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
 import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
 import { toType } from "../ast/Type";
+import { InlineTypeExpressionParselet } from "./parselets/InlineTypeExpressionParselet";
 
 export function createParser() {
     return new Parser({
@@ -41,7 +41,7 @@ export function createParser() {
         Function: new FunctionParselet(),
         // begin legacy
         Let: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value, kind: VariableKind.Constant })),
-        Type: new ConstantParselet((location, id, value) => new TypeDeclaration(location, id, toType(value))),
+        Type: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value: toType(value), kind: VariableKind.Type })),
         // end legacy
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
@@ -54,6 +54,7 @@ export function createParser() {
     },
     {
         Operator: new BinaryExpressionParselet(),
+        OpenBrace: new InlineTypeExpressionParselet(TokenNames.CloseBrace),
         OpenParen: new CallParselet(TokenNames.CloseParen),
         OpenBracket: new MemberParselet(TokenNames.CloseBracket),
     })

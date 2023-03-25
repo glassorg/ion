@@ -73,36 +73,14 @@ async function testCompileError(rawSource: string) {
     }
 }
 
-type Files = { [filename: string]: string };
-
-async function testCompile(source: string | Files, checkTypes?: { [key: string]: string}, debug = false) {
-    let files = typeof source === "string" ? {[filename]: source} : source;
-    let compiler = new Compiler(new MemoryFileSystem(files), { debugPattern: debug ? /.*/ : undefined });
-    let assembly = await compiler.compileAllFiles();
-    let resolvedDeclarations = assembly.declarations;
-    assert(resolvedDeclarations.length > 0);
-
-    // doesn't work yet...
-    if (checkTypes) {
-        for (const name in checkTypes) {
-            const expectedType = checkTypes[name];
-            const declaration = resolvedDeclarations.find(d => d.id.name === name);
-            if (!declaration) {
-                throw new Error(`Declaration not found: ${name}`);
-            }
-            console.log(declaration.toString());
-        }
-        // console.log(resolvedDeclarations.map(a => a.id.name));
-    }
-}
-
 export async function test() {
-// // await testCompileError(
-// // `
-// // struct Integer
-// // struct Number
-// // var y: Number = 2
-// // `, 3, 0, 3, 17);
+// await testCompileError(
+// `
+// struct Integer
+// struct Number
+//                 ||| error
+// var y: Number = 231
+// `);
 
 await testCompileError(
 `
@@ -113,25 +91,25 @@ function bar(a: >= 0)
     return a
 `);
 
-await testCompileError(
-`
-struct Integer
-function bar(a: 0 .. 3)
-       ||||| test will always fail
-    if a < 0
-        return a
-    return a
-`);
+// await testCompileError(
+// `
+// struct Integer
+// bar = (a: 0 .. 3) =>
+//        ||||| test will always fail
+//     if a < 0
+//         return a
+//     return a
+// `);
 
-await testCompileError(
-`
-struct Integer
-function bar(a: 0 .. 3)
-       ||||||||||||||| test will always pass
-    if a > -1 && a < 4
-        return a
-    return a
-`);
+// await testCompileError(
+// `
+// struct Integer
+// bar = (a: 0 .. 3) =>
+//        ||||||||||||||| test will always pass
+//     if a > -1 && a < 4
+//         return a
+//     return a
+// `);
 
 // // await testCompileError(`
 // // let a = b

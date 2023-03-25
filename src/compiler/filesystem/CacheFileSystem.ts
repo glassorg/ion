@@ -3,7 +3,6 @@ import * as np from "path";
 import * as fileUtility from "./fileUtility";
 import { memoize } from "@glas/kype";
 
-//  TODO: Make this actually use the async file functions.
 export class CacheFileSystem extends FileSystem {
 
     private cache: Record<string,string|null> = {};

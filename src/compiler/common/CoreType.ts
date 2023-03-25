@@ -1,14 +1,15 @@
 export const CoreTypes = {
     Integer: "Integer",
-    Boolean: "Boolean",
-    Array: "Array",
     Float: "Float",
-    NaN: "NaN",
-    String: "String",
+    Boolean: "Boolean",
     Any: "Any",
+    Array: "Array",
+    NaN: "NaN",
     Native: "@Native",
+    String: "String",
     Always: "Always",
     Never: "Never",
+    Type: "Type",
 } as const;
 
 export type CoreType = keyof typeof CoreTypes;

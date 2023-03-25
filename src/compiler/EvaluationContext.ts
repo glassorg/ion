@@ -3,7 +3,7 @@ import { AstNode } from "./ast/AstNode";
 import { Declaration } from "./ast/Declaration";
 import { Expression } from "./ast/Expression";
 import { Reference } from "./ast/Reference";
-import { VariableDeclaration, VariableKind } from "./ast/VariableDeclaration";
+import { VariableDeclaration } from "./ast/VariableDeclaration";
 import { globalScopeKey, Scopes } from "./createScopes";
 import { SemanticError } from "./SemanticError";
 
@@ -27,56 +27,28 @@ export class EvaluationContext {
         return declaration;
     }
 
-    getConstantValue(from: Reference): Expression {
+    getOriginalDeclaration(from: Reference): Declaration {
         const declaration = this.getDeclaration(from);
+        if (declaration instanceof VariableDeclaration) {
+            const value = declaration.value;
+            if (value instanceof Reference) {
+                return this.getOriginalDeclaration(value);
+            }
+        }
+        return declaration;
+    }
+
+    getConstantValue(from: Reference): Expression {
+        const declaration = this.getOriginalDeclaration(from);
         if (!(declaration instanceof VariableDeclaration && declaration.isConstant)) {
+            console.log(declaration);
             throw new SemanticError(`Does not reference a constant ${from}`, from);
         }
         const value = declaration.value;
         if (!value) {
             throw new SemanticError(`Constant missing value`, declaration);
         }
-        return value instanceof Reference ? this.getConstantValue(value) : value;
+        return value;
     }
-
-    // getDeclarations(ref: Reference) {
-    //     return this.getDeclarationsFromName(ref, ref.name);
-    // }
-
-    // getType(node: Resolvable) {
-    //     if (!isResolved(node)) {
-    //         throw new SemanticError(`Node is not resolved yet`, node);
-    //     }
-    //     node = this.lookup.getCurrent(node);
-    //     return this.getReferencedType(node.type!);
-    // }
-
-    // private getReferencedType(type: Type): Type {
-    //     if (isTypeof(type)) {
-    //         const declaration = this.getSingleDeclaration(type.argument) as Resolved;
-    //         return this.getType(declaration);
-    //     }
-    //     return type;
-    // }
-
-    // getFunctionTypes(callee: Expression, argTypes: TypeExpression[]): OldFunctionType | FunctionDeclaration[] {
-    //     if (callee instanceof FunctionExpression) {
-    //         return callee;
-    //     }
-    //     if (callee instanceof Reference) {
-    //         const allFunctions = this.getDeclarations(callee);
-    //         //  now we've found some functions, let's see which ones are potentially valid.
-    //         //  we need kype-based type checking.
-    //         const validFunctions = allFunctions?.filter(declaration => {
-    //             if (!(declaration instanceof FunctionDeclaration)) {
-    //                 throw new SemanticError(`Expected FunctionDeclaration`, declaration);
-    //             }
-    //             const func = declaration.value;
-    //             return areValidArguments(func, argTypes) !== false;
-    //         });
-    //         return validFunctions as FunctionDeclaration[] ?? [];
-    //     }
-    //     throw new SemanticError(`Not a valid function`, callee);
-    // }
 
 }

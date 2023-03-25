@@ -1,31 +1,54 @@
 
-float_div_float = (a: Float, b: Float) :: Float | NaN => a / b
+float_div_float = (a: Float, b: Float) :: Float | NaN -> a / b
 
-nonzero_div_Float = (a: != 0.0, b: Float) :: Float => a / b
+nonzero_div_Float = (a: != 0.0, b: Float) :: Float -> a / b
 
-float_div_NonZero = (a: Float, b: != 0.0) :: Float => a / b
+float_div_NonZero = (a: Float, b: != 0.0) :: Float -> a / b
 
-positive_mod_10 = (a: >= 0) :: 0 .. 9 => a % 10
+positive_mod_10 = (a: >= 0) :: 0 .. 9 -> a % 10
 
-mod_10 = (a: Integer) :: -9 .. 9 => a % 10
+mod_10 = (a: Integer) :: -9 .. 9 -> a % 10
 
-one_to_four_div_neg_four_to_four = (a: 1.0 .. 4.0, b: -4.0 .. 4.0) :: <= -0.25 | >= 0.25 =>
+one_to_four_div_neg_four_to_four = (a: 1.0 .. 4.0, b: -4.0 .. 4.0) :: <= -0.25 | >= 0.25 ->
     a / b
 
-for_loop_result_positive = (a: Integer) :: >= 0 =>
+for_loop_result_positive = (a: Integer) :: >= 0 ->
     total: >= 0 = 0
     for i in 0 .. a
         total += i
     total
 
-divide_non_zero = (a: -1.0 .. 5.0, b: -2.0 .. 2.0) :: Float =>
+divide_non_zero = (a: -1.0 .. 5.0, b: -2.0 .. 2.0) :: Float ->
     if b == 0.0
         return - 10.0
     a / b
 
-conditionals_add = (a: -1.0 .. 5.0, b: -2.0 .. 2.0) :: -20.0 | -10.0 | -3.0 ..< 5.0 =>
+conditionals_add = (a: -1.0 .. 5.0, b: -2.0 .. 2.0) :: -20.0 | -10.0 | -3.0 ..< 5.0 ->
     if b == 0.0
         return -10.0
     if b > 0.0
         return -20.0
     a + b
+
+Positive = > 0
+Zero = 0
+Whole = Zero | Positive
+
+whole = (a: Whole) :: >= 0 -> a
+
+struct Vector
+    x: 0.0 .. 1.0
+    y: 0.0 .. 1.0
+
+length = (v: Vector) :: 0.0 .. 1.4142135623730951 ->
+    (v.x * v.x + v.y * v.y) ** 0.5
+
+struct Alpha
+    a: 0.0 .. 2.0
+    b: 1.0 .. 3.0
+
+struct Higher
+    one: Vector
+    two: Alpha
+
+sum = (h: Higher) :: 1.0 .. 7.0 -> h.one.x + h.one.y + h.two.a + h.two.b

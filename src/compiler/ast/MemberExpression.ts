@@ -22,9 +22,13 @@ export class MemberExpression extends Expression {
     constructor(
         location: SourceLocation,
         public readonly object: Expression,
-        public readonly property: Identifier,
+        public readonly property: Identifier | Expression,
     ){
         super(location);
+    }
+
+    get isPropertyResolved() {
+        return this.property instanceof Identifier || this.property.resolved;
     }
 
     public toKype(): kype.Expression {

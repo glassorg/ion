@@ -4,6 +4,8 @@ import { toKypeCheck } from "./BinaryExpression";
 import { DotExpression } from "./DotExpression";
 import * as kype from "@glas/kype";
 import { SourceLocation } from "./SourceLocation";
+import { Identifier } from "./Identifier";
+import { EvaluationContext } from "../EvaluationContext";
 
 export class TypeReference extends Reference implements Type {
 
