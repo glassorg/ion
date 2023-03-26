@@ -70,7 +70,7 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
                 location,
                 baseType,
                 otherConstraints
-            )
+            ).toNestedIsForm();
         }));
     }
     // we NEED to know the difference between Integers and Floats.

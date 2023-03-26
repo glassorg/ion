@@ -1,4 +1,6 @@
 import { strict as assert } from "assert";
+import { simplify } from "../analysis/simplify";
+import { joinExpressions } from "../ast/AstFunctions";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
 import { DotExpression } from "../ast/DotExpression";
 import { FloatLiteral } from "../ast/FloatLiteral";
@@ -7,11 +9,10 @@ import { MemberExpression } from "../ast/MemberExpression";
 import { SourceLocation } from "../ast/SourceLocation";
 import { TypeExpression } from "../ast/TypeExpression";
 
-export async function test() {
+const location = SourceLocation.empty;
 
-    const location = SourceLocation.empty;
-    
-    const nestedIsForm = new TypeExpression(location, "Vector", [
+function createTypeExpression(xMin: number, xMax: number, yMin: number, yMax: number) {
+    return new TypeExpression(location, "Vector", [
         new ComparisonExpression(
             location,
             new MemberExpression(
@@ -21,8 +22,8 @@ export async function test() {
             ),
             "is",
             new TypeExpression(location, "Float", [
-                new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, 0.0)),
-                new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, 1.0)),
+                new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, xMin)),
+                new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, xMax)),
                 new ComparisonExpression(
                     location,
                     new MemberExpression(
@@ -32,19 +33,32 @@ export async function test() {
                     ),
                     "is",
                     new TypeExpression(location, "Float", [
-                        new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, 2.0)),
-                        new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, 3.0)),                        
+                        new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, yMin)),
+                        new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, yMax)),
                     ])
                 )
             ])
         )]
     );
+}
+
+export async function test() {
+    const nestedIsForm = createTypeExpression(0, 10, 20, 30);
 
     const flatExpressionForm = nestedIsForm.toFlatExpressionForm();
     // console.log(nestedIsForm + " ----------> " + flatExpressionForm);
-    assert.equal(flatExpressionForm.toString(), `Vector{(@.x is Float),(@.x >= 0.0),(@.x <= 1.0),(@.x.y is Float),(@.x.y >= 2.0),(@.x.y <= 3.0)}`);
+    assert.equal(flatExpressionForm.toString(), `Vector{(@.x is Float),(@.x >= 0.0),(@.x <= 10.0),(@.x.y is Float),(@.x.y >= 20.0),(@.x.y <= 30.0)}`);
     const backToNestedIsForm = flatExpressionForm.toNestedIsForm();
     // console.log(flatExpressionForm + " ----------> " + backToNestedIsForm);
     assert.equal(nestedIsForm.toString(), backToNestedIsForm.toString());
+
+    const simplified1 = simplify(backToNestedIsForm);
+    assert.equal(nestedIsForm.toString(), simplified1.toString());
+
+    // create another type
+    const nestedIsForm2 = createTypeExpression(5, 15, 25, 35);
+    const combined = joinExpressions("&", [nestedIsForm, nestedIsForm2]);
+    const simplified2 = simplify(combined);
+    assert.equal(simplified2.toString(), `Vector{(@.x is Float{(@ >= 5.0),(@ <= 10.0),(@.y is Float{(@ >= 25.0),(@ <= 30.0)})})}`);
 
 }

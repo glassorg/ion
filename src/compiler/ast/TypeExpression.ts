@@ -48,7 +48,7 @@ export class TypeExpression extends Expression implements Type {
     get isType(): true { return true }
 
     public toKype() {
-        const constraints = [...this.constraints];
+        const constraints = [...this.toFlatExpressionForm().constraints];
         if (this.baseType.name !== CoreTypes.Any) {
             constraints.push(
                 new ComparisonExpression(this.baseType.location, new DotExpression(this.baseType.location), "is", this.baseType)
