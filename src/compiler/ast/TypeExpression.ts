@@ -1,7 +1,7 @@
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { Type } from "./Type";
+import { isType, Type } from "./Type";
 import { TypeReference } from "./TypeReference";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
@@ -16,6 +16,10 @@ import { MemberExpression } from "./MemberExpression";
 import { traverse } from "../common/traverse";
 import { replaceDotExpressions } from "../common/utility";
 import { BinaryExpression } from "./BinaryExpression";
+import nodeTest from "node:test";
+import { isSubTypeOf } from "../analysis/isSubType";
+import { simplify } from "../analysis/simplify";
+import { isTypeDeclaration } from "./VariableDeclaration";
 
 export function isArrayType(type?: Type) {
     return getArrayElementType(type) !== undefined;
@@ -57,10 +61,26 @@ export class TypeExpression extends Expression implements Type {
         return new kype.TypeExpression(joinExpressions("&&", constraints).toKype());
     }
 
+    static doesPropertyMatch(property: Identifier | Expression, check: Identifier | Type) {
+        if (property.toString() === check.toString()) {
+            return true;
+        }
+        if (property instanceof Identifier) {
+            return check instanceof Identifier && property.name === check.name;
+        }
+        if (check instanceof Identifier) {
+            return false;
+        }
+        return isSubTypeOf(check, property.type!);
+    }
+
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type {
         const declaration = c.getDeclaration(this.baseType);
+        if (isTypeDeclaration(declaration) && declaration.value instanceof TypeExpression) {
+            return declaration.value.getMemberType(property, c);
+        }
         if (!(declaration instanceof StructDeclaration)) {
-            throw new SemanticError(`Expected struct or class declaration`, declaration);
+            throw new SemanticError(`Expected struct or class declaration`, this.baseType);
         }
         if (!(property instanceof Identifier)) {
             throw new SemanticError(`Expected Identifer`, property);
@@ -69,7 +89,25 @@ export class TypeExpression extends Expression implements Type {
         if (!field) {
             throw new SemanticError(`Property ${property} not found on ${declaration.id.name}`, property);
         }
-        return field.type!;
+        // now check constraints.
+        let type = field.type!;
+        if (this.constraints.length > 0) {
+            let found: TypeExpression | null = null;
+            for (let constraint of this.constraints) {
+                if (constraint instanceof ComparisonExpression && constraint.operator === "is" && constraint.left instanceof MemberExpression && constraint.left.object instanceof DotExpression && constraint.right instanceof TypeExpression) {
+                    const constraintProperty = constraint.left.property;
+                    const isSameProperty = TypeExpression.doesPropertyMatch(constraintProperty, property);
+                    if (isSameProperty) {
+                        found = constraint.right;
+                        break;
+                    }
+                }
+            }
+            if (found) {
+                type = simplify(joinExpressions("&", [type, found]));
+            }
+        }
+        return type;
     }
 
     toString() {

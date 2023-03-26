@@ -5,10 +5,6 @@
 struct Vector
     x: 0.0 .. 10.0
 
-SmallVector = Vector{ x: 0.0 .. 1.0 }
-
-// type SmallVector = Vector{ x: 0.0 .. 1.0 }
-
 // SmallVector = Vector
 // sum = (h: Higher) -> h.one.x + h.one.y + h.two.a + h.two.b
 // foo = (a: 1.0 .. 2.0, b: 2.0 .. 3.0) ->
@@ -18,4 +14,5 @@ SmallVector = Vector{ x: 0.0 .. 1.0 }
 //  Need ability to declare variables without 'let'
 //  Need syntax for TypeExpressions { x: > 0, y: < 10 }
 //  Need reading of member to come from a TypeExpression and NOT directly from a StructDeclaration.
-
+//  Need to resolve TypeExpressions with a TypeExpression base type to a combined TypeExpression
+//  Need getMember to account for type constraints in addition to the baseType field.

@@ -1,6 +1,5 @@
 import { splitExpressions } from "../../ast/AstFunctions";
 import { AstNode } from "../../ast/AstNode";
-import { CallExpression } from "../../ast/CallExpression";
 import { Expression } from "../../ast/Expression";
 import { Token } from "../../ast/Token";
 import { TokenName, TokenNames } from "../tokenizer/TokenTypes";
@@ -15,7 +14,6 @@ import { MemberExpression } from "../../ast/MemberExpression";
 import { SourceLocation } from "../../ast/SourceLocation";
 import { DotExpression } from "../../ast/DotExpression";
 import { Identifier } from "../../ast/Identifier";
-import { BinaryExpression } from "../../ast/BinaryExpression";
 import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { TypeReference } from "../../ast/TypeReference";
 
@@ -68,7 +66,6 @@ export class InlineTypeExpressionParselet extends BinaryExpressionParselet {
             new TypeReference(callee.location, callee.name),
             constraints
         );
-        console.log(result.toString());
         return result;
     }
 

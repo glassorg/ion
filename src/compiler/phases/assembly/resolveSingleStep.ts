@@ -134,33 +134,29 @@ const maybeResolveNode: {
         if (!parentTypeExpression.baseType.resolved) {
             return;
         }
-        return node.patch({ type: parentTypeExpression.baseType.type!, resolved: true });
+
+        const type = resolveAll(new TypeExpression(parentTypeExpression.baseType.location, parentTypeExpression.baseType.name));
+        return node.patch({ type, resolved: true });
     },
     TypeExpression(node, c) {
-        if (node.baseType.resolved && node.constraints.every(constraint => constraint.resolved)) {
+        if (node.baseType.resolved) {
             const declaration = c.getOriginalDeclaration(node.baseType);
-            // let changed = false;
-            // const constraints = node.constraints.map(child => {
-            //     console.log(child.toString());
-            //     if (child instanceof ComparisonExpression && child.operator === "is") {
-            //         console.log({
-            //             left: child.left.toString(),
-            //             right: child.right.toString(),
-            //         })
-            //     }
-    
-            //     // check
-            //     return child;
-            // });
-            
             if (isTypeDeclaration(declaration)) {
                 // This needs to combine the current constraints to the base declaration.
-                if (node.constraints.length > 0) {
-                    throw new SemanticError(`WE NEED TO IMPLEMENT TYPE COMBINING`, node);
+                if (declaration.value instanceof TypeExpression) {
+                    if (node.constraints.length > 0) {
+                        let constraints =  [...node.constraints, ...declaration.value.constraints];
+                        let baseType = declaration.value.baseType;
+                        return simplify(node.patch({ baseType, constraints }));
+                        // throw new SemanticError(`WE NEED TO IMPLEMENT TYPE COMBINING`, node);
+                    }
+                    return declaration.value;
                 }
-                return declaration.value;
             }
-            return resolveAll(node);
+            const constraintsResolved = node.constraints.every(constraint => constraint.resolved);
+            if (constraintsResolved) {
+                return resolveAll(node);
+            }
         }
     },
     VariableDeclaration(node, c) {
@@ -237,10 +233,6 @@ const maybeResolveNode: {
 
         // functions need to be resolved into inferred types or something.
         if (!callee.resolved || !(node.args.every(arg => arg.type?.resolved))) {
-            // const DEBUG = node.toString() === "`**`(`+`(`*`(`v:1:0`.x, `v:1:0`.x) :: Float{(. >= 0.0),(. <= 1.0)}, `*`(`v:1:0`.y, `v:1:0`.y) :: Float{(. >= 0.0),(. <= 1.0)}) :: Float{(. >= 0.0),(. <= 2.0)}, 0.5)";
-            // if (DEBUG) {
-            //     console.log(node.args);
-            // }
             return;
         }
 
@@ -305,7 +297,7 @@ const maybeResolveNode: {
         return node.patch({ type, resolved: true });
     },
     MemberExpression(node, c) {
-        if (!node.object.resolved || (node.isPropertyResolved)) {
+        if (!node.object.resolved || (!node.isPropertyResolved)) {
             return;
         }
         const objectType = node.object.type!;

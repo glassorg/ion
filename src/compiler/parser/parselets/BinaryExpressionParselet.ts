@@ -66,8 +66,7 @@ export class BinaryExpressionParselet extends InfixParselet {
             }
         }
         if (operator === "{") {
-            throw new SemanticError("?????????", left);
-            console.log("---------->", operator);
+            throw new SemanticError("Handle inline type constraint block?", left);
             // how will we handle an inline type constraint block?
         }
         return createBinaryExpression(location, left, operator, right, operatorToken.location);

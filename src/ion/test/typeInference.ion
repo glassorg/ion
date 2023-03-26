@@ -52,3 +52,10 @@ struct Higher
     two: Alpha
 
 sum = (h: Higher) :: 1.0 .. 7.0 -> h.one.x + h.one.y + h.two.a + h.two.b
+
+SmallVector = Vector{ x: 0.0 .. 0.5 }
+SmallerVector = SmallVector{ x: >= 0.3 }
+
+smallerVectorIdentity = (a: SmallerVector) :: Vector{ x: 0.3 .. 0.5 } -> a
+
+getX = (v: SmallerVector) :: 0.3 .. 0.5 -> v.x

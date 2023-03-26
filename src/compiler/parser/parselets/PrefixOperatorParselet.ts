@@ -12,14 +12,14 @@ import { PrefixParselet } from "../PrefixParselet";
 
 export function getBinaryExpressionPrecedence(node: AstNode) {
     if (node instanceof BinaryExpression) {
-        return InfixOperators[node.operator].precedence;
+        return InfixOperators[node.operator]?.precedence ?? 0;
     }
 }
 
 export class PrefixOperatorParselet extends PrefixParselet {
 
     protected getPrecedence(token: Token) {
-        return PrefixOperators[token.value as PrefixOperator].precedence;
+        return PrefixOperators[token.value as PrefixOperator]?.precedence ?? null;
     }
 
     protected parseArgument(p: Parser, token: Token, precedence = this.getPrecedence(token)) {

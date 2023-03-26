@@ -1,8 +1,7 @@
 import { Expression } from "./Expression";
 import * as kype from "@glas/kype";
 import { SourceLocation } from "./SourceLocation";
-import { skip, traverse } from "../common/traverse";
-import { TypeExpression } from "./TypeExpression";
+import { resolveObjectURL } from "buffer";
 
 export const DotExpressionString = '@';
 
@@ -18,11 +17,6 @@ export class DotExpression extends Expression {
 
     toString() {
         return DotExpressionString;
-    }
-
-    toJSON() {
-        let { resolved, ...rest } = super.toJSON();
-        return { ...rest };
     }
 
 }
