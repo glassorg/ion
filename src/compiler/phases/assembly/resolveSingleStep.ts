@@ -28,6 +28,7 @@ import { getArrayElementType, isArrayType, TypeExpression } from "../../ast/Type
 import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 import { Identifier } from "../../ast/Identifier";
+import { MemberExpression } from "../../ast/MemberExpression";
 
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
@@ -281,6 +282,22 @@ const maybeResolveNode: {
         }
         return this.Reference!(node, c);
     },
+    DeferredReference(node, c) {
+        const parentTypeExpression = c.lookup.findAncestor(node, TypeExpression)!;
+        if (parentTypeExpression.baseType.resolved) {
+            const memberType = parentTypeExpression.getMemberType(node.id, c, false);
+            if (memberType) {
+                // convert this deferred reference into a dot member reference.
+                return new MemberExpression(node.location, new DotExpression(node.location), node.id);
+            }
+            else {
+                const ref = new Reference(node.location, node.id.name);
+                // try to get the declaration, will throw if not found.
+                c.getDeclaration(ref);
+                return ref;
+            }
+        }
+    },
     Reference(node, c) {
         const declaration = c.getDeclaration(node);
         if (!declaration.type?.resolved) {
@@ -302,6 +319,7 @@ const maybeResolveNode: {
         }
         const objectType = node.object.type!;
         if (!(objectType instanceof TypeExpression)) {
+            console.log(objectType);
             throw new SemanticError(`Expected TypeExpression`, objectType)
         }
         const propertyType = objectType.getMemberType(node.property, c);
@@ -335,10 +353,6 @@ const maybeResolveNode: {
 
         //  return statements resolved?
         const returnStatements = node.getReturnStatements();
-        if (returnStatements.length === 0) {
-            debugger;
-            node.getReturnStatements();
-        }
         if (returnStatements.every(statement => statement.argument.type)) {
             if (node.returnType) {
                 for (let statement of returnStatements) {

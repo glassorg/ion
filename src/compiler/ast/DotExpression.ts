@@ -1,7 +1,6 @@
 import { Expression } from "./Expression";
 import * as kype from "@glas/kype";
 import { SourceLocation } from "./SourceLocation";
-import { resolveObjectURL } from "buffer";
 
 export const DotExpressionString = '@';
 

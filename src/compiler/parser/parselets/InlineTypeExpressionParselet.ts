@@ -63,7 +63,7 @@ export class InlineTypeExpressionParselet extends BinaryExpressionParselet {
 
         const result = new TypeExpression(
             SourceLocation.merge(callee.location, group.location),
-            new TypeReference(callee.location, callee.name),
+            callee instanceof TypeReference ? callee : new TypeReference(callee.location, callee.name),
             constraints
         );
         return result;

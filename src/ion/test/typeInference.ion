@@ -59,3 +59,7 @@ SmallerVector = SmallVector{ x: >= 0.3 }
 smallerVectorIdentity = (a: SmallerVector) :: Vector{ x: 0.3 .. 0.5 } -> a
 
 getX = (v: SmallerVector) :: 0.3 .. 0.5 -> v.x
+
+arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
+arrayLengthIs10 = (a: Float[]{ length: 10 }) :: 10 -> a.length
+arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length

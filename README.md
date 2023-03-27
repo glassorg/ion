@@ -20,10 +20,5 @@ High performance functional language targeting web assembly with strong typescri
 [x] Need syntax for TypeExpressions { x: > 0, y: < 10 }
 [x] Need getMember to account for type constraints in addition to the baseType field.
 [x] Need to resolve TypeExpressions with a TypeExpression base type to a combined TypeExpression.
-
-TODO
-
-    THIS IS WRONG
-
-            phi `b:18:5` : {typeof `b:18:1` | typeof `b:18:2`};
-            phi `b:18:5` :: Integer{(. >= -2),(. <= 0),(. >= 1),(. <= 1)};
+[ ] Let's allow checking types dependent upon other parameters values.
+[ ] Verify with array bounds checking.

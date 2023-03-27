@@ -1,11 +1,11 @@
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { isType, Type } from "./Type";
+import { isType, toType, Type } from "./Type";
 import { TypeReference } from "./TypeReference";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
-import { joinExpressions } from "./AstFunctions";
+import { createBinaryExpression, joinExpressions } from "./AstFunctions";
 import { CoreTypes } from "../common/CoreType";
 import { Identifier } from "./Identifier";
 import { EvaluationContext } from "../EvaluationContext";
@@ -20,6 +20,7 @@ import nodeTest from "node:test";
 import { isSubTypeOf } from "../analysis/isSubType";
 import { simplify } from "../analysis/simplify";
 import { isTypeDeclaration } from "./VariableDeclaration";
+import { Literal } from "./Literal";
 
 export function isArrayType(type?: Type) {
     return getArrayElementType(type) !== undefined;
@@ -74,19 +75,25 @@ export class TypeExpression extends Expression implements Type {
         return isSubTypeOf(check, property.type!);
     }
 
-    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type {
+    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type
+    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing: true): Type
+    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing: false): Type | null
+    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing = true): Type | null {
         const declaration = c.getDeclaration(this.baseType);
         if (isTypeDeclaration(declaration) && declaration.value instanceof TypeExpression) {
             return declaration.value.getMemberType(property, c);
         }
         if (!(declaration instanceof StructDeclaration)) {
+            if (!throwIfMissing) { return null; }
             throw new SemanticError(`Expected struct or class declaration`, this.baseType);
         }
         if (!(property instanceof Identifier)) {
+            if (!throwIfMissing) { return null; }
             throw new SemanticError(`Expected Identifer`, property);
         }
         const field = declaration.fields.find(field => field.id.name === property.name);
         if (!field) {
+            if (!throwIfMissing) { return null; }
             throw new SemanticError(`Property ${property} not found on ${declaration.id.name}`, property);
         }
         // now check constraints.
@@ -124,12 +131,17 @@ export class TypeExpression extends Expression implements Type {
     toFlatExpressionForm(): TypeExpression {
         let constraints = this.constraints.map(e => {
             if (e instanceof ComparisonExpression) {
-                if (e.left instanceof MemberExpression && e.operator === "is" && e.left.object instanceof DotExpression && e.right instanceof TypeExpression) {
-                    const right = e.right.toFlatExpressionForm();
+                let f: ComparisonExpression = e;
+                if (f.operator === "==" && f.right instanceof Literal) {
+                    f = f.patch({ operator: "is", right: toType(f.right)});
+                    // console.log(`MAYBE FLATTEN : ${e} -> ${foo}`);
+                }
+                if (f.left instanceof MemberExpression && f.operator === "is" && f.left.object instanceof DotExpression && f.right instanceof TypeExpression) {
+                    const right = f.right.toFlatExpressionForm();
                     const newConstraints = [
                         new ComparisonExpression(right.baseType.location,
-                            e.left, "is", right.baseType),
-                        ...right.constraints.map(c => replaceDotExpressions(c, e.left))];
+                            f.left, "is", right.baseType),
+                        ...right.constraints.map(c => replaceDotExpressions(c, f.left))];
                     return newConstraints;
                 }
             }

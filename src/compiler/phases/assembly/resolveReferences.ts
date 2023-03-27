@@ -5,9 +5,10 @@ import { createScopes } from "../../createScopes";
 import { SemanticError } from "../../SemanticError";
 import { joinPath, splitPath } from "../../common/pathFunctions";
 import { TypeExpression } from "../../ast/TypeExpression";
-import { DotExpression } from "../../ast/DotExpression";
-import { MemberExpression } from "../../ast/MemberExpression";
-import { Identifier } from "../../ast/Identifier";
+import { isTypeName } from "../../common/names";
+import { MultiFunction } from "../../ast/MultiFunction";
+import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { DeferredReference } from "../../ast/DeferredReference";
 
 export function getPossiblePaths(fromPath: string, unresolvedName: string): string[] {
     let paths: string[] = [];
@@ -21,14 +22,20 @@ export function getPossiblePaths(fromPath: string, unresolvedName: string): stri
 }
 export function resolveReferences(root: Assembly): Assembly {
     const scopes = createScopes(root);
-    let declarations = root.declarations.map(declaration => {
-        return traverse(declaration, {
+    let rootDeclarations = root.declarations.map(rootDeclaration => {
+        return traverse(rootDeclaration, {
             leave(node, ancestors) {
                 if (node instanceof Reference) {
                     const scope = scopes.get(node.scopeKey);
-                    const declarations = scope[node.name];
-                    if (!declarations) {
-                        const possiblePaths = getPossiblePaths(declaration.absolutePath, node.name);
+                    const declaration = scope[node.name];
+                    const couldBeTypeExpressionMemberReference = !isTypeName(node.name) && ancestors.find(a => a instanceof TypeExpression);
+                    const isMultiFunction = declaration instanceof VariableDeclaration && declaration.value instanceof MultiFunction;
+                    const shouldDefer = couldBeTypeExpressionMemberReference && (!declaration || isMultiFunction);
+                    if (shouldDefer) {
+                        return new DeferredReference(node);
+                    }
+                    if (!declaration) {
+                        const possiblePaths = getPossiblePaths(rootDeclaration.absolutePath, node.name);
                         for (const path of possiblePaths) {
                             const external = scope[path];
                             if (external) {
@@ -36,19 +43,12 @@ export function resolveReferences(root: Assembly): Assembly {
                                 return node.patch({ name: path });
                             }
                         }
-                        //  check and see if we are within a TypeExpression.
-                        //  if so this could be an implicit dot expression.
 
-                        const hasTypeExpressionAncestor = ancestors.find(a => a instanceof TypeExpression);
-                        if (hasTypeExpressionAncestor) {
-                            // convert this to a dot expression reference.
-                            return new MemberExpression(node.location, new DotExpression(node.location), new Identifier(node.location, node.name));
-                        }
                         throw new SemanticError(`Could not resolve reference: ${node.name}`, node);
                     }
                 }
             }
         });
     })
-    return new Assembly(declarations);
+    return new Assembly(rootDeclarations);
 }

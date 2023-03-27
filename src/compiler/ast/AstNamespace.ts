@@ -9,6 +9,7 @@ export * from "./Container";
 export * from "./Declaration";
 export * from "./Declarator";
 export * from "./DotExpression";
+export * from "./DeferredReference";
 export * from "./Expression";
 export * from "./ExpressionStatement";
 export * from "./FloatLiteral";

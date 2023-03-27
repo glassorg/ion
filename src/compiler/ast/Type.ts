@@ -41,6 +41,10 @@ export function isNever(type: unknown) {
  */
  export function toType(e: Expression): Type {
     if (isType(e)) {
+        if (e instanceof TypeReference) {
+            // convertv bare TypeReferences into TypeExpressions.
+            return new TypeExpression(e.location, e);
+        }
         return e;
     }
 
@@ -80,19 +84,19 @@ export function isNever(type: unknown) {
             }
             //  we can't convert to range without knowing
             else if (term instanceof RangeExpression) {
-                const { start, finish } = term;
-                if (!(
-                    ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
-                    ||
-                    ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
-                )) {
-                    console.log({ start: start.toString(), finish: finish.toString() })
-                    throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
-                }
-                if (!(finish.value > start.value)) {
-                    throw new SemanticError(`Range finish must be more than start`, term);
-                }
-                const coreType = start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
+                // const { start, finish } = term;
+                // if (!(
+                //     ((start instanceof IntegerLiteral) && (finish instanceof IntegerLiteral))
+                //     ||
+                //     ((start instanceof FloatLiteral) && (finish instanceof FloatLiteral))
+                // )) {
+                //     console.log({ start: start.toString(), finish: finish.toString() })
+                //     throw new SemanticError(`Range start and finish operators in type expressions must both be numeric literals of the same type`, term);
+                // }
+                // if (!(finish.value > start.value)) {
+                //     throw new SemanticError(`Range finish must be more than start`, term);
+                // }
+                const coreType = term.start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
                 return new TypeExpression(
                     term.location,
                     coreType, [
