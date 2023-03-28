@@ -36,7 +36,7 @@ export class MemberExpression extends Expression {
     }
 
     toString(includTypes = true) {
-        return `${this.object}.${this.property}`;
+        return this.property instanceof Identifier ? `${this.object}.${this.property}` : `${this.object}[${this.property}]`;
     }
 
 }

@@ -14,4 +14,15 @@ export class SequenceExpression extends BinaryExpression {
         super(location, left, operator, right);
     }
 
+    static flatten(e?: Expression, result: Expression[] = []): Expression[] {
+        if (e instanceof SequenceExpression) {
+            this.flatten(e.left, result);
+            this.flatten(e.right, result);
+        }
+        else if (e) {
+            result.push(e);
+        }
+        return result;
+    }
+
 }

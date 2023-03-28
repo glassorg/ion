@@ -2,6 +2,12 @@
 //  [Integer[],Integer]{ .[1] >= 0, .[1] < .[0].length}
 //  function get(array: Integer[], index: 0 .. array.length)
 
-arrayLength10 = (a: Float[]{ length == 10 }) -> a.length
+// arrayLength10 = (a: Float[]{ length == 10 }) -> a.length
+// foo = (a: Array, b: 0 ..< a.length) -> 1
 
-// foo = (a: Array, b: 0 .. a.length - 1) -> 1
+TinyFloat = -1.0 .. 1.0
+// someElement = (array: TinyFloat[]{ length == 2}):: -1.0 .. 1.0 -> array[0]
+
+// myArrayLength = myArray.length
+// first = myArray[0]
+// next up, get member from array

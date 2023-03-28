@@ -9,7 +9,7 @@ import { SemanticError } from "../../SemanticError";
 import { simplify } from "../../analysis/simplify";
 import { ComparisonExpression } from "../../ast/ComparisonExpression";
 import { DotExpression } from "../../ast/DotExpression";
-import { CoreTypes } from "../../common/CoreType";
+import { CoreProperty, CoreTypes } from "../../common/CoreType";
 import { SourceLocation } from "../../ast/SourceLocation";
 import { LogicalOperator } from "../../Operators";
 import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
@@ -29,7 +29,13 @@ import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 import { Identifier } from "../../ast/Identifier";
 import { MemberExpression } from "../../ast/MemberExpression";
+import { IntegerLiteral } from "../../ast/IntegerLiteral";
 
+function debug(node: AstNode, ...m: any[]) {
+    if (node.toString().toLowerCase().indexOf("tiny") >= 0) {
+        console.log(...m);
+    }
+}
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
         leave(node) {
@@ -146,16 +152,20 @@ const maybeResolveNode: {
                 // This needs to combine the current constraints to the base declaration.
                 if (declaration.value instanceof TypeExpression) {
                     if (node.constraints.length > 0) {
-                        let constraints =  [...node.constraints, ...declaration.value.constraints];
+                        let constraints = [...node.constraints, ...declaration.value.constraints];
                         let baseType = declaration.value.baseType;
-                        return simplify(node.patch({ baseType, constraints }));
+                        const result = simplify(node.patch({ baseType, constraints }));
                         // throw new SemanticError(`WE NEED TO IMPLEMENT TYPE COMBINING`, node);
+                        // debug(node, "SIMPLIFIED: " + result);
+                        return result;
                     }
+                    // debug(node, "VALUE: " + declaration.value);
                     return declaration.value;
                 }
             }
             const constraintsResolved = node.constraints.every(constraint => constraint.resolved);
             if (constraintsResolved) {
+                // debug(node, "RESOLVEALL " + node);
                 return resolveAll(node);
             }
         }
@@ -275,12 +285,42 @@ const maybeResolveNode: {
     IntegerLiteral(node, c) {
         return node.patch({ type: LiteralType(node), resolved: true });
     },
-    TypeReference(node, c) {
-        // check any generic parameters on the reference.
-        if (!node.generics.every(ref => ref.resolved)) {
-            return;
+    ArrayExpression(node, c) {
+        if (node.elements.every(element => element.resolved)) {
+            const elementType = simplify(joinExpressions("|", node.elements.map(e => e.type!)));
+            const type = new TypeExpression(
+                node.location,
+                new TypeReference(
+                    node.location,
+                    CoreTypes.Array,
+                    [elementType]
+                ),
+                [
+                    // new length constraint
+                    new ComparisonExpression(
+                        node.location,
+                        new MemberExpression(node.location,
+                            new DotExpression(node.location),
+                            new Identifier(node.location, CoreProperty.Length)
+                        ),
+                        "is",
+                        toType(new IntegerLiteral(node.location, node.elements.length))
+                    ),
+                    ...node.elements.map((e, i) => {
+                        return new ComparisonExpression(
+                            node.location,
+                            new MemberExpression(node.location,
+                                new DotExpression(node.location),
+                                new IntegerLiteral(node.location, i)
+                            ),
+                            "is",
+                            e.type!
+                        );
+                    })
+                ]
+            );
+            return node.patch({ type: resolveAll(type), resolved: true });
         }
-        return this.Reference!(node, c);
     },
     DeferredReference(node, c) {
         const parentTypeExpression = c.lookup.findAncestor(node, TypeExpression)!;
@@ -297,6 +337,23 @@ const maybeResolveNode: {
                 return ref;
             }
         }
+    },
+    TypeReference(node, c) {
+        // check any generic parameters on the reference.
+        if (!node.generics.every(ref => ref.resolved)) {
+            return;
+        }
+
+        // const declaration = c.getDeclaration(node);
+        // if (declaration instanceof VariableDeclaration && declaration.value?.resolved) {
+        //     console.log("VALUE: " + declaration.value);
+        //     // return declaration.value;
+        //     // debug(node, "------> " + declaration.value);
+        // }
+
+        const result = this.Reference!(node, c);
+        // debug(node, `BEFORE ${node} AFTER ${result}`);
+        return result;
     },
     Reference(node, c) {
         const declaration = c.getDeclaration(node);
@@ -319,7 +376,6 @@ const maybeResolveNode: {
         }
         const objectType = node.object.type!;
         if (!(objectType instanceof TypeExpression)) {
-            console.log(objectType);
             throw new SemanticError(`Expected TypeExpression`, objectType)
         }
         const propertyType = objectType.getMemberType(node.property, c);
@@ -358,6 +414,12 @@ const maybeResolveNode: {
                 for (let statement of returnStatements) {
                     const returnType = statement.argument.type!;
                     const isSubType = isSubTypeOf(returnType, node.returnType);
+                    // console.log({
+                    //     returnType: returnType.toString(),
+                    //     returnType_Type: returnType.constructor.name,
+                    //     nodeReturnType: node.returnType.toString(),
+                    //     isSubType,
+                    // });
                     if (isSubType !== true) {
                         throw new SemanticError(`Return type ${returnType.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared return type ${node.returnType.toUserTypeString()}`, node.returnType, statement);
                     }

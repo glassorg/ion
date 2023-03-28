@@ -21,7 +21,6 @@ export class EvaluationContext {
         const scope = this.scopes.get(from.scopeKey) ?? this.scopes.get(globalScopeKey);
         const declaration = scope[name];
         if (!declaration) {
-            debugger;
             throw new SemanticError(`Declaration not found: ${name}`, from);
         }
         return declaration;

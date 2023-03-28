@@ -63,3 +63,9 @@ getX = (v: SmallerVector) :: 0.3 .. 0.5 -> v.x
 arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
 arrayLengthIs10 = (a: Float[]{ length: 10 }) :: 10 -> a.length
 arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length
+
+literalArrayLength = () :: 3 -> [1, 2, 3].length
+
+zeroth = () :: 1 -> [1, 2, 3][0]
+first = () :: 2 -> [1, 2, 3][1]
+second = () :: 3 -> [1, 2, 3][2]

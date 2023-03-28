@@ -12,6 +12,10 @@ export const CoreTypes = {
     Type: "Type",
 } as const;
 
+export const CoreProperty = {
+    Length: "length"
+}
+
 export type CoreType = keyof typeof CoreTypes;
 
 export function isCoreType(name: string): name is CoreType {

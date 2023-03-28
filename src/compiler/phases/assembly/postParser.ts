@@ -1,15 +1,19 @@
+import { ArrayExpression } from "../../ast/ArrayExpression";
 import { Assembly } from "../../ast/Assembly";
-import { ComparisonExpression } from "../../ast/ComparisonExpression";
-import { Literal } from "../../ast/Literal";
 import { PstGroup } from "../../ast/PstGroup";
-import { TypeExpression } from "../../ast/TypeExpression";
+import { SequenceExpression } from "../../ast/SequenceExpression";
 import { traverse } from "../../common/traverse";
+import { TokenNames } from "../../parser/tokenizer/TokenTypes";
 import { SemanticError } from "../../SemanticError";
 
 export function postParser(assembly: Assembly) {
     return traverse(assembly, {
-        leave(node, ancestors) {
+        leave(node) {
             if (node instanceof PstGroup) {
+                if (node.open.type === TokenNames.OpenBracket) {
+                    const elements = SequenceExpression.flatten(node.value);
+                    return new ArrayExpression(node.location, elements);
+                }
                 if (node.value == null) {
                     throw new SemanticError(`Unexpected: ${node}`, node);
                 }

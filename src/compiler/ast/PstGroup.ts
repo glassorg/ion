@@ -17,7 +17,7 @@ export class PstGroup extends Expression {
     }
 
     toString(includeTypes?: boolean | undefined): string {
-        return `PSTGROUP(${this.value?.toString(includeTypes)})`;
+        return `PSTGROUP${this.open.value}${this.value?.toString(includeTypes)}${this.close.value}`;
     }
 
 }

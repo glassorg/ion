@@ -62,7 +62,7 @@ export class TypeExpression extends Expression implements Type {
         return new kype.TypeExpression(joinExpressions("&&", constraints).toKype());
     }
 
-    static doesPropertyMatch(property: Identifier | Expression, check: Identifier | Type) {
+    static doesPropertyMatch(property: Identifier | Expression, check: Identifier | Expression) {
         if (property.toString() === check.toString()) {
             return true;
         }
@@ -72,7 +72,8 @@ export class TypeExpression extends Expression implements Type {
         if (check instanceof Identifier) {
             return false;
         }
-        return isSubTypeOf(check, property.type!);
+        // some keys may not have a type, for instance in Array tyes
+        return check.type && property.type && isSubTypeOf(check.type, property.type);
     }
 
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type
@@ -87,23 +88,26 @@ export class TypeExpression extends Expression implements Type {
             if (!throwIfMissing) { return null; }
             throw new SemanticError(`Expected struct or class declaration`, this.baseType);
         }
-        if (!(property instanceof Identifier)) {
-            if (!throwIfMissing) { return null; }
-            throw new SemanticError(`Expected Identifer`, property);
+        let type: Type | undefined;
+        if (property instanceof Identifier) {
+            const field = declaration.fields.find(field => field.id.name === property.name);
+            if (!field) {
+                if (!throwIfMissing) { return null; }
+                throw new SemanticError(`Property ${property} not found on ${declaration.id.name}`, property);
+            }
+            type = field.type!;
+            // now check constraints.
         }
-        const field = declaration.fields.find(field => field.id.name === property.name);
-        if (!field) {
-            if (!throwIfMissing) { return null; }
-            throw new SemanticError(`Property ${property} not found on ${declaration.id.name}`, property);
-        }
-        // now check constraints.
-        let type = field.type!;
+        // else {
+        // }
         if (this.constraints.length > 0) {
             let found: TypeExpression | null = null;
             for (let constraint of this.constraints) {
                 if (constraint instanceof ComparisonExpression && constraint.operator === "is" && constraint.left instanceof MemberExpression && constraint.left.object instanceof DotExpression && constraint.right instanceof TypeExpression) {
                     const constraintProperty = constraint.left.property;
+                    // console.log(`doesPropertyMatch Before(${constraintProperty} : ${constraintProperty.type}, ${property} : ${property.type}) => ?`);
                     const isSameProperty = TypeExpression.doesPropertyMatch(constraintProperty, property);
+                    // console.log(`doesPropertyMatch After (${constraintProperty}, ${property}) => ${isSameProperty}`);
                     if (isSameProperty) {
                         found = constraint.right;
                         break;
@@ -111,9 +115,22 @@ export class TypeExpression extends Expression implements Type {
                 }
             }
             if (found) {
-                type = simplify(joinExpressions("&", [type, found]));
+                type = type ? simplify(joinExpressions("&", [type, found])) : found;
             }
         }
+        if (!type && this.baseType.name === CoreTypes.Array) {
+            type = toType(this.baseType.generics[0]);
+            // convert type references to type expressions
+            if (!type) {
+                throw new SemanticError(`Array is missing element type`, this.baseType);
+            }
+        }
+        if (!type) {
+
+            if (!throwIfMissing) { return null; }
+            throw new SemanticError(`Expected Identifier or Expression`, property);
+        }
+
         return type;
     }
 

@@ -1,3 +1,4 @@
+export * from "./ArrayExpression";
 export * from "./AssignmentExpression";
 export * from "./BinaryExpression";
 export * from "./BlockStatement";
