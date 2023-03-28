@@ -37,7 +37,7 @@ export * from "./Statement";
 export * from "./StringLiteral";
 export * from "./StructDeclaration";
 export * from "./Token";
-export * from "./TypeExpression";
+export * from "./ConstrainedType";
 export * from "./TypeOfExpression"
 export * from "./CompositeType";
 export * from "./TypeReference";

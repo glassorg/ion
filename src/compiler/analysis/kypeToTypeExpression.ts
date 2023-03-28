@@ -12,7 +12,7 @@ import { MultiFunctionType } from "../ast/MultiFunctionType";
 import { Reference } from "../ast/Reference";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Type } from "../ast/Type";
-import { TypeExpression } from "../ast/TypeExpression";
+import { ConstrainedType } from "../ast/ConstrainedType";
 import { TypeReference } from "../ast/TypeReference";
 import { CoreTypes } from "../common/CoreType";
 import { SemanticError } from "../SemanticError";
@@ -33,10 +33,10 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
     }
     if (e instanceof kype.TypeExpression) {
         if (isAlways(e)) {
-            return new TypeExpression(location, CoreTypes.Always);
+            return new ConstrainedType(location, CoreTypes.Always);
         }
         if (isNever(e)) {
-            return new TypeExpression(location, CoreTypes.Never);
+            return new ConstrainedType(location, CoreTypes.Never);
         }
         return joinExpressions("|", splitExpressions("||", toIonExpression(e.proposition, location)).map(option => {
             if (option instanceof FunctionType || option instanceof MultiFunctionType) {
@@ -66,7 +66,7 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
                     return true;
                 })
             }
-            return new TypeExpression(
+            return new ConstrainedType(
                 location,
                 baseType,
                 otherConstraints

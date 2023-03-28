@@ -24,7 +24,7 @@ import { toType } from "../../ast/Type";
 import { TypeReference } from "../../ast/TypeReference";
 import { Type } from "../../ast/Type";
 import { Expression } from "../../ast/Expression";
-import { getArrayElementType, isArrayType, TypeExpression } from "../../ast/TypeExpression";
+import { getArrayElementType, isArrayType, ConstrainedType } from "../../ast/ConstrainedType";
 import { joinExpressions, splitExpressions } from "../../ast/AstFunctions";
 import { StructDeclaration } from "../../ast/StructDeclaration";
 import { Identifier } from "../../ast/Identifier";
@@ -94,12 +94,12 @@ const maybeResolveNode: {
             if (!isTypeReference(node.finish.type, CoreTypes.Integer)) {
                 constraints.push(new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish.type!));
             }
-            const elementType = new TypeExpression(
+            const elementType = new ConstrainedType(
                 node.location,
                 CoreTypes.Integer,
                 constraints
             )
-            const before = new TypeExpression(
+            const before = new ConstrainedType(
                 node.location,
                 new TypeReference(node.location, CoreTypes.Array, [elementType])
                 // could add length constraint here.
@@ -134,7 +134,7 @@ const maybeResolveNode: {
     },
     DotExpression(node, c) {
         // get parent dot expression.
-        const parentTypeExpression = c.lookup.findAncestor(node, TypeExpression);
+        const parentTypeExpression = c.lookup.findAncestor(node, ConstrainedType);
         if (!parentTypeExpression) {
             throw new SemanticError(`Dot expression only valid within a TypeExpression`, node);
         }
@@ -142,15 +142,15 @@ const maybeResolveNode: {
             return;
         }
 
-        const type = resolveAll(new TypeExpression(parentTypeExpression.baseType.location, parentTypeExpression.baseType.name));
+        const type = resolveAll(new ConstrainedType(parentTypeExpression.baseType.location, parentTypeExpression.baseType.name));
         return node.patch({ type, resolved: true });
     },
-    TypeExpression(node, c) {
+    ConstrainedType(node, c) {
         if (node.baseType.resolved) {
             const declaration = c.getOriginalDeclaration(node.baseType);
             if (isTypeDeclaration(declaration)) {
                 // This needs to combine the current constraints to the base declaration.
-                if (declaration.value instanceof TypeExpression) {
+                if (declaration.value instanceof ConstrainedType) {
                     if (node.constraints.length > 0) {
                         let constraints = [...node.constraints, ...declaration.value.constraints];
                         let baseType = declaration.value.baseType;
@@ -199,14 +199,14 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let knownType = node.value.type!;
-        if (!(knownType instanceof TypeExpression)) {
+        if (!(knownType instanceof ConstrainedType)) {
             throw new SemanticError(`We don't know how to handle this yet`, node.value);
         }
         const assertedDotConstraints = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
         const assertedOptions = splitExpressions("||", assertedDotConstraints);
         let newTypes = assertedOptions.map(assertedOption => {
             return splitExpressions("|", knownType).map(knownTypeOption => {
-                if (!(knownTypeOption instanceof TypeExpression)) {
+                if (!(knownTypeOption instanceof ConstrainedType)) {
                     throw new SemanticError(`We expected a type constraint here ` + knownTypeOption);
                 }
                 return knownTypeOption.patch({
@@ -233,7 +233,7 @@ const maybeResolveNode: {
             return;
         }
         // convert to a TypeExpression.
-        const type = resolveAll(new TypeExpression(node.id.location, node.absolutePath!));
+        const type = resolveAll(new ConstrainedType(node.id.location, node.absolutePath!));
         return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
@@ -249,7 +249,7 @@ const maybeResolveNode: {
 
         let type: Type;
         if (callee instanceof StructDeclaration) {
-            type = new TypeExpression(node.location, callee.absolutePath!);
+            type = new ConstrainedType(node.location, callee.absolutePath!);
         }
         else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
             const multiFunc = callee.value;
@@ -288,7 +288,7 @@ const maybeResolveNode: {
     ArrayExpression(node, c) {
         if (node.elements.every(element => element.resolved)) {
             const elementType = simplify(joinExpressions("|", node.elements.map(e => e.type!)));
-            const type = new TypeExpression(
+            const type = new ConstrainedType(
                 node.location,
                 new TypeReference(
                     node.location,
@@ -323,7 +323,7 @@ const maybeResolveNode: {
         }
     },
     DeferredReference(node, c) {
-        const parentTypeExpression = c.lookup.findAncestor(node, TypeExpression)!;
+        const parentTypeExpression = c.lookup.findAncestor(node, ConstrainedType)!;
         if (parentTypeExpression.baseType.resolved) {
             const memberType = parentTypeExpression.getMemberType(node.id, c, false);
             if (memberType) {
@@ -375,7 +375,7 @@ const maybeResolveNode: {
             return;
         }
         const objectType = node.object.type!;
-        if (!(objectType instanceof TypeExpression)) {
+        if (!(objectType instanceof ConstrainedType)) {
             throw new SemanticError(`Expected TypeExpression`, objectType)
         }
         const propertyType = objectType.getMemberType(node.property, c);

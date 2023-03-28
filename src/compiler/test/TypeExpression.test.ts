@@ -7,12 +7,12 @@ import { FloatLiteral } from "../ast/FloatLiteral";
 import { Identifier } from "../ast/Identifier";
 import { MemberExpression } from "../ast/MemberExpression";
 import { SourceLocation } from "../ast/SourceLocation";
-import { TypeExpression } from "../ast/TypeExpression";
+import { ConstrainedType } from "../ast/ConstrainedType";
 
 const location = SourceLocation.empty;
 
 function createTypeExpression(xMin: number, xMax: number, yMin: number, yMax: number) {
-    return new TypeExpression(location, "Vector", [
+    return new ConstrainedType(location, "Vector", [
         new ComparisonExpression(
             location,
             new MemberExpression(
@@ -21,7 +21,7 @@ function createTypeExpression(xMin: number, xMax: number, yMin: number, yMax: nu
                 new Identifier(location, "x")
             ),
             "is",
-            new TypeExpression(location, "Float", [
+            new ConstrainedType(location, "Float", [
                 new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, xMin)),
                 new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, xMax)),
                 new ComparisonExpression(
@@ -32,7 +32,7 @@ function createTypeExpression(xMin: number, xMax: number, yMin: number, yMax: nu
                         new Identifier(location, "y")
                     ),
                     "is",
-                    new TypeExpression(location, "Float", [
+                    new ConstrainedType(location, "Float", [
                         new ComparisonExpression(location, new DotExpression(location), ">=", new FloatLiteral(location, yMin)),
                         new ComparisonExpression(location, new DotExpression(location), "<=", new FloatLiteral(location, yMax)),
                     ])

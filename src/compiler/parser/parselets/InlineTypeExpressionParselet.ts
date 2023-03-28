@@ -7,7 +7,7 @@ import { Parser } from "../Parser";
 import { BinaryExpressionParselet } from "./BinaryExpressionParselet";
 import { GroupParselet } from "./GroupParselet";
 import { Reference } from "../../ast/Reference";
-import { TypeExpression } from "../../ast/TypeExpression";
+import { ConstrainedType } from "../../ast/ConstrainedType";
 import { SemanticError } from "../../SemanticError";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
 import { MemberExpression } from "../../ast/MemberExpression";
@@ -61,7 +61,7 @@ export class InlineTypeExpressionParselet extends BinaryExpressionParselet {
             }
         }
 
-        const result = new TypeExpression(
+        const result = new ConstrainedType(
             SourceLocation.merge(callee.location, group.location),
             callee instanceof TypeReference ? callee : new TypeReference(callee.location, callee.name),
             constraints

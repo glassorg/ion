@@ -7,7 +7,7 @@ import { Expression } from "../ast/Expression";
 import { SourceLocation } from "../ast/SourceLocation";
 import { Statement } from "../ast/Statement";
 import { Type } from "../ast/Type";
-import { TypeExpression } from "../ast/TypeExpression";
+import { ConstrainedType } from "../ast/ConstrainedType";
 import { ComparisonOperator, ComparisonOperators, isComparisonOperator, LogicalOperator } from "../Operators";
 import { skip, traverse } from "./traverse";
 
@@ -71,7 +71,7 @@ export function hasDot(root: Expression, dot: Expression) {
 export function replaceDotExpressions(root: Expression, replacement: Expression): Expression {
     return traverse(root, {
         enter(node) {
-            if (node instanceof TypeExpression) {
+            if (node instanceof ConstrainedType) {
                 //  we skip type expressions because we don't
                 //  want to replace their child dot expressions
                 //  their dot expressions are bound to them

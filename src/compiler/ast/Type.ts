@@ -10,7 +10,7 @@ import { IntegerLiteral } from "./IntegerLiteral";
 import { Literal } from "./Literal";
 import { RangeExpression } from "./RangeExpression";
 import { Reference } from "./Reference";
-import { TypeExpression } from "./TypeExpression";
+import { ConstrainedType } from "./ConstrainedType";
 import { TypeReference } from "./TypeReference";
 import { UnaryExpression } from "./UnaryExpression";
 
@@ -24,11 +24,11 @@ export interface Type extends Expression {
 }
 
 export function isAlways(type: unknown) {
-    return type instanceof TypeExpression && type.baseType.name === CoreTypes.Always;
+    return type instanceof ConstrainedType && type.baseType.name === CoreTypes.Always;
 }
 
 export function isNever(type: unknown) {
-    return type instanceof TypeExpression && type.baseType.name === CoreTypes.Never;
+    return type instanceof ConstrainedType && type.baseType.name === CoreTypes.Never;
 }
 
 /**
@@ -43,7 +43,7 @@ export function isNever(type: unknown) {
     if (isType(e)) {
         if (e instanceof TypeReference) {
             // convertv bare TypeReferences into TypeExpressions.
-            return new TypeExpression(e.location, e);
+            return new ConstrainedType(e.location, e);
         }
         return e;
     }
@@ -69,7 +69,7 @@ export function isNever(type: unknown) {
                     case ">=":
                     case "<":
                     case "<=":
-                        term = new TypeExpression(
+                        term = new ConstrainedType(
                             term.location,
                             term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
                             [
@@ -97,7 +97,7 @@ export function isNever(type: unknown) {
                 //     throw new SemanticError(`Range finish must be more than start`, term);
                 // }
                 const coreType = term.start instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float;
-                return new TypeExpression(
+                return new ConstrainedType(
                     term.location,
                     coreType, [
                         new ComparisonExpression(term.location, new DotExpression(term.location), (term.minExclusive ? ">" : ">="), term.start),
@@ -107,10 +107,10 @@ export function isNever(type: unknown) {
             }
             else if (term instanceof Reference) {
                 const baseType = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
-                term = new TypeExpression(term.location, baseType);
+                term = new ConstrainedType(term.location, baseType);
             }
             else if (term instanceof Literal) {
-                term = new TypeExpression(
+                term = new ConstrainedType(
                     term.location,
                     term instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
                     [

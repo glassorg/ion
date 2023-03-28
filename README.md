@@ -1,6 +1,18 @@
 # ion
 High performance functional language targeting web assembly with strong typescript interop.
 
+## Type Refactoring
+
+Type
+    ValueType
+        CompositeType
+        ConstrainedType
+        TypeReference
+        StructDeclaration
+    FunctionType        //  not a runtime type
+    MultifunctionType   //  not a runtime type
+    TypeofExpression    //  not a runtime type
+
 ## TODO
 [x] Type Expressions to AST format.
 [x] Use Kype to calculate +(Integer, Integer)

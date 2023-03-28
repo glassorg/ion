@@ -5,7 +5,7 @@ import { Declaration } from "./Declaration";
 import { Type } from "./Type";
 import { CallExpression } from "./CallExpression";
 import { CoreTypes } from "../common/CoreType";
-import { TypeExpression } from "./TypeExpression";
+import { ConstrainedType } from "./ConstrainedType";
 
 export enum VariableKind {
     Constant = "const",
@@ -37,7 +37,7 @@ export function newParameterDeclaration(location: SourceLocation, id: Declarator
 
 export interface TypeDeclaration extends VariableDeclaration {
     kind: VariableKind.Type;
-    type: TypeExpression;
+    type: ConstrainedType;
     value: Type;
 }
 
@@ -59,7 +59,7 @@ export class VariableDeclaration extends Declaration {
         super(
             location,
             id,
-            (options.kind === VariableKind.Type ? new TypeExpression(id.location, CoreTypes.Type) : options.type),
+            (options.kind === VariableKind.Type ? new ConstrainedType(id.location, CoreTypes.Type) : options.type),
             options.meta
         );
         this.kind = options.kind ?? VariableKind.Var;

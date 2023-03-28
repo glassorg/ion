@@ -4,7 +4,7 @@ import { traverse } from "../../common/traverse";
 import { createScopes } from "../../createScopes";
 import { SemanticError } from "../../SemanticError";
 import { joinPath, splitPath } from "../../common/pathFunctions";
-import { TypeExpression } from "../../ast/TypeExpression";
+import { ConstrainedType } from "../../ast/ConstrainedType";
 import { isTypeName } from "../../common/names";
 import { MultiFunction } from "../../ast/MultiFunction";
 import { VariableDeclaration } from "../../ast/VariableDeclaration";
@@ -28,7 +28,7 @@ export function resolveReferences(root: Assembly): Assembly {
                 if (node instanceof Reference) {
                     const scope = scopes.get(node.scopeKey);
                     const declaration = scope[node.name];
-                    const couldBeTypeExpressionMemberReference = !isTypeName(node.name) && ancestors.find(a => a instanceof TypeExpression);
+                    const couldBeTypeExpressionMemberReference = !isTypeName(node.name) && ancestors.find(a => a instanceof ConstrainedType);
                     const isMultiFunction = declaration instanceof VariableDeclaration && declaration.value instanceof MultiFunction;
                     const shouldDefer = couldBeTypeExpressionMemberReference && (!declaration || isMultiFunction);
                     if (shouldDefer) {

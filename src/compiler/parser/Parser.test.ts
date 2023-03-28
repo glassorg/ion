@@ -273,7 +273,7 @@ else
 testParseExpression(`x: Number = 10`, {
     "": "VariableDeclaration",
     "type": {
-        "": "TypeExpression",
+        "": "ConstrainedType",
         "constraints": [],
         "baseType": {
             "": "TypeReference",
@@ -310,7 +310,7 @@ testParseExpression(`let x = 20`, {
 testParseExpression(`type Foo = Bar | Baz & Buz`, {
     "": "VariableDeclaration",
     "type": {
-      "": "TypeExpression",
+      "": "ConstrainedType",
       "constraints": [],
       "baseType": {
         "": "TypeReference",
@@ -328,7 +328,7 @@ testParseExpression(`type Foo = Bar | Baz & Buz`, {
     "value": {
       "": "CompositeType",
       "left": {
-        "": "TypeExpression",
+        "": "ConstrainedType",
         "constraints": [],
         "baseType": {
           "": "TypeReference",
@@ -340,7 +340,7 @@ testParseExpression(`type Foo = Bar | Baz & Buz`, {
       "right": {
         "": "CompositeType",
         "left": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -350,7 +350,7 @@ testParseExpression(`type Foo = Bar | Baz & Buz`, {
         },
         "operator": "&",
         "right": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -448,7 +448,7 @@ class Vector
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -466,7 +466,7 @@ class Vector
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -484,7 +484,7 @@ class Vector
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -531,7 +531,7 @@ struct Vector
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -549,7 +549,7 @@ struct Vector
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -621,7 +621,7 @@ testParseExpression(`(a: Integer): Integer -> a`, {
       {
         "": "VariableDeclaration",
         "type": {
-          "": "TypeExpression",
+          "": "ConstrainedType",
           "constraints": [],
           "baseType": {
             "": "TypeReference",
@@ -651,7 +651,7 @@ testParseExpression(`(a: Integer): Integer -> a`, {
       ]
     },
     "returnType": {
-      "": "TypeExpression",
+      "": "ConstrainedType",
       "constraints": [],
       "baseType": {
         "": "TypeReference",
