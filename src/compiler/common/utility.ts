@@ -121,3 +121,11 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
     }
     return null;
 }
+
+const logged = new Set<string>();
+export function logOnce(message = "undefined") {
+    if (!logged.has(message)) {
+        logged.add(message);
+        console.log(message);
+    }
+}

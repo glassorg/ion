@@ -99,11 +99,8 @@ const maybeResolveNode: {
                 CoreTypes.Integer,
                 constraints
             )
-            const before = new ConstrainedType(
-                node.location,
-                new TypeReference(node.location, CoreTypes.Array, [elementType])
-                // could add length constraint here.
-            );
+            const before = new TypeReference(node.location, CoreTypes.Array, [elementType])
+            // could add length constraint here.
             const type = resolveAll(before);
             return node.patch({ type, resolved: true });
         }
@@ -142,31 +139,21 @@ const maybeResolveNode: {
             return;
         }
 
-        const type = resolveAll(new ConstrainedType(parentTypeExpression.baseType.location, parentTypeExpression.baseType.name));
+        const type = resolveAll(parentTypeExpression.baseType);
         return node.patch({ type, resolved: true });
     },
     ConstrainedType(node, c) {
-        // if (node.constraints.length === 0) {
-        //     // remove constrained type if there are no contraints.
-        //     return node.baseType;
-        // }
+        if (node.constraints.length === 0) {
+            // remove constrained type if there are no contraints.
+            return node.baseType;
+        }
         if (node.baseType.resolved) {
-            const declaration = c.getOriginalDeclaration(node.baseType);
-            if (isTypeDeclaration(declaration)) {
-                // This needs to combine the current constraints to the base declaration.
-                if (declaration.value instanceof ConstrainedType) {
-                    if (node.constraints.length > 0) {
-                        let constraints = [...node.constraints, ...declaration.value.constraints];
-                        let baseType = declaration.value.baseType;
-                        return simplify(node.patch({ baseType, constraints }));
-                    }
-                    // debug(node, "VALUE: " + declaration.value);
-                    return declaration.value;
-                }
-            }
             const constraintsResolved = node.constraints.every(constraint => constraint.resolved);
             if (constraintsResolved) {
-                // debug(node, "RESOLVEALL " + node);
+                // if this is nested ConstrainedTypes then we merge their constraints into one.
+                if (node.baseType instanceof ConstrainedType) {
+                    return resolveAll(simplify(node.baseType.patch({ constraints: [...node.baseType.constraints, ...node.constraints]})))
+                }
                 return resolveAll(node);
             }
         }
@@ -174,7 +161,7 @@ const maybeResolveNode: {
     VariableDeclaration(node, c) {
         if ((node.type == null || node.type.resolved) &&
             (node.declaredType == null || node.declaredType.resolved) &&
-            (node.value == null || node.value?.type?.resolved)
+            (node.value == null || node.value.resolved)
         ) {
             if (node.value?.type && node.declaredType) {
                 const isSubType = isSubTypeOf(node.value.type, node.declaredType);
@@ -182,10 +169,12 @@ const maybeResolveNode: {
                     throw new SemanticError(`Variable value type ${node.value.type.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserTypeString()}`, node.declaredType, node.value);
                 }
             }
-            // ensure type is simplified
-            let beforeType = node.type ?? node.value?.type ?? node.declaredType!;
-            let type = simplify(beforeType);
-            return node.patch({ type, resolved: true });
+            let type = node.type ?? node.value?.type ?? node.declaredType;
+            if (type) {
+                type = simplify(type);
+                return node.patch({ type, resolved: true });
+            }
+
         }
     },
     ConditionalAssertion(node, c) {
@@ -234,7 +223,7 @@ const maybeResolveNode: {
             return;
         }
         // convert to a TypeExpression.
-        const type = resolveAll(new ConstrainedType(node.id.location, node.absolutePath!));
+        const type = resolveAll(new TypeReference(node.id.location, node.absolutePath!));
         return node.patch({ type, resolved: true });
     },
     CallExpression(node, c) {
@@ -250,7 +239,7 @@ const maybeResolveNode: {
 
         let type: Type;
         if (callee instanceof StructDeclaration) {
-            type = new ConstrainedType(node.location, callee.absolutePath!);
+            type = new TypeReference(node.location, callee.absolutePath!);
         }
         else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
             const multiFunc = callee.value;
@@ -350,17 +339,14 @@ const maybeResolveNode: {
             if (node.generics.length > 0) {
                 throw new SemanticError(`Not sure what to do with generics here`, node);
             }
-            console.log("VALUE: " + declaration.value);
             return declaration.value;
         }
 
-        const result = this.Reference!(node, c);
-        // debug(node, `BEFORE ${node} AFTER ${result}`);
-        return result;
+        return this.Reference!(node, c);
     },
     Reference(node, c) {
         const declaration = c.getDeclaration(node);
-        if (!declaration.type?.resolved) {
+        if (!declaration.resolved) {
             return;
         }
 

@@ -66,11 +66,16 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
                     return true;
                 })
             }
-            return new ConstrainedType(
-                location,
-                baseType,
-                otherConstraints
-            ).toNestedIsForm();
+            if (otherConstraints.length > 0) {
+                return new ConstrainedType(
+                    location,
+                    baseType,
+                    otherConstraints
+                ).toNestedIsForm();
+            }
+            else {
+                return baseType;
+            }
         }));
     }
     // we NEED to know the difference between Integers and Floats.

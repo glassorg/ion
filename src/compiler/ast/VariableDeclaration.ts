@@ -6,6 +6,7 @@ import { Type } from "./Type";
 import { CallExpression } from "./CallExpression";
 import { CoreTypes } from "../common/CoreType";
 import { ConstrainedType } from "./ConstrainedType";
+import { TypeReference } from "./TypeReference";
 
 export enum VariableKind {
     Constant = "const",
@@ -59,7 +60,7 @@ export class VariableDeclaration extends Declaration {
         super(
             location,
             id,
-            (options.kind === VariableKind.Type ? new ConstrainedType(id.location, CoreTypes.Type) : options.type),
+            (options.kind === VariableKind.Type ? new TypeReference(id.location, CoreTypes.Type) : options.type),
             options.meta
         );
         this.kind = options.kind ?? VariableKind.Var;

@@ -103,9 +103,9 @@ export function isNever(type: unknown) {
                 );
             }
             else if (term instanceof Reference) {
-                const baseType = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
+                term = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
                 // should NOT need a constrained type here.
-                term = new ConstrainedType(term.location, baseType);
+                // term = new ConstrainedType(term.location, baseType);
             }
             else if (term instanceof Literal) {
                 term = new ConstrainedType(

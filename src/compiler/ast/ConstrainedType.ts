@@ -12,7 +12,7 @@ import { EvaluationContext } from "../EvaluationContext";
 import { StructDeclaration } from "./StructDeclaration";
 import { SemanticError } from "../SemanticError";
 import { MemberExpression } from "./MemberExpression";
-import { replaceDotExpressions } from "../common/utility";
+import { logOnce, replaceDotExpressions } from "../common/utility";
 import { BinaryExpression } from "./BinaryExpression";
 import { isSubTypeOf } from "../analysis/isSubType";
 import { simplify } from "../analysis/simplify";
@@ -36,15 +36,18 @@ export function getArrayElementType(type?: Type): Type | null | undefined {
 
 export class ConstrainedType extends Expression implements Type {
 
-    public readonly baseType: TypeReference;
+    public readonly baseType: Type;
 
     constructor(
         location: SourceLocation,
-        baseType: TypeReference | string,
+        baseType: Type | string,
         public readonly constraints: Expression[] = [],
     ) {
         super(location);
-        this.baseType = baseType instanceof TypeReference ? baseType : new TypeReference(location, baseType);
+        this.baseType = typeof baseType === "string" ? new TypeReference(location, baseType) : baseType;
+        if (constraints.length === 0) {
+            logOnce(new Error().stack?.toString());
+        }
     }
 
     get isType(): true { return true }
