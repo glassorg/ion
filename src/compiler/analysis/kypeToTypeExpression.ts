@@ -33,10 +33,10 @@ export function toIonExpression(e: kype.Expression, location: SourceLocation): E
     }
     if (e instanceof kype.TypeExpression) {
         if (isAlways(e)) {
-            return new ConstrainedType(location, CoreTypes.Always);
+            return new TypeReference(location, CoreTypes.Any);
         }
         if (isNever(e)) {
-            return new ConstrainedType(location, CoreTypes.Never);
+            return new TypeReference(location, CoreTypes.Never);
         }
         return joinExpressions("|", splitExpressions("||", toIonExpression(e.proposition, location)).map(option => {
             if (option instanceof FunctionType || option instanceof MultiFunctionType) {

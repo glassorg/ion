@@ -146,6 +146,10 @@ const maybeResolveNode: {
         return node.patch({ type, resolved: true });
     },
     ConstrainedType(node, c) {
+        // if (node.constraints.length === 0) {
+        //     // remove constrained type if there are no contraints.
+        //     return node.baseType;
+        // }
         if (node.baseType.resolved) {
             const declaration = c.getOriginalDeclaration(node.baseType);
             if (isTypeDeclaration(declaration)) {
@@ -154,10 +158,7 @@ const maybeResolveNode: {
                     if (node.constraints.length > 0) {
                         let constraints = [...node.constraints, ...declaration.value.constraints];
                         let baseType = declaration.value.baseType;
-                        const result = simplify(node.patch({ baseType, constraints }));
-                        // throw new SemanticError(`WE NEED TO IMPLEMENT TYPE COMBINING`, node);
-                        // debug(node, "SIMPLIFIED: " + result);
-                        return result;
+                        return simplify(node.patch({ baseType, constraints }));
                     }
                     // debug(node, "VALUE: " + declaration.value);
                     return declaration.value;
@@ -306,17 +307,17 @@ const maybeResolveNode: {
                         "is",
                         toType(new IntegerLiteral(node.location, node.elements.length))
                     ),
-                    // ...node.elements.map((e, i) => {
-                    //     return new ComparisonExpression(
-                    //         node.location,
-                    //         new MemberExpression(node.location,
-                    //             new DotExpression(node.location),
-                    //             new IntegerLiteral(node.location, i)
-                    //         ),
-                    //         "is",
-                    //         e.type!
-                    //     );
-                    // })
+                    ...node.elements.map((e, i) => {
+                        return new ComparisonExpression(
+                            node.location,
+                            new MemberExpression(node.location,
+                                new DotExpression(node.location),
+                                new IntegerLiteral(node.location, i)
+                            ),
+                            "is",
+                            e.type!
+                        );
+                    })
                 ]
             );
             return node.patch({ type: resolveAll(type), resolved: true });
@@ -344,12 +345,14 @@ const maybeResolveNode: {
             return;
         }
 
-        // const declaration = c.getDeclaration(node);
-        // if (declaration instanceof VariableDeclaration && declaration.value?.resolved) {
-        //     console.log("VALUE: " + declaration.value);
-        //     // return declaration.value;
-        //     // debug(node, "------> " + declaration.value);
-        // }
+        const declaration = c.getDeclaration(node);
+        if (declaration.resolved && isTypeDeclaration(declaration)) {
+            if (node.generics.length > 0) {
+                throw new SemanticError(`Not sure what to do with generics here`, node);
+            }
+            console.log("VALUE: " + declaration.value);
+            return declaration.value;
+        }
 
         const result = this.Reference!(node, c);
         // debug(node, `BEFORE ${node} AFTER ${result}`);
@@ -375,9 +378,6 @@ const maybeResolveNode: {
             return;
         }
         const objectType = node.object.type!;
-        if (!(objectType instanceof ConstrainedType)) {
-            throw new SemanticError(`Expected TypeExpression`, objectType)
-        }
         const propertyType = objectType.getMemberType(node.property, c);
         if (!propertyType) {
             throw new SemanticError(`Property ${node.property} not found on ${objectType.toUserTypeString()}`, node.property);

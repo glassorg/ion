@@ -1,7 +1,7 @@
 import * as kype from "@glas/kype";
-import { isAlways, Maybe } from "@glas/kype";
+import { Maybe } from "@glas/kype";
 import { traverse } from "@glas/traverse";
-import { isNever, Type } from "../ast/Type";
+import { isAny, isNever, Type } from "../ast/Type";
 
 /**
  * Returns true if this is a subtype, false if it's definitly never a subtype or null if it might be a subtype.
@@ -10,7 +10,7 @@ export function isSubTypeOf(maybeSubType: Type, superType: Type) {
     if (isNever(maybeSubType) || isNever(superType)) {
         return false;
     }
-    if (isAlways(maybeSubType) || isAlways(superType)) {
+    if (isAny(maybeSubType) || isAny(superType)) {
         return true;
     }
     const kypeSubType = removeKypeTypeExpressions(maybeSubType.toKype());

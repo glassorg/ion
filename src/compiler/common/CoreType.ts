@@ -2,12 +2,11 @@ export const CoreTypes = {
     Integer: "Integer",
     Float: "Float",
     Boolean: "Boolean",
-    Any: "Any",
     Array: "Array",
     NaN: "NaN",
     Native: "@Native",
     String: "String",
-    Always: "Always",
+    Any: "Any",
     Never: "Never",
     Type: "Type",
 } as const;

@@ -5,6 +5,8 @@
 // arrayLength10 = (a: Float[]{ length == 10 }) -> a.length
 // foo = (a: Array, b: 0 ..< a.length) -> 1
 
+// getElement = (a: Float[], b: 0 .. a.length) -> 1
+
 // arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
 //  WHEN USING reference, top, limit, declaration not found.
 

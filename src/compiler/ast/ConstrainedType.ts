@@ -1,7 +1,7 @@
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { toType, Type } from "./Type";
+import { isType, toType, Type } from "./Type";
 import { TypeReference } from "./TypeReference";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
@@ -51,12 +51,14 @@ export class ConstrainedType extends Expression implements Type {
 
     public toKype() {
         const constraints = [...this.toFlatExpressionForm().constraints];
-        if (this.baseType.name !== CoreTypes.Any) {
-            constraints.push(
-                new ComparisonExpression(this.baseType.location, new DotExpression(this.baseType.location), "is", this.baseType)
-            )
+        let type = this.baseType.toKype();
+        if (constraints.length > 0) {
+            type = kype.joinExpressions([
+                new kype.TypeExpression(joinExpressions("&&", constraints).toKype()),
+                this.baseType.toKype(),
+            ], "&&") as kype.TypeExpression;
         }
-        return new kype.TypeExpression(joinExpressions("&&", constraints).toKype());
+        return type;
     }
 
     static doesPropertyMatch(property: Identifier | Expression, check: Identifier | Expression) {

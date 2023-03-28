@@ -5,7 +5,6 @@ import { joinExpressions, splitExpressions } from "./AstFunctions";
 import { ComparisonExpression } from "./ComparisonExpression";
 import { DotExpression } from "./DotExpression";
 import { Expression } from "./Expression";
-import { FloatLiteral } from "./FloatLiteral";
 import { IntegerLiteral } from "./IntegerLiteral";
 import { Literal } from "./Literal";
 import { RangeExpression } from "./RangeExpression";
@@ -25,12 +24,12 @@ export interface Type extends Expression {
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null;
 }
 
-export function isAlways(type: unknown) {
-    return type instanceof ConstrainedType && type.baseType.name === CoreTypes.Always;
+export function isAny(type: unknown) {
+    return type instanceof TypeReference && type.name === CoreTypes.Any;
 }
 
 export function isNever(type: unknown) {
-    return type instanceof ConstrainedType && type.baseType.name === CoreTypes.Never;
+    return type instanceof TypeReference && type.name === CoreTypes.Never;
 }
 
 /**
@@ -43,10 +42,6 @@ export function isNever(type: unknown) {
  */
  export function toType(e: Expression): Type {
     if (isType(e)) {
-        if (e instanceof TypeReference) {
-            // convertv bare TypeReferences into TypeExpressions.
-            return new ConstrainedType(e.location, e);
-        }
         return e;
     }
 
@@ -109,6 +104,7 @@ export function isNever(type: unknown) {
             }
             else if (term instanceof Reference) {
                 const baseType = term instanceof TypeReference ? term : new TypeReference(term.location, term.name);
+                // should NOT need a constrained type here.
                 term = new ConstrainedType(term.location, baseType);
             }
             else if (term instanceof Literal) {

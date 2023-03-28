@@ -1,5 +1,5 @@
 import { Reference } from "./Reference";
-import { toType, Type } from "./Type";
+import { Type } from "./Type";
 import { toKypeCheck } from "./BinaryExpression";
 import { DotExpression } from "./DotExpression";
 import * as kype from "@glas/kype";

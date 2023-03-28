@@ -21,15 +21,6 @@ function binaryTypeFunction(operator: InfixOperator, coreType: CoreType) {
                 splitExpressions("&&", toIonExpression(kypeExpr, callee.location))
             )
         }));
-        // console.log({
-        //     a: a.toString(),
-        //     operator,
-        //     b: b.toString(),
-        //     aKype: aKype.toString(),
-        //     bKype: bKype.toString(),
-        //     kypeResult: result.toString(),
-        //     ionResult: ionResult.toString(),
-        // })
         return ionResult;
     };
 }
