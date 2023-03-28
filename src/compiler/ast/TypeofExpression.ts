@@ -2,6 +2,9 @@ import { SourceLocation } from "./SourceLocation";
 import { Type } from "./Type";
 import { UnaryExpression } from "./UnaryExpression";
 import { Reference } from "./Reference";
+import { type EvaluationContext } from "../EvaluationContext";
+import { type Expression } from "./Expression";
+import { type Identifier } from "./Identifier";
 
 export class TypeofExpression extends UnaryExpression implements Type {
 
@@ -15,6 +18,10 @@ export class TypeofExpression extends UnaryExpression implements Type {
     }
 
     get isType(): true { return true }
+
+    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
+        throw new Error(`Should never be called`);
+    }
 
     public toKype() {
         const argumentType = this.argument.type;

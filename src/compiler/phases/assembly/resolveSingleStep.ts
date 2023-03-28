@@ -306,17 +306,17 @@ const maybeResolveNode: {
                         "is",
                         toType(new IntegerLiteral(node.location, node.elements.length))
                     ),
-                    ...node.elements.map((e, i) => {
-                        return new ComparisonExpression(
-                            node.location,
-                            new MemberExpression(node.location,
-                                new DotExpression(node.location),
-                                new IntegerLiteral(node.location, i)
-                            ),
-                            "is",
-                            e.type!
-                        );
-                    })
+                    // ...node.elements.map((e, i) => {
+                    //     return new ComparisonExpression(
+                    //         node.location,
+                    //         new MemberExpression(node.location,
+                    //             new DotExpression(node.location),
+                    //             new IntegerLiteral(node.location, i)
+                    //         ),
+                    //         "is",
+                    //         e.type!
+                    //     );
+                    // })
                 ]
             );
             return node.patch({ type: resolveAll(type), resolved: true });
@@ -325,7 +325,7 @@ const maybeResolveNode: {
     DeferredReference(node, c) {
         const parentTypeExpression = c.lookup.findAncestor(node, ConstrainedType)!;
         if (parentTypeExpression.baseType.resolved) {
-            const memberType = parentTypeExpression.getMemberType(node.id, c, false);
+            const memberType = parentTypeExpression.getMemberType(node.id, c);
             if (memberType) {
                 // convert this deferred reference into a dot member reference.
                 return new MemberExpression(node.location, new DotExpression(node.location), node.id);
@@ -379,6 +379,9 @@ const maybeResolveNode: {
             throw new SemanticError(`Expected TypeExpression`, objectType)
         }
         const propertyType = objectType.getMemberType(node.property, c);
+        if (!propertyType) {
+            throw new SemanticError(`Property ${node.property} not found on ${objectType.toUserTypeString()}`, node.property);
+        }
         return node.patch({ resolved: true, type: resolveAll(propertyType) });
     },
     MultiFunction(node, c) {

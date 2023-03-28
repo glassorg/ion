@@ -11,8 +11,9 @@ import { Literal } from "./Literal";
 import { RangeExpression } from "./RangeExpression";
 import { Reference } from "./Reference";
 import { ConstrainedType } from "./ConstrainedType";
-import { TypeReference } from "./TypeReference";
 import { UnaryExpression } from "./UnaryExpression";
+import { TypeReference } from "./TypeReference";
+import { type Identifier } from "./Identifier";
 
 export function isType(node: unknown): node is Type {
     const maybe = node as Partial<Type>;
@@ -21,6 +22,7 @@ export function isType(node: unknown): node is Type {
 
 export interface Type extends Expression {
     isType: true;
+    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null;
 }
 
 export function isAlways(type: unknown) {

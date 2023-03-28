@@ -1,8 +1,9 @@
-import { isSubTypeOf } from "../analysis/isSubType";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { Type } from "./Type";
 import { Expression } from "./Expression";
+import { type EvaluationContext } from "../EvaluationContext";
+import { type Identifier } from "./Identifier";
 
 export class FunctionType extends Expression implements Type {
 
@@ -15,6 +16,10 @@ export class FunctionType extends Expression implements Type {
     }
 
     get isType(): true { return true }
+
+    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
+        return null;
+    }
 
     toString() {
         return `(${this.parameterTypes.map(p => p.toUserTypeString()).join(",")}) => ${this.returnType?.toUserTypeString()}`;

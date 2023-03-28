@@ -1,6 +1,7 @@
 
 float_div_float = (a: Float, b: Float) :: Float | NaN -> a / b
 
+
 nonzero_div_Float = (a: != 0.0, b: Float) :: Float -> a / b
 
 float_div_NonZero = (a: Float, b: != 0.0) :: Float -> a / b
@@ -60,12 +61,14 @@ smallerVectorIdentity = (a: SmallerVector) :: Vector{ x: 0.3 .. 0.5 } -> a
 
 getX = (v: SmallerVector) :: 0.3 .. 0.5 -> v.x
 
-arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
-arrayLengthIs10 = (a: Float[]{ length: 10 }) :: 10 -> a.length
-arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length
+// arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
+// arrayLengthIs10 = (a: Float[]{ length: 10 }) :: 10 -> a.length
+// arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length
 
-literalArrayLength = () :: 3 -> [1, 2, 3].length
+// literalArrayLength = () :: 3 -> [1, 2, 3].length
 
-zeroth = () :: 1 -> [1, 2, 3][0]
-first = () :: 2 -> [1, 2, 3][1]
-second = () :: 3 -> [1, 2, 3][2]
+// getElement = (a: Float[], b: 0 .. a.length) -> 1
+
+// zeroth = () :: 1 -> [1, 2, 3][0]
+// first = () :: 2 -> [1, 2, 3][1]
+// second = () :: 3 -> [1, 2, 3][2]

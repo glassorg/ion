@@ -1,18 +1,6 @@
 # ion
 High performance functional language targeting web assembly with strong typescript interop.
 
-## Type Refactoring
-
-Type
-    ValueType
-        CompositeType
-        ConstrainedType
-        TypeReference
-        StructDeclaration
-    FunctionType        //  not a runtime type
-    MultifunctionType   //  not a runtime type
-    TypeofExpression    //  not a runtime type
-
 ## TODO
 [x] Type Expressions to AST format.
 [x] Use Kype to calculate +(Integer, Integer)
@@ -34,3 +22,4 @@ Type
 [x] Need to resolve TypeExpressions with a TypeExpression base type to a combined TypeExpression.
 [ ] Let's allow checking types dependent upon other parameters values.
 [ ] Verify with array bounds checking.
+[ ] Finish simplifying the Type refactoring by no longer forcing things to ConstrainedType

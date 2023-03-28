@@ -73,30 +73,8 @@ export class ConstrainedType extends Expression implements Type {
         return check.type && property.type && isSubTypeOf(check.type, property.type);
     }
 
-    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type
-    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing: true): Type
-    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing: false): Type | null
-    getMemberType(property: Identifier | Expression, c: EvaluationContext, throwIfMissing = true): Type | null {
-        const declaration = c.getDeclaration(this.baseType);
-        if (isTypeDeclaration(declaration) && declaration.value instanceof ConstrainedType) {
-            return declaration.value.getMemberType(property, c);
-        }
-        if (!(declaration instanceof StructDeclaration)) {
-            if (!throwIfMissing) { return null; }
-            throw new SemanticError(`Expected struct or class declaration`, this.baseType);
-        }
-        let type: Type | undefined;
-        if (property instanceof Identifier) {
-            const field = declaration.fields.find(field => field.id.name === property.name);
-            if (!field) {
-                if (!throwIfMissing) { return null; }
-                throw new SemanticError(`Property ${property} not found on ${declaration.id.name}`, property);
-            }
-            type = field.type!;
-            // now check constraints.
-        }
-        // else {
-        // }
+    getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
+        let type = this.baseType.getMemberType(property, c);
         if (this.constraints.length > 0) {
             let found: ConstrainedType | null = null;
             for (let constraint of this.constraints) {
@@ -115,19 +93,6 @@ export class ConstrainedType extends Expression implements Type {
                 type = type ? simplify(joinExpressions("&", [type, found])) : found;
             }
         }
-        if (!type && this.baseType.name === CoreTypes.Array) {
-            type = toType(this.baseType.generics[0]);
-            // convert type references to type expressions
-            if (!type) {
-                throw new SemanticError(`Array is missing element type`, this.baseType);
-            }
-        }
-        if (!type) {
-
-            if (!throwIfMissing) { return null; }
-            throw new SemanticError(`Expected Identifier or Expression`, property);
-        }
-
         return type;
     }
 
