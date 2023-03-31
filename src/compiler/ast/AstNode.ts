@@ -16,15 +16,19 @@ export class AstNode extends Immutable {
         return `${this.location.filename}:${this.location.startIndex}`;
     }
 
-    toString() {
+    toString(user?: boolean) {
         return super.toString();
     }
 
-    toBlockString(nodes: AstNode[], open = "{", close = "}", indent = '    ') {
+    public toUserString(): string {
+        return this.toString(true);
+    }
+
+    toBlockString(user = false, nodes: AstNode[], open = "{", close = "}", indent = '    ') {
         if (nodes == null || nodes.length === 0) {
             return `${open}${close}`;
         }
-        return (`${open}\n${nodes.join(`\n`).split(`\n`).map(a => indent + a).join(`\n`)}\n${close}`);
+        return (`${open}\n${nodes.map(n => n.toString(user)).join(`\n`).split(`\n`).map(a => indent + a).join(`\n`)}\n${close}`);
     }
 
 }

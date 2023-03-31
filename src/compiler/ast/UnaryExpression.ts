@@ -21,8 +21,8 @@ export class UnaryExpression extends Expression {
         return new kype.UnaryExpression(this.operator as kype.UnaryOperator, this.argument.toKype(), this);
     }
 
-    toString() {
-        return `${this.operator} ${this.argument}${this.toTypeString(this.type)}`;
+    toString(user?: boolean) {
+        return `${this.operator} ${this.argument.toString(user)}${this.toTypeString(this.type)}`;
     }
 
 }

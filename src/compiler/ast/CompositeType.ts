@@ -24,8 +24,8 @@ export class CompositeType extends BinaryExpression implements Type {
 
     get isType(): true { return true }
 
-    toString() {
-        return `{${this.left} ${this.operator} ${this.right}}`;
+    toString(user?: boolean) {
+        return `{${this.left.toString(user)} ${this.operator} ${this.right.toString(user)}}`;
     }
 
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {

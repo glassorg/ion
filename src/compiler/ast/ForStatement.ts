@@ -21,8 +21,8 @@ export class ForStatement extends Statement implements ScopeNode {
         return true;
     }
 
-    toString() {
-        return `for ${this.left} in ${this.right} ${this.body}`
+    toString(user?: boolean) {
+        return `for ${this.left.toString(user)} in ${this.right.toString(user)} ${this.body.toString(user)}`
     }
 
 }

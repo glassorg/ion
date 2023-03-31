@@ -16,8 +16,8 @@ export class FunctionDeclaration extends ConstantDeclaration {
         super(location, id, value.patch({ id }));
     }
 
-    toString() {
-        return `${this.toMetaString()}function ${this.id} = ${this.value}`;
+    toString(user?: boolean) {
+        return `${this.toMetaString()}function ${this.id} = ${this.value.toString(user)}`;
     }
 
 }

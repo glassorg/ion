@@ -55,3 +55,18 @@ export function areSubTypesOf(maybeSubTypes: Type[], superTypes: Type[]): Maybe 
     }
     return allTrue ? true : null;
 }
+
+export function getSubTypePercentage(maybeSubTypes: Type[], superTypes: Type[]): number {
+    if (maybeSubTypes.length !== superTypes.length) {
+        return 0;
+    }
+    let subtypes = 0;
+    for (let i = 0; i < maybeSubTypes.length; i++) {
+        let maybeSubType = maybeSubTypes[i];
+        let superType = superTypes[i];
+        if (isSubTypeOf(maybeSubType, superType)) {
+            subtypes++;
+        }
+    }
+    return subtypes / maybeSubTypes.length;
+}

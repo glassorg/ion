@@ -16,8 +16,8 @@ export class ReturnStatement extends Statement {
         yield this.argument;
     }
 
-    toString() {
-        return `return ${this.argument};${this.toTypeString()}`;
+    toString(user?: boolean) {
+        return `return ${this.argument.toString(user)};${this.toTypeString()}`;
     }
 
 }

@@ -17,7 +17,7 @@ export class IntegerLiteral extends NumberLiteral<bigint> {
         return { ...base, value: this.value.toString() }
     }
 
-    toString() {
+    toString(user?: boolean) {
         return this.value.toString();
     }
 

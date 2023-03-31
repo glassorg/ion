@@ -25,7 +25,7 @@ export class MultiFunctionType extends Expression implements Type {
         return new kype.TypeExpression(new kype.CustomExpression(this));
     }
 
-    toString() {
-        return `multifunctype ${this.toBlockString(this.functionTypes, "[", "]")}`;
+    toString(user?: boolean) {
+        return `multifunctype ${this.toBlockString(user, this.functionTypes, "[", "]")}`;
     }
 }

@@ -20,8 +20,8 @@ export class DeferredReference extends Expression {
         return new kype.DotExpression(this);
     }
 
-    toString() {
-        return `?${this.id.name}`;
+    toString(user?: boolean) {
+        return `?${this.id.toString(user)}`;
     }
 
 }

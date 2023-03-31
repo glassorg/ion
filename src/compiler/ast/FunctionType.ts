@@ -21,8 +21,8 @@ export class FunctionType extends Expression implements Type {
         return null;
     }
 
-    toString() {
-        return `(${this.parameterTypes.map(p => p.toUserTypeString()).join(",")}) => ${this.returnType?.toUserTypeString()}`;
+    toString(user?: boolean) {
+        return `(${this.parameterTypes.map(p => p.toString(user)).join(",")}) => ${this.returnType?.toString(user)}`;
     }
 
     toKype(): kype.TypeExpression {

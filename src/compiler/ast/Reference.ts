@@ -5,6 +5,7 @@ import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
 import { isCoreType } from "../common/CoreType";
 import { Writable } from "../common/TypescriptTypes";
+import { Identifier } from "./Identifier";
 
 export class Reference extends Expression {
 
@@ -29,8 +30,9 @@ export class Reference extends Expression {
         return new Declarator(this.location, this.name);
     }
 
-    toString(includeTypes = false) {
-        return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.type, "::") : "");
+    toString(user?: boolean) {
+        return Identifier.prototype.toString.call(this, user);
+        // return (isValidId(this.name) ? this.name : ("`" + this.name + "`")) + (includeTypes ? this.toTypeString(this.type, "::") : "");
     }
 
 }

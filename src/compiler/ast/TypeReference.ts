@@ -49,8 +49,8 @@ export class TypeReference extends Reference implements Type {
         return type;
     }
 
-    toString() {
-        return super.toString() + (this.generics.length > 0 ? `<${this.generics.join(",")}>` : ``);
+    toString(user?: boolean) {
+        return super.toString(user) + (this.generics.length > 0 ? `<${this.generics.map(g => g.toString(user)).join(",")}>` : ``);
     }    
 
 }

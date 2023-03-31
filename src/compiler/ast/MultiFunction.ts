@@ -1,5 +1,5 @@
 import { simplify } from "../analysis/simplify";
-import { areSubTypesOf, isSubTypeOf } from "../analysis/isSubType";
+import { areSubTypesOf, getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
@@ -23,8 +23,8 @@ export class MultiFunction extends Expression {
         super(SourceLocation.empty);
     }
 
-    toString() {
-        return `multifunction ${this.toBlockString(this.functions, "[", "]")}`;
+    toString(user?: boolean) {
+        return `multifunction ${this.toBlockString(user, this.functions, "[", "]")}`;
     }
 
     toSorted(c: EvaluationContext): MultiFunction {
@@ -71,10 +71,6 @@ export class MultiFunction extends Expression {
     getReturnType(argTypes: Type[], c: EvaluationContext, callee: CallExpression): Type {
         const returnTypes: Type[] = [];
 
-        // const DEBUG = (callee.toString() + this.functions[2].toString()) === '`/`(`a:18:0`, `b:18:2`)`Integer./.1`';
-        // if (DEBUG) {
-        //     debugger;
-        // }
         let lastWasAlwaysMatch = false;
         for (let func of this.functions) {
             const declaration = c.getDeclaration(func);
@@ -113,17 +109,52 @@ export class MultiFunction extends Expression {
             }
         }
         if (returnTypes.length === 0) {
-            throw new SemanticError(`No functions found matching arguments: ${this.name}(${argTypes.join(",")})`, callee);
+            // find the function that is the best match.
+            this.throwFunctionNotFoundError(argTypes, c, callee);
         }
         if (!lastWasAlwaysMatch) {
             throw new SemanticError(`Function arguments may not always match: ${this.name}(${argTypes.join(",")})`, callee);
         }
         const type = simplify(joinExpressions("|", returnTypes));
-        // console.log({
-        //     returnTypes: returnTypes.join(" , "),
-        //     type: type.toString()
-        // })
         return type;
+    }
+
+    getBestFunctionCall(argTypes: Type[], c: EvaluationContext): Reference {
+        if (this.functions.length === 1) {
+            return this.functions[0];
+        }
+        let bestPercent = 0;
+        let bestFunc: Reference | undefined;
+        for (let func of this.functions) {
+            const functionValue = c.getConstantValue(func) as FunctionExpression;
+            const percent = getSubTypePercentage(argTypes, functionValue.parameterTypes);
+            //  we accept >= so that the farthest back function wins.
+            //  this is because the farthest back should be the least restrictive.
+            if (!bestFunc || percent >= bestPercent) {
+                bestPercent = percent;
+                bestFunc = func;
+            }
+        }
+        return bestFunc!;
+    }
+
+    throwFunctionNotFoundError(argTypes: Type[], c: EvaluationContext, callee: CallExpression) {
+        const func = this.getBestFunctionCall(argTypes, c);
+        const functionValue = c.getConstantValue(func) as FunctionExpression;
+        const { parameterTypes } = functionValue;
+        for (let i = 0; i < argTypes.length; i++) {
+            const argType = argTypes[i];
+            const paramType = parameterTypes[i];
+            const result = isSubTypeOf(argType, paramType);
+            if (result !== true) {
+                const parameter = functionValue.parameters[i];
+                debugger;
+                const result2 = paramType.toUserString();
+                throw new SemanticError(`${argType.toUserString()} ${result === null ? `may` : `does`} not match parameter ${parameter.id.toUserString()} : ${paramType.toUserString()}`, callee.args[i]);
+            }
+        }
+
+        throw new SemanticError(`This should never happen`, callee);
     }
 
 }

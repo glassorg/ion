@@ -52,15 +52,11 @@ export abstract class BinaryExpression extends Expression {
         return new kype.BinaryExpression(this.left.toKype(), operator as kype.BinaryOperator, this.right.toKype());
     }
 
-    toString() {
-        return `(${this.left} ${this.operator} ${this.right})`;
-    }
-
-    public toUserTypeString(): string {
-        if (this.left instanceof DotExpression && (this.operator === "is" || this.operator === "==")) {
-            return this.right.toString();
+    toString(user?: boolean) {
+        if (user && this.left instanceof DotExpression && (this.operator === "is" || this.operator === "==")) {
+            return this.right.toString(user);
         }
-        return `(${this.left.toUserTypeString()} ${this.operator} ${this.right.toUserTypeString()})`;
+        return `(${this.left.toString(user)} ${this.operator} ${this.right.toString(user)})`;
     }
     
 }

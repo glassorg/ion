@@ -17,8 +17,8 @@ export class RangeExpression extends Expression {
         super(location);
     }
 
-    toString() {
-        return `${this.start} .. ${this.finish}`;
+    toString(user?: boolean) {
+        return `${this.start.toString(user)} .. ${this.finish.toString(user)}`;
     }
 
 }

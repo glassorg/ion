@@ -35,8 +35,8 @@ export class StructDeclaration extends Declaration implements ScopeNode {
         return null;
     }
 
-    toString() {
-        return `${this.toMetaString()}${this.keyword} ${this.id}${this.toBlockString(this.fields)}`;
+    toString(user?: boolean) {
+        return `${this.toMetaString()}${this.keyword} ${this.id}${this.toBlockString(user, this.fields)}`;
     }
 
 }

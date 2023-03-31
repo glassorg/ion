@@ -10,8 +10,8 @@ export class ArrayExpression extends Expression {
         super(location);
     }
 
-    toString() {
-        return `[${this.elements.join(",")}]`;
+    toString(user?: boolean) {
+        return `[${this.elements.map(e => e.toString(user)).join(",")}]`;
     }
     
 }

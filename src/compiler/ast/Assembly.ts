@@ -10,8 +10,8 @@ export class Assembly extends AstNode {
         super(SourceLocation.empty);
     }
 
-    toString() {
-        return this.toBlockString(this.declarations);
+    toString(user?: boolean) {
+        return this.toBlockString(user, this.declarations);
     }
 
 }

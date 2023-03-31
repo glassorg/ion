@@ -34,8 +34,8 @@ export class FunctionExpression extends Expression implements ScopeNode {
         super(location);
     }
 
-    toString() {
-        return `${this.id}${this.toBlockString(this.parameters, "(", ")")}${this.toTypeString(this.returnType)} ${this.body}`;
+    toString(user?: boolean) {
+        return `${this.id}${this.toBlockString(user, this.parameters, "(", ")")}${this.toTypeString(this.returnType)} ${this.body.toString(user)}`;
     }
 
     get isScope(): true {

@@ -101,15 +101,8 @@ export class ConstrainedType extends Expression implements Type {
         return type;
     }
 
-    toString() {
-        return `${this.baseType}{${this.constraints}}`;
-    }
-
-    public toUserTypeString(): string {
-        if (this.constraints.length === 0) {
-            return this.baseType.toUserTypeString();
-        }
-        return `${this.baseType.toUserTypeString()}{${this.constraints.map(c => c.toUserTypeString()).join(",")}}`;
+    toString(user?: boolean) {
+        return `${this.baseType.toString(user)}{${this.constraints.map(c => c.toString(user))}}`;
     }
 
     toFlatExpressionForm(): ConstrainedType {

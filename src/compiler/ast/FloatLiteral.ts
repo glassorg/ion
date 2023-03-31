@@ -20,7 +20,7 @@ export class FloatLiteral extends NumberLiteral<number> {
         return this.toString();
     }
 
-    toString() {
+    toString(user?: boolean) {
         return Number.isInteger(this.value) ? this.value.toFixed(1) : this.value.toString();
     }
 }

@@ -79,8 +79,8 @@ export class VariableDeclaration extends Declaration {
         }
     }
 
-    toString() {
-        return `${this.toMetaString()}${this.kind} ${this.id}${this.toTypeString()}${this.value ? ` = ${this.value}`: ``};`;
+    toString(user?: boolean) {
+        return `${this.toMetaString()}${this.kind} ${this.id.toString(user)}${this.toTypeString()}${this.value ? ` = ${this.value.toString(user)}`: ``};`;
     }
 
 }

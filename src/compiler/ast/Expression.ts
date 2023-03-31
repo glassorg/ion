@@ -8,13 +8,6 @@ export abstract class Expression extends Resolvable {
     }
 
     /**
-     * Returns a user friendly type string that should be similar to language normal type syntax.
-     */
-    public toUserTypeString() {
-        return this.toString();
-    }
-
-    /**
      * Returns a string without type information that can be used to compare
      */
     abstract toString(includeTypes?: boolean): string;

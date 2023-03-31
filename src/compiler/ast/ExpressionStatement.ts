@@ -11,8 +11,8 @@ export class ExpressionStatement extends Statement {
         super(location);
     }
 
-    toString() {
-        return `${this.expression};`
+    toString(user?: boolean) {
+        return `${this.expression.toString(user)};`
     }
 
 }

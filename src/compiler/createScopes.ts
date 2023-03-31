@@ -4,8 +4,8 @@ import { Declaration } from "./ast/Declaration"
 import { ForStatement } from "./ast/ForStatement";
 import { FunctionExpression } from "./ast/FunctionExpression";
 import { isScopeNode } from "./ast/ScopeNode";
+import { isSSAVersionName } from "./common/ssa";
 import { traverse } from "./common/traverse";
-import { isSSAVersionName } from "./phases/assembly/ssaForm";
 import { SemanticError } from "./SemanticError";
 
 export interface Scope {

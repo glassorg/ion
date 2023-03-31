@@ -120,7 +120,7 @@ const maybeResolveNode: {
         }
     },
     ReturnStatement(node, c) {
-        if (node.type?.resolved) {
+        if (node.argument.resolved) {
             return node.patch({ resolved: true });
         }
     },
@@ -166,12 +166,12 @@ const maybeResolveNode: {
             if (node.value?.type && node.declaredType) {
                 const isSubType = isSubTypeOf(node.value.type, node.declaredType);
                 if (!isSubType) {
-                    throw new SemanticError(`Variable value type ${node.value.type.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserTypeString()}`, node.declaredType, node.value);
+                    throw new SemanticError(`Variable value type ${node.value.type.toUserString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserString()}`, node.declaredType, node.value);
                 }
             }
             let type = node.type ?? node.value?.type ?? node.declaredType;
             if (type) {
-                type = simplify(type);
+                type = resolveAll(simplify(type));
                 return node.patch({ type, resolved: true });
             }
 
@@ -366,7 +366,7 @@ const maybeResolveNode: {
         const objectType = node.object.type!;
         const propertyType = objectType.getMemberType(node.property, c);
         if (!propertyType) {
-            throw new SemanticError(`Property ${node.property} not found on ${objectType.toUserTypeString()}`, node.property);
+            throw new SemanticError(`Property ${node.property} not found on ${objectType.toUserString()}`, node.property);
         }
         return node.patch({ resolved: true, type: resolveAll(propertyType) });
     },
@@ -410,23 +410,26 @@ const maybeResolveNode: {
                     //     isSubType,
                     // });
                     if (isSubType !== true) {
-                        throw new SemanticError(`Return type ${returnType.toUserTypeString()} ${isSubType === false ? "can" : "may"} not satisfy declared return type ${node.returnType.toUserTypeString()}`, node.returnType, statement);
+                        throw new SemanticError(`Return type ${returnType.toUserString()} ${isSubType === false ? "can" : "may"} not satisfy declared return type ${node.returnType.toUserString()}`, node.returnType, statement);
                     }
                 }
             }
 
             //  check each return statements type 
             //  resolve!
-            const resolvedReturnType = simplify(joinExpressions("|", returnStatements.map(s => s.argument.type!)));
+            const resolvedReturnType = resolveAll(simplify(joinExpressions("|", returnStatements.map(s => s.argument.type!))));
             if (node.returnTypeExact && node.returnType) {
                 // user has requested an exact return type check
                 const expectedReturnType = simplify(node.returnType);
                 if (expectedReturnType.toString() !== resolvedReturnType.toString()) {
-                    throw new SemanticError(`Return type (${expectedReturnType.toUserTypeString()}) declared as exact with :: did not match resolved type (${resolvedReturnType.toUserTypeString()})`, node.returnType);
+                    throw new SemanticError(`Return type (${expectedReturnType.toUserString()}) declared as exact with :: did not match resolved type (${resolvedReturnType.toUserString()})`, node.returnType);
                 }
             }
 
-            node = node.patch({ resolved: true, returnType: resolvedReturnType });
+            node = node.patch({ returnType: resolvedReturnType });
+        }
+        if (node.type?.resolved && node.returnType?.resolved && node.body?.resolved) {
+            node = node.patch({ resolved: true });
         }
         return node;
     }
