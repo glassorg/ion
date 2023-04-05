@@ -9,6 +9,7 @@ export const CoreTypes = {
     Any: "Any",
     Never: "Never",
     Type: "Type",
+    Function: "Function",
 } as const;
 
 export const CoreProperty = {

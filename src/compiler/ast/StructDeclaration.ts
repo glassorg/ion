@@ -6,6 +6,7 @@ import { Identifier } from "./Identifier";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { Type } from "./Type";
+import { TypeReference } from "./TypeReference";
 import { VariableDeclaration } from "./VariableDeclaration";
 
 export class StructDeclaration extends Declaration implements ScopeNode {
@@ -33,6 +34,10 @@ export class StructDeclaration extends Declaration implements ScopeNode {
             return field.type!;
         }
         return null;
+    }
+
+    getClass() {
+        return new TypeReference(this.id.location, this.id.name);
     }
 
     toString(user?: boolean) {

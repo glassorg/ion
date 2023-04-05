@@ -30,6 +30,9 @@ import { StructDeclaration } from "../../ast/StructDeclaration";
 import { Identifier } from "../../ast/Identifier";
 import { MemberExpression } from "../../ast/MemberExpression";
 import { IntegerLiteral } from "../../ast/IntegerLiteral";
+import { TypeofExpression } from "../../ast/TypeOfExpression";
+import { ArgPlaceholder } from "../../ast/ArgPlaceholder";
+import { FunctionExpression } from "../../ast/FunctionExpression";
 
 function debug(node: AstNode, ...m: any[]) {
     if (node.toString().toLowerCase().indexOf("tiny") >= 0) {
@@ -39,6 +42,9 @@ function debug(node: AstNode, ...m: any[]) {
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
         leave(node) {
+            if (node instanceof TypeofExpression) {
+                throw new Error("Cannot resolveAll on TypeofExpression");
+            }
             if (node instanceof Resolvable && !node.resolved) {
                 return node.patch({ resolved: true });
             }
@@ -69,9 +75,27 @@ const maybeResolveNode: {
         }
     },
     TypeofExpression(node, c) {
-        if (node.argument.type) {
+        const argType = node.argument.type;
+        if (argType) {
             // convert this to the underlying typeof value.
-            return node.argument.type!
+            switch (node.operator) {
+                case "typeof":
+                    return argType;
+                case "classof":
+                    if (!(argType instanceof ConstrainedType)) {
+                        throw new SemanticError(`Expected constrained type`, argType);
+                    }
+                    return argType.baseType;
+            }
+        }
+        else if (node.argument instanceof ArgPlaceholder && node.operator === "classof") {
+            // if we only want the class of an argument, we should be able to find that.
+            let parentFunc = c.lookup.findAncestor(node, FunctionExpression)!;
+            let argType = parentFunc.parameters[node.argument.index].type;
+            if (argType?.resolved) {
+                let classType = argType.getClass(c);
+                return classType;
+            }
         }
     },
     UnaryExpression(node, c) {
@@ -363,12 +387,15 @@ const maybeResolveNode: {
         if (!node.object.resolved || (!node.isPropertyResolved)) {
             return;
         }
+        if (node.type?.resolved) {
+            return node.patch({ resolved: true });
+        }
         const objectType = node.object.type!;
         const propertyType = objectType.getMemberType(node.property, c);
         if (!propertyType) {
             throw new SemanticError(`Property ${node.property} not found on ${objectType.toUserString()}`, node.property);
         }
-        return node.patch({ resolved: true, type: resolveAll(propertyType) });
+        return node.patch({ type: propertyType });
     },
     MultiFunction(node, c) {
         // check if every is resolved?
@@ -385,6 +412,11 @@ const maybeResolveNode: {
 
         return node;
     },
+    FunctionType(node, c) {
+        if (node.returnType.resolved && node.parameterTypes.every(type => type.resolved)) {
+            return node.patch({ resolved: true });
+        }
+    },
     MultiFunctionType(node, c) {
         if (node.functionTypes.every(funcType => funcType.resolved)) {
             return node.patch({ resolved: true });
@@ -392,13 +424,13 @@ const maybeResolveNode: {
     },
     FunctionExpression(node, c) {
         if (!node.type && node.returnType?.resolved && node.parameters.every(p => p.type?.resolved)) {
-            const type = resolveAll(new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType));
+            const type = new FunctionType(node.location, node.parameters.map(p => p.type!), node.returnType);
             node = node.patch({ type /* do not resolve entire function expression */ });
         }
 
         //  return statements resolved?
         const returnStatements = node.getReturnStatements();
-        if (returnStatements.every(statement => statement.argument.type)) {
+        if (returnStatements.every(statement => statement.argument.type?.resolved)) {
             if (node.returnType) {
                 for (let statement of returnStatements) {
                     const returnType = statement.argument.type!;

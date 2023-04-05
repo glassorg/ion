@@ -13,6 +13,7 @@ import { ConstrainedType } from "./ConstrainedType";
 import { UnaryExpression } from "./UnaryExpression";
 import { TypeReference } from "./TypeReference";
 import { type Identifier } from "./Identifier";
+import { TypeofExpression } from "./TypeOfExpression";
 
 export function isType(node: unknown): node is Type {
     const maybe = node as Partial<Type>;
@@ -22,6 +23,7 @@ export function isType(node: unknown): node is Type {
 export interface Type extends Expression {
     isType: true;
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null;
+    getClass(c: EvaluationContext): Type;
 }
 
 export function isAny(type: unknown) {
@@ -68,7 +70,8 @@ export function isNever(type: unknown) {
                     case "<=":
                         term = new ConstrainedType(
                             term.location,
-                            term.argument instanceof IntegerLiteral ? CoreTypes.Integer : CoreTypes.Float,
+                            // use classof argument
+                            new TypeofExpression(term.location, term.argument, "classof"),
                             [
                                 new ComparisonExpression(term.location, new DotExpression(term.location), term.operator, term.argument)
                             ]

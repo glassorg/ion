@@ -43,6 +43,7 @@ export const PrefixOperators = {
     "!=": new Operator(14),   //  used for numeric types: != 10
     "void": new Operator(2),
     "typeof": new Operator(2),
+    "classof": new Operator(2),
 } as const;
 
 export type PrefixOperator = keyof typeof PrefixOperators;

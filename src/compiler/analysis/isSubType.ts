@@ -1,6 +1,7 @@
 import * as kype from "@glas/kype";
 import { Maybe } from "@glas/kype";
 import { traverse } from "@glas/traverse";
+import { ArgPlaceholder } from "../ast/ArgPlaceholder";
 import { isAny, isNever, Type } from "../ast/Type";
 
 /**
@@ -31,19 +32,30 @@ function removeKypeTypeExpressions(root: kype.Expression) {
 }
 
 /**
- * Returns true if all types are subtypes of the supertypes.
- * Returns false if any types are never subtypes of the supertypes.
+ * Returns true if all argTypes are subtypes of the paramTypes.
+ * Returns false if any argTypes are never subtypes of the paramTypes.
  * Returns null otherwise.
  */
-export function areSubTypesOf(maybeSubTypes: Type[], superTypes: Type[]): Maybe {
-    if (maybeSubTypes.length !== superTypes.length) {
+export function areValidParameters(argTypes: Type[], paramTypes: Type[]): Maybe {
+    if (argTypes.length !== paramTypes.length) {
         return false;
     }
     let allTrue = true;
-    for (let i = 0; i < maybeSubTypes.length; i++) {
-        let maybeSubType = maybeSubTypes[i];
-        let superType = superTypes[i];
-        switch (isSubTypeOf(maybeSubType, superType)) {
+    for (let i = 0; i < argTypes.length; i++) {
+        let argType = argTypes[i];
+        const debug = paramTypes[i].toString().indexOf("@arg") > 0;
+        // replace placeholder argTypes with correct parameter type.
+        let paramType = traverse(paramTypes[i], {
+            leave(node) {
+                if (node instanceof ArgPlaceholder) {
+                    return argTypes[node.index];
+                }
+            }
+        });
+        if (debug) {
+            console.log(`${argType} -> ${paramType}`);
+        }
+        switch (isSubTypeOf(argType, paramType)) {
             case false:
                 return false;
             case null:

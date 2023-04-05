@@ -4,6 +4,8 @@ import { Type } from "./Type";
 import { Expression } from "./Expression";
 import { type EvaluationContext } from "../EvaluationContext";
 import { type Identifier } from "./Identifier";
+import { TypeReference } from "./TypeReference";
+import { CoreTypes } from "../common/CoreType";
 
 export class FunctionType extends Expression implements Type {
 
@@ -19,6 +21,10 @@ export class FunctionType extends Expression implements Type {
 
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
         return null;
+    }
+
+    getClass() {
+        return new TypeReference(this.location, CoreTypes.Function);
     }
 
     toString(user?: boolean) {

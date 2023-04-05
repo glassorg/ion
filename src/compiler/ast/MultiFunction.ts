@@ -1,5 +1,5 @@
 import { simplify } from "../analysis/simplify";
-import { areSubTypesOf, getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
+import { areValidParameters, getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
 import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
@@ -76,7 +76,7 @@ export class MultiFunction extends Expression {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
             // first see if this function is valid for these argument types.
-            const isValidCall = areSubTypesOf(argTypes, functionValue.parameterTypes);
+            const isValidCall = areValidParameters(argTypes, functionValue.parameterTypes);
             if (isValidCall === false) {
                 // this is never a valid call so we skip it's return type.
                 continue;
@@ -148,8 +148,6 @@ export class MultiFunction extends Expression {
             const result = isSubTypeOf(argType, paramType);
             if (result !== true) {
                 const parameter = functionValue.parameters[i];
-                debugger;
-                const result2 = paramType.toUserString();
                 throw new SemanticError(`${argType.toUserString()} ${result === null ? `may` : `does`} not match parameter ${parameter.id.toUserString()} : ${paramType.toUserString()}`, callee.args[i]);
             }
         }

@@ -49,6 +49,11 @@ export class TypeReference extends Reference implements Type {
         return type;
     }
 
+    getClass(c: EvaluationContext) {
+        const declaration = c.getOriginalDeclaration(this);
+        return new TypeReference(declaration.location, declaration.id.name);
+    }
+
     toString(user?: boolean) {
         return super.toString(user) + (this.generics.length > 0 ? `<${this.generics.map(g => g.toString(user)).join(",")}>` : ``);
     }    

@@ -35,8 +35,8 @@ export class MemberExpression extends Expression {
         return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
     }
 
-    toString(includTypes = true) {
-        return this.property instanceof Identifier ? `${this.object}.${this.property}` : `${this.object}[${this.property}]`;
+    toString(user?: boolean) {
+        return this.property instanceof Identifier ? `${this.object.toString(user)}.${this.property.toString(user)}` : `${this.object.toString(user)}[${this.property.toString(user)}]`;
     }
 
 }

@@ -95,10 +95,14 @@ export class ConstrainedType extends Expression implements Type {
                 }
             }
             if (found) {
-                type = type ? simplify(joinExpressions("&", [type, found])) : found;
+                type = type ? joinExpressions("&", [type, found]) : found;
             }
         }
         return type;
+    }
+
+    getClass(c: EvaluationContext) {
+        return this.baseType.getClass(c);
     }
 
     toString(user?: boolean) {

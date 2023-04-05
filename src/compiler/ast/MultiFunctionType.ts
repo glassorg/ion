@@ -5,6 +5,8 @@ import * as kype from "@glas/kype";
 import { Type } from "./Type";
 import { type Identifier } from "./Identifier";
 import { type EvaluationContext } from "../EvaluationContext";
+import { TypeReference } from "./TypeReference";
+import { CoreTypes } from "../common/CoreType";
 
 export class MultiFunctionType extends Expression implements Type {
 
@@ -19,6 +21,10 @@ export class MultiFunctionType extends Expression implements Type {
 
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
         return null;
+    }
+
+    getClass(c: EvaluationContext): Type {
+        return new TypeReference(this.location, CoreTypes.Function);
     }
 
     public toKype() {

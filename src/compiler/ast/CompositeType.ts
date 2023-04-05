@@ -34,6 +34,10 @@ export class CompositeType extends BinaryExpression implements Type {
         return left && right ? joinExpressions(this.operator, [left, right]) : left ?? right;
     }
 
+    getClass(c: EvaluationContext) {
+        return joinExpressions(this.operator, [this.left.getClass(c), this.right.getClass(c)]);
+    }
+
     toKype(): kype.Expression {
         let operator = this.operator === "&" ? "&&" : "||";
         return new kype.BinaryExpression(this.left.toKype(), operator as kype.BinaryOperator, this.right.toKype());
