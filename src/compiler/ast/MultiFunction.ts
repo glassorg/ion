@@ -11,6 +11,8 @@ import { FunctionExpression } from "./FunctionExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import { Type } from "./Type";
+import { traverse } from "../common/traverse";
+import { ArgPlaceholder } from "./ArgPlaceholder";
 
 export class MultiFunction extends Expression {
 
@@ -62,13 +64,11 @@ export class MultiFunction extends Expression {
 
         const sortedFunctions = pairs.map(p => p[0])
 
-        // console.log(`SORTED: ${this.name}`);
-        // console.log(`${pairs.map(p => `    ${p[1].type}\n`).join("")}`);
-
         return this.patch<MultiFunction>({ functions: sortedFunctions });
     }
 
-    getReturnType(argTypes: Type[], c: EvaluationContext, callee: CallExpression): Type {
+    getReturnType(args: Expression[], c: EvaluationContext, callee: CallExpression): Type {
+        const argTypes = args.map(arg => arg.type!);
         const returnTypes: Type[] = [];
 
         let lastWasAlwaysMatch = false;
@@ -76,7 +76,7 @@ export class MultiFunction extends Expression {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
             // first see if this function is valid for these argument types.
-            const isValidCall = areValidParameters(argTypes, functionValue.parameterTypes);
+            const isValidCall = areValidParameters(args, functionValue.parameters);
             if (isValidCall === false) {
                 // this is never a valid call so we skip it's return type.
                 continue;
@@ -97,7 +97,6 @@ export class MultiFunction extends Expression {
             }
 
             if (returnType) {
-                // console.log(`${functionValue.parameterTypes.join(",")}(${argTypes.join(",")}) => ${returnType}`)
                 returnTypes.push(returnType);
             }
 
@@ -108,12 +107,9 @@ export class MultiFunction extends Expression {
                 break;
             }
         }
-        if (returnTypes.length === 0) {
+        if (returnTypes.length === 0 || !lastWasAlwaysMatch) {
             // find the function that is the best match.
             this.throwFunctionNotFoundError(argTypes, c, callee);
-        }
-        if (!lastWasAlwaysMatch) {
-            throw new SemanticError(`Function arguments may not always match: ${this.name}(${argTypes.join(",")})`, callee);
         }
         const type = simplify(joinExpressions("|", returnTypes));
         return type;
@@ -144,7 +140,13 @@ export class MultiFunction extends Expression {
         const { parameterTypes } = functionValue;
         for (let i = 0; i < argTypes.length; i++) {
             const argType = argTypes[i];
-            const paramType = parameterTypes[i];
+            const paramType = simplify(traverse(parameterTypes[i], {
+                leave(node) {
+                    if (node instanceof ArgPlaceholder) {
+                        return new Reference(node.location, functionValue.parameters[node.index].id.name)
+                    }
+                }
+            }));
             const result = isSubTypeOf(argType, paramType);
             if (result !== true) {
                 const parameter = functionValue.parameters[i];

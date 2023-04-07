@@ -46,10 +46,8 @@ export async function test() {
     const nestedIsForm = createTypeExpression(0, 10, 20, 30);
 
     const flatExpressionForm = nestedIsForm.toFlatExpressionForm();
-    // console.log(nestedIsForm + " ----------> " + flatExpressionForm);
     assert.equal(flatExpressionForm.toString(), `Vector{(@.x is Float),(@.x >= 0.0),(@.x <= 10.0),(@.x.y is Float),(@.x.y >= 20.0),(@.x.y <= 30.0)}`);
     const backToNestedIsForm = flatExpressionForm.toNestedIsForm();
-    // console.log(flatExpressionForm + " ----------> " + backToNestedIsForm);
     assert.equal(nestedIsForm.toString(), backToNestedIsForm.toString());
 
     const simplified1 = simplify(backToNestedIsForm);

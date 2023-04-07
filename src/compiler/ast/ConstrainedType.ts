@@ -115,7 +115,6 @@ export class ConstrainedType extends Expression implements Type {
                 let f: ComparisonExpression = e;
                 if (f.operator === "==" && f.right instanceof Literal) {
                     f = f.patch({ operator: "is", right: toType(f.right)});
-                    // console.log(`MAYBE FLATTEN : ${e} -> ${foo}`);
                 }
                 if (f.left instanceof MemberExpression && f.operator === "is" && f.left.object instanceof DotExpression && f.right instanceof ConstrainedType) {
                     const right = f.right.toFlatExpressionForm();

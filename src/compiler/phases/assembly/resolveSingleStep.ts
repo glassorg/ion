@@ -34,11 +34,6 @@ import { TypeofExpression } from "../../ast/TypeOfExpression";
 import { ArgPlaceholder } from "../../ast/ArgPlaceholder";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 
-function debug(node: AstNode, ...m: any[]) {
-    if (node.toString().toLowerCase().indexOf("tiny") >= 0) {
-        console.log(...m);
-    }
-}
 function resolveAll<T extends AstNode>(node: T): T {
     return traverse(node, {
         leave(node) {
@@ -268,8 +263,7 @@ const maybeResolveNode: {
         else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
             const multiFunc = callee.value;
             // boom, we have the correctly resolved types.
-            const argTypes = node.args.map(arg => arg.type!);
-            type = multiFunc.getReturnType(argTypes, c, node);
+            type = multiFunc.getReturnType(node.args, c, node);
         }
         else {
             throw new SemanticError(`Invalid callee: ${callee}`, callee);

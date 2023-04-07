@@ -21,7 +21,6 @@ function extractExpectedError(source: string): ExpectedErrors {
         if (result) {
             let length = result[0].length;
             let error = line.slice(result.index + length).trim();
-            // console.log(result + ", " + result[0].length + " ---> " + error);
             if (result.index >= 0) {
                 if (!ee.expectedError) {
                     ee.expectedError = error;

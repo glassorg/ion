@@ -28,21 +28,6 @@ export function insertConditionals(root: Assembly) {
     let result = traverseWithContext(root, (c) => {
         return {
             leave(node, ancestors) {
-                // // we need to also insert conditional assignments into the right hand side of chained &&, || expressions.
-                // if (node instanceof LogicalExpression) {
-                //     // just && for now.
-                //     const debug = node.toString().indexOf("chained_conditionals") >= 0;
-                //     if (debug) {
-                //         // console.log("_______" + node);
-                //         let {left, right} = node;
-                //         let refs = getReferences(left);
-                //         for (let ref of refs) {
-                //             right = insertConditionalAssignment(right, ref, node.operator === "||", true);
-                //         }
-                //         node = node.patch({ right });
-                //     }
-                // }
-
                 if (node instanceof IfStatement) {
                     let ifStatement = node;
                     // insert conditional assignments here.
@@ -54,7 +39,7 @@ export function insertConditionals(root: Assembly) {
                         //  we always insert an else even if it doesn't exist.
                         //  it's necessary for correct phi result merging after conditional.
                         ifStatement = ifStatement.patch({
-                            alternate: insertConditionalAssignment(node.alternate ?? new BlockStatement(node.location, []), ref, true)
+                            alternate: insertConditionalAssignment(ifStatement.alternate ?? new BlockStatement(node.location, []), ref, true)
                         });
                     }
                     node = ifStatement;
