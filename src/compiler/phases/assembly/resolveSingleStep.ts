@@ -139,8 +139,8 @@ const maybeResolveNode: {
         }
     },
     ReturnStatement(node, c) {
-        if (node.argument.resolved) {
-            return node.patch({ resolved: true });
+        if (node.argument.resolved && node.argument.type) {
+            return node.patch({ type: node.argument.type, resolved: true });
         }
     },
     CompositeType(node, c) {
@@ -268,7 +268,7 @@ const maybeResolveNode: {
         else {
             throw new SemanticError(`Invalid callee: ${callee}`, callee);
         }
-        return node.patch({ type, resolved: true });
+        return node.patch({ type: resolveAll(type), resolved: true });
     },
     ComparisonExpression(node, c) {
         let type = node.type || BooleanType(node.location);
@@ -435,12 +435,6 @@ const maybeResolveNode: {
                 for (let statement of returnStatements) {
                     const returnType = statement.argument.type!;
                     const isSubType = isSubTypeOf(returnType, node.returnType);
-                    // console.log({
-                    //     returnType: returnType.toString(),
-                    //     returnType_Type: returnType.constructor.name,
-                    //     nodeReturnType: node.returnType.toString(),
-                    //     isSubType,
-                    // });
                     if (isSubType !== true) {
                         throw new SemanticError(`Return type ${returnType.toUserString()} ${isSubType === false ? "can" : "may"} not satisfy declared return type ${node.returnType.toUserString()}`, node.returnType, statement);
                     }

@@ -3,4 +3,5 @@
 //  function get(array: Integer[], index: 0 .. array.length)
 //  bug, don't replace declared type with inferred type.
 
-outOfBounds = () -> [1,2,3][2]
+outOfBounds = () :: 3 ->
+    return [1,2,3][2]

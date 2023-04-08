@@ -1,7 +1,6 @@
 
 float_div_float = (a: Float, b: Float) :: Float | NaN -> a / b
 
-
 nonzero_div_Float = (a: != 0.0, b: Float) :: Float -> a / b
 
 float_div_NonZero = (a: Float, b: != 0.0) :: Float -> a / b

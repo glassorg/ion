@@ -75,7 +75,9 @@ export class ConstrainedType extends Expression implements Type {
             return false;
         }
         // some keys may not have a type, for instance in Array tyes
-        return check.type && property.type && isSubTypeOf(check.type, property.type);
+        let checkType = isType(check) ? check : check.type;
+        let propertyType = isType(property) ? property : (property.type ?? (property instanceof Literal ? ConstrainedType.fromLiteral(property) : undefined));
+        return checkType && propertyType && isSubTypeOf(checkType, propertyType);
     }
 
     getMemberType(property: Identifier | Expression, c: EvaluationContext): Type | null {
@@ -83,13 +85,13 @@ export class ConstrainedType extends Expression implements Type {
         if (this.constraints.length > 0) {
             let found: ConstrainedType | null = null;
             for (let constraint of this.constraints) {
-                if (constraint instanceof ComparisonExpression && constraint.operator === "is" && constraint.left instanceof MemberExpression && constraint.left.object instanceof DotExpression && constraint.right instanceof ConstrainedType) {
+                if (constraint instanceof ComparisonExpression && (constraint.operator === "is" || constraint.operator === "==") && constraint.left instanceof MemberExpression && constraint.left.object instanceof DotExpression && constraint.right instanceof ConstrainedType) {
                     const constraintProperty = constraint.left.property;
                     // console.log(`doesPropertyMatch Before(${constraintProperty} : ${constraintProperty.type}, ${property} : ${property.type}) => ?`);
                     const isSameProperty = ConstrainedType.doesPropertyMatch(constraintProperty, property);
                     // console.log(`doesPropertyMatch After (${constraintProperty}, ${property}) => ${isSameProperty}`);
                     if (isSameProperty) {
-                        found = constraint.right;
+                        found = constraint.operator === "is" ? constraint.right : ConstrainedType.fromLiteral(constraint.right as any);
                         break;
                     }
                 }
@@ -194,6 +196,17 @@ export class ConstrainedType extends Expression implements Type {
         }
         // now group up the similar constraints
         return this.patch<ConstrainedType>({ constraints: [...otherConstraints, ...joinedConstraints ] });
+    }
+
+    static fromLiteral<T>(literal: Literal<T>) {
+        const { location } = literal;
+        return new ConstrainedType(
+            location,
+            new TypeReference(location, literal.coreType),
+            [
+                new ComparisonExpression(location, new DotExpression(location), "==", literal)
+            ]
+        );
     }
 
 }
