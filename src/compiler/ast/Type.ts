@@ -34,6 +34,16 @@ export function isNever(type: unknown) {
     return type instanceof TypeReference && type.name === CoreTypes.Never;
 }
 
+export function isBaseType(type: Type, name: string): boolean {
+    if (type instanceof TypeReference) {
+        return type.name === name;
+    }
+    if (type instanceof ConstrainedType) {
+        return isBaseType(type.baseType, name);
+    }
+    return false;
+}
+
 /**
  * A Type expression is an expression which contains DotExpressions.
  * A value is an instance of a type if when the value is substituted

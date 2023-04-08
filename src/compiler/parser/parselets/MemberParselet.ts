@@ -4,12 +4,12 @@ import { Expression } from "../../ast/Expression";
 import { AstNode } from "../../ast/AstNode";
 import { Token } from "../../ast/Token";
 import { TokenName } from "../tokenizer/TokenTypes";
-import { MemberExpression } from "../../ast/MemberExpression";
 import { SemanticError } from "../../SemanticError";
 import { TypeReference } from "../../ast/TypeReference";
 import { SourceLocation } from "../../ast/SourceLocation";
 import { CoreTypes } from "../../common/CoreType";
 import { Reference } from "../../ast/Reference";
+import { IndexExpression } from "../../ast/IndexExpression";
 
 export class MemberParselet extends BinaryExpressionParselet {
 
@@ -39,7 +39,7 @@ export class MemberParselet extends BinaryExpressionParselet {
         }
         let property = p.parseExpression(0);
         let close = p.consume(this.closeTokenType);
-        return new MemberExpression(
+        return new IndexExpression(
             object.location.merge(close.location),
             object,
             property,

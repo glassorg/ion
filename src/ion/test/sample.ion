@@ -1,28 +1,6 @@
 
 //  [Integer[],Integer]{ .[1] >= 0, .[1] < .[0].length}
 //  function get(array: Integer[], index: 0 .. array.length)
-
-// arrayLength10 = (a: Float[]{ length == 10 }) -> a.length
-// foo = (a: Array, b: 0 ..< a.length) -> 1
-
-getAlphaSample = (a: >= 0, b: > a) -> 1
-
-callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) ->
-    if aa >= bb
-        return 0
-    let result = getAlphaSample(aa, bb)
-    return result
-
-// arrayLengthLess10 = (a: Float[]{ length: < 10 }) :: 0 .. 9 -> a.length
-//  WHEN USING reference, top, limit, declaration not found.
-
-// float_div_float = (a: Float, b: Float) :: Float | NaN | Integer -> a / b
-
 //  bug, don't replace declared type with inferred type.
 
-//  TinyFloat = -1.0 .. 1.0
-//  someElement = (array: TinyFloat[]{ length == 2}) :: -1.0 .. 1.0 -> array[0]
-
-// myArrayLength = myArray.length
-// first = myArray[0]
-// next up, get member from array
+outOfBounds = () -> [1,2,3][2]

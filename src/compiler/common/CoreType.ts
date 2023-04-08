@@ -13,7 +13,12 @@ export const CoreTypes = {
 } as const;
 
 export const CoreProperty = {
-    Length: "length"
+    length: "length"
+}
+
+export const CoreFunction = {
+    get: "get",
+    set: "set"
 }
 
 export type CoreType = keyof typeof CoreTypes;

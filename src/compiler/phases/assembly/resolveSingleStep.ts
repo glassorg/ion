@@ -309,7 +309,7 @@ const maybeResolveNode: {
                         node.location,
                         new MemberExpression(node.location,
                             new DotExpression(node.location),
-                            new Identifier(node.location, CoreProperty.Length)
+                            new Identifier(node.location, CoreProperty.length)
                         ),
                         "is",
                         toType(new IntegerLiteral(node.location, node.elements.length))
@@ -372,10 +372,17 @@ const maybeResolveNode: {
         if (declaration instanceof VariableDeclaration && declaration.isConstant) {
             const value = declaration.value!;
             if (value instanceof Literal || value instanceof Reference) {
-                return value.patch({ type, resolved: true });
+                return value.patch({ type, resolved: true, location: node.location });
             }
         }
         return node.patch({ type, resolved: true });
+    },
+    ArgPlaceholder(node, c) {
+        const parentFunction = c.lookup.findAncestor(node, FunctionExpression);
+        const param = parentFunction?.parameters[node.index];
+        if (param?.resolved) {
+            return node.patch({ type: param.type, resolved: true });
+        }
     },
     MemberExpression(node, c) {
         if (!node.object.resolved || (!node.isPropertyResolved)) {
@@ -403,7 +410,6 @@ const maybeResolveNode: {
         if (node.type?.resolved) {
             node = node.patch({ resolved: true });
         }
-
         return node;
     },
     FunctionType(node, c) {

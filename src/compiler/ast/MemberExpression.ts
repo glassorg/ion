@@ -32,7 +32,7 @@ export class MemberExpression extends Expression {
     }
 
     public toKype(): kype.Expression {
-        return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
+        return new kype.MemberExpression(this.object.toKype(), this.property.toKype(), this);
     }
 
     toString(user?: boolean) {

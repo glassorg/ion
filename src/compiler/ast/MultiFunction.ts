@@ -1,6 +1,6 @@
 import { simplify } from "../analysis/simplify";
 import { areValidParameters, getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
-import { nativeFunctionReturnTypes } from "../analysis/nativeFunctionReturnTypes";
+import { getNativeReturnType } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
 import { SemanticError } from "../SemanticError";
@@ -85,12 +85,7 @@ export class MultiFunction extends Expression {
             const nativeCalls = declaration.getMetaCallsByName(CoreTypes.Native);
             let returnType: Type | undefined;
             if (nativeCalls.length > 0) {
-                const nativeTypeName = `${functionValue.id}(${functionValue.parameterTypes.join(`,`)})`;
-                const nativeType = nativeFunctionReturnTypes[nativeTypeName];
-                if (!nativeType) {
-                    throw new SemanticError(`Missing native type ${nativeTypeName}`, declaration.id);
-                }
-                returnType = nativeType(callee, ...argTypes);
+                returnType = getNativeReturnType(c, functionValue, argTypes, declaration, callee);
             }
             else {
                 returnType = functionValue.returnType!;

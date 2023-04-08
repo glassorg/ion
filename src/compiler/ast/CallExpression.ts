@@ -14,7 +14,7 @@ export class CallExpression extends Expression {
     }
 
     public toKype(): kype.Expression {
-        return new kype.Reference(this.toString(), ExpressionKind.Unknown, this);
+        return new kype.Reference(this.toString(), this);
     }
 
     toString(includeTypes = true) {

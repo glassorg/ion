@@ -46,7 +46,7 @@ export function areValidParameters(args: Expression[], parameters: ParameterDecl
     }
     const argTypes = args.map(arg => arg.type!);
     const paramTypes = parameters.map(p => p.type!);
-    const DEBUG = paramTypes.join(",").indexOf("@arg") >= 0;
+    const DEBUG = paramTypes.join(",").indexOf("@arg") >= 0 && paramTypes.join(",").indexOf("length") >= 0;
     let allTrue = true;
     for (let i = 0; i < argTypes.length; i++) {
         const argType = argTypes[i];
@@ -61,43 +61,49 @@ export function areValidParameters(args: Expression[], parameters: ParameterDecl
         const paramType = simplify(paramTypeRaw);
         let result = isSubTypeOf(argType, paramType);
         if (result === null) {
-            if (DEBUG) {
-                //  replace any reference to an identifier with same name as a known argument
-                //  with an arg placeholder and then recompare if this is a subType.
-                //  this solves situations like the following:
-                //
-                //  function callWithLarger(a: >= 0, b, > a) ->
-                //  function caller(x: Integer, y: Integer) ->
-                //      if y >= x
-                //          return callWithLarger(x, y)
-                //      return 0
-                //
-                //  the 2nd parameterType will be Integer{ @ > @arg(0) }
-                //  the 2nd argumentType will be Integer{ @ > x:ssa }
-                //  after normalizing the 2nd argumentType will be Integer{ @ > @arg(0) }
-                const argNames = new Map(args.map((p,i) => [p instanceof Reference ? getSSAOriginalName(p.name) : "",i]));
-                const normalizedArgType = traverse(argType, {
-                    leave(node) {
-                        if (node instanceof Reference) {
-                            const index = argNames.get(getSSAOriginalName(node.name));
-                            if (index != null) {
-                                return new ArgPlaceholder(node.location, index);
-                            }
+            //  replace any reference to an identifier with same name as a known argument
+            //  with an arg placeholder and then recompare if this is a subType.
+            //  this solves situations like the following:
+            //
+            //  function callWithLarger(a: >= 0, b, > a) ->
+            //  function caller(x: Integer, y: Integer) ->
+            //      if y >= x
+            //          return callWithLarger(x, y)
+            //      return 0
+            //
+            //  the 2nd parameterType will be Integer{ @ > @arg(0) }
+            //  the 2nd argumentType will be Integer{ @ > x:ssa }
+            //  after normalizing the 2nd argumentType will be Integer{ @ > @arg(0) }
+            const argNames = new Map(args.map((p,i) => [p instanceof Reference ? getSSAOriginalName(p.name) : "",i]));
+            const normalizedArgType = traverse(argType, {
+                leave(node) {
+                    if (node instanceof Reference) {
+                        const index = argNames.get(getSSAOriginalName(node.name));
+                        if (index != null) {
+                            return new ArgPlaceholder(node.location, index);
                         }
                     }
+                }
+            })
+            const newResult = isSubTypeOf(normalizedArgType, paramTypes[i]);
+            if (DEBUG) {
+                debugger
+                const paramKype = paramType.toKype();
+                const simpleParamType = simplify(paramType);
+                console.log(">>> " + paramKype);
+
+                // const simpleParamType = simplify(paramType);
+                console.log({
+                    argType: argType.toString(),
+                    normalizedArgType: normalizedArgType.toString(),
+                    paramType: paramType.toString(),
+                    paramKype: paramKype.toString(),
+                    simpleParamType: simpleParamType.toString(),
+                    result,
+                    newResult,
                 })
-                const newResult = isSubTypeOf(normalizedArgType, paramTypes[i]);
-                // console.log({
-                //     argType: argType.toString(),
-                //     normalizedArgType: normalizedArgType.toString(),
-                //     paramTypeBefore: paramTypes[i].toString(),
-                //     // paramTypeRaw: paramTypeRaw.toString(),
-                //     // paramType: paramType.toString(),
-                //     result,
-                //     newResult,
-                // })
-                result = newResult;
             }
+            result = newResult;
         }
         switch (result) {
             case false:

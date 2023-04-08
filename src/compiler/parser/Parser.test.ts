@@ -132,12 +132,12 @@ testParseExpression(`a.b.c`, {
 });
 
 testParseExpression(`a[b]`, {
-    "": "MemberExpression",
+    "": "IndexExpression",
     "object": {
         "": "Reference",
         "name": "a"
     },
-    "property": {
+    "index": {
         "": "Reference",
         "name": "b"
     }

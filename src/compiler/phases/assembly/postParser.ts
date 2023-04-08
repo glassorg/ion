@@ -1,11 +1,14 @@
 import { ArgPlaceholder } from "../../ast/ArgPlaceholder";
 import { ArrayExpression } from "../../ast/ArrayExpression";
 import { Assembly } from "../../ast/Assembly";
+import { CallExpression } from "../../ast/CallExpression";
 import { FunctionExpression } from "../../ast/FunctionExpression";
+import { IndexExpression } from "../../ast/IndexExpression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Reference } from "../../ast/Reference";
 import { SequenceExpression } from "../../ast/SequenceExpression";
 import { ParameterDeclaration } from "../../ast/VariableDeclaration";
+import { CoreFunction } from "../../common/CoreType";
 import { traverse } from "../../common/traverse";
 import { TokenNames } from "../../parser/tokenizer/TokenTypes";
 import { SemanticError } from "../../SemanticError";
@@ -22,6 +25,13 @@ export function postParser(assembly: Assembly) {
                     throw new SemanticError(`Unexpected: ${node}`, node);
                 }
                 return node.value;
+            }
+            if (node instanceof IndexExpression) {
+                //  if left hand side... then this should be converted to a set call
+                //  if right hand side then this should be a get call
+                return new CallExpression(node.location, new Reference(node.location, CoreFunction.get), [
+                    node.object, node.index
+                ]);
             }
             if (node instanceof FunctionExpression) {
                 const names = new Map(node.parameters.map((p,i) => [p.id.name, i]));

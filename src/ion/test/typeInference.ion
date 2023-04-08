@@ -70,3 +70,9 @@ literalArrayLength = () :: 3 -> [1, 2, 3].length
 zeroth = () :: 1 -> [1, 2, 3][0]
 first = () :: 2 -> [1, 2, 3][1]
 second = () :: 3 -> [1, 2, 3][2]
+
+getAlpha = (a: >= 0, b: > a) -> 1
+callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) :: 0 .. 1 ->
+    if aa >= bb
+        return 0
+    return getAlpha(aa, bb)
