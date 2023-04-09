@@ -61,6 +61,7 @@ export const ComparisonOperators = {
 
 export const AssignmentOperators = {
     "=": new Operator(3, { rightAssociative: true }),
+    ":=": new Operator(3, { rightAssociative: true }),
     "+=": new Operator(3, { rightAssociative: true }),
     "-=": new Operator(3, { rightAssociative: true }),
     "**=": new Operator(3, { rightAssociative: true }),

@@ -1,21 +1,31 @@
 import { ArgPlaceholder } from "../../ast/ArgPlaceholder";
 import { ArrayExpression } from "../../ast/ArrayExpression";
 import { Assembly } from "../../ast/Assembly";
+import { AssignmentExpression } from "../../ast/AssignmentExpression";
+import { createBinaryExpression } from "../../ast/AstFunctions";
 import { CallExpression } from "../../ast/CallExpression";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 import { IndexExpression } from "../../ast/IndexExpression";
 import { PstGroup } from "../../ast/PstGroup";
 import { Reference } from "../../ast/Reference";
 import { SequenceExpression } from "../../ast/SequenceExpression";
-import { ParameterDeclaration } from "../../ast/VariableDeclaration";
 import { CoreFunction } from "../../common/CoreType";
 import { traverse } from "../../common/traverse";
+import { InfixOperator } from "../../Operators";
 import { TokenNames } from "../../parser/tokenizer/TokenTypes";
 import { SemanticError } from "../../SemanticError";
 
 export function postParser(assembly: Assembly) {
     return traverse(assembly, {
         leave(node) {
+            if (node instanceof AssignmentExpression) {
+                var { location, left, right, operator } = node;
+                if (operator !== "=") {
+                    // conversion to thingy.
+                    right = createBinaryExpression(location, left, operator.slice(0, -1) as InfixOperator, right);
+                }
+                return new AssignmentExpression(location, left, right, "=");
+            }
             if (node instanceof PstGroup) {
                 if (node.open.type === TokenNames.OpenBracket) {
                     const elements = SequenceExpression.flatten(node.value);

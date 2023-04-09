@@ -20,6 +20,8 @@ export function toKypeCheck(left: Expression, right: Reference) {
 
 export abstract class BinaryExpression extends Expression {
 
+    public readonly operatorLocation?: SourceLocation;
+
     constructor(
         location: SourceLocation,
         public readonly left: Expression,
@@ -50,6 +52,11 @@ export abstract class BinaryExpression extends Expression {
             }
         }
         return new kype.BinaryExpression(this.left.toKype(), operator as kype.BinaryOperator, this.right.toKype());
+    }
+
+    toJSON() {
+        let { operatorLocation, ...rest } = super.toJSON();
+        return rest;
     }
 
     toString(user?: boolean) {

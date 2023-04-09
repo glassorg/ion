@@ -7,7 +7,7 @@ import { SemanticError } from "../../SemanticError";
 export class ReservedWordParselet extends PrefixParselet {
 
     parse(p: Parser, token: Token): AstNode {
-        throw new SemanticError(`"${token.value}" is a reserved word`);
+        throw new SemanticError(`"${token.value}" is a reserved word`, token);
     }
 
 }

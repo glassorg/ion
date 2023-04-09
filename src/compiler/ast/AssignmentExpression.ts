@@ -1,3 +1,4 @@
+import { AssignmentOperator } from "../Operators";
 import { BinaryExpression } from "./BinaryExpression";
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
@@ -8,8 +9,9 @@ export class AssignmentExpression extends BinaryExpression {
         location: SourceLocation,
         left: Expression,
         right: Expression,
-    ){
-        super(location, left, "=", right);
+        operator: AssignmentOperator = "=",
+    ) {
+        super(location, left, operator, right);
     }
 
 }

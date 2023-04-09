@@ -1,16 +1,15 @@
 import { BlockStatement } from "./BlockStatement";
-import { Declarator } from "./Declarator";
 import { Expression } from "./Expression";
-import { ForVariantDeclaration } from "./ForVariantDeclaration";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
 import { Statement } from "./Statement";
+import { VariableDeclaration } from "./VariableDeclaration";
 
 export class ForStatement extends Statement implements ScopeNode {
 
     constructor(
         location: SourceLocation,
-        public readonly left: ForVariantDeclaration,
+        public readonly left: VariableDeclaration,
         public readonly right: Expression,
         public readonly body: BlockStatement,
     ){
@@ -19,6 +18,10 @@ export class ForStatement extends Statement implements ScopeNode {
 
     get isScope(): true {
         return true;
+    }
+
+    getStatements(): Statement[] {
+        return [this.left];
     }
 
     toString(user?: boolean) {

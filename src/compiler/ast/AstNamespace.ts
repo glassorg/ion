@@ -16,7 +16,6 @@ export * from "./Expression";
 export * from "./ExpressionStatement";
 export * from "./FloatLiteral";
 export * from "./ForStatement";
-export * from "./ForVariantDeclaration";
 export * from "./FunctionDeclaration";
 export * from "./FunctionExpression";
 export * from "./Identifier";

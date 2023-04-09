@@ -1,7 +1,6 @@
 import { Expression } from "./Expression";
 import { SourceLocation } from "./SourceLocation";
 import * as kype from "@glas/kype";
-import { ExpressionKind } from "@glas/kype";
 
 export class CallExpression extends Expression {
 

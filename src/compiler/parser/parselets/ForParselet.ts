@@ -1,13 +1,13 @@
 import { AstNode } from "../../ast/AstNode";
 import { Declarator } from "../../ast/Declarator";
 import { ForStatement } from "../../ast/ForStatement";
-import { ForVariantDeclaration } from "../../ast/ForVariantDeclaration";
 import { Reference } from "../../ast/Reference";
 import { Token } from "../../ast/Token";
 import { SemanticError } from "../../SemanticError";
 import { TokenNames } from "../tokenizer/TokenTypes";
 import { Parser } from "../Parser";
 import { PrefixParselet } from "../PrefixParselet";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 
 export class ForParselet extends PrefixParselet {
 
@@ -24,7 +24,7 @@ export class ForParselet extends PrefixParselet {
         let body = p.parseBlock();
         return new ForStatement(
             forToken.location.merge(value.location),
-            new ForVariantDeclaration(new Declarator(id.location, id.name)),
+            new VariableDeclaration(id.location, new Declarator(id.location, id.name), { kind: VariableKind.For }),
             value,
             body,
         );

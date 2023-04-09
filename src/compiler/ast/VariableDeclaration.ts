@@ -15,6 +15,7 @@ export enum VariableKind {
     Property = "prop",
     Parameter = "param",
     Type = "type",
+    For = "forvar",
 }
 
 export interface VariableOptions {

@@ -1,4 +1,3 @@
-
 import { AstNode } from "../ast/AstNode";
 import { BlockStatement } from "../ast/BlockStatement";
 import { CallExpression } from "../ast/CallExpression";
@@ -143,25 +142,25 @@ export class Parser {
             }
             if (statement instanceof ExpressionStatement && statement.expression instanceof AssignmentExpression) {
                 let { location, left, operator, right: value } = statement.expression;
+                if (operator !== "=") {
+                    throw new SemanticError(`Invalid operator for a root declaration`, statement.expression.operatorLocation);
+                }
                 if (!(left instanceof Reference)) {
                     throw new SemanticError(`Expected identifier`, left);
                 }
                 let declarator = new Declarator(left.location, left.name);
                 if (value instanceof FunctionExpression) {
-                    statement = new FunctionDeclaration(
-                        location, declarator, value
-                    );
+                    statement = new FunctionDeclaration(location, declarator, value);
                 }
                 else {
                     if (isTypeName(declarator.name)) {
                         statement = new VariableDeclaration(
-                            location, declarator, { value: toType(value), kind: VariableKind.Type }
-                        )
+                            location, declarator, { kind: VariableKind.Type, value: toType(value) }
+                        );
                     }
                     else {
                         statement = new VariableDeclaration(
-                            location, declarator,
-                            { kind: VariableKind.Constant, value }
+                            location, declarator, { kind: VariableKind.Constant, value }
                         );
                     }
                 }

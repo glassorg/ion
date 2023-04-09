@@ -12,6 +12,7 @@ import { newParameterDeclaration, ParameterDeclaration, VariableDeclaration, Var
 import { Declarator } from "./Declarator";
 import { FunctionType } from "./FunctionType";
 import { Type } from "./Type";
+import { Statement } from "./Statement";
 
 
 export class FunctionExpression extends Expression implements ScopeNode {
@@ -40,6 +41,14 @@ export class FunctionExpression extends Expression implements ScopeNode {
 
     get isScope(): true {
         return true;
+    }
+
+    getStatements(): Statement[] {
+        return [...this.body.statements, ...this.parameters];
+    }
+
+    areParameterTypesAllResolved() {
+        return this.parameterTypes.every(t => t?.resolved === true);
     }
     
     get parameterTypes(): Type[] {

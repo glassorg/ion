@@ -8,12 +8,13 @@ import { AstNode } from "../../ast/AstNode";
 import { MemberExpression } from "../../ast/MemberExpression";
 import { Reference } from "../../ast/Reference";
 import { Identifier } from "../../ast/Identifier";
-import { VariableDeclaration } from "../../ast/VariableDeclaration";
+import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { createBinaryExpression } from "../../ast/AstFunctions";
 import { RangeExpression } from "../../ast/RangeExpression";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 import { PstGroup } from "../../ast/PstGroup";
 import { toType } from "../../ast/Type";
+import { Declarator } from "../../ast/Declarator";
 
 export class BinaryExpressionParselet extends InfixParselet {
 
@@ -48,6 +49,18 @@ export class BinaryExpressionParselet extends InfixParselet {
                 throw new SemanticError(`Expected Identifier`, right);
             }
             return new MemberExpression(location, left, new Identifier(right.location, right.name));
+        }
+        if (operator === ":=") {
+            if (!(left instanceof Reference)) {
+                throw new SemanticError(`Expected Identifier`, left);
+            }
+            if (!(right instanceof Expression)) {
+                throw new SemanticError(`Expected Expression`, right);
+            }
+            return new VariableDeclaration(location, new Declarator(left.location, left.name), {
+                kind: VariableKind.Var,
+                value: right
+            });
         }
         if (operator.indexOf("..") >= 0) {
             let minExclusive = operator.startsWith("<");

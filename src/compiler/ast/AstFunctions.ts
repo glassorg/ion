@@ -12,11 +12,16 @@ import { SourceLocation } from "./SourceLocation";
 import { isType, Type } from "./Type";
 
 export function createBinaryExpression(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
+    let e = createBinaryExpressionInternal(location, left, operator, right, operatorLocation);
+    if (e instanceof BinaryExpression && operatorLocation !== location) {
+        e = e.patch({ operatorLocation });
+    }
+    return e;
+}
+
+function createBinaryExpressionInternal(location: SourceLocation, left: Expression, operator: InfixOperator, right: Expression, operatorLocation = location) {
     if (isAssignmentOperator(operator)) {
-        if (operator !== "=") {
-            right = createBinaryExpression(location, left, operator.slice(0, -1) as InfixOperator, right);
-        }
-        return new AssignmentExpression(location, left, right);
+        return new AssignmentExpression(location, left, right, operator);
     }
     if (isComparisonOperator(operator)) {
         return new ComparisonExpression(location, left, operator, right);
@@ -30,15 +35,6 @@ export function createBinaryExpression(location: SourceLocation, left: Expressio
     if (isSequenceOperator(operator)) {
         return new SequenceExpression(location, left, operator, right);
     }
-    // return new CallExpression(
-    //     location,
-    //     new MemberExpression(
-    //         SourceLocation.merge(left.location, operatorLocation),
-    //         left,
-    //         new Identifier(operatorLocation, operator)
-    //     ),
-    //     [right]
-    // )
     return new CallExpression(location, new Reference(operatorLocation, operator), [left, right]);
 }
 

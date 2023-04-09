@@ -16,7 +16,7 @@ import { ArgPlaceholder } from "./ArgPlaceholder";
 
 export class MultiFunction extends Expression {
 
-    public readonly sorted = false;
+    public readonly sorted: boolean = false;
 
     constructor(
         public readonly name: string,
@@ -30,6 +30,9 @@ export class MultiFunction extends Expression {
     }
 
     toSorted(c: EvaluationContext): MultiFunction {
+        if (this.sorted) {
+            return this;
+        }
         type Pair = [Reference, FunctionExpression];
         const pairs: Pair[] = this.functions.map(ref => [ref, c.getConstantValue(ref) as FunctionExpression]);
         pairs.sort((a, b) => {
@@ -64,10 +67,10 @@ export class MultiFunction extends Expression {
 
         const sortedFunctions = pairs.map(p => p[0])
 
-        return this.patch<MultiFunction>({ functions: sortedFunctions });
+        return this.patch<MultiFunction>({ functions: sortedFunctions, sorted: true });
     }
 
-    getReturnType(args: Expression[], c: EvaluationContext, callee: CallExpression): Type {
+    getReturnType(args: Expression[], c: EvaluationContext, callee: CallExpression): Type | null {
         const argTypes = args.map(arg => arg.type!);
         const returnTypes: Type[] = [];
 
@@ -88,7 +91,11 @@ export class MultiFunction extends Expression {
                 returnType = getNativeReturnType(c, functionValue, argTypes, declaration, callee);
             }
             else {
-                returnType = functionValue.returnType!;
+                // if a returnType is not resolved yet, then this is not resolved yet.
+                if (!functionValue.returnType) {
+                    return null;
+                }
+                returnType = functionValue.returnType;
             }
 
             if (returnType) {

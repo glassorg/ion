@@ -17,7 +17,7 @@ import { Statement } from "../../ast/Statement";
 import { Type } from "../../ast/Type";
 import { TypeofExpression } from "../../ast/TypeOfExpression";
 import { VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
-import { getSSANextVersion, getSSAOriginalName, getSSAVersionName, ssaVersionSeparator } from "../../common/ssa";
+import { getSSANextVersion, getSSAOriginalName, getSSAVersionName, ssaVersionSeparator, isSSAVersionName } from "../../common/ssa";
 import { traverse, traverseWithContext } from "../../common/traverse";
 import { EvaluationContext } from "../../EvaluationContext";
 
@@ -206,9 +206,9 @@ export function ssaForm(assembly: Assembly) {
     let result = traverseWithContext(assembly, (c) => {
         return {
             leave(node: AstNode) {
-                if (node instanceof FunctionExpression) {
-                    let variables = [...node.body.statements, ...node.parameters]
-                        .filter(n => n instanceof VariableDeclaration) as VariableDeclaration[];
+                if (isScopeNode(node)) {
+                    let variables = node.getStatements()
+                        .filter(n => n instanceof VariableDeclaration && !isSSAVersionName(n.id.name)) as VariableDeclaration[];
                     if (variables.length > 0) {
                         for (let variable of variables) {
                             let name = getNewVarName(variable.id.name);

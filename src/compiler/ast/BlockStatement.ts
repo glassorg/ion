@@ -32,6 +32,10 @@ export class BlockStatement extends Statement implements ScopeNode {
         return true;
     }
 
+    getStatements(): Statement[] {
+        return this.statements;
+    }
+
     toString(user?: boolean) {
         return this.toBlockString(user, this.statements);
     }

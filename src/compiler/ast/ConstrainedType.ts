@@ -9,14 +9,10 @@ import { joinExpressions } from "./AstFunctions";
 import { CoreTypes } from "../common/CoreType";
 import { Identifier } from "./Identifier";
 import { EvaluationContext } from "../EvaluationContext";
-import { StructDeclaration } from "./StructDeclaration";
-import { SemanticError } from "../SemanticError";
 import { MemberExpression } from "./MemberExpression";
 import { logOnce, replaceDotExpressions } from "../common/utility";
 import { BinaryExpression } from "./BinaryExpression";
 import { isSubTypeOf } from "../analysis/isSubType";
-import { simplify } from "../analysis/simplify";
-import { isTypeDeclaration } from "./VariableDeclaration";
 import { Literal } from "./Literal";
 
 export function isArrayType(type?: Type) {
@@ -45,9 +41,9 @@ export class ConstrainedType extends Expression implements Type {
     ) {
         super(location);
         this.baseType = typeof baseType === "string" ? new TypeReference(location, baseType) : baseType;
-        if (constraints.length === 0) {
-            logOnce(new Error().stack?.toString());
-        }
+        // if (constraints.length === 0) {
+        //     logOnce(new Error().stack?.toString());
+        // }
     }
 
     get isType(): true { return true }

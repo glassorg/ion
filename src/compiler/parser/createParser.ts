@@ -15,13 +15,9 @@ import { OutlineStringParselet } from "./parselets/OutlineStringParselet";
 import { FloatLiteral } from "../ast/FloatLiteral";
 import { IntegerLiteral } from "../ast/IntegerLiteral";
 import { TokenNames } from "./tokenizer/TokenTypes";
-import { VariableParselet } from "./parselets/VariableParselet";
-import { ConstantParselet } from "./parselets/ConstantParselet";
 import { FunctionParselet } from "./parselets/FunctionParselet";
 import { ReservedWordParselet } from "./parselets/ReservedWordParselet";
 import { ClassParselet } from "./parselets/ClassParselet";
-import { VariableDeclaration, VariableKind } from "../ast/VariableDeclaration";
-import { toType } from "../ast/Type";
 import { InlineTypeExpressionParselet } from "./parselets/InlineTypeExpressionParselet";
 
 export function createParser() {
@@ -34,15 +30,13 @@ export function createParser() {
         EscapedId: new TerminalParselet(token => new Reference(token.location, token.value.slice(1, -1))),
         If: new IfParselet(),
         For: new ForParselet(),
-        Var: new VariableParselet(),
+        Var: new ReservedWordParselet(),
         Const: new ReservedWordParselet(),
         Extends: new ReservedWordParselet(),
         Implements: new ReservedWordParselet(),
         Function: new FunctionParselet(),
-        // begin legacy
-        Let: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value, kind: VariableKind.Constant })),
-        Type: new ConstantParselet((location, id, value) => new VariableDeclaration(location, id, { value: toType(value), kind: VariableKind.Type })),
-        // end legacy
+        Let: new ReservedWordParselet(),
+        Type: new ReservedWordParselet(),
         Return: new ReturnParselet(),
         OpenParen: new GroupParselet(TokenNames.CloseParen, true),
         OpenBracket: new GroupParselet(TokenNames.CloseBracket, true),

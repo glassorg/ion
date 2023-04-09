@@ -5,6 +5,7 @@ import { Expression } from "./Expression";
 import { Identifier } from "./Identifier";
 import { ScopeNode } from "./ScopeNode";
 import { SourceLocation } from "./SourceLocation";
+import { Statement } from "./Statement";
 import { Type } from "./Type";
 import { TypeReference } from "./TypeReference";
 import { VariableDeclaration } from "./VariableDeclaration";
@@ -12,6 +13,10 @@ import { VariableDeclaration } from "./VariableDeclaration";
 export class StructDeclaration extends Declaration implements ScopeNode {
 
     get isScope(): true { return true; }
+
+    getStatements(): Statement[] {
+        return [];
+    }
 
     constructor(
         location: SourceLocation,

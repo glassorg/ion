@@ -15,7 +15,7 @@ import { LogicalOperator } from "../../Operators";
 import { expressionToType, splitFilterJoinMultiple } from "../../common/utility";
 import { isSubTypeOf } from "../../analysis/isSubType";
 import { Resolvable } from "../../ast/Resolvable";
-import { isTypeDeclaration, VariableDeclaration } from "../../ast/VariableDeclaration";
+import { isTypeDeclaration, VariableDeclaration, VariableKind } from "../../ast/VariableDeclaration";
 import { FunctionType } from "../../ast/FunctionType";
 import { MultiFunctionType } from "../../ast/MultiFunctionType";
 import { MultiFunction } from "../../ast/MultiFunction";
@@ -124,20 +124,6 @@ const maybeResolveNode: {
             return node.patch({ type, resolved: true });
         }
     },
-    ForVariantDeclaration(node, c) {
-        const parent = c.lookup.findAncestor(node, ForStatement)!;
-        if (parent.right.resolved) {
-            const rightType = parent.right.type;
-            if (!isArrayType(rightType)) {
-                throw new SemanticError(`Expected Array type: ${parent.right}`, parent.right);
-            }
-            const elementType = getArrayElementType(rightType);
-            if (!elementType) {
-                throw new SemanticError(`Expected Array element type: ${parent.right}`);
-            }
-            return node.patch({ type: elementType, resolved: true });
-        }
-    },
     ReturnStatement(node, c) {
         if (node.argument.resolved && node.argument.type) {
             return node.patch({ type: node.argument.type, resolved: true });
@@ -178,22 +164,38 @@ const maybeResolveNode: {
         }
     },
     VariableDeclaration(node, c) {
-        if ((node.type == null || node.type.resolved) &&
-            (node.declaredType == null || node.declaredType.resolved) &&
-            (node.value == null || node.value.resolved)
-        ) {
-            if (node.value?.type && node.declaredType) {
-                const isSubType = isSubTypeOf(node.value.type, node.declaredType);
-                if (!isSubType) {
-                    throw new SemanticError(`Variable value type ${node.value.type.toUserString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserString()}`, node.declaredType, node.value);
+        if (node.kind === VariableKind.For) {
+            const parent = c.lookup.findAncestor(node, ForStatement)!;
+            if (parent.right.resolved) {
+                const rightType = parent.right.type;
+                if (!isArrayType(rightType)) {
+                    throw new SemanticError(`Expected Array type: ${parent.right}`, parent.right);
                 }
+                const elementType = getArrayElementType(rightType);
+                if (!elementType) {
+                    throw new SemanticError(`Expected Array element type: ${parent.right}`);
+                }
+                return node.patch({ type: elementType, resolved: true });
             }
-            let type = node.type ?? node.value?.type ?? node.declaredType;
-            if (type) {
-                type = resolveAll(simplify(type));
-                return node.patch({ type, resolved: true });
+        }
+        else {
+            if ((node.type == null || node.type.resolved) &&
+                (node.declaredType == null || node.declaredType.resolved) &&
+                (node.value == null || node.value.resolved)
+            ) {
+                if (node.value?.type && node.declaredType) {
+                    const isSubType = isSubTypeOf(node.value.type, node.declaredType);
+                    if (!isSubType) {
+                        throw new SemanticError(`Variable value type ${node.value.type.toUserString()} ${isSubType === false ? "can" : "may"} not satisfy declared variable type ${node.declaredType.toUserString()}`, node.declaredType, node.value);
+                    }
+                }
+                let type = node.type ?? node.value?.type ?? node.declaredType;
+                if (type) {
+                    type = resolveAll(simplify(type));
+                    return node.patch({ type, resolved: true });
+                }
+    
             }
-
         }
     },
     ConditionalAssertion(node, c) {
@@ -208,13 +210,17 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let knownType = node.value.type!;
-        if (!(knownType instanceof ConstrainedType)) {
-            throw new SemanticError(`We don't know how to handle this yet`, node.value);
-        }
+        // if (!(knownType instanceof ConstrainedType)) {
+        //     console.log(knownType);
+        //     throw new SemanticError(`We don't know how to handle this yet`, node.value);
+        // }
         const assertedDotConstraints = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
         const assertedOptions = splitExpressions("||", assertedDotConstraints);
         let newTypes = assertedOptions.map(assertedOption => {
             return splitExpressions("|", knownType).map(knownTypeOption => {
+                if (knownTypeOption instanceof TypeReference) {
+                    knownTypeOption = new ConstrainedType(knownTypeOption.location, knownTypeOption);
+                }
                 if (!(knownTypeOption instanceof ConstrainedType)) {
                     throw new SemanticError(`We expected a type constraint here ` + knownTypeOption);
                 }
@@ -252,23 +258,30 @@ const maybeResolveNode: {
         const callee = c.getDeclaration(node.callee);
 
         // functions need to be resolved into inferred types or something.
-        if (!callee.resolved || !(node.args.every(arg => arg.type?.resolved))) {
+        if (!(node.args.every(arg => arg.type?.resolved))) {
             return;
         }
 
-        let type: Type;
+        let type: Type | null;
         if (callee instanceof StructDeclaration) {
             type = new TypeReference(node.location, callee.absolutePath!);
         }
         else if (callee instanceof VariableDeclaration && callee.value instanceof MultiFunction) {
             const multiFunc = callee.value;
+            if (!multiFunc.sorted) {
+                // if the multiFunction is sorted then we can know which functions we *might* actually call
+                return;
+            } 
             // boom, we have the correctly resolved types.
             type = multiFunc.getReturnType(node.args, c, node);
         }
         else {
             throw new SemanticError(`Invalid callee: ${callee}`, callee);
         }
-        return node.patch({ type: resolveAll(type), resolved: true });
+
+        if (type) {
+            return node.patch({ type: resolveAll(type), resolved: true });
+        }
     },
     ComparisonExpression(node, c) {
         let type = node.type || BooleanType(node.location);
@@ -399,14 +412,16 @@ const maybeResolveNode: {
         return node.patch({ type: propertyType });
     },
     MultiFunction(node, c) {
-        // check if every is resolved?
-        if (!node.type && node.functions.every(func => func.type)) {
-            // sort the multi function
+        // check if every nodes parameters are resolved?
+        if (!node.sorted && node.functions.every(func =>
+            (c.getConstantValue(func) as FunctionExpression).areParameterTypesAllResolved())
+        ) {
             node = node.toSorted(c);
+        }
+        if (node.sorted && !node.type && node.functions.every(func => func.type)) {
             const type = new MultiFunctionType(node.location, node.functions.map(func => func.type as FunctionType));
             node = node.patch({ type });
         }
-
         if (node.type?.resolved) {
             node = node.patch({ resolved: true });
         }
