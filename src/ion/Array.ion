@@ -3,5 +3,8 @@ struct Array
     length: >= 0
 
 @Native()
-function get(a: Array, i: 0 ..< a.length)
+get = (a: Array, i: 0 ..< a.length) ->
     return i
+
+@Native()
+concat = (a: Array, b: Array) -> a

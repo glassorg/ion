@@ -13,7 +13,7 @@ import { ConstrainedType } from "./ConstrainedType";
 import { UnaryExpression } from "./UnaryExpression";
 import { TypeReference } from "./TypeReference";
 import { type Identifier } from "./Identifier";
-import { TypeofExpression } from "./TypeOfExpression";
+import { TypeofExpression } from "./TypeofExpression";
 
 export function isType(node: unknown): node is Type {
     const maybe = node as Partial<Type>;
