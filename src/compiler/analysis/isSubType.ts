@@ -46,19 +46,33 @@ export function areValidParameters(args: Expression[], parameters: ParameterDecl
     }
     const argTypes = args.map(arg => arg.type!);
     const paramTypes = parameters.map(p => p.type!);
-    // const DEBUG = paramTypes.join(",").indexOf("@arg") >= 0 && paramTypes.join(",").indexOf("length") >= 0;
+    // console.log(argTypes.join(","));
+    const paramNamesToIndex = new Map(parameters.map((p,i) => [getSSAOriginalName(p.id.name), i]));
+    // const DEBUG = argTypes.join(",") == "Array<Float>,Integer{(@ < `from:1:0`.length),(@ < `to:1:0`.length),(@ >= 0)}";
+    // if (DEBUG) {
+    //     console.log({
+    //         ...Object.fromEntries(args.map((a,i) => [`arg[${i}]`, a.toString()])),
+    //         ...Object.fromEntries(argTypes.map((a,i) => [`argType[${i}]`, a.toString()])),
+    //         ...Object.fromEntries(paramTypes.map((a,i) => [`paramType[${i}]`, a.toString()])),
+    //         paramNamesToIndex: JSON.stringify(Object.fromEntries(paramNamesToIndex.entries())),
+    //     });
+    // }
     let allTrue = true;
     for (let i = 0; i < argTypes.length; i++) {
         const argType = argTypes[i];
         // replace placeholder argTypes with correct parameter type.
         const paramTypeRaw = traverse(paramTypes[i], {
             leave(node) {
-                if (node instanceof ArgPlaceholder) {
-                    return argTypes[node.index];
+                if (node instanceof Reference) {
+                    const name = getSSAOriginalName(node.name);
+                    const paramIndex = paramNamesToIndex.get(name) ?? -1;
+                    if (paramIndex >= 0) {
+                        return argTypes[paramIndex];
+                    }
                 }
             }
         });
-        const paramType = simplify(paramTypeRaw);
+        let paramType = simplify(paramTypeRaw);
         let result = isSubTypeOf(argType, paramType);
         if (result === null) {
             //  replace any reference to an identifier with same name as a known argument
@@ -74,22 +88,23 @@ export function areValidParameters(args: Expression[], parameters: ParameterDecl
             //  the 2nd parameterType will be Integer{ @ > @arg(0) }
             //  the 2nd argumentType will be Integer{ @ > x:ssa }
             //  after normalizing the 2nd argumentType will be Integer{ @ > @arg(0) }
+            const paramNames = parameters.map(param => param.id.name);
             const argNames = new Map(args.map((p,i) => [p instanceof Reference ? getSSAOriginalName(p.name) : "",i]));
             const normalizedArgType = traverse(argType, {
                 leave(node) {
                     if (node instanceof Reference) {
                         const index = argNames.get(getSSAOriginalName(node.name));
                         if (index != null) {
-                            return new ArgPlaceholder(node.location, index);
+                            return node.patch({ name: paramNames[index]});
                         }
                     }
                 }
             });
-            const newResult = isSubTypeOf(normalizedArgType, paramTypes[i]);
+            paramType = paramTypes[i];  //  we don't use the raw replaced value here.
+            const newResult = isSubTypeOf(normalizedArgType, paramType);
             // if (DEBUG) {
             //     const paramKype = paramType.toKype();
             //     const simpleParamType = simplify(paramType);
-            //     // const simpleParamType = simplify(paramType);
             //     console.log({
             //         argType: argType.toString(),
             //         normalizedArgType: normalizedArgType.toString(),

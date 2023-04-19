@@ -30,7 +30,7 @@ import { StructDeclaration } from "../../ast/StructDeclaration";
 import { Identifier } from "../../ast/Identifier";
 import { MemberExpression } from "../../ast/MemberExpression";
 import { IntegerLiteral } from "../../ast/IntegerLiteral";
-import { TypeofExpression } from "../../ast/TypeOfExpression";
+import { TypeofExpression } from "../../ast/TypeofExpression";
 import { ArgPlaceholder } from "../../ast/ArgPlaceholder";
 import { FunctionExpression } from "../../ast/FunctionExpression";
 
@@ -108,10 +108,10 @@ const maybeResolveNode: {
             const constraints: Expression[] = [
             ];
             if (!isTypeReference(node.start.type, CoreTypes.Integer)) {
-                constraints.push(new ComparisonExpression(node.start.location, new DotExpression(node.start.location), ">=", node.start.type!));
+                constraints.push(new ComparisonExpression(node.start.location, new DotExpression(node.start.location), node.minExclusive ? ">" : ">=", node.start));
             }
             if (!isTypeReference(node.finish.type, CoreTypes.Integer)) {
-                constraints.push(new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), "<", node.finish.type!));
+                constraints.push(new ComparisonExpression(node.finish.location, new DotExpression(node.finish.location), node.maxExclusive ? "<" : "<=", node.finish));
             }
             const elementType = new ConstrainedType(
                 node.location,
@@ -121,6 +121,9 @@ const maybeResolveNode: {
             const before = new TypeReference(node.location, CoreTypes.Array, [elementType])
             // could add length constraint here.
             const type = resolveAll(before);
+            // console.log(`RANGE:::::::: ${node}`);
+            // console.log(`???????? FINISH: ${node.finish}`, node.finish);
+            // console.log(`---rangeExpression before: ${before}, type: ${type}`);
             return node.patch({ type, resolved: true });
         }
     },
@@ -210,10 +213,6 @@ const maybeResolveNode: {
             joinOps.reverse();
         }
         let knownType = node.value.type!;
-        // if (!(knownType instanceof ConstrainedType)) {
-        //     console.log(knownType);
-        //     throw new SemanticError(`We don't know how to handle this yet`, node.value);
-        // }
         const assertedDotConstraints = splitFilterJoinMultiple(test, splitOps, joinOps, e => expressionToType(e, node.value, node.negate));
         const assertedOptions = splitExpressions("||", assertedDotConstraints);
         let newTypes = assertedOptions.map(assertedOption => {
@@ -229,9 +228,16 @@ const maybeResolveNode: {
                 });
             })
         }).flat();
-        let newType = simplify(joinExpressions("|", newTypes));
+        let newTypeRaw = joinExpressions("|", newTypes);
+        let newType = simplify(newTypeRaw);
         const isAssertedConsequent = isSubTypeOf(knownType, newType);
         if (isAssertedConsequent === false) {
+            // console.log(`isAssertedConsequent: ${isAssertedConsequent}`, {
+            //     newTypeRaw: newTypeRaw.toKype().toString(),
+            //     knownType: knownType.toString(),
+            //     newType: newType.toString(),
+            //     newTypes: newTypes.toString(),
+            // })
             throw new SemanticError(`If test will always fail`, test);
         }
         if (isAssertedConsequent === true) {
@@ -389,13 +395,6 @@ const maybeResolveNode: {
             }
         }
         return node.patch({ type, resolved: true });
-    },
-    ArgPlaceholder(node, c) {
-        const parentFunction = c.lookup.findAncestor(node, FunctionExpression);
-        const param = parentFunction?.parameters[node.index];
-        if (param?.resolved) {
-            return node.patch({ type: param.type, resolved: true });
-        }
     },
     MemberExpression(node, c) {
         if (!node.object.resolved || (!node.isPropertyResolved)) {

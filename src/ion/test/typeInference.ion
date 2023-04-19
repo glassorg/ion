@@ -75,3 +75,20 @@ callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) :: 0 .. 1 ->
     if aa >= bb
         return 0
     return getAlpha(aa, bb)
+
+//  test array concatenation
+OneToFive = 1 .. 5
+ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
+
+struct Vector2Float
+    x: Float
+    y: Float
+
+//  we are testing that float addition is still working
+//  because overloading the + operator can make the + multifunction not fully resolved
+//  furthermore, the +(Vector2Float,Vector2Float) function depends on the +(Float,Float) function
+a = () :: 3.0 -> 1.0 + 2.0
+//  test operator overloading
+`+` = (a: Vector2Float, b: Vector2Float) -> Vector2Float(a.x + b.x, a.y + b.y)
+//  should be typed as Vector2Float
+v = () :: Vector2Float -> Vector2Float(1.0, 2.0) + Vector2Float(3.0, 4.0)

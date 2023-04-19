@@ -16,7 +16,7 @@ export class ArgPlaceholder extends Expression {
     }
 
     toString() {
-        return `@arg(${this.index})`;
+        return `@arg_${this.index}`;
     }
 
 }

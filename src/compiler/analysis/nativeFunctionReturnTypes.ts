@@ -5,7 +5,7 @@ import { InfixOperator } from "../Operators";
 import { SemanticError } from "../SemanticError";
 import { CallExpression } from "../ast/CallExpression";
 import { CoreProperty, CoreType, CoreTypes } from "../common/CoreType";
-import { Type, toType } from "../ast/Type";
+import { Type } from "../ast/Type";
 import { ConstrainedType } from "../ast/ConstrainedType";
 import { TypeReference } from "../ast/TypeReference";
 import { FunctionExpression } from "../ast/FunctionExpression";
@@ -19,6 +19,7 @@ import { SourceLocation } from "../ast/SourceLocation";
 import { DotExpression } from "../ast/DotExpression";
 import { MemberExpression } from "../ast/MemberExpression";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
+import { replacePeerParameterReferencesWithArgPlaceholders } from "../phases/assembly/postParser";
 
 function combineTypes(a: Type, operator: string, b: Type, coreType: CoreType, location: SourceLocation) {
     const aKype = a.toKype();
@@ -81,7 +82,7 @@ const nativeFunctionReturnTypes: { [name: string]: ((c: EvaluationContext, calle
     "`%`(Float,Float)": binaryTypeFunction("%", CoreTypes.Float),
     "`%`(Float,0.0)": (c, callee) => { throw new SemanticError(`Possible float modulus by zero`, callee) },
     // get array element type
-    "get(Array,Integer{(@ < @arg(0).length),(@ >= 0)})": (c, callee, arrayType, indexType) => {
+    "get(Array,Integer{(@ < @arg_0.length),(@ >= 0)})": (c, callee, arrayType, indexType) => {
         const elementType = arrayType.getMemberType(indexType, c);
         return elementType!;
     },
@@ -118,8 +119,9 @@ const nativeFunctionReturnTypes: { [name: string]: ((c: EvaluationContext, calle
 };
 
 export function getNativeReturnType(c: EvaluationContext, functionValue: FunctionExpression, argTypes: Type[], declaration: Declaration, callee: CallExpression) : Type {
-    const nativeTypeName = `${functionValue.id}(${functionValue.parameterTypes.join(`,`)})`;
-    // console.log(nativeTypeName + " -> " + argTypes);
+    const parametersWithArgPlaceholders = replacePeerParameterReferencesWithArgPlaceholders(functionValue.parameters);
+    const parameterTypes = parametersWithArgPlaceholders.map(p => p.type!);
+    const nativeTypeName = `${functionValue.id}(${parameterTypes.join(`,`)})`;
     const nativeType = nativeFunctionReturnTypes[nativeTypeName];
     if (!nativeType) {
         throw new SemanticError(`Missing native type ${nativeTypeName}`, declaration.id);

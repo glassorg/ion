@@ -105,18 +105,21 @@ export function expressionToType(e: Expression, dot: Expression, negate: boolean
             }
         }
         if (leftHasDot) {
-            if (isEquivalent(left, dot)) {
-                if (negate) {
-                    if (!ComparisonOperators[operator].negate) {
-                        throw new Error(`Found no negate for ${operator}`);
-                    }
-                    operator = ComparisonOperators[operator].negate as ComparisonOperator;
+            if (negate) {
+                if (!ComparisonOperators[operator].negate) {
+                    throw new Error(`Found no negate for ${operator}`);
                 }
-                return new ComparisonExpression(e.location, new DotExpression(e.left.location), operator, right);
+                operator = ComparisonOperators[operator].negate as ComparisonOperator;
             }
-            else {
-                console.log("Handle your nested shit here: ", { left: left.toString(), e: e.toString() } );
-            }
+            const leftString = left.toString();
+            left = traverse(left, {
+                leave(node) {
+                    if (node.toString() === leftString) {
+                        return new DotExpression(e.left.location)
+                    }
+                }
+            })
+            return new ComparisonExpression(e.location, left, operator, right);
         }
     }
     return null;

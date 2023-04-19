@@ -142,9 +142,11 @@ export class MultiFunction extends Expression {
         const { parameterTypes } = functionValue;
         for (let i = 0; i < argTypes.length; i++) {
             const argType = argTypes[i];
+            // replace references to arg peers with references to formal parameter names
             const paramType = simplify(traverse(parameterTypes[i], {
                 leave(node) {
                     if (node instanceof ArgPlaceholder) {
+                        throw new Error("will never happen");
                         return new Reference(node.location, functionValue.parameters[node.index].id.name)
                     }
                 }

@@ -3,12 +3,10 @@
 //  function get(array: Integer[], index: 0 .. array.length)
 //  bug, don't replace declared type with inferred type.
 
-struct Vector2
-    x: Float
-    y: Float
-
-a = 1.0 + 2.0
-`+` = (a: Vector2, b: Vector2) -> Vector2(a.x + b.x, a.y + b.y)
-v = Vector2(1.0, 2.0) + Vector2(3.0, 4.0)
-
-ab = concat([1, 2], [3, 4, 5])
+copy = (from: Float[], to: Float[]{ length == from.length }) ->
+    for i in 0 .. < from.length
+        //  we should know that the lengths are the same here
+        //  next, let's make this thingy not require the i < to.length check.
+        if i < to.length
+            to[i] = from[i]
+    return to
