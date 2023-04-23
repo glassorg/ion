@@ -66,6 +66,9 @@ arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length
 
 literalArrayLength = () :: 3 -> [1, 2, 3].length
 
+//  THIS IS NOT WORKING IF WE REMOVE THE ARGTYPE REPLACEMENT
+//  The problem is that @ >= 0 & @ < (replace me).length was getting simplified to
+//      @ >= 9 & @ <
 zeroth = () :: 1 -> [1, 2, 3][0]
 first = () :: 2 -> [1, 2, 3][1]
 second = () :: 3 -> [1, 2, 3][2]

@@ -5,8 +5,5 @@
 
 copy = (from: Float[], to: Float[]{ length == from.length }) ->
     for i in 0 .. < from.length
-        //  we should know that the lengths are the same here
-        //  next, let's make this thingy not require the i < to.length check.
-        if i < to.length
-            to[i] = from[i]
+        to[i]
     return to

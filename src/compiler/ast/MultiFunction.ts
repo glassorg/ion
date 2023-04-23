@@ -1,5 +1,6 @@
 import { simplify } from "../analysis/simplify";
-import { areValidParameters, getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
+import { getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
+import { areValidArguments } from "../analysis/areValidArguments";
 import { getNativeReturnType } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
@@ -79,7 +80,7 @@ export class MultiFunction extends Expression {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
             // first see if this function is valid for these argument types.
-            const isValidCall = areValidParameters(args, functionValue.parameters);
+            const isValidCall = areValidArguments(c, args, functionValue.parameters, callee);
             if (isValidCall === false) {
                 // this is never a valid call so we skip it's return type.
                 continue;
