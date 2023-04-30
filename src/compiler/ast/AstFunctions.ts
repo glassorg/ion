@@ -41,17 +41,26 @@ function createBinaryExpressionInternal(location: SourceLocation, left: Expressi
 export function joinExpressions(operator: "|" | "&", expressions: Type[]): Type
 export function joinExpressions(operator: InfixOperator, expressions: Expression[]): Expression
 export function joinExpressions(operator: InfixOperator, expressions: Expression[]): Expression {
-    let right = expressions[expressions.length - 1];
-    for (let i = expressions.length - 2; i >= 0; i--) {
-        const left = expressions[i];
-        right = createBinaryExpression(
-            left.location.merge(right.location),
-            left,
-            operator,
-            right
-        );
+    if (expressions.length === 2 && expressions[1] === undefined) {
+        debugger;
     }
-    return right;
+    try {
+        let right = expressions[expressions.length - 1];
+        for (let i = expressions.length - 2; i >= 0; i--) {
+            const left = expressions[i];
+            right = createBinaryExpression(
+                left.location.merge(right.location),
+                left,
+                operator,
+                right
+            );
+        }
+        return right;
+    }
+    catch (e) {
+        console.log(expressions);
+        throw "shit";
+    }
 }
 
 export function splitExpressions(operator: InfixOperator, expression: Expression | undefined, expressions: Expression[] = []): Expression[] {

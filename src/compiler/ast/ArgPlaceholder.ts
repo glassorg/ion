@@ -12,7 +12,7 @@ export class ArgPlaceholder extends Expression {
     }
 
     public toKype(): kype.Expression {
-        return new kype.CustomExpression(this);
+        return new kype.Reference(this.toString(), this);
     }
 
     toString() {

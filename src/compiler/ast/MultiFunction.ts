@@ -1,6 +1,5 @@
 import { simplify } from "../analysis/simplify";
 import { getSubTypePercentage, isSubTypeOf } from "../analysis/isSubType";
-import { areValidArguments } from "../analysis/areValidArguments";
 import { getNativeReturnType } from "../analysis/nativeFunctionReturnTypes";
 import { CoreTypes } from "../common/CoreType";
 import { EvaluationContext } from "../EvaluationContext";
@@ -12,8 +11,7 @@ import { FunctionExpression } from "./FunctionExpression";
 import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import { Type } from "./Type";
-import { traverse } from "../common/traverse";
-import { ArgPlaceholder } from "./ArgPlaceholder";
+import { areValidArguments2 } from "../analysis/areValidArguments2";
 
 export class MultiFunction extends Expression {
 
@@ -80,7 +78,7 @@ export class MultiFunction extends Expression {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
             // first see if this function is valid for these argument types.
-            const isValidCall = areValidArguments(c, args, functionValue.parameters, callee);
+            const isValidCall = areValidArguments2(c, args, functionValue.parameters, callee);
             if (isValidCall === false) {
                 // this is never a valid call so we skip it's return type.
                 continue;
@@ -112,6 +110,15 @@ export class MultiFunction extends Expression {
         }
         if (returnTypes.length === 0 || !lastWasAlwaysMatch) {
             // find the function that is the best match.
+            console.log(argTypes.join("\n"));
+            //  debug
+            {
+                const func = this.functions[0];
+                const functionValue = c.getConstantValue(func) as FunctionExpression;
+                // first see if this function is valid for these argument types.
+                const isValidCall = areValidArguments2(c, args, functionValue.parameters, callee, true);
+                console.log(`111111111 `, isValidCall);
+            }
             this.throwFunctionNotFoundError(argTypes, c, callee);
         }
         const type = simplify(joinExpressions("|", returnTypes));
@@ -144,14 +151,7 @@ export class MultiFunction extends Expression {
         for (let i = 0; i < argTypes.length; i++) {
             const argType = argTypes[i];
             // replace references to arg peers with references to formal parameter names
-            const paramType = simplify(traverse(parameterTypes[i], {
-                leave(node) {
-                    if (node instanceof ArgPlaceholder) {
-                        throw new Error("will never happen");
-                        return new Reference(node.location, functionValue.parameters[node.index].id.name)
-                    }
-                }
-            }));
+            const paramType = simplify(parameterTypes[i]);
             const result = isSubTypeOf(argType, paramType);
             if (result !== true) {
                 const parameter = functionValue.parameters[i];

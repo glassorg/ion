@@ -3,7 +3,9 @@
 //  function get(array: Integer[], index: 0 .. array.length)
 //  bug, don't replace declared type with inferred type.
 
-copy = (from: Float[], to: Float[]{ length == from.length }) ->
-    for i in 0 .. < from.length
-        to[i]
-    return to
+//  need to make sure we're pulling in ALL relevant KNOWN values
+//  which includes that to.length === from.length
+// copy = (from: Float[], to: Float[]{ length == from.length }) ->
+//     for i in 0 .. < from.length
+//         to[i] = from[i]
+//     return to

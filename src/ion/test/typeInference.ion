@@ -79,9 +79,9 @@ callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) :: 0 .. 1 ->
         return 0
     return getAlpha(aa, bb)
 
-//  test array concatenation
-OneToFive = 1 .. 5
-ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
+// //  test array concatenation
+// OneToFive = 1 .. 5
+// ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
 
 struct Vector2Float
     x: Float

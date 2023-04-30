@@ -28,14 +28,14 @@ export function areValidArguments(c: EvaluationContext, args: Expression[], para
         return areValidArguments2(c, args, parameters, callee);
     }
 
-    if (DEBUG) {
-        console.log({
-            ...Object.fromEntries(args.map((a, i) => [`arg[${i}]`, a.toString()])),
-            ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
-            ...Object.fromEntries(paramTypes.map((a, i) => [`paramType[${i}]`, a.toString()])),
-            paramNamesToIndex: JSON.stringify(Object.fromEntries(paramNamesToIndex.entries())),
-        });
-    }
+    // if (DEBUG) {
+    //     console.log({
+    //         ...Object.fromEntries(args.map((a, i) => [`arg[${i}]`, a.toString()])),
+    //         ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
+    //         ...Object.fromEntries(paramTypes.map((a, i) => [`paramType[${i}]`, a.toString()])),
+    //         paramNamesToIndex: JSON.stringify(Object.fromEntries(paramNamesToIndex.entries())),
+    //     });
+    // }
     let allTrue = true;
     for (let i = 0; i < argTypes.length; i++) {
         const argType = argTypes[i];
@@ -53,16 +53,16 @@ export function areValidArguments(c: EvaluationContext, args: Expression[], para
         });
         let paramType = simplify(paramTypeRaw);
         let result = isSubTypeOf(argType, paramType);
-        if (DEBUG) {
-            console.log({
-                index: i,
-                argType: argType.toString(),
-                paramTypeRaw: paramTypeRaw.toString(),
-                paramKypeRaw: paramTypeRaw.toKype().toString(),
-                paramType: paramType.toString(),
-                result
-            });
-        }
+        // if (DEBUG) {
+        //     console.log({
+        //         index: i,
+        //         argType: argType.toString(),
+        //         paramTypeRaw: paramTypeRaw.toString(),
+        //         paramKypeRaw: paramTypeRaw.toKype().toString(),
+        //         paramType: paramType.toString(),
+        //         result
+        //     });
+        // }
         if (result === null) {
             //  replace any reference to an identifier with same name as a known argument
             //  with an arg placeholder and then recompare if this is a subType.
@@ -91,19 +91,19 @@ export function areValidArguments(c: EvaluationContext, args: Expression[], para
             });
             paramType = paramTypes[i]; //  we don't use the raw replaced value here.
             const newResult = isSubTypeOf(normalizedArgType, paramType);
-            if (DEBUG) {
-                const paramKype = paramType.toKype();
-                const simpleParamType = simplify(paramType);
-                console.log({
-                    argType: argType.toString(),
-                    normalizedArgType: normalizedArgType.toString(),
-                    paramType: paramType.toString(),
-                    paramKype: paramKype.toString(),
-                    simpleParamType: simpleParamType.toString(),
-                    result,
-                    newResult,
-                });
-            }
+            // if (DEBUG) {
+            //     const paramKype = paramType.toKype();
+            //     const simpleParamType = simplify(paramType);
+            //     console.log({
+            //         argType: argType.toString(),
+            //         normalizedArgType: normalizedArgType.toString(),
+            //         paramType: paramType.toString(),
+            //         paramKype: paramKype.toString(),
+            //         simpleParamType: simpleParamType.toString(),
+            //         result,
+            //         newResult,
+            //     });
+            // }
             result = newResult;
         }
         switch (result) {

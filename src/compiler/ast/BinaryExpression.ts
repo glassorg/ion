@@ -48,6 +48,8 @@ export abstract class BinaryExpression extends Expression {
                 if (this.right instanceof Reference) {
                     return toKypeCheck(this.left, this.right);
                 }
+                debugger;
+                console.log(`Right side is a`, this.right.toString())
                 throw new SemanticError(`Expected right side of is to be a Reference`, this.right);
             }
         }

@@ -3,10 +3,10 @@ import { ParameterDeclaration } from "../ast/VariableDeclaration";
 import { CallExpression } from "../ast/CallExpression";
 import { EvaluationContext } from "../EvaluationContext";
 import { getSSAOriginalName } from "../common/ssa";
-import { traverse } from "../common/traverse";
+import { skip, traverse } from "../common/traverse";
 import { Reference } from "../ast/Reference";
 import { ArgPlaceholder } from "../ast/ArgPlaceholder";
-import { Maybe } from "@glas/kype";
+import { Maybe, isConsequent } from "@glas/kype";
 import { ConstrainedType } from "../ast/ConstrainedType";
 import { joinExpressions, splitExpressions } from "../ast/AstFunctions";
 import { ComparisonExpression } from "../ast/ComparisonExpression";
@@ -14,59 +14,86 @@ import { DotExpression } from "../ast/DotExpression";
 import { isTypeName } from "../common/names";
 import { TypeReference } from "../ast/TypeReference";
 import { splitFilterJoinMultiple } from "../common/utility";
+import { Type } from "../ast/Type";
+import { BinaryExpression } from "../ast/BinaryExpression";
+import { notEqual } from "assert";
 
 /**
  * Returns true if all argTypes are subtypes of the paramTypes.
  * Returns false if any argTypes are never subtypes of the paramTypes.
  * Returns null otherwise.
  */
-export function areValidArguments2(c: EvaluationContext, args: Expression[], parameters: ParameterDeclaration[], callee: CallExpression): Maybe {
+export function areValidArguments2(c: EvaluationContext, args: Expression[], parameters: ParameterDeclaration[], callee: CallExpression, DEBUG = false): Maybe {
     if (args.length !== parameters.length) {
         return false;
     }
+
     const argTypes = args.map(arg => arg.type!);
+    const known = getNormalizedArgumentsPropositions(c, argTypes);
+    const knownKype = known.toKype();
 
-    // normalized parameter types
-    const nParamTypes = getNormalizedParameterTypes(parameters);
+    const check = getNormalizedArgumentsPropositions(c, getNormalizedParameterTypes(parameters))
+    const checkKype = check.toKype();
+    
+    const result = isConsequent(knownKype, checkKype);
 
+    if (DEBUG) {
+        console.log({
+            ...Object.fromEntries(args.map((a, i) => [`arg[${i}]`, a.toString()])),
+            ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
+            ...Object.fromEntries(splitExpressions("&&", known).map((a, i) => [`known[${i}]`, a.toString()])),
+            ...Object.fromEntries(splitExpressions("&&", check).map((a, i) => [`check[${i}]`, a.toString()])),
+            ...Object.fromEntries(knownKype.split("&&").map((a, i) => [`knownKype[${i}]`, a.toString()])),
+            ...Object.fromEntries(checkKype.split("&&").map((a, i) => [`checkKype[${i}]`, a.toString()])),
+            result,
+        });
+    }
+
+    return result;
+}
+
+export function getNormalizedArgumentsPropositions(c: EvaluationContext, argTypes: Type[]) {
     const referenced = new Set<string>();
-    const known = joinExpressions(
+    return joinExpressions(
         "&&",
-        args.map((arg, i) => getNormalizedArgumentPropositions(
-            c, arg, new ArgPlaceholder(arg.location, i), referenced
-        ))
+        argTypes.map((argType, i) => {
+            const result = getNormalizedArgumentPropositions(
+                c, argType, new ArgPlaceholder(argType.location, i), referenced
+            )
+            return result;
+        })
     );
-
-    console.log({
-        ...Object.fromEntries(args.map((a, i) => [`arg[${i}]`, a.toString()])),
-        ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
-        ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
-        ...Object.fromEntries(nParamTypes.map((a, i) => [`nParamType[${i}]`, a.toString()])),
-        ...Object.fromEntries(splitExpressions("&&", known).map((a, i) => [`known[${i}]`, a.toString()])),
-    });
-    return null;
 }
 
 /**
  * @param arg the argument to get normalized propositions for.
- * @param replace the expression to replace DotExpressions with.
+ * @param replacement the expression to replace DotExpressions with.
  * @param referenced referenced expressions that have already been converted to propositions.
  * @returns a combined resulting Expression of all propositions.
  */
-export function getNormalizedArgumentPropositions(c: EvaluationContext, arg: Expression, replace: Expression, referenced: Set<string>) : Expression {
+function getNormalizedArgumentPropositions(c: EvaluationContext, argType: Expression, replacement: Expression, referenced: Set<string>) : Expression {
     const foundReferences = new Map<string,Reference>();
-    let proposition = splitFilterJoinMultiple(arg.type!, ["|", "&"], ["||", "&&"], (type => {
-        if (type instanceof TypeReference) {
-            return new ComparisonExpression(arg.location, replace, "is", type);
-        }
-        return traverse(type, {
+    function replaceRecursive(root: Expression): Expression {
+        return traverse(root, {
+            enter(node, ancestors) {
+                if (node instanceof BinaryExpression && node.operator === "is") {
+                    //  we skip the BinaryExpression,
+                    //  we will have to handle the left, but NOT the right.
+                    return skip;
+                }
+            },
             leave(node) {
+                if (node instanceof BinaryExpression && node.operator === "is") {
+                    // recurse.
+                    const newLeft = replaceRecursive(node.left);
+                    return getNormalizedArgumentPropositions(c, node.right, newLeft, referenced);
+                }
                 if (node instanceof DotExpression) {
-                    return replace;
+                    return replacement;
                 }
                 if (node instanceof ConstrainedType) {
                     return joinExpressions("&&", [
-                        new ComparisonExpression(node.location, replace, "is", node.baseType),
+                        new ComparisonExpression(node.location, replacement, "is", node.baseType),
                         ...node.constraints
                     ]);
                 }
@@ -75,21 +102,32 @@ export function getNormalizedArgumentPropositions(c: EvaluationContext, arg: Exp
                         foundReferences.set(node.name, node);
                     }
                 }
+                return node;                
             }
-        }) as Expression;
+        }) as Expression;        
+    }
+    let proposition = splitFilterJoinMultiple(argType!, ["|", "&"], ["||", "&&"], (type => {
+        if (type instanceof TypeReference) {
+            return new ComparisonExpression(argType.location, replacement, "is", type);
+        }
+        return replaceRecursive(type);
     }))
     for (const ref of foundReferences.values()) {
         if (!referenced.has(ref.name)) {
             referenced.add(ref.name);
-            const refPropositions = getNormalizedArgumentPropositions(c, ref, ref, referenced);
-            proposition = joinExpressions("&&", [proposition, refPropositions]);
+            if (ref.type) {
+                const refPropositions = getNormalizedArgumentPropositions(c, ref.type, ref, referenced);
+                proposition = joinExpressions("&&", [proposition, refPropositions]);
+            }
+            // else {
+            //     console.log(`ref is not typed??? ${ref}`)
+            // }
         }
     }
-    console.log("--> " + arg + " ===> " + proposition);
     return proposition;
 }
 
-export function getNormalizedParameterTypes(parameters: ParameterDeclaration[]) {
+export function getNormalizedParameterTypes(parameters: ParameterDeclaration[]): Type[] {
     const paramTypes = parameters.map(p => p.type!);
     const paramNamesToIndex = new Map(parameters.map((p, i) => [getSSAOriginalName(p.id.name), i]));
 
@@ -104,7 +142,7 @@ export function getNormalizedParameterTypes(parameters: ParameterDeclaration[]) 
                 }
             }
         }
-    }) as Expression[];
+    }) as Type[];
 
     return nParamTypes;
 }
