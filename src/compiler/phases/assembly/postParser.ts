@@ -55,9 +55,6 @@ export function postParser(assembly: Assembly) {
                     node.object, node.index
                 ]);
             }
-            // if (node instanceof FunctionExpression) {
-            //     return node.patch({ parameters: replacePeerParameterReferencesWithArgPlaceholders(node.parameters) });
-            // }
         }
     });
 }

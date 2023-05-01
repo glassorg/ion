@@ -1,3 +1,7 @@
+import { Identifier } from "../ast/Identifier";
+import { Reference } from "../ast/Reference";
+import { traverse } from "./traverse";
+
 export const ssaVersionSeparator = ":";
 
 export function isSSAVersionName(name: string) {
@@ -29,3 +33,4 @@ export function getSSAOriginalName(name: string) {
 export function getSSANextVersion(name: string) {
     return getSSAVersionName(getSSAUniqueName(name), getSSAVersionNumber(name) + 1);
 }
+

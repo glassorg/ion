@@ -2,7 +2,7 @@ import { Expression } from "../ast/Expression";
 import { ParameterDeclaration } from "../ast/VariableDeclaration";
 import { CallExpression } from "../ast/CallExpression";
 import { EvaluationContext } from "../EvaluationContext";
-import { getSSAOriginalName, isSSAVersionName } from "../common/ssa";
+import { getSSAOriginalName } from "../common/ssa";
 import { skip, traverse } from "../common/traverse";
 import { Reference } from "../ast/Reference";
 import { ArgPlaceholder } from "../ast/ArgPlaceholder";
@@ -16,63 +16,37 @@ import { TypeReference } from "../ast/TypeReference";
 import { splitFilterJoinMultiple } from "../common/utility";
 import { Type } from "../ast/Type";
 import { BinaryExpression } from "../ast/BinaryExpression";
-import { Identifier } from "../ast/Identifier";
-
-export function removeSSANames<T = unknown>(root: T): T {
-    return traverse(root, {
-        leave(node) {
-            if (node instanceof Reference || node instanceof Identifier) {
-                const { name } = node;
-                if (isSSAVersionName(name)) {
-                    return node.patch({ name: getSSAOriginalName(name) });
-                }
-            }
-        }
-    })
-}
-
-export function replaceReferences<T = unknown>(root: T, replacements: Map<string,Expression>): T {
-    return traverse(root, {
-        leave(node) {
-            if (node instanceof Reference) {
-                const { name } = node;
-                return replacements.get(name);
-            }
-        }
-    })
-}
+import { FunctionExpression } from "../ast/FunctionExpression";
 
 /**
  * Returns true if all argTypes are subtypes of the paramTypes.
  * Returns false if any argTypes are never subtypes of the paramTypes.
  * Returns null otherwise.
  */
-export function areValidArguments2(c: EvaluationContext, args: Expression[], parameters: ParameterDeclaration[], callee: CallExpression, DEBUG = false): Maybe {
+export function areValidArguments2(c: EvaluationContext, args: Expression[], parameters: ParameterDeclaration[], caller: CallExpression, DEBUG = false): Maybe {
     if (args.length !== parameters.length) {
         return false;
     }
 
-    args = removeSSANames(args);
-    const argNameToPlaceholder = new Map(args.map((arg, i) => [arg, i]).filter(([arg, i]) => arg instanceof Reference).map(([arg, i]) => [(arg as Reference).name, new ArgPlaceholder((arg as Reference).location, i as number)]));
-    const argTypes = removeSSANames(args.map(arg => arg.type!));
-    let known = getNormalizedArgumentsPropositions(c, argTypes);
-    if (argNameToPlaceholder.size > 0) {
-        // known = replaceReferences(known, argNameToPlaceholder);
-    }
-    const knownKype = known.toKype();
-
-    //  TODO: Quit mixing normalization of arg/parameter names with
-    //  conversion to flat expressions
-    //  separate these into discrete steps.
-
     // get what we can know based upon parameter types within the function we are calling FROM.
+    const argLookupByString = new Map(args.map((arg, i) => [arg.toString(), new ArgPlaceholder(arg.location, i)]));
+    const callSiteFunction = c.lookup.findAncestor(caller, FunctionExpression)!;
+    const knownCallSiteProps = getNormalizedArgumentsPropositions(
+        c,
+        callSiteFunction.parameterTypes,
+        callSiteFunction.parameters.map((p, i) => new Reference(p.location, p.id.name))
+    );
+    const argTypes = args.map(arg => arg.type!);
+    const knownFromArguments = getNormalizedArgumentsPropositions(c, argTypes);
+    const knownBefore = joinExpressions("&&", [knownCallSiteProps, knownFromArguments]);
+    const known = traverse(knownBefore, {
+        // replace any instances of our arguments with a normalized arg placeholder.
+        leave(node) { if (node instanceof Expression) { return argLookupByString.get(node.toString()); } }
+    }) as Expression;
+    const knownKype = known.toKype();
 
     const check = getNormalizedArgumentsPropositions(c, getNormalizedParameterTypes(parameters))
     const checkKype = check.toKype();
-
-    if (DEBUG) {
-        debugger;
-    }
     
     const result = isConsequent(knownKype, checkKype);
 
@@ -80,6 +54,8 @@ export function areValidArguments2(c: EvaluationContext, args: Expression[], par
         console.log({
             ...Object.fromEntries(args.map((a, i) => [`arg[${i}]`, a.toString()])),
             ...Object.fromEntries(argTypes.map((a, i) => [`argType[${i}]`, a.toString()])),
+            ...Object.fromEntries(splitExpressions("&&", knownCallSiteProps).map((a, i) => [`knownCallSite[${i}]`, a.toString()])),
+            ...Object.fromEntries(splitExpressions("&&", knownFromArguments).map((a, i) => [`knownFromArgs[${i}]`, a.toString()])),
             ...Object.fromEntries(splitExpressions("&&", known).map((a, i) => [`known[${i}]`, a.toString()])),
             ...Object.fromEntries(splitExpressions("&&", check).map((a, i) => [`check[${i}]`, a.toString()])),
             ...Object.fromEntries(knownKype.split("&&").map((a, i) => [`knownKype[${i}]`, a.toString()])),
@@ -91,13 +67,17 @@ export function areValidArguments2(c: EvaluationContext, args: Expression[], par
     return result;
 }
 
-export function getNormalizedArgumentsPropositions(c: EvaluationContext, argTypes: Type[]) {
+export function getNormalizedArgumentsPropositions(
+    c: EvaluationContext,
+    argTypes: Type[],
+    replacements: Expression[] = argTypes.map((a, i) => new ArgPlaceholder(a.location, i))
+) {
     const referenced = new Set<string>();
     return joinExpressions(
         "&&",
         argTypes.map((argType, i) => {
             const result = getNormalizedArgumentPropositions(
-                c, argType, new ArgPlaceholder(argType.location, i), referenced
+                c, argType, replacements[i], referenced
             )
             return result;
         })

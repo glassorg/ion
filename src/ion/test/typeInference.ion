@@ -67,8 +67,6 @@ arrayLengthEquals10 = (a: Float[]{ length == 10 }) :: 10 -> a.length
 literalArrayLength = () :: 3 -> [1, 2, 3].length
 
 //  THIS IS NOT WORKING IF WE REMOVE THE ARGTYPE REPLACEMENT
-//  The problem is that @ >= 0 & @ < (replace me).length was getting simplified to
-//      @ >= 9 & @ <
 zeroth = () :: 1 -> [1, 2, 3][0]
 first = () :: 2 -> [1, 2, 3][1]
 second = () :: 3 -> [1, 2, 3][2]
@@ -79,9 +77,9 @@ callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) :: 0 .. 1 ->
         return 0
     return getAlpha(aa, bb)
 
-// //  test array concatenation
-// OneToFive = 1 .. 5
-// ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
+//  test array concatenation
+OneToFive = 1 .. 5
+ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
 
 struct Vector2Float
     x: Float
@@ -95,3 +93,21 @@ a = () :: 3.0 -> 1.0 + 2.0
 `+` = (a: Vector2Float, b: Vector2Float) -> Vector2Float(a.x + b.x, a.y + b.y)
 //  should be typed as Vector2Float
 v = () :: Vector2Float -> Vector2Float(1.0, 2.0) + Vector2Float(3.0, 4.0)
+
+//  these functions are mostly checking call site valid argument checking for indexing.
+copyIterateFromCheckTo = (from: Float[], to: Float[]) :: 1 ->
+    for i in 0 .. < from.length
+        if i < to.length
+            to[i] = from[i]
+    return 1
+
+copyIterateFrom = (from: Float[], to: Float[]{ length == from.length }) :: 1 ->
+    for i in 0 .. < from.length
+        to[i] = from[i]
+    return 1
+
+//  TODO: Make the other parameter types inferred from the subsequent parameter type referencing it.
+copyIterateTo = (from: Float[], to: Float[]{ length == from.length }) :: 1 ->
+    for i in 0 .. < to.length
+        to[i] = from[i]
+    return 1

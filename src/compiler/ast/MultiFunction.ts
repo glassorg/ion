@@ -12,6 +12,7 @@ import { Reference } from "./Reference";
 import { SourceLocation } from "./SourceLocation";
 import { Type } from "./Type";
 import { areValidArguments2 } from "../analysis/areValidArguments2";
+import { areValidArguments3 } from "../analysis/areValidArguments3";
 
 export class MultiFunction extends Expression {
 
@@ -78,7 +79,7 @@ export class MultiFunction extends Expression {
             const declaration = c.getDeclaration(func);
             const functionValue = c.getConstantValue(func) as FunctionExpression;
             // first see if this function is valid for these argument types.
-            const isValidCall = areValidArguments2(c, args, functionValue.parameters, callee);
+            const isValidCall = areValidArguments3(c, args, functionValue.parameters, callee);
             if (isValidCall === false) {
                 // this is never a valid call so we skip it's return type.
                 continue;
@@ -116,8 +117,8 @@ export class MultiFunction extends Expression {
                 const func = this.functions[0];
                 const functionValue = c.getConstantValue(func) as FunctionExpression;
                 // first see if this function is valid for these argument types.
-                const isValidCall = areValidArguments2(c, args, functionValue.parameters, callee, true);
-                console.log(`111111111 `, isValidCall);
+                const isValidCall = areValidArguments3(c, args, functionValue.parameters, callee, true);
+                console.log(`2222222222 `, isValidCall);
             }
             this.throwFunctionNotFoundError(argTypes, c, callee);
         }
