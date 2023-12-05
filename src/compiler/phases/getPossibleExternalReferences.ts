@@ -1,5 +1,4 @@
 
-
 // export async function getPossibleExternalReferences(declaration: RootDeclaration): Promise<string[]> {
 //     let externals = new Set<string>();
 //     // resolve externals.

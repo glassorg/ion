@@ -36,18 +36,18 @@ Whole = Zero | Positive
 
 whole = (a: Whole) :: >= 0 -> a
 
-struct Vector
+class Vector
     x: 0.0 .. 1.0
     y: 0.0 .. 1.0
 
 length = (v: Vector) :: 0.0 .. 1.4142135623730951 ->
     (v.x * v.x + v.y * v.y) ** 0.5
 
-struct Alpha
+class Alpha
     a: 0.0 .. 2.0
     b: 1.0 .. 3.0
 
-struct Higher
+class Higher
     one: Vector
     two: Alpha
 
@@ -81,7 +81,7 @@ callGetAlpha = (aa: 1 .. 2, bb: 2 .. 4) :: 0 .. 1 ->
 OneToFive = 1 .. 5
 ab = () :: OneToFive[]{ length: 5 } -> concat([1, 2], [3, 4, 5])
 
-struct Vector2Float
+class Vector2Float
     x: Float
     y: Float
 
@@ -106,7 +106,6 @@ copyIterateFrom = (from: Float[], to: Float[]{ length == from.length }) :: 1 ->
         to[i] = from[i]
     return 1
 
-//  TODO: Make the other parameter types inferred from the subsequent parameter type referencing it.
 copyIterateTo = (from: Float[], to: Float[]{ length == from.length }) :: 1 ->
     for i in 0 .. < to.length
         to[i] = from[i]

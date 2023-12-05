@@ -1,0 +1,6 @@
+
+class User
+    name: String{ length: 1 .. 50 }
+    email: String{ length: 5 .. 100 }
+    passwordHash: String{ length: 10 .. 20 }
+    birthDate: > 0

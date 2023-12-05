@@ -2,3 +2,8 @@
 //  [Integer[],Integer]{ .[1] >= 0, .[1] < .[0].length}
 //  function get(array: Integer[], index: 0 .. array.length)
 //  bug, don't replace declared type with inferred type.
+
+copyIterateTo = (from: Float[], to: Float[]{ length == from.length }) :: 1 ->
+    for i in 0 .. < to.length
+        to[i] = from[i]
+    return 1

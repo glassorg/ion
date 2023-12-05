@@ -1,0 +1,9 @@
+{
+    "input": {
+        "myschema": "./input"
+    },
+    "output": {
+        "path": "./output",
+        "jsonschema": true
+    }
+}

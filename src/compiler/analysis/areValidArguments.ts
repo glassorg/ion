@@ -55,13 +55,15 @@ export function areValidArguments(c: EvaluationContext, args: Expression[], para
 
     const callSiteFunction = c.lookup.findAncestor(caller, FunctionExpression)!;
     //  propositions known from the call site functions parameter preconditions.
+    //  TODO:
+    //      Maybe don't do this and instead replicate constraints on one parameter to the other
+    //      That may help solve the ability to constrain re-assignments to unconstrained parameters breaking others.
     const knownFromCall = joinExpressions("&&", callSiteFunction.parameters.map((p, i) => flattenType(p.type!, new Reference(p.location, p.id.name))));
     //  propositions known from the types of the arguments
     const knownFromArgs = normalizeArguments(args);
     const known = replaceReferences(removeSSANames(joinExpressions("&&", [knownFromCall, knownFromArgs].filter(a => a))), new Map(removeSSANames(args).map((a, i) => [a.toString(), new ArgPlaceholder(a.location, i)])));
 
     const check = replaceReferences(normalizeArguments(parameters), new Map(parameters.map((p,i) => [p.id.name, new ArgPlaceholder(p.location, i)])));
-
 
     const knownKype = known.toKype();
     const checkKype = check.toKype();

@@ -1,0 +1,4 @@
+
+class Task
+    name: String{ length: 1 .. 50 }
+    complete: 0 .. 100

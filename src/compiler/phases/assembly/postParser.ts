@@ -55,8 +55,19 @@ export function postParser(assembly: Assembly) {
                     node.object, node.index
                 ]);
             }
+            if (node instanceof FunctionExpression) {
+                return reflectParameterConstraints(node);
+            }
         }
     });
+}
+
+export function reflectParameterConstraints(func: FunctionExpression) {
+    // TODO: Reflect parameters
+    //  before: (from: Float[], to: Float[]{ length == from.length }) ->
+    //  after: (from: Float[]{ length == to.length }, to: Float[]{ length == from.length }) ->
+
+    return func;
 }
 
 export function replacePeerParameterReferencesWithArgPlaceholders(parameters: ParameterDeclaration[]): ParameterDeclaration[] {
